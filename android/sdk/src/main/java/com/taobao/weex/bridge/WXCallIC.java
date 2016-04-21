@@ -202,207 +202,110 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex;
+package com.taobao.weex.bridge;
 
-import android.os.Looper;
-import android.text.TextUtils;
-
-import com.taobao.weex.adapter.DefaultWXHttpAdapter;
-import com.taobao.weex.adapter.IWXHttpAdapter;
-import com.taobao.weex.adapter.IWXImgLoaderAdapter;
-import com.taobao.weex.adapter.IWXUserTrackAdapter;
-import com.taobao.weex.bridge.WXBridgeManager;
-import com.taobao.weex.bridge.WXModuleManager;
-import com.taobao.weex.common.WXRefreshData;
-import com.taobao.weex.common.WXRuntimeException;
-import com.taobao.weex.dom.WXDomManager;
-import com.taobao.weex.ui.WXRenderManager;
-import com.taobao.weex.ui.WXVSyncScheduler;
-import com.taobao.weex.utils.WXUtils;
-
-import java.util.ArrayList;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Manger class for weex context.
- */
-public class WXSDKManager {
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.utils.WXLogUtils;
+import com.taobao.weex.common.WXModule;
+import com.taobao.weex.common.WXModuleAnno;
 
-  private static WXSDKManager sManager;
-  private static AtomicInteger sInstanceId = new AtomicInteger(0);
-  private final WXDomManager mWXDomManager;
-  private WXBridgeManager mBridgeManager;
-  private WXRenderManager mWXRenderManager;
-  private WXVSyncScheduler mWXVSyncScheduler;
+class WXCallIC {
+    private static HashMap<Method, EncodeInfo> sEncodeMap = new HashMap<>();
 
-  private IWXUserTrackAdapter mIWXUserTrackAdapter;
-  private IWXImgLoaderAdapter mIWXImgLoaderAdapter;
-  private IWXHttpAdapter mIWXHttpAdapter;
-
-  private WXSDKManager() {
-    mWXRenderManager = new WXRenderManager();
-    mWXDomManager = new WXDomManager(mWXRenderManager);
-    mBridgeManager = WXBridgeManager.getInstance();
-    mWXVSyncScheduler = new WXVSyncScheduler();
-  }
-
-  public static WXSDKManager getInstance() {
-    if (sManager == null) {
-      sManager = new WXSDKManager();
+    private WXCallIC() {
     }
-    return sManager;
-  }
 
-  public WXVSyncScheduler getVSyncScheduler() {
-      return mWXVSyncScheduler;
-  }
-
-  public void restartBridge() {
-    mBridgeManager.restart();
-  }
-
-  public WXDomManager getWXDomManager() {
-    return mWXDomManager;
-  }
-
-  public WXBridgeManager getWXBridgeManager() {
-    return mBridgeManager;
-  }
-
-  public WXRenderManager getWXRenderManager() {
-    return mWXRenderManager;
-  }
-
-  public WXSDKInstance getSDKInstance(String instanceId) {
-    return mWXRenderManager.getWXSDKInstance(instanceId);
-  }
-
-  public void postOnUiThread(Runnable runnable, long delayMillis) {
-    mWXRenderManager.postOnUiThread(runnable, delayMillis);
-  }
-
-  public void destroy() {
-    if (mWXDomManager != null) {
-      mWXDomManager.destroy();
-    }
-  }
-
-  public void callback(String instanceId, String funcId, Map<String, Object> data) {
-    mBridgeManager.callback(instanceId, funcId, data);
-  }
-
-  public void initScriptsFramework(String framework) {
-    mBridgeManager.initScriptsFramework(framework);
-  }
-
-  public void registerComponents(ArrayList<Map<String, String>> components) {
-    mBridgeManager.registerComponents(components);
-  }
-
-  public void registerModules(Map<String, Object> modules) {
-    mBridgeManager.registerModules(modules);
-  }
-
-  public void fireEvent(final String instanceId, String ref, String type) {
-    fireEvent(instanceId, ref, type, new HashMap<String, Object>());
-  }
-
-  /**
-   * FireEvent back to JS
-   */
-  public void fireEvent(final String instanceId, String ref, String type, Map<String, Object> params) {
-    if (WXEnvironment.isApkDebugable() && Looper.getMainLooper().getThread().getId() != Thread.currentThread().getId()) {
-      throw new WXRuntimeException("[WXSDKManager]  fireEvent error");
-    }
-    mBridgeManager.fireEvent(instanceId, ref, type, params);
-  }
-
-  void createInstance(final WXSDKInstance instance, String code, Map<String, Object> options, String jsonInitData) {
-    mWXRenderManager.createInstance(instance, instance.getInstanceId());
-    mBridgeManager.createInstance(instance.getInstanceId(), code, options, jsonInitData);
-    mWXVSyncScheduler.createInstance(instance.getInstanceId(), new WXVSyncScheduler.Worker() {
-        @Override
-        public void submitLayoutTasks() {
-            mBridgeManager.submitTasks(instance.getInstanceId());
+    static void invoke(WXModule wxModule, Method method, JSONArray args) throws Exception {
+        EncodeInfo eInfo = getEncodeInfo(method);
+        if (eInfo == null) {
+            eInfo = generateEncodeInfo(method);
+            insertEncodeInfo(method, eInfo);
         }
+        invokeWithEncodeInfo(wxModule, method, args, eInfo);
+    }
 
-        @Override
-        public void submitDisplayTasks() {
-            mWXRenderManager.submitDisplayTasks(instance.getInstanceId());
+    private static EncodeInfo getEncodeInfo(Method method) {
+        synchronized(sEncodeMap) {
+            return sEncodeMap.get(method);
         }
+    }
 
-        @Override
-        public void requestNextVSync() {
-            postOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    WXSDKManager.this.mWXVSyncScheduler.vsyncAcquired(instance.getInstanceId());
+    private static void insertEncodeInfo(Method method, EncodeInfo eInfo) {
+        synchronized(sEncodeMap) {
+            sEncodeMap.put(method, eInfo);
+        }
+    }
+
+    private static EncodeInfo generateEncodeInfo(Method method) throws Exception {
+        Type[] paramClazzs = method.getGenericParameterTypes();
+        EncodeInfo eInfo = new EncodeInfo();
+        eInfo.paramClazzs = paramClazzs;
+        WXModuleAnno anno = method.getAnnotation(WXModuleAnno.class);
+        eInfo.runOnUIThread = anno.runOnUIThread();
+        return eInfo;
+    }
+
+    private static void invokeWithEncodeInfo(final WXModule wxModule, final Method method, JSONArray args, EncodeInfo eInfo) throws Exception {
+        Type[] paramClazzs = eInfo.paramClazzs;
+        final Object[] params = new Object[paramClazzs.length];
+        Object value;
+        Type paramClazz;
+        for (int i = 0; i < paramClazzs.length; i++) {
+            paramClazz = paramClazzs[i];
+            value = args.get(i);
+
+            if (paramClazz == JSONObject.class) {
+                params[i] = value;
+            } else {
+                String sValue;
+                if (value instanceof String) {
+                    sValue = (String) value;
+                } else {
+                    sValue = JSON.toJSONString(value);
                 }
-            }, 16);
+
+                if (paramClazz == int.class) {
+                    params[i] = Integer.parseInt(sValue);
+                } else if (paramClazz == String.class) {
+                    params[i] = sValue;
+                } else if (paramClazz == long.class) {
+                    params[i] = Long.parseLong(sValue);
+                } else if (paramClazz == double.class) {
+                    params[i] = Double.parseDouble(sValue);
+                } else if (paramClazz == float.class) {
+                    params[i] = Float.parseFloat(sValue);
+                } else {
+                    params[i] = JSON.parseObject(sValue, paramClazz);
+                }
+            }
         }
-
-        @Override
-        public void frameStarts() {
+        if (eInfo.runOnUIThread) {
+            WXSDKManager.getInstance().postOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            method.invoke(wxModule, params);
+                        } catch (Exception e) {
+                            WXLogUtils.e("callModuleMethod >>> invoke module:" + WXLogUtils.getStackTrace(e));
+                        }
+                    }
+            }, 0);
+        } else {
+            method.invoke(wxModule, params);
         }
-
-        @Override
-        public void frameEnds() {
-        }
-
-        @Override
-        public String getInstanceId() {
-            return instance.getInstanceId();
-        }
-    });
-  }
-
-  void refreshInstance(String instanceId, WXRefreshData jsonData) {
-    mBridgeManager.refreshInstance(instanceId, jsonData);
-  }
-
-  void destroyInstance(String instanceId) {
-    if (TextUtils.isEmpty(instanceId)) {
-      return;
     }
-    if (!WXUtils.isUiThread()) {
-      throw new WXRuntimeException("[WXSDKManager] destroyInstance error");
+
+    private static class EncodeInfo {
+        Type paramClazzs[];
+        boolean runOnUIThread;
     }
-    mWXRenderManager.removeRenderStatement(instanceId);
-    mWXDomManager.removeDomStatement(instanceId);
-    mBridgeManager.destroyInstance(instanceId);
-    WXModuleManager.destroyInstanceModules(instanceId);
-  }
-
-  String generateInstanceId() {
-    return String.valueOf(sInstanceId.incrementAndGet());
-  }
-
-  public IWXUserTrackAdapter getIWXUserTrackAdapter() {
-    return mIWXUserTrackAdapter;
-  }
-
-  public void setIWXUserTrackAdapter(IWXUserTrackAdapter IWXUserTrackAdapter) {
-    mIWXUserTrackAdapter = IWXUserTrackAdapter;
-  }
-
-  public IWXImgLoaderAdapter getIWXImgLoaderAdapter() {
-    return mIWXImgLoaderAdapter;
-  }
-
-  public void setIWXImgLoaderAdapter(IWXImgLoaderAdapter IWXImgLoaderAdapter) {
-    mIWXImgLoaderAdapter = IWXImgLoaderAdapter;
-  }
-
-  public IWXHttpAdapter getIWXHttpAdapter() {
-    if(mIWXHttpAdapter==null){
-      mIWXHttpAdapter=new DefaultWXHttpAdapter();
-    }
-    return mIWXHttpAdapter;
-  }
-
-  public void setIWXHttpAdapter(IWXHttpAdapter IWXHttpAdapter) {
-    mIWXHttpAdapter = IWXHttpAdapter;
-  }
 }

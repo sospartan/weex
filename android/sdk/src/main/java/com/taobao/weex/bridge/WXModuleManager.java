@@ -213,6 +213,7 @@ import com.taobao.weex.common.IWXObject;
 import com.taobao.weex.common.WXException;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXModuleAnno;
+import com.taobao.weex.common.ICommandQueue;
 import com.taobao.weex.dom.WXDomModule;
 import com.taobao.weex.utils.WXLogUtils;
 
@@ -239,6 +240,7 @@ public class WXModuleManager {
   private static Map<String, Class<? extends WXModule>> sModuleClazzMap = new HashMap<>();
   private static Map<String, WXModule> sGlobalModuleMap = new HashMap<>();
   private static Map<WXModule, HashMap<String, Method>> sGlobalModuleMethodMap = new HashMap<>();
+  private static ArrayList<ICommandQueue> sCommandQueues = new ArrayList<>();
 
   /**
    * module object dictionary
@@ -255,6 +257,13 @@ public class WXModuleManager {
   public static boolean registerModule(String moduleName, Class<? extends WXModule> moduleClass) throws WXException {
     return registerModule(moduleName, moduleClass, false);
   }
+
+  private static void addIfCommandQueue(Object o) {
+      if (o instanceof ICommandQueue) {
+          sCommandQueues.add((ICommandQueue)o);
+      }
+  }
+
 
   /**
    * Register module to JavaScript and Android
@@ -287,6 +296,7 @@ public class WXModuleManager {
         sGlobalModuleMap.put(moduleName, wxModule);
         HashMap<String, Method> methodsMap = getModuleMethods2Map(moduleClass);
         sGlobalModuleMethodMap.put(wxModule, methodsMap);
+        addIfCommandQueue(wxModule);
       } catch (Exception e) {
         WXLogUtils.e(moduleClass + " class must have a default constructor without params. " + WXLogUtils.getStackTrace(e));
         return false;
@@ -361,58 +371,7 @@ public class WXModuleManager {
     }
     final Method moduleMethod = methodsMap.get(methodStr);
     try {
-      Type[] paramClazzs = moduleMethod.getGenericParameterTypes();
-      final Object[] params = new Object[paramClazzs.length];
-      Object value;
-      Type paramClazz;
-      for (int i = 0; i < paramClazzs.length; i++) {
-        paramClazz = paramClazzs[i];
-        value = args.get(i);
-
-        if (paramClazz == JSONObject.class) {
-          params[i] = value;
-        } else {
-          String sValue;
-          if (value instanceof String) {
-            sValue = (String) value;
-          } else {
-            sValue = JSON.toJSONString(value);
-          }
-
-          if (paramClazz == int.class) {
-            params[i] = Integer.parseInt(sValue);
-          } else if (paramClazz == String.class) {
-            params[i] = sValue;
-          } else if (paramClazz == long.class) {
-            params[i] = Long.parseLong(sValue);
-          } else if (paramClazz == double.class) {
-            params[i] = Double.parseDouble(sValue);
-          } else if (paramClazz == float.class) {
-            params[i] = Float.parseFloat(sValue);
-          } else if (ParameterizedType.class.isAssignableFrom(paramClazz.getClass())) {
-            params[i] = JSON.parseObject(sValue, paramClazz);
-          } else if (IWXObject.class.isAssignableFrom(paramClazz.getClass())) {
-            params[i] = JSON.parseObject(sValue, paramClazz);
-          } else {
-            params[i] = JSON.parseObject(sValue, paramClazz);
-          }
-        }
-      }
-      WXModuleAnno anno = moduleMethod.getAnnotation(WXModuleAnno.class);
-      if (anno.runOnUIThread()) {
-        WXSDKManager.getInstance().postOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            try {
-              moduleMethod.invoke(wxModule, params);
-            } catch (Exception e) {
-              WXLogUtils.e("callModuleMethod >>> invoke module:" + WXLogUtils.getStackTrace(e));
-            }
-          }
-        }, 0);
-      } else {
-        moduleMethod.invoke(wxModule, params);
-      }
+      WXCallIC.invoke(wxModule, moduleMethod, args);
     } catch (Exception e) {
       WXLogUtils.e("callModuleMethod >>> invoke module:" + moduleStr + ", method:" + methodStr + " failed. " + WXLogUtils.getStackTrace(e));
       return false;
@@ -422,6 +381,12 @@ public class WXModuleManager {
       }
     }
     return true;
+  }
+
+  static void submitCommandQueue() {
+    for (ICommandQueue queue : sCommandQueues) {
+      queue.submit();
+    }
   }
 
   private static WXModule findModule(String instanceId, String moduleStr, String methodStr) {
@@ -444,6 +409,7 @@ public class WXModuleManager {
           return null;
         }
         moduleMap.put(moduleStr, wxModule);
+        addIfCommandQueue(wxModule);
         // set instance
         wxModule.mWXSDKInstance = WXSDKManager.getInstance().getSDKInstance(instanceId);
       }

@@ -232,6 +232,7 @@ public final class WXDomManager {
   private Handler mDomHandler;
   private WXRenderManager mWXRenderManager;
   private ConcurrentHashMap<String, WXDomStatement> mDomRegistries;
+  private boolean mDirty = false;
 
   public WXDomManager(WXRenderManager renderManager) {
     mWXRenderManager = renderManager;
@@ -240,7 +241,7 @@ public final class WXDomManager {
     mDomHandler = mDomThread.getHandler();
   }
 
-  public void sendEmptyMessageDelayed(int what, long delayMillis) {
+  private void sendEmptyMessageDelayed(int what, long delayMillis) {
     if (mDomHandler == null || mDomThread == null
         || !mDomThread.isWXThreadAlive() || mDomThread.getLooper() == null) {
       return;
@@ -255,6 +256,14 @@ public final class WXDomManager {
     }
     mDomHandler.sendMessage(msg);
   }
+
+  public void scheduleBatchIfDirty() {
+    if (!mDirty) {
+      return;
+    }
+    sendEmptyMessageDelayed(WXDomHandler.MsgType.WX_DOM_BATCH, 0);
+  }
+
 
   /**
    * Remove the specified dom statement. This is called when {@link WXSDKManager} destroy
@@ -311,6 +320,9 @@ public final class WXDomManager {
     WXDomStatement statement = new WXDomStatement(instanceId, mWXRenderManager);
     mDomRegistries.put(instanceId, statement);
     statement.createBody(element);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   private boolean isDomThread() {
@@ -329,6 +341,7 @@ public final class WXDomManager {
     while (iterator.hasNext()) {
       iterator.next().getValue().batch();
     }
+    mDirty = false;
   }
 
   /**
@@ -348,6 +361,9 @@ public final class WXDomManager {
       return;
     }
     statement.addDom(element, parentRef, index);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   /**
@@ -366,6 +382,9 @@ public final class WXDomManager {
       return;
     }
     statement.removeDom(ref);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
 
@@ -386,6 +405,9 @@ public final class WXDomManager {
       return;
     }
     statement.moveDom(ref, parentRef, index);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   /**
@@ -406,6 +428,9 @@ public final class WXDomManager {
       return;
     }
     statement.updateAttrs(ref, attr);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   /**
@@ -424,6 +449,9 @@ public final class WXDomManager {
       return;
     }
     statement.updateStyle(ref, style);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   /**
@@ -445,6 +473,9 @@ public final class WXDomManager {
       return;
     }
     statement.addEvent(ref, type);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   /**
@@ -465,6 +496,9 @@ public final class WXDomManager {
       return;
     }
     statement.removeEvent(ref, type);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   /**
@@ -483,6 +517,9 @@ public final class WXDomManager {
       return;
     }
     statement.scrollToDom(ref, options);
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   /**
@@ -499,6 +536,9 @@ public final class WXDomManager {
       return;
     }
     statement.createFinish();
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 
   /**
@@ -515,5 +555,8 @@ public final class WXDomManager {
       return;
     }
     statement.refreshFinish();
+    if (statement.isDirty()) {
+      mDirty = true;
+    }
   }
 }

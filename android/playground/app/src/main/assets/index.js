@@ -110,6 +110,7 @@ define('@weex-component/index', function (require, exports, module) {
         {name: 'hello', title: 'Hello World'},
 //        {name: 'textDemo', title: 'Text'},
         {name: 'imageDemo', title: 'Image'},
+        {name: 'gesture', title: 'Guesture'},
         {name: 'listBasic', title: 'List (Basic)'},
         {name: 'listDemo', title: 'List (Advanced)'},
         {name: 'sliderDemo', title: 'Slider'},

@@ -205,6 +205,7 @@
 package com.taobao.weex.ui;
 
 import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.dom.flex.Spacing;
@@ -212,6 +213,7 @@ import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.utils.WXUtils;
 
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -222,10 +224,12 @@ public class WXRenderManager {
 
   private ConcurrentHashMap<String, WXRenderStatement> mRegistries;
   private WXRenderHandler mWXRenderHandler;
+  private ArrayList<Runnable> mRenderTasks;
 
   public WXRenderManager() {
     mRegistries = new ConcurrentHashMap<>();
     mWXRenderHandler = new WXRenderHandler();
+    mRenderTasks = new ArrayList<>();
   }
 
   public WXRenderStatement getWXRenderStatement(String instanceId) {
@@ -259,8 +263,8 @@ public class WXRenderManager {
   }
 
   //TODO Use runnable temporarily
-  public void runOnThread(final String instanceId, final IWXRenderTask task) {
-    mWXRenderHandler.post(new Runnable() {
+  public void submitRenderTask(final String instanceId, final IWXRenderTask task) {
+      mRenderTasks.add(new Runnable() {
 
       @Override
       public void run() {
@@ -272,8 +276,8 @@ public class WXRenderManager {
     });
   }
 
-  public void flushView(final String instanceId, final String ref) {
-    mWXRenderHandler.post(new Runnable() {
+ public void submitFlushViewTask(final String instanceId, final String ref) {
+    mRenderTasks.add(new Runnable() {
 
       @Override
       public void run() {
@@ -285,6 +289,24 @@ public class WXRenderManager {
       }
     });
   }
+  public void layouted(String instanceId) {
+      WXSDKManager.getInstance().getVSyncScheduler().layouted(instanceId);
+  }
+
+  public void submitDisplayTasks(final String instanceId) {
+      mWXRenderHandler.post(new Runnable() {
+        @Override
+        public void run() {
+          ArrayList<Runnable> tasks = mRenderTasks;
+          mRenderTasks = new ArrayList<>();
+          WXSDKManager.getInstance().getVSyncScheduler().frameDisplaying(instanceId);
+          for (Runnable t : tasks) {
+            t.run();
+          }
+        }
+      });
+  }
+
 
   public void createInstance(WXSDKInstance instance, String instanceId) {
     mRegistries.put(instanceId, new WXRenderStatement(instance, instanceId));

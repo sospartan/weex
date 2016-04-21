@@ -348,7 +348,7 @@ public class WXAttr extends ConcurrentHashMap<String, Object> {
   public String getLoadMoreOffset() {
     Object src = get(WXDomPropConstant.WX_ATTR_LOADMOREOFFSET);
     if (src == null) {
-      return null;
+      return "0";
     }
     return src.toString();
   }

@@ -202,207 +202,121 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex;
-
-import android.os.Looper;
-import android.text.TextUtils;
-
-import com.taobao.weex.adapter.DefaultWXHttpAdapter;
-import com.taobao.weex.adapter.IWXHttpAdapter;
-import com.taobao.weex.adapter.IWXImgLoaderAdapter;
-import com.taobao.weex.adapter.IWXUserTrackAdapter;
-import com.taobao.weex.bridge.WXBridgeManager;
-import com.taobao.weex.bridge.WXModuleManager;
-import com.taobao.weex.common.WXRefreshData;
-import com.taobao.weex.common.WXRuntimeException;
-import com.taobao.weex.dom.WXDomManager;
-import com.taobao.weex.ui.WXRenderManager;
-import com.taobao.weex.ui.WXVSyncScheduler;
-import com.taobao.weex.utils.WXUtils;
-
-import java.util.ArrayList;
+package com.taobao.weex.ui;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.taobao.weex.utils.WXLogUtils;
 
-/**
- * Manger class for weex context.
- */
-public class WXSDKManager {
 
-  private static WXSDKManager sManager;
-  private static AtomicInteger sInstanceId = new AtomicInteger(0);
-  private final WXDomManager mWXDomManager;
-  private WXBridgeManager mBridgeManager;
-  private WXRenderManager mWXRenderManager;
-  private WXVSyncScheduler mWXVSyncScheduler;
+public class WXVSyncScheduler {
 
-  private IWXUserTrackAdapter mIWXUserTrackAdapter;
-  private IWXImgLoaderAdapter mIWXImgLoaderAdapter;
-  private IWXHttpAdapter mIWXHttpAdapter;
-
-  private WXSDKManager() {
-    mWXRenderManager = new WXRenderManager();
-    mWXDomManager = new WXDomManager(mWXRenderManager);
-    mBridgeManager = WXBridgeManager.getInstance();
-    mWXVSyncScheduler = new WXVSyncScheduler();
-  }
-
-  public static WXSDKManager getInstance() {
-    if (sManager == null) {
-      sManager = new WXSDKManager();
+    public static interface Worker {
+        void submitLayoutTasks();
+        void submitDisplayTasks();
+        void requestNextVSync();
+        void frameStarts();
+        void frameEnds();
+        String getInstanceId();
     }
-    return sManager;
-  }
 
-  public WXVSyncScheduler getVSyncScheduler() {
-      return mWXVSyncScheduler;
-  }
+    private class VSyncCallback implements WXVSyncStateMachine.VSyncCallback {
+        private Entry e;
 
-  public void restartBridge() {
-    mBridgeManager.restart();
-  }
-
-  public WXDomManager getWXDomManager() {
-    return mWXDomManager;
-  }
-
-  public WXBridgeManager getWXBridgeManager() {
-    return mBridgeManager;
-  }
-
-  public WXRenderManager getWXRenderManager() {
-    return mWXRenderManager;
-  }
-
-  public WXSDKInstance getSDKInstance(String instanceId) {
-    return mWXRenderManager.getWXSDKInstance(instanceId);
-  }
-
-  public void postOnUiThread(Runnable runnable, long delayMillis) {
-    mWXRenderManager.postOnUiThread(runnable, delayMillis);
-  }
-
-  public void destroy() {
-    if (mWXDomManager != null) {
-      mWXDomManager.destroy();
-    }
-  }
-
-  public void callback(String instanceId, String funcId, Map<String, Object> data) {
-    mBridgeManager.callback(instanceId, funcId, data);
-  }
-
-  public void initScriptsFramework(String framework) {
-    mBridgeManager.initScriptsFramework(framework);
-  }
-
-  public void registerComponents(ArrayList<Map<String, String>> components) {
-    mBridgeManager.registerComponents(components);
-  }
-
-  public void registerModules(Map<String, Object> modules) {
-    mBridgeManager.registerModules(modules);
-  }
-
-  public void fireEvent(final String instanceId, String ref, String type) {
-    fireEvent(instanceId, ref, type, new HashMap<String, Object>());
-  }
-
-  /**
-   * FireEvent back to JS
-   */
-  public void fireEvent(final String instanceId, String ref, String type, Map<String, Object> params) {
-    if (WXEnvironment.isApkDebugable() && Looper.getMainLooper().getThread().getId() != Thread.currentThread().getId()) {
-      throw new WXRuntimeException("[WXSDKManager]  fireEvent error");
-    }
-    mBridgeManager.fireEvent(instanceId, ref, type, params);
-  }
-
-  void createInstance(final WXSDKInstance instance, String code, Map<String, Object> options, String jsonInitData) {
-    mWXRenderManager.createInstance(instance, instance.getInstanceId());
-    mBridgeManager.createInstance(instance.getInstanceId(), code, options, jsonInitData);
-    mWXVSyncScheduler.createInstance(instance.getInstanceId(), new WXVSyncScheduler.Worker() {
+        public VSyncCallback(Entry e) {
+            this.e = e;
+        }
         @Override
-        public void submitLayoutTasks() {
-            mBridgeManager.submitTasks(instance.getInstanceId());
+        public void frameUpdated() {
+            WXVSyncScheduler.this.doFrameUpdated(e);
         }
 
         @Override
-        public void submitDisplayTasks() {
-            mWXRenderManager.submitDisplayTasks(instance.getInstanceId());
+        public void frameDisplaying(boolean intime) {
+            WXVSyncScheduler.this.doFrameDisplaying(intime, e);
         }
 
         @Override
-        public void requestNextVSync() {
-            postOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    WXSDKManager.this.mWXVSyncScheduler.vsyncAcquired(instance.getInstanceId());
-                }
-            }, 16);
+        public void vsyncAcquired(boolean intime) {
+            WXVSyncScheduler.this.doVSyncAcquired(intime, e);
         }
 
         @Override
-        public void frameStarts() {
+        public void layouted(boolean intime) {
+            WXVSyncScheduler.this.doLayouted(intime, e);
         }
-
-        @Override
-        public void frameEnds() {
-        }
-
-        @Override
-        public String getInstanceId() {
-            return instance.getInstanceId();
-        }
-    });
-  }
-
-  void refreshInstance(String instanceId, WXRefreshData jsonData) {
-    mBridgeManager.refreshInstance(instanceId, jsonData);
-  }
-
-  void destroyInstance(String instanceId) {
-    if (TextUtils.isEmpty(instanceId)) {
-      return;
     }
-    if (!WXUtils.isUiThread()) {
-      throw new WXRuntimeException("[WXSDKManager] destroyInstance error");
+
+    public void frameUpdated(String instanceId) {
+        Entry e = getEntry(instanceId);
+
+        e.stateMachine.frameUpdated();
     }
-    mWXRenderManager.removeRenderStatement(instanceId);
-    mWXDomManager.removeDomStatement(instanceId);
-    mBridgeManager.destroyInstance(instanceId);
-    WXModuleManager.destroyInstanceModules(instanceId);
-  }
 
-  String generateInstanceId() {
-    return String.valueOf(sInstanceId.incrementAndGet());
-  }
-
-  public IWXUserTrackAdapter getIWXUserTrackAdapter() {
-    return mIWXUserTrackAdapter;
-  }
-
-  public void setIWXUserTrackAdapter(IWXUserTrackAdapter IWXUserTrackAdapter) {
-    mIWXUserTrackAdapter = IWXUserTrackAdapter;
-  }
-
-  public IWXImgLoaderAdapter getIWXImgLoaderAdapter() {
-    return mIWXImgLoaderAdapter;
-  }
-
-  public void setIWXImgLoaderAdapter(IWXImgLoaderAdapter IWXImgLoaderAdapter) {
-    mIWXImgLoaderAdapter = IWXImgLoaderAdapter;
-  }
-
-  public IWXHttpAdapter getIWXHttpAdapter() {
-    if(mIWXHttpAdapter==null){
-      mIWXHttpAdapter=new DefaultWXHttpAdapter();
+    public void frameDisplaying(String instanceId) {
+        Entry e = getEntry(instanceId);
+        WXLogUtils.d("frameDisplaying: instanceId: " + instanceId + "; stateMachine: " + e.stateMachine.getState() + "; pending: " + e.stateMachine.getPending());
+        e.stateMachine.frameDisplaying();
+        e.worker.frameEnds();
     }
-    return mIWXHttpAdapter;
-  }
 
-  public void setIWXHttpAdapter(IWXHttpAdapter IWXHttpAdapter) {
-    mIWXHttpAdapter = IWXHttpAdapter;
-  }
+    public void vsyncAcquired(String instanceId) {
+        Entry e = getEntry(instanceId);
+        e.stateMachine.vsyncAcquired();
+    }
+
+    public void layouted(String instanceId) {
+        Entry e = getEntry(instanceId);
+        e.worker.frameStarts();
+        e.stateMachine.layouted();
+    }
+
+    private static class Entry {
+        Worker worker;
+        WXVSyncStateMachine stateMachine;
+    }
+
+    private HashMap<String, Entry> mRegistry = new HashMap<>();
+
+    public void createInstance(String instanceId, Worker worker) {
+        Entry e = new Entry();
+        e.worker = worker;
+        e.stateMachine = new WXVSyncStateMachine(new VSyncCallback(e));
+        mRegistry.put(instanceId, e);
+    }
+
+    private void doFrameUpdated(Entry e) {
+        continueNextFrame(e);
+    }
+
+    private void doFrameDisplaying(boolean intime, Entry e) {
+        if (!intime) {
+            e.stateMachine.submitPendingVSync();
+            if (e.stateMachine.isFrameDirty()) {
+                frameUpdated(e.worker.getInstanceId());
+            }
+        }
+    }
+
+    private void doVSyncAcquired(boolean intime, Entry e) {
+        if (intime && e.stateMachine.isFrameDirty()) {
+            frameUpdated(e.worker.getInstanceId());
+        }
+    }
+
+    private void doLayouted(boolean intime, Entry e) {
+        e.worker.submitDisplayTasks();
+    }
+
+    private void continueNextFrame(Entry e) {
+        e.worker.submitLayoutTasks();
+        e.worker.requestNextVSync();
+        e.stateMachine.validateFrame();
+    }
+
+    private Entry getEntry(String instanceId) {
+        Entry e = mRegistry.get(instanceId);
+        if (e == null) {
+            throw new IllegalStateException("getEntry get null entry for instanceId: " + instanceId);
+        }
+        return e;
+    }
 }

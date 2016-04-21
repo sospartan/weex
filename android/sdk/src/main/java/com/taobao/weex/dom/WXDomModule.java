@@ -211,6 +211,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXModuleAnno;
+import com.taobao.weex.common.ICommandQueue;
 
 import java.util.ArrayList;
 
@@ -221,7 +222,8 @@ import java.util.ArrayList;
  * the wrapped info to the {@link WXDomHandler} for further process. This class is also singleton
  * in the {@link com.taobao.weex.WXSDKInstance}
  */
-public final class WXDomModule extends WXModule {
+public final class WXDomModule extends WXModule implements ICommandQueue {
+  private WXDomCommandList commanList = new WXDomCommandList();
 
   /**
    * Create a body for the current {@link com.taobao.weex.WXSDKInstance} according to given
@@ -233,14 +235,11 @@ public final class WXDomModule extends WXModule {
     if (element == null) {
       return;
     }
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(element);
-    msg.what = WXDomHandler.MsgType.WX_DOM_CREATE_BODY;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_CREATE_BODY, task);
   }
 
   /**
@@ -253,15 +252,12 @@ public final class WXDomModule extends WXModule {
     if (TextUtils.isEmpty(ref) || attr == null || attr.size() < 1) {
       return;
     }
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(ref);
     task.args.add(attr);
-    msg.what = WXDomHandler.MsgType.WX_DOM_UPDATE_ATTRS;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_UPDATE_ATTRS, task);
   }
 
   /**
@@ -274,15 +270,12 @@ public final class WXDomModule extends WXModule {
     if (TextUtils.isEmpty(ref) || style == null || style.size() < 1) {
       return;
     }
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(ref);
     task.args.add(style);
-    msg.what = WXDomHandler.MsgType.WX_DOM_UPDATE_STYLE;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_UPDATE_STYLE, task);
   }
 
   /**
@@ -294,14 +287,11 @@ public final class WXDomModule extends WXModule {
     if (TextUtils.isEmpty(ref)) {
       return;
     }
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(ref);
-    msg.what = WXDomHandler.MsgType.WX_DOM_REMOVE_DOM;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_REMOVE_DOM, task);
   }
 
   /**
@@ -316,16 +306,13 @@ public final class WXDomModule extends WXModule {
         || TextUtils.isEmpty(parentRef)) {
       return;
     }
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(parentRef);
     task.args.add(element);
     task.args.add(index);
-    msg.what = WXDomHandler.MsgType.WX_DOM_ADD_DOM;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_ADD_DOM, task);
   }
 
   /**
@@ -340,16 +327,13 @@ public final class WXDomModule extends WXModule {
         || TextUtils.isEmpty(parentRef)) {
       return;
     }
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(ref);
     task.args.add(parentRef);
     task.args.add(index);
-    msg.what = WXDomHandler.MsgType.WX_DOM_MOVE_DOM;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_MOVE_DOM, task);
   }
 
   /**
@@ -362,15 +346,12 @@ public final class WXDomModule extends WXModule {
     if (TextUtils.isEmpty(ref) || TextUtils.isEmpty(type)) {
       return;
     }
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(ref);
     task.args.add(type);
-    msg.what = WXDomHandler.MsgType.WX_DOM_ADD_EVENT;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_ADD_EVENT, task);
   }
 
   /**
@@ -383,15 +364,12 @@ public final class WXDomModule extends WXModule {
     if (TextUtils.isEmpty(ref) || TextUtils.isEmpty(type)) {
       return;
     }
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(ref);
     task.args.add(type);
-    msg.what = WXDomHandler.MsgType.WX_DOM_REMOVE_EVENT;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_REMOVE_EVENT, task);
   }
 
   /**
@@ -400,12 +378,9 @@ public final class WXDomModule extends WXModule {
    */
   @WXModuleAnno(moduleMethod = true, runOnUIThread = false)
   public void createFinish() {
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
-    msg.what = WXDomHandler.MsgType.WX_DOM_CREATE_FINISH;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_CREATE_FINISH, task);
   }
 
   /**
@@ -414,12 +389,9 @@ public final class WXDomModule extends WXModule {
    */
   @WXModuleAnno(moduleMethod = true, runOnUIThread = false)
   public void refreshFinish() {
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
-    msg.what = WXDomHandler.MsgType.WX_DOM_REFRESH_FINISH;
-    msg.obj = task;
-    WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_REFRESH_FINISH, task);
   }
 
   /**
@@ -433,14 +405,22 @@ public final class WXDomModule extends WXModule {
       return;
     }
 
-    Message msg = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = mWXSDKInstance.getInstanceId();
     task.args = new ArrayList<>();
     task.args.add(ref);
     task.args.add(options);
-    msg.what = WXDomHandler.MsgType.WX_DOM_SCROLLTO;
-    msg.obj = task;
+    commanList.addCommand(WXDomHandler.MsgType.WX_DOM_SCROLLTO, task);
+  }
+  @Override
+  public void submit() {
+    if (commanList.isEmpty()) {
+      return;
+    }
+    Message msg = Message.obtain();
+    msg.what = WXDomHandler.MsgType.WX_DOM_COMMAND_LIST;
+    msg.obj = commanList;
+    commanList = new WXDomCommandList();
     WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
   }
 }

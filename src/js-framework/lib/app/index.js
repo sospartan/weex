@@ -26,9 +26,7 @@ export default function AppInstance(instanceId, options) {
   this.uid = 0
   this.rendered = false
   this.eventManager = new EventManager()
-  this.listener = new Listener(this.id, (tasks) => {
-    this.callTasks(tasks)
-  })
+  this.listener = new Listener(this.id)
   this.doc.setEventManager(this.eventManager)
   this.doc.setListener(this.listener)
 

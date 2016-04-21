@@ -1,15 +1,11 @@
-export default function Listener(id, handler) {
+export default function Listener(id) {
   this.id = id
-  this.batched = false
-  this.updates = []
-  if (typeof handler === 'function') {
-    this.handler = handler
-  }
+  this.updater = new BatchUpdater()
+  this.updateSent = false
 }
 
-Listener.prototype.createFinish = function (callback) {
-  const handler = this.handler
-  handler([createAction('createFinish', [])], callback)
+Listener.prototype.createFinish = function () {
+    this.addActions([createAction('createFinish', [])]);
 }
 
 Listener.prototype.createBody = function (element, ref) {
@@ -62,26 +58,130 @@ Listener.prototype.removeEvent = function (ref, type) {
   this.addActions(createAction('removeEvent', [ref, type]))
 }
 
-Listener.prototype.handler = function (actions, cb) {
-  cb && cb()
-}
-
 Listener.prototype.addActions = function (actions) {
-  const updates = this.updates
-  const handler = this.handler
+  var updater = this.updater;
 
   if (!Array.isArray(actions)) {
-    actions = [actions]
+    actions = [actions];
   }
 
-  if (this.batched) {
-    updates.push.apply(updates, actions)
-  }
-  else {
-    handler(actions)
-  }
+  updater.process(actions);
+  this.sendUpdatedMessageIfNeeded();
+}
+
+Listener.prototype.postTasks = function (tasks) {
+    if (!this.updater.isEmpty()) {
+      tasks.push.apply(tasks, this.updater.toArray());
+      this.updater.reset();
+    }
+};
+
+Listener.prototype.sendUpdatedMessageIfNeeded = function () {
+    if (!this.updateSent) {
+        this.updateSent = true;
+        callNative(this.id, "frameUpdated", '-1');
+    }
 }
 
 export function createAction(name, args) {
   return {module: 'dom', method: name, args: args}
 }
+
+function BatchUpdateArgs() {
+    // a ref, other dictionary paired dictionary.
+    this.args = {};
+}
+BatchUpdateArgs.prototype = {
+    merge: function (other) {
+        var otherRef = other[0];
+        var otherDict = other[1];
+        var currentDict = this.args[otherRef];
+        if (typeof currentDict === "undefined") {
+            this.args[otherRef] = otherDict;
+        } else {
+            for (var key in otherDict) {
+                currentDict[key] = otherDict[key];
+            }
+        }
+    },
+    applyArray: function(_array, _module, _method) {
+        for (var ref in this.args) {
+            _array.push({ module: _module, method: _method, args: [ref, this.args[ref]]});
+        }
+    }
+};
+function BatchUpdateEntry() {
+    // a method, args dict
+    this._dict = {};
+}
+BatchUpdateEntry.prototype = {
+    update: function (method, args) {
+        var currentArgs;
+        currentArgs = this._dict[method];
+        if (typeof currentArgs === "undefined") {
+            currentArgs = new BatchUpdateArgs();
+            this._dict[method] = currentArgs;
+        }
+        currentArgs.merge(args);
+    },
+    applyArray: function(_array, _module) {
+        for (var _method in this._dict) {
+            this._dict[_method].applyArray(_array, _module, _method);
+        }
+    }
+};
+
+function BatchUpdater() {
+    // a module, entry dict
+    this._dict = {};
+    this.empty = true;
+    this.addedActions = [];
+}
+
+BatchUpdater.prototype = {
+    process: function (actions) {
+        var this1 = this;
+        actions.forEach(function (action) {
+            var method = action.method;
+            this1.empty = false;
+            if (method.startsWith('update')) {
+                this1.update(action);
+            } else {
+                this1.add(action);
+            }
+        });
+    },
+    add: function (action) {
+        this.addedActions.push(action);
+        this.empty = false;
+    },
+    update: function (action) {
+        var currentEntry;
+        var module = action.module,
+        method = action.method,
+        args = action.args;
+        currentEntry = this._dict[module];
+        if (typeof currentEntry === "undefined") {
+            currentEntry = new BatchUpdateEntry();
+            this._dict[module] = currentEntry;
+        }
+        currentEntry.update(method, args);
+    },
+    toArray: function () {
+        var result = [];
+        for (var module in this._dict) {
+            var entry = this._dict[module];
+            entry.applyArray(result, module);
+        }
+        result.push.apply(result, this.addedActions);
+        return result;
+    },
+    reset: function () {
+        this._dict= {};
+        this.addedActions = [];
+        this.empty = true;
+    },
+    isEmpty: function () {
+        return this.empty;
+    },
+};

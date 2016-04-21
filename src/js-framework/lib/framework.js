@@ -18,6 +18,13 @@ import * as config from './config'
 import AppInstance from './app'
 import Vm from './vm'
 
+String.prototype.startsWith = function (str) {
+  if (str.length > this.length) {
+    return false;
+  }
+  return this.substr(0, str.length) == str;
+};
+
 var {
   nativeComponentMap
 } = config
@@ -164,6 +171,12 @@ var jsHandlers = {
     perf.end('callback',
       instanceId + '-' + funcId + '-' + data + '-' + ifLast)
     return result
+  },
+  submitTasks: function (instanceId) {
+    var instance = instanceMap[instanceId];
+    if (instance) {
+      return instance.submitTasks();
+    }
   }
 }
 
