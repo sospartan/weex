@@ -412,6 +412,7 @@ public final class WXDomModule extends WXModule implements ICommandQueue {
     task.args.add(options);
     commanList.addCommand(WXDomHandler.MsgType.WX_DOM_SCROLLTO, task);
   }
+
   @Override
   public void submit() {
     if (commanList.isEmpty()) {
@@ -422,5 +423,10 @@ public final class WXDomModule extends WXModule implements ICommandQueue {
     msg.obj = commanList;
     commanList = new WXDomCommandList();
     WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+  }
+
+  @Override
+  public boolean isEmpty() {
+      return commanList.isEmpty();
   }
 }

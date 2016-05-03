@@ -383,10 +383,19 @@ public class WXModuleManager {
     return true;
   }
 
-  static void submitCommandQueue() {
+  static void submitCommandQueues() {
     for (ICommandQueue queue : sCommandQueues) {
       queue.submit();
     }
+  }
+
+  static boolean isCommandQueuesEmpty() {
+    for (ICommandQueue queue : sCommandQueues) {
+        if (!queue.isEmpty()) {
+            return false;
+        }
+    }
+    return true;
   }
 
   private static WXModule findModule(String instanceId, String moduleStr, String methodStr) {

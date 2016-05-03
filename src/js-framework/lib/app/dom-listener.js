@@ -1,7 +1,9 @@
-export default function Listener(id) {
-  this.id = id
+export default function Listener(app) {
+  this.app = app
+  this.id = app.id
   this.updater = new BatchUpdater()
   this.updateSent = false
+  this.batched = false
 }
 
 Listener.prototype.createFinish = function () {
@@ -66,7 +68,11 @@ Listener.prototype.addActions = function (actions) {
   }
 
   updater.process(actions);
-  this.sendUpdatedMessageIfNeeded();
+  if (!this.batched) {
+      this.app.submitTasks();
+  } else {
+      this.sendUpdatedMessageIfNeeded();
+  }
 }
 
 Listener.prototype.postTasks = function (tasks) {

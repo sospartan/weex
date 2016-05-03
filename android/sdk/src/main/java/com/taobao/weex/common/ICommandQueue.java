@@ -206,4 +206,5 @@ package com.taobao.weex.common;
 
 public interface ICommandQueue {
     void submit();
+    boolean isEmpty();
 }

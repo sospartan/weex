@@ -208,33 +208,37 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WXVSyncStateMachine {
     // the vsync acquired state
-    // will change into VSYNC_SUBMITTING
+    // will change into 1. VSYNC_SUBMITTING(batch mode)
+    // 2. VSYNC_DOM_COMMAND_QUEUED_UPDATED (not batch mode).
     private static final int VSYNC_ACQUIRED = 0;
-    // this state indicate the js tasks have been
-    // submitted to layout. Can change into VSYNC_LAYOUTED
-    // (good frame), or VSYNC_ACQUIRED (lost one frame, layout take
-    // too much time).
+    // this state indicates the js tasks have been
+    // submitted to layout. Can change into VSYNC_DOM_COMMAND_QUEUED_UPDATED.
     private static final int VSYNC_SUBMITTING = 1;
-    // this state indicate the ui tasks are going to take place.
+    // this state indicates the ui tasks are going to take place.
     // Can change into VSYNC_ACQUIRED.
     private static final int VSYNC_DISPLAYING = 2;
 
-    // this state indicate layout task has been finished.
+    // this state indicates layout task has been finished.
     // Can change into VSYNC_DISPLAYING
     // (good frame), or VSYNC_ACQUIRED (lost one frame, layout take
     // too much time).
     private static final int VSYNC_LAYOUTED = 3;
+    // indicates dom command queue has been updated.
+    // can change into VSYNC_LAYOUTED.
+    private static final int VSYNC_DOM_COMMAND_QUEUED_UPDATED = 4;
 
     public static interface VSyncCallback {
         void frameUpdated();
         void frameDisplaying(boolean intime);
         void vsyncAcquired(boolean intime);
         void layouted(boolean intime);
+        void domCommandQueueUpdated(boolean intime, boolean requestVsync);
     }
 
     private AtomicInteger state = new AtomicInteger(VSYNC_ACQUIRED);
     private AtomicBoolean vsyncPending = new AtomicBoolean(false);
     private volatile boolean frameDirty = false;
+    private volatile boolean domCommandQueueDirty = false;
 
     private VSyncCallback callback;
 
@@ -272,15 +276,28 @@ public class WXVSyncStateMachine {
     }
 
     public void layouted() {
-        boolean intime = true;
-        if (vsyncPending.get()) {
-            intime = false;
-        }
-
-        if (state.compareAndSet(VSYNC_SUBMITTING, VSYNC_LAYOUTED)) {
+        if (state.compareAndSet(VSYNC_DOM_COMMAND_QUEUED_UPDATED, VSYNC_LAYOUTED)) {
+            boolean intime = true;
+            if (vsyncPending.get()) {
+                intime = false;
+            }
             callback.layouted(intime);
         } else {
             throw new IllegalStateException("frameDisplaying state invalid, state: " + state.get());
+        }
+    }
+
+    public void domCommandQueueUpdated() {
+        if (state.compareAndSet(VSYNC_SUBMITTING, VSYNC_DOM_COMMAND_QUEUED_UPDATED)) {
+            boolean intime = true;
+            if (vsyncPending.get()) {
+                intime = false;
+            }
+            callback.domCommandQueueUpdated(intime, false);
+        } else if (state.compareAndSet(VSYNC_ACQUIRED, VSYNC_DOM_COMMAND_QUEUED_UPDATED)) {
+            callback.domCommandQueueUpdated(true, true);
+        } else {
+            domCommandQueueDirty = true;
         }
     }
 
@@ -295,10 +312,19 @@ public class WXVSyncStateMachine {
 
     public void validateFrame() {
         frameDirty = false;
+        domCommandQueueDirty = false;
+    }
+
+    public void validateCommandQueue() {
+        domCommandQueueDirty = false;
     }
 
     public boolean isFrameDirty() {
         return frameDirty;
+    }
+
+    public boolean isDOMCommandQueueDirty() {
+        return domCommandQueueDirty;
     }
 
     int getState() {

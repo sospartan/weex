@@ -344,16 +344,13 @@ public class WXSDKManager {
         }
 
         @Override
-        public void frameStarts() {
-        }
-
-        @Override
-        public void frameEnds() {
-        }
-
-        @Override
         public String getInstanceId() {
             return instance.getInstanceId();
+        }
+
+        @Override
+        public void submitDOMCommandQueue() {
+            mBridgeManager.submitDOMCommandQueue();
         }
     });
   }

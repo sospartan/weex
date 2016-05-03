@@ -212,9 +212,8 @@ public class WXVSyncScheduler {
     public static interface Worker {
         void submitLayoutTasks();
         void submitDisplayTasks();
+        void submitDOMCommandQueue();
         void requestNextVSync();
-        void frameStarts();
-        void frameEnds();
         String getInstanceId();
     }
 
@@ -243,6 +242,11 @@ public class WXVSyncScheduler {
         public void layouted(boolean intime) {
             WXVSyncScheduler.this.doLayouted(intime, e);
         }
+
+        @Override
+        public void domCommandQueueUpdated(boolean intime, boolean requestNextVSync) {
+            WXVSyncScheduler.this.doDOMCommandQueueUpdated(intime, requestNextVSync, e);
+        }
     }
 
     public void frameUpdated(String instanceId) {
@@ -255,7 +259,6 @@ public class WXVSyncScheduler {
         Entry e = getEntry(instanceId);
         WXLogUtils.d("frameDisplaying: instanceId: " + instanceId + "; stateMachine: " + e.stateMachine.getState() + "; pending: " + e.stateMachine.getPending());
         e.stateMachine.frameDisplaying();
-        e.worker.frameEnds();
     }
 
     public void vsyncAcquired(String instanceId) {
@@ -265,8 +268,12 @@ public class WXVSyncScheduler {
 
     public void layouted(String instanceId) {
         Entry e = getEntry(instanceId);
-        e.worker.frameStarts();
         e.stateMachine.layouted();
+    }
+
+    public void domCommandQueueUpdated(String instanceId) {
+        Entry e = getEntry(instanceId);
+        e.stateMachine.domCommandQueueUpdated();
     }
 
     private static class Entry {
@@ -292,19 +299,35 @@ public class WXVSyncScheduler {
             e.stateMachine.submitPendingVSync();
             if (e.stateMachine.isFrameDirty()) {
                 frameUpdated(e.worker.getInstanceId());
+            } else if (e.stateMachine.isDOMCommandQueueDirty()) {
+                e.stateMachine.validateCommandQueue();
+                domCommandQueueUpdated(e.worker.getInstanceId());
             }
         }
     }
 
     private void doVSyncAcquired(boolean intime, Entry e) {
-        if (intime && e.stateMachine.isFrameDirty()) {
-            frameUpdated(e.worker.getInstanceId());
+        if (intime) {
+            if (e.stateMachine.isFrameDirty()) {
+                frameUpdated(e.worker.getInstanceId());
+            } else if (e.stateMachine.isDOMCommandQueueDirty()) {
+                e.stateMachine.validateCommandQueue();
+                domCommandQueueUpdated(e.worker.getInstanceId());
+            }
         }
     }
 
     private void doLayouted(boolean intime, Entry e) {
         e.worker.submitDisplayTasks();
     }
+
+    private void doDOMCommandQueueUpdated(boolean intime, boolean requestNextVSync, Entry e) {
+        if (requestNextVSync) {
+            e.worker.requestNextVSync();
+        }
+        e.worker.submitDOMCommandQueue();
+    }
+
 
     private void continueNextFrame(Entry e) {
         e.worker.submitLayoutTasks();

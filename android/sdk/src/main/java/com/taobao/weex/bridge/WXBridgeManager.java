@@ -443,7 +443,7 @@ public class WXBridgeManager implements Callback {
       }
     }
 
-    WXModuleManager.submitCommandQueue();
+    doCheckCommandQueue(instanceId);
 
     if (UNDEFINED.equals(callback)
         || mDestroyedInstanceId.equals(instanceId)) {
@@ -1034,5 +1034,15 @@ public class WXBridgeManager implements Callback {
 
   private void doFrameUpdated(String instanceId) {
       WXSDKManager.getInstance().getVSyncScheduler().frameUpdated(instanceId);
+  }
+
+  private static void doCheckCommandQueue(String instanceId) {
+    if (!WXModuleManager.isCommandQueuesEmpty()) {
+        WXSDKManager.getInstance().getVSyncScheduler().domCommandQueueUpdated(instanceId);
+    }
+  }
+
+  public void submitDOMCommandQueue() {
+      WXModuleManager.submitCommandQueues();
   }
 }
