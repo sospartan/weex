@@ -112,6 +112,7 @@ public class WXTextDomObject extends WXDomObject {
   private Layout.Alignment mAlignment;
   private WXTextDecoration mTextDecoration = WXTextDecoration.NONE;
   private SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+  private SpannableStringBuilder preSpannableStringBuilder = new SpannableStringBuilder();
   private Layout layout;
   private Layout prevLayout;
 
@@ -152,6 +153,8 @@ public class WXTextDomObject extends WXDomObject {
     }
     if(layout!=null) {
       warmUpTextLayoutCache();
+      preSpannableStringBuilder = spannableStringBuilder;
+      spannableStringBuilder = new SpannableStringBuilder();
       prevLayout = layout;
       layout=null;
     }
@@ -160,7 +163,7 @@ public class WXTextDomObject extends WXDomObject {
 
   @Override
   public Object getExtra() {
-    return spannableStringBuilder;
+    return preSpannableStringBuilder;
   }
 
   @Override
@@ -193,6 +196,8 @@ public class WXTextDomObject extends WXDomObject {
       dom.event = event == null ? null : event.clone();
       dom.layout = layout;
       dom.prevLayout = prevLayout;
+      dom.spannableStringBuilder = spannableStringBuilder;
+      dom.preSpannableStringBuilder =  preSpannableStringBuilder;
       if (this.csslayout != null) {
         dom.csslayout.copy(this.csslayout);
       }
