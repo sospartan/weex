@@ -205,8 +205,10 @@
 package com.taobao.weex.ui.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.text.Layout;
 import android.view.MotionEvent;
-import android.widget.TextView;
+import android.view.View;
 
 import com.taobao.weex.ui.view.gesture.WXGesture;
 import com.taobao.weex.ui.view.gesture.WXGestureObservable;
@@ -214,12 +216,25 @@ import com.taobao.weex.ui.view.gesture.WXGestureObservable;
 /**
  * TextView wrapper
  */
-public class WXTextView extends TextView implements WXGestureObservable {
+public class WXTextView extends View implements WXGestureObservable, IWXTextView {
 
   private WXGesture wxGesture;
 
   public WXTextView(Context context) {
     super(context);
+  }
+
+  @Override
+  protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    canvas.save();
+    Layout layout;
+    if(getTag() instanceof Layout){
+      layout= (Layout) getTag();
+      canvas.translate(getPaddingLeft(),getPaddingTop());
+      layout.draw(canvas);
+    }
+    canvas.restore();
   }
 
   @Override
@@ -234,5 +249,14 @@ public class WXTextView extends TextView implements WXGestureObservable {
   @Override
   public void registerGestureListener(WXGesture wxGesture) {
     this.wxGesture = wxGesture;
+  }
+
+  @Override
+  public CharSequence getText() {
+    if(getTag() instanceof Layout){
+      return ((Layout) getTag()).getText();
+    }
+    else
+      return null;
   }
 }
