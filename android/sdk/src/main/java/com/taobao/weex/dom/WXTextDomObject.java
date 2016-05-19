@@ -92,7 +92,6 @@ public class WXTextDomObject extends WXDomObject {
   private static final TextPaint TEXT_PAINT = new TextPaint();
   private static final Canvas DUMMY_CANVAS = new Canvas();
   private static final String ELLIPSIS = "\u2026";
-  public Layout layout;
   private boolean mIsColorSet = false;
   private boolean hasBeenLayout = false;
   private int mColor;
@@ -113,6 +112,8 @@ public class WXTextDomObject extends WXDomObject {
   private Layout.Alignment mAlignment;
   private WXTextDecoration mTextDecoration = WXTextDecoration.NONE;
   private SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+  private Layout layout;
+  private Layout prevLayout;
 
   static {
     TEXT_PAINT.setFlags(TextPaint.ANTI_ALIAS_FLAG);
@@ -150,6 +151,10 @@ public class WXTextDomObject extends WXDomObject {
       previousWidth = getLayoutWidth();
     }
     warmUpTextLayoutCache();
+    if(layout!=null) {
+      prevLayout = layout;
+      layout=null;
+    }
     super.layoutAfter();
   }
 
@@ -187,6 +192,7 @@ public class WXTextDomObject extends WXDomObject {
       dom.attr = attr;
       dom.event = event == null ? null : event.clone();
       dom.layout = layout;
+      dom.prevLayout = prevLayout;
       if (this.csslayout != null) {
         dom.csslayout.copy(this.csslayout);
       }
@@ -199,6 +205,10 @@ public class WXTextDomObject extends WXDomObject {
       dom.spannableStringBuilder = spannableStringBuilder;
     }
     return dom;
+  }
+
+  public Layout getTextLayout(){
+    return prevLayout;
   }
 
   /**
@@ -285,7 +295,7 @@ public class WXTextDomObject extends WXDomObject {
    * @param text the give raw text.
    * @return an editable contains text and spans
    */
-  protected Editable updateSpannableStringBuilder(String text) {
+  private Editable updateSpannableStringBuilder(String text) {
     spannableStringBuilder.clear();
     if (text != null) {
       spannableStringBuilder.append(text);

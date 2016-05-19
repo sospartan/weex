@@ -238,7 +238,7 @@ public class WXText extends WXComponent{
 
   @Override
   public void updateExtra(Object extra) {
-    Layout layout=((WXTextDomObject)getDomObject()).layout;
+    Layout layout=((WXTextDomObject)getDomObject()).getTextLayout();
     if(layout!=null) {
       getView().setTag(layout);
     }
