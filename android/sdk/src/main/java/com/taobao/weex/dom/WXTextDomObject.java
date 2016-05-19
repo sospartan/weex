@@ -150,8 +150,8 @@ public class WXTextDomObject extends WXDomObject {
       updateLayout(getLayoutWidth());
       previousWidth = getLayoutWidth();
     }
-    warmUpTextLayoutCache();
     if(layout!=null) {
+      warmUpTextLayoutCache();
       prevLayout = layout;
       layout=null;
     }
