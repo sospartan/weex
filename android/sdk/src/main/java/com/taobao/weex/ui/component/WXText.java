@@ -229,6 +229,7 @@ public class WXText extends WXComponent{
   @Override
   protected void initView() {
     mHost = new WXTextView(mContext);
+    mHost.setWillNotDraw(false);
   }
 
   @Override
@@ -238,8 +239,12 @@ public class WXText extends WXComponent{
 
   @Override
   public void updateExtra(Object extra) {
+    Layout preLayout=null;
     Layout layout=((WXTextDomObject)getDomObject()).getTextLayout();
-    if(layout!=null) {
+    if(getView().getTag() instanceof Layout){
+      preLayout= (Layout) getView().getTag();
+    }
+    if(layout!=null&&!layout.equals(preLayout)) {
       getView().setTag(layout);
     }
     getView().invalidate();

@@ -39,6 +39,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Class for calculating a given text's height and width. The calculating of width and height of
@@ -112,9 +114,8 @@ public class WXTextDomObject extends WXDomObject {
   private Layout.Alignment mAlignment;
   private WXTextDecoration mTextDecoration = WXTextDecoration.NONE;
   private SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-  private SpannableStringBuilder preSpannableStringBuilder = new SpannableStringBuilder();
   private Layout layout;
-  private Layout prevLayout;
+  private Queue<Layout> layoutQueue=new ConcurrentLinkedQueue<>();
 
   static {
     TEXT_PAINT.setFlags(TextPaint.ANTI_ALIAS_FLAG);
@@ -153,9 +154,8 @@ public class WXTextDomObject extends WXDomObject {
     }
     if(layout!=null) {
       warmUpTextLayoutCache();
-      preSpannableStringBuilder = spannableStringBuilder;
       spannableStringBuilder = new SpannableStringBuilder();
-      prevLayout = layout;
+      layoutQueue.offer(layout);
       layout=null;
     }
     super.layoutAfter();
@@ -163,7 +163,7 @@ public class WXTextDomObject extends WXDomObject {
 
   @Override
   public Object getExtra() {
-    return preSpannableStringBuilder;
+    return getTextLayout().getText().toString();
   }
 
   @Override
@@ -195,9 +195,8 @@ public class WXTextDomObject extends WXDomObject {
       dom.attr = attr;
       dom.event = event == null ? null : event.clone();
       dom.layout = layout;
-      dom.prevLayout = prevLayout;
       dom.spannableStringBuilder = spannableStringBuilder;
-      dom.preSpannableStringBuilder =  preSpannableStringBuilder;
+      dom.layoutQueue=layoutQueue;
       if (this.csslayout != null) {
         dom.csslayout.copy(this.csslayout);
       }
@@ -213,7 +212,10 @@ public class WXTextDomObject extends WXDomObject {
   }
 
   public Layout getTextLayout(){
-    return prevLayout;
+    if(layoutQueue.size()>1){
+      layoutQueue.poll();
+    }
+    return layoutQueue.peek();
   }
 
   /**
