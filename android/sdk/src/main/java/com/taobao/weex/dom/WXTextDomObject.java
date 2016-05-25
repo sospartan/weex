@@ -115,7 +115,7 @@ public class WXTextDomObject extends WXDomObject {
   private SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
   private Layout layout;
   private Layout previousLayout;
-  //TODO tryLock
+  //TODO AtomicReference?
   private Lock lock=new ReentrantLock();
 
   static {
