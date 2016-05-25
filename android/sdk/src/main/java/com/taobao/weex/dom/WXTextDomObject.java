@@ -39,8 +39,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Class for calculating a given text's height and width. The calculating of width and height of
@@ -114,9 +113,7 @@ public class WXTextDomObject extends WXDomObject {
   private WXTextDecoration mTextDecoration = WXTextDecoration.NONE;
   private SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
   private Layout layout;
-  private Layout previousLayout;
-  //TODO AtomicReference?
-  private Lock lock=new ReentrantLock();
+  private AtomicReference<Layout> atomicReference=new AtomicReference<>();
 
   static {
     TEXT_PAINT.setFlags(TextPaint.ANTI_ALIAS_FLAG);
@@ -156,14 +153,7 @@ public class WXTextDomObject extends WXDomObject {
     }
     hasBeenMeasured =false;
 
-    lock.lock();
-    try{
-      previousLayout=layout;
-    }finally {
-      lock.unlock();
-    }
-
-    if(layout!=null&&!layout.equals(previousLayout)) {
+    if(layout!=null&&!layout.equals(atomicReference.getAndSet(layout))) {
       //TODO Warm up, a profile should be used to see the improvement.
       warmUpTextLayoutCache();
     }
@@ -172,12 +162,7 @@ public class WXTextDomObject extends WXDomObject {
 
   @Override
   public Layout getExtra() {
-    lock.lock();
-    try {
-      return previousLayout;
-    }finally {
-      lock.unlock();
-    }
+    return atomicReference.get();
   }
 
   @Override
@@ -210,13 +195,7 @@ public class WXTextDomObject extends WXDomObject {
       dom.attr = attr;
       dom.event = event == null ? null : event.clone();
       dom.hasBeenMeasured = hasBeenMeasured;
-      lock.lock();
-      try {
-        dom.previousLayout = previousLayout;
-      }finally {
-        lock.unlock();
-      }
-      dom.lock=lock;
+      dom.atomicReference=atomicReference;
       if (this.csslayout != null) {
         dom.csslayout.copy(this.csslayout);
       }
@@ -373,12 +352,7 @@ public class WXTextDomObject extends WXDomObject {
   private void swap(){
     if (layout != null) {
       spannableStringBuilder = new SpannableStringBuilder(spannableStringBuilder);
-      lock.lock();
-      try {
-        previousLayout = layout;
-      } finally {
-        lock.unlock();
-      }
+      atomicReference.set(layout);
       layout = null;
     }
   }
