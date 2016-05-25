@@ -119,7 +119,8 @@ license{
                "**/CSSPositionTypeConvert.java",
                "**/CSSTransformFromStyle.java",
                "**/CSSWrapConvert.java",
-               "**/WXTextDomObject.java"])
+               "**/WXTextDomObject.java",
+               "**/WXCustomStyleSpan.java"])
 //    includes(['src/main/java/**/*.java'])
 }
 preBuild.dependsOn licenseFormat
