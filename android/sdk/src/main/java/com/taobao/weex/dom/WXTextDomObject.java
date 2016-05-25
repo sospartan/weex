@@ -171,7 +171,7 @@ public class WXTextDomObject extends WXDomObject {
   }
 
   @Override
-  public Object getExtra() {
+  public Layout getExtra() {
     lock.lock();
     try {
       return previousLayout;
@@ -213,10 +213,10 @@ public class WXTextDomObject extends WXDomObject {
       lock.lock();
       try {
         dom.previousLayout = previousLayout;
-        dom.lock=lock;
       }finally {
         lock.unlock();
       }
+      dom.lock=lock;
       if (this.csslayout != null) {
         dom.csslayout.copy(this.csslayout);
       }
@@ -372,14 +372,14 @@ public class WXTextDomObject extends WXDomObject {
 
   private void swap(){
     if (layout != null) {
+      spannableStringBuilder = new SpannableStringBuilder(spannableStringBuilder);
       lock.lock();
       try {
-        spannableStringBuilder = new SpannableStringBuilder(spannableStringBuilder);
         previousLayout = layout;
-        layout = null;
       } finally {
         lock.unlock();
       }
+      layout = null;
     }
   }
 
