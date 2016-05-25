@@ -208,7 +208,6 @@ import android.text.Layout;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.WXTextDomObject;
 import com.taobao.weex.ui.view.WXTextView;
 
 /**
@@ -229,7 +228,6 @@ public class WXText extends WXComponent{
   @Override
   protected void initView() {
     mHost = new WXTextView(mContext);
-    mHost.setWillNotDraw(false);
   }
 
   @Override
@@ -239,15 +237,11 @@ public class WXText extends WXComponent{
 
   @Override
   public void updateExtra(Object extra) {
-    Layout preLayout=null;
-    Layout layout=((WXTextDomObject)getDomObject()).getTextLayout();
-    if(getView().getTag() instanceof Layout){
-      preLayout= (Layout) getView().getTag();
+    if(extra instanceof Layout&&!extra.equals(getView().getTextLayout())) {
+      final Layout layout = (Layout) extra;
+      getView().setTextLayout(layout);
+      getView().invalidate();
     }
-    if(layout!=null&&!layout.equals(preLayout)) {
-      getView().setTag(layout);
-    }
-    getView().invalidate();
   }
 
 }

@@ -39,8 +39,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class for calculating a given text's height and width. The calculating of width and height of
@@ -67,7 +67,6 @@ public class WXTextDomObject extends WXDomObject {
     }
   }
 
-
   /**
    * Object for calculating text's width and height. This class is an anonymous class of
    * implementing {@link com.taobao.weex.dom.flex.CSSNode.MeasureFunction}
@@ -83,7 +82,7 @@ public class WXTextDomObject extends WXDomObject {
         width = node.cssstyle.maxWidth;
       }
       textDomObject.updateLayout(width);
-      textDomObject.hasBeenLayout = true;
+      textDomObject.hasBeenMeasured = true;
       textDomObject.previousWidth = width;
       measureOutput.height = textDomObject.layout.getHeight();
       measureOutput.width = textDomObject.layout.getWidth();
@@ -95,7 +94,7 @@ public class WXTextDomObject extends WXDomObject {
   private static final Canvas DUMMY_CANVAS = new Canvas();
   private static final String ELLIPSIS = "\u2026";
   private boolean mIsColorSet = false;
-  private boolean hasBeenLayout = false;
+  private boolean hasBeenMeasured = false;
   private int mColor;
   /**
    * mFontStyle can be {@link Typeface#NORMAL} or {@link Typeface#ITALIC}.
@@ -115,7 +114,9 @@ public class WXTextDomObject extends WXDomObject {
   private WXTextDecoration mTextDecoration = WXTextDecoration.NONE;
   private SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
   private Layout layout;
-  private Queue<Layout> layoutQueue=new ConcurrentLinkedQueue<>();
+  private Layout previousLayout;
+  //TODO tryLock
+  private Lock lock=new ReentrantLock();
 
   static {
     TEXT_PAINT.setFlags(TextPaint.ANTI_ALIAS_FLAG);
@@ -138,7 +139,7 @@ public class WXTextDomObject extends WXDomObject {
    */
   @Override
   public void layoutBefore() {
-    hasBeenLayout = false;
+    hasBeenMeasured = false;
     updateStyleAndText();
     updateSpannableStringBuilder(mText);
     super.dirty();
@@ -147,27 +148,41 @@ public class WXTextDomObject extends WXDomObject {
 
   @Override
   public void layoutAfter() {
-    if (!hasBeenLayout) {
-      hasBeenLayout = true;
+    if (!hasBeenMeasured) {
+      updateStyleAndText();
+      updateSpannableStringBuilder(mText);
       updateLayout(getLayoutWidth());
       previousWidth = getLayoutWidth();
     }
-    if(layout!=null) {
+    hasBeenMeasured =false;
+
+    lock.lock();
+    try{
+      previousLayout=layout;
+    }finally {
+      lock.unlock();
+    }
+
+    if(layout!=null&&!layout.equals(previousLayout)) {
+      //TODO Warm up, a profile should be used to see the improvement.
       warmUpTextLayoutCache();
-      spannableStringBuilder = new SpannableStringBuilder();
-      layoutQueue.offer(layout);
-      layout=null;
     }
     super.layoutAfter();
   }
 
   @Override
   public Object getExtra() {
-    return getTextLayout().getText().toString();
+    lock.lock();
+    try {
+      return previousLayout;
+    }finally {
+      lock.unlock();
+    }
   }
 
   @Override
   public void updateAttr(Map<String, Object> attrs) {
+    swap();
     super.updateAttr(attrs);
     if (attrs.containsKey(WXDomPropConstant.WX_ATTR_VALUE)) {
       mText = WXAttr.getValue(attrs);
@@ -176,6 +191,7 @@ public class WXTextDomObject extends WXDomObject {
 
   @Override
   public void updateStyle(Map<String, Object> styles) {
+    swap();
     super.updateStyle(styles);
     updateStyleImp(styles);
   }
@@ -188,15 +204,19 @@ public class WXTextDomObject extends WXDomObject {
       if (this.cssstyle != null) {
         dom.cssstyle.copy(this.cssstyle);
       }
-
       dom.ref = ref;
       dom.type = type;
       dom.style = style;
       dom.attr = attr;
       dom.event = event == null ? null : event.clone();
-      dom.layout = layout;
-      dom.spannableStringBuilder = spannableStringBuilder;
-      dom.layoutQueue=layoutQueue;
+      dom.hasBeenMeasured = hasBeenMeasured;
+      lock.lock();
+      try {
+        dom.previousLayout = previousLayout;
+        dom.lock=lock;
+      }finally {
+        lock.unlock();
+      }
       if (this.csslayout != null) {
         dom.csslayout.copy(this.csslayout);
       }
@@ -209,13 +229,6 @@ public class WXTextDomObject extends WXDomObject {
       dom.spannableStringBuilder = spannableStringBuilder;
     }
     return dom;
-  }
-
-  public Layout getTextLayout(){
-    if(layoutQueue.size()>1){
-      layoutQueue.poll();
-    }
-    return layoutQueue.peek();
   }
 
   /**
@@ -272,10 +285,11 @@ public class WXTextDomObject extends WXDomObject {
     int textWidth = (int) Math.ceil(CSSConstants.isUndefined(width) ?
                                     Layout.getDesiredWidth(spannableStringBuilder, TEXT_PAINT)
                                                                     : width);
-    if (layout == null || !FloatUtil.floatsEqual(previousWidth,width)) {
+    if (layout == null||!FloatUtil.floatsEqual(previousWidth, width)) {
       layout = new DynamicLayout(spannableStringBuilder, TEXT_PAINT, textWidth, Layout.Alignment
           .ALIGN_NORMAL, 1, 0, false);
     }
+
     if (mNumberOfLines != UNSET && mNumberOfLines > 0 && mNumberOfLines < layout.getLineCount()) {
       int lastLineStart, lastLineEnd;
       CharSequence reminder, main;
@@ -356,6 +370,19 @@ public class WXTextDomObject extends WXDomObject {
     return ops;
   }
 
+  private void swap(){
+    if (layout != null) {
+      lock.lock();
+      try {
+        spannableStringBuilder = new SpannableStringBuilder(spannableStringBuilder);
+        previousLayout = layout;
+        layout = null;
+      } finally {
+        lock.unlock();
+      }
+    }
+  }
+
   /**
    * As warming up TextLayoutCache done in the DOM thread may manipulate UI operation,
    there may be some exception, in which case the exception is ignored. After all,
@@ -364,7 +391,6 @@ public class WXTextDomObject extends WXDomObject {
    */
   private boolean warmUpTextLayoutCache() {
     boolean result;
-    //TODO Warm up, a profile should be used to see the improvement.
     try {
       layout.draw(DUMMY_CANVAS);
       result = true;
@@ -374,4 +400,5 @@ public class WXTextDomObject extends WXDomObject {
     }
     return result;
   }
+
 }

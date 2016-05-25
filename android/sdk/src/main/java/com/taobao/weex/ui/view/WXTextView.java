@@ -219,7 +219,7 @@ import com.taobao.weex.ui.view.gesture.WXGestureObservable;
 public class WXTextView extends View implements WXGestureObservable, IWXTextView {
 
   private WXGesture wxGesture;
-
+  private Layout textLayout;
   public WXTextView(Context context) {
     super(context);
   }
@@ -228,9 +228,8 @@ public class WXTextView extends View implements WXGestureObservable, IWXTextView
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
     canvas.save();
-    Layout layout;
-    if(getTag() instanceof Layout){
-      layout= (Layout) getTag();
+    Layout layout= getTextLayout();
+    if(layout!=null){
       canvas.translate(getPaddingLeft(),getPaddingTop());
       layout.draw(canvas);
     }
@@ -253,10 +252,14 @@ public class WXTextView extends View implements WXGestureObservable, IWXTextView
 
   @Override
   public CharSequence getText() {
-    if(getTag() instanceof Layout){
-      return ((Layout) getTag()).getText();
-    }
-    else
-      return null;
+    return textLayout.getText();
+  }
+
+  public Layout getTextLayout() {
+    return textLayout;
+  }
+
+  public void setTextLayout(Layout layout) {
+    this.textLayout = layout;
   }
 }
