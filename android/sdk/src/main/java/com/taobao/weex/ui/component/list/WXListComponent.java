@@ -580,7 +580,7 @@ public class WXListComponent extends WXVContainer implements
             }
         }
         WXLogUtils.e(TAG, "Cannot find request viewType: " + viewType);
-        throw new WXRuntimeException("mChildren is null");
+        return createVHForFakeComponent(viewType);
     }
 
 
