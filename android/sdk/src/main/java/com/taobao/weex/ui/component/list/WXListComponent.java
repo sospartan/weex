@@ -258,6 +258,10 @@ import java.util.regex.Pattern;
 public class WXListComponent extends WXVContainer implements
         IRecyclerAdapterListener<ListBaseViewHolder>,IOnLoadMoreListener,Scrollable {
 
+    public static final int TYPE_LINEAR_LAYOUT = 1;
+    public static final int TYPE_GRID_LAYOUT = 2;
+    public static final int TYPE_STAGGERED_GRID_LAYOUT = 3;
+
     public static final String TRANSFORM = "transform";
     private String TAG = "WXListComponent";
     private int mListCellCount = 0;
@@ -362,9 +366,13 @@ public class WXListComponent extends WXVContainer implements
         return new TransformItemDecoration(getOrientation() == VERTICAL, opacity, translateX, translateY, rotate, scaleX, scaleY);
     }
 
+    public int getLayoutManagerType() {
+        return TYPE_LINEAR_LAYOUT;
+    }
+
     @Override
     protected void initView() {
-        bounceRecyclerView = new BounceRecyclerView(mContext, getOrientation());
+        bounceRecyclerView = new BounceRecyclerView(mContext, getOrientation(),getLayoutManagerType());
 
         String transforms = (String) mDomObj.attr.get(TRANSFORM);
         if (transforms != null) {

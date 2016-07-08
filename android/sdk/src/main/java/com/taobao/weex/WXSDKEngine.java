@@ -160,6 +160,7 @@ import com.taobao.weex.ui.component.WXWeb;
 import com.taobao.weex.ui.component.list.HorizontalListComponent;
 import com.taobao.weex.ui.component.list.WXCell;
 import com.taobao.weex.ui.component.list.WXListComponent;
+import com.taobao.weex.ui.component.list.WXWaterfallListComponent;
 import com.taobao.weex.ui.module.WXTimerModule;
 import com.taobao.weex.ui.module.WXWebViewModule;
 import com.taobao.weex.utils.WXLogUtils;
@@ -296,6 +297,7 @@ public class WXSDKEngine {
       registerComponent(WXBasicComponentType.LOADING, WXLoading.class);
       registerComponent(WXBasicComponentType.LOADING_INDICATOR, WXLoadingIndicator.class);
       registerComponent(WXBasicComponentType.HEADER, WXHeader.class);
+      registerComponent(WXBasicComponentType.WATERFALL, WXWaterfallListComponent.class);
 
       registerModule("dom", WXDomModule.class, true);
       registerModule("modal", WXModalUIModule.class, false);

@@ -211,11 +211,9 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-public class WXRecyclerView extends RecyclerView {
+import com.taobao.weex.ui.component.list.WXListComponent;
 
-  public static final int TYPE_LINEAR_LAYOUT = 1;
-  public static final int TYPE_GRID_LAYOUT = 2;
-  public static final int TYPE_STAGGERED_GRID_LAYOUT = 3;
+public class WXRecyclerView extends RecyclerView {
 
   public WXRecyclerView(Context context) {
     super(context);
@@ -228,11 +226,11 @@ public class WXRecyclerView extends RecyclerView {
    * @param orientation should be {@link OrientationHelper#HORIZONTAL} or {@link OrientationHelper#VERTICAL}
    */
   public void initView(Context context, int type,int orientation) {
-    if (type == TYPE_GRID_LAYOUT) {
+    if (type == WXListComponent.TYPE_GRID_LAYOUT) {
       setLayoutManager(new GridLayoutManager(context, 2,orientation,false));
-    } else if (type == TYPE_STAGGERED_GRID_LAYOUT) {
+    } else if (type == WXListComponent.TYPE_STAGGERED_GRID_LAYOUT) {
       setLayoutManager(new StaggeredGridLayoutManager(2, orientation));
-    } else if (type == TYPE_LINEAR_LAYOUT) {
+    } else if (type == WXListComponent.TYPE_LINEAR_LAYOUT) {
       setLayoutManager(new LinearLayoutManager(context,orientation,false));
     }
   }

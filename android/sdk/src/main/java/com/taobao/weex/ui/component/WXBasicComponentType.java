@@ -232,5 +232,5 @@ public class WXBasicComponentType {
   public static final String REFRESH = "refresh";
   public static final String LOADING = "loading";
   public static final String LOADING_INDICATOR = "loading-indicator";
-
+  public static final String WATERFALL = "waterfall";
 }

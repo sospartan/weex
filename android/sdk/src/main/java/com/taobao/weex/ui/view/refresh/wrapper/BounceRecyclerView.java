@@ -205,8 +205,6 @@
 package com.taobao.weex.ui.view.refresh.wrapper;
 
 import android.content.Context;
-import android.support.v7.widget.OrientationHelper;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -226,12 +224,8 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> {
   private Stack<View> tempViewStack = new Stack<>();
   private Stack<WXCell> headComponentStack = new Stack<>();
 
-  public BounceRecyclerView(Context context, int orientation) {
-    super(context, orientation);
-  }
-
-  public BounceRecyclerView(Context context, AttributeSet attrs) {
-    super(context, attrs, OrientationHelper.VERTICAL);
+  public BounceRecyclerView(Context context, int orientation,int layoutManagerType) {
+    super(context, orientation,layoutManagerType);
   }
 
   public void setAdapter(RecyclerViewBaseAdapter adapter) {
@@ -246,9 +240,9 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> {
   }
 
   @Override
-  public WXRecyclerView setInnerView(Context context) {
+  public WXRecyclerView setInnerView(Context context,int layoutManagerType) {
     WXRecyclerView wxRecyclerView = new WXRecyclerView(context);
-    wxRecyclerView.initView(context, WXRecyclerView.TYPE_LINEAR_LAYOUT, getOrientation());
+    wxRecyclerView.initView(context,layoutManagerType, getOrientation());
     return wxRecyclerView;
   }
 

@@ -224,22 +224,22 @@ public abstract class BaseBounceView<T extends View> extends ViewGroup {
     protected WXSwipeLayout swipeLayout;
     private T innerView;
 
-    public BaseBounceView(Context context,int orientation) {
-        this(context, null,orientation);
+    public BaseBounceView(Context context,int orientation,int layoutManagerType) {
+        this(context, null,orientation,layoutManagerType);
     }
 
-    public BaseBounceView(Context context, AttributeSet attrs,int orientataion) {
+    public BaseBounceView(Context context, AttributeSet attrs,int orientataion,int layoutManagerType) {
         super(context, attrs);
         mOrientation = orientataion;
-        init(context);
+        init(context,layoutManagerType);
     }
 
     public int getOrientation(){
         return mOrientation;
     }
 
-    private void init(Context context) {
-        createBounceView(context);
+    private void init(Context context,int layoutManagerType) {
+        createBounceView(context,layoutManagerType);
     }
 
     boolean isVertical(){
@@ -343,10 +343,10 @@ public abstract class BaseBounceView<T extends View> extends ViewGroup {
     /**
      * Init Swipelayout
      */
-    private WXSwipeLayout createBounceView(Context context) {
+    private WXSwipeLayout createBounceView(Context context,int layoutManagerType) {
         swipeLayout = new WXSwipeLayout(context);
         swipeLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        innerView = setInnerView(context);
+        innerView = setInnerView(context,layoutManagerType);
         if (innerView == null)
             return null;
         swipeLayout.addView(innerView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -361,7 +361,7 @@ public abstract class BaseBounceView<T extends View> extends ViewGroup {
         return innerView;
     }
 
-    public abstract T setInnerView(Context context);
+    public abstract T setInnerView(Context context,int layoutManagerType);
 
     /**
      *

@@ -202,33 +202,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.view.refresh.wrapper;
+package com.taobao.weex.ui.component.list;
 
-import android.content.Context;
+import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.component.WXVContainer;
 
-import com.taobao.weex.ui.component.WXScroller;
-import com.taobao.weex.ui.view.WXScrollView;
+public class WXWaterfallListComponent extends WXListComponent {
 
-public class BounceScrollerView extends BaseBounceView<WXScrollView> {
-
-    public BounceScrollerView(Context context, int orientation,WXScroller waScroller) {
-        super(context,orientation,0);
-        if (getInnerView() != null)
-            getInnerView().setWAScroller(waScroller);
+    public WXWaterfallListComponent(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) {
+        super(instance, node, parent, lazy);
     }
 
     @Override
-    public WXScrollView setInnerView(Context context,int layoutManagerType) {
-        return new WXScrollView(context);
-    }
-
-    @Override
-    public void onRefreshingComplete() {
-        //TODO update scroller dataset
-    }
-
-    @Override
-    public void onLoadmoreComplete() {
-        //TODO update scroller dataset
+    public int getLayoutManagerType() {
+        return WXListComponent.TYPE_STAGGERED_GRID_LAYOUT;
     }
 }
