@@ -233,6 +233,16 @@ public class WXRecyclerViewOnScrollListener extends RecyclerView.OnScrollListene
   private int lastVisibleItemPosition;
 
   /**
+   * The last position
+   */
+  private int[] firstPositions;
+
+  /**
+   * The location of last visible item
+   */
+  private int firstVisibleItemPosition;
+
+  /**
    * The state of scroll status
    */
   private int currentScrollState = 0;
@@ -289,10 +299,12 @@ public class WXRecyclerViewOnScrollListener extends RecyclerView.OnScrollListene
             ,dx
             ,dy);
         break;
+
       case GRID:
         lastVisibleItemPosition = ((GridLayoutManager) layoutManager)
             .findLastVisibleItemPosition();
         break;
+
       case STAGGERED_GRID:
         StaggeredGridLayoutManager staggeredGridLayoutManager
             = (StaggeredGridLayoutManager) layoutManager;
@@ -301,6 +313,14 @@ public class WXRecyclerViewOnScrollListener extends RecyclerView.OnScrollListene
         }
         staggeredGridLayoutManager.findLastVisibleItemPositions(lastPositions);
         lastVisibleItemPosition = findMax(lastPositions);
+
+        if (firstPositions == null) {
+          firstPositions = new int[staggeredGridLayoutManager.getSpanCount()];
+        }
+        staggeredGridLayoutManager.findFirstVisibleItemPositions(firstPositions);
+        firstVisibleItemPosition = findMin(firstPositions);
+
+        listener.get().notifyAppearStateChange(firstVisibleItemPosition,lastVisibleItemPosition,dx,dy);
         break;
     }
   }
@@ -313,6 +333,16 @@ public class WXRecyclerViewOnScrollListener extends RecyclerView.OnScrollListene
       }
     }
     return max;
+  }
+
+  private int findMin(int[] firstPositions) {
+    int min = firstPositions[0];
+    for (int value : firstPositions) {
+      if (value < min) {
+        min = value;
+      }
+    }
+    return min;
   }
 
   public enum LAYOUT_MANAGER_TYPE {
