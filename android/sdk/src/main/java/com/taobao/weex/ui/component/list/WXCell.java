@@ -204,10 +204,14 @@
  */
 package com.taobao.weex.ui.component.list;
 
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.dom.flex.CSSLayout;
+import com.taobao.weex.ui.component.WXHeader;
 import com.taobao.weex.ui.component.WXVContainer;
 import com.taobao.weex.ui.view.WXFrameLayout;
 
@@ -217,6 +221,14 @@ import com.taobao.weex.ui.view.WXFrameLayout;
 public class WXCell extends WXVContainer {
 
     public int lastLocationY = -1;
+    private ViewGroup realView;
+    private View tempStickyView;
+    private View headView;
+
+    @Deprecated
+    public WXCell(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
+        this(instance,dom,parent,isLazy);
+    }
 
     public WXCell(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, boolean isLazy) {
         super(instance, dom, parent,true );
@@ -228,23 +240,44 @@ public class WXCell extends WXVContainer {
     @Override
     protected void initView() {
         if(mContext!=null) {
-            if (mDomObj != null && mDomObj.isSticky()) {
+            if ((mDomObj != null && mDomObj.isSticky()) || this instanceof WXHeader) {
                 mHost = new WXFrameLayout(mContext);
-                ((ViewGroup) mHost).addView(new WXFrameLayout(mContext));
+                realView = new WXFrameLayout(mContext);
+                ((ViewGroup) mHost).addView(realView);
             } else {
                 super.initView();
+                realView = (ViewGroup) mHost;
             }
         }
     }
 
     @Override
     public ViewGroup getRealView() {
-        if (mHost == null)
-            return null;
-        if (mDomObj != null && mDomObj.isSticky()) {
-            return (ViewGroup) ((ViewGroup) mHost).getChildAt(0);
-        } else {
-            return super.getRealView();
-        }
+        return realView;
+    }
+
+    public void removeSticky() {
+        headView = getView().getChildAt(0);
+        int[] location = new int[2];
+        int[] parentLocation = new int[2];
+        getView().getLocationOnScreen(location);
+        getParentScroller().getView().getLocationOnScreen(parentLocation);
+        int headerViewOffsetX = location[0] - parentLocation[0];
+        int headerViewOffsetY = getParent().getView().getTop();
+        getView().removeView(headView);
+        realView = (ViewGroup) headView;
+        tempStickyView= new FrameLayout(mContext);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) getDomObject().csslayout.dimensions[CSSLayout.DIMENSION_WIDTH],
+                (int) getDomObject().csslayout.dimensions[CSSLayout.DIMENSION_HEIGHT]);
+        getView().addView(tempStickyView, lp);
+        headView.setTranslationX(headerViewOffsetX);
+        headView.setTranslationY(headerViewOffsetY);
+    }
+
+    public void recoverySticky() {
+        getView().removeView(tempStickyView);
+        getView().addView(headView);
+        headView.setTranslationX(0);
+        headView.setTranslationY(0);
     }
 }

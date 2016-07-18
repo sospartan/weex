@@ -213,7 +213,9 @@ import android.widget.ImageView;
 
 import com.taobao.weappplus_sdk.R;
 import com.taobao.weex.IWXRenderListener;
+import com.taobao.weex.WXRenderErrorCode;
 import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.bridge.WXBridgeManager;
 import com.taobao.weex.common.WXDomPropConstant;
 import com.taobao.weex.common.WXPerformance;
 import com.taobao.weex.common.WXRenderStrategy;
@@ -221,12 +223,19 @@ import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXViewUtils;
 
-public class WXEmbed extends WXDiv {
+public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleListener {
 
   private String src;
   private WXSDKInstance instance;
   private final static int ERROR_IMG_WIDTH = (int) WXViewUtils.getRealPxByWidth(270);
   private final static int ERROR_IMG_HEIGHT = (int) WXViewUtils.getRealPxByWidth(260);
+
+  private boolean mIsVisible = true;
+
+  @Deprecated
+  public WXEmbed(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
+    this(instance,dom,parent,isLazy);
+  }
 
   public WXEmbed(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) {
     super(instance, node, parent, lazy);
@@ -246,6 +255,7 @@ public class WXEmbed extends WXDiv {
 
   private WXSDKInstance createInstance() {
     WXSDKInstance sdkInstance = new WXSDKInstance(mContext);
+    mInstance.addOnInstanceVisibleListener(this);
     sdkInstance.registerRenderListener(new IWXRenderListener() {
       @Override
       public void onViewCreated(WXSDKInstance instance, View view) {
@@ -265,24 +275,26 @@ public class WXEmbed extends WXDiv {
 
       @Override
       public void onException(WXSDKInstance instance, String errCode, String msg) {
-        final ImageView imageView = new ImageView(mContext);
-        imageView.setImageResource(R.drawable.error);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ERROR_IMG_WIDTH, ERROR_IMG_HEIGHT);
-        layoutParams.gravity = Gravity.CENTER;
-        imageView.setLayoutParams(layoutParams);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageView.setAdjustViewBounds(true);
-        imageView.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            imageView.setOnClickListener(null);
-            imageView.setEnabled(false);
-            WXEmbed.this.instance = createInstance();
-          }
-        });
-        getView().removeAllViews();
-        getView().addView(imageView);
-        WXLogUtils.e("WXEmbed", "Error code :" + errCode + ",\n error message :" + msg);
+        if(TextUtils.equals(msg, WXRenderErrorCode.WX_NETWORK_ERROR)) {
+          final ImageView imageView = new ImageView(mContext);
+          imageView.setImageResource(R.drawable.error);
+          FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ERROR_IMG_WIDTH, ERROR_IMG_HEIGHT);
+          layoutParams.gravity = Gravity.CENTER;
+          imageView.setLayoutParams(layoutParams);
+          imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+          imageView.setAdjustViewBounds(true);
+          imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              imageView.setOnClickListener(null);
+              imageView.setEnabled(false);
+              WXEmbed.this.instance = createInstance();
+            }
+          });
+          getView().removeAllViews();
+          getView().addView(imageView);
+          WXLogUtils.e("WXEmbed", "NetWork failure :" + errCode + ",\n error message :" + msg);
+        }
       }
     });
     ViewGroup.LayoutParams layoutParams = getView().getLayoutParams();
@@ -312,6 +324,7 @@ public class WXEmbed extends WXDiv {
         instance.onViewDisappear();
       }
     }
+    mIsVisible = visible;
   }
 
   @Override
@@ -322,5 +335,25 @@ public class WXEmbed extends WXDiv {
       instance = null;
     }
     src = null;
+  }
+
+  @Override
+  public void onAppear() {
+    //appear event from root instance will not trigger visibility change
+    if(mIsVisible && instance != null){
+      WXComponent comp = instance.getRootCom();
+      if(comp != null)
+        WXBridgeManager.getInstance().fireEvent(instance.getInstanceId(), comp.getRef(), WXEventType.VIEWAPPEAR,null, null);
+    }
+  }
+
+  @Override
+  public void onDisappear() {
+    //appear event from root instance will not trigger visibility change
+    if(mIsVisible && instance != null){
+      WXComponent comp = instance.getRootCom();
+      if(comp != null)
+        WXBridgeManager.getInstance().fireEvent(instance.getInstanceId(), comp.getRef(), WXEventType.VIEWDISAPPEAR,null, null);
+    }
   }
 }
