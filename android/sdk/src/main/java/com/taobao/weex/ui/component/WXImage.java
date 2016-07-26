@@ -206,7 +206,6 @@ package com.taobao.weex.ui.component;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
@@ -219,6 +218,7 @@ import com.taobao.weex.common.WXImageStrategy;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.view.WXImageView;
 import com.taobao.weex.utils.WXResourceUtils;
+import com.taobao.weex.utils.WXUtils;
 
 
 /**
@@ -245,7 +245,6 @@ public class WXImage extends WXComponent<ImageView> {
     }
 
     @Override
-    @WXComponentProp(name = WXDomPropConstant.WX_BACKGROUNDCOLOR)
     public void setBackgroundColor(String color) {
         if (!TextUtils.isEmpty(color)) {
             int colorInt = WXResourceUtils.getColor(color);
@@ -255,34 +254,60 @@ public class WXImage extends WXComponent<ImageView> {
         }
     }
 
-    @Override
-    @WXComponentProp(name = WXDomPropConstant.WX_BORDERRADIUS)
-    public void setBorderRadius(float borderRadius) {
 
+    /**
+     * Image is not support border.
+     */
+    @Override
+    public void setBorderRadius(String key, float borderRadius) {
     }
 
+    /**
+     * Image is not support border.
+     */
     @Override
-    @WXComponentProp(name = WXDomPropConstant.WX_BORDERWIDTH)
-    public void setBorderWidth(float borderWidth) {
-
+    public void setBorderWidth(String key, float borderWidth) {
     }
 
+    /**
+     * Image is not support border.
+     */
     @Override
-    @WXComponentProp(name = WXDomPropConstant.WX_BORDERSTYLE)
     public void setBorderStyle(String borderStyle) {
+    }
 
+    /**
+     * Image is not support border.
+     */
+    @Override
+    public void setBorderColor(String key, String borderColor) {
     }
 
     @Override
-    @WXComponentProp(name = WXDomPropConstant.WX_BORDERCOLOR)
-    public void setBorderColor(String borderColor) {
-
+    protected boolean setProperty(String key, Object param) {
+        switch (key) {
+            case WXDomPropConstant.WX_RESIZE_MODE:
+                String resize_mode = WXUtils.getString(param,null);
+                if (resize_mode != null)
+                    setResizeMode(resize_mode);
+                return true;
+            case WXDomPropConstant.WX_RESIZE:
+                String resize = WXUtils.getString(param,null);
+                if (resize != null)
+                    setResize(resize);
+                return true;
+            case WXDomPropConstant.WX_ATTR_SRC:
+                String src = WXUtils.getString(param,null);
+                if (src != null)
+                    setSrc(src);
+                return true;
+        }
+        return super.setProperty(key, param);
     }
-
 
     @WXComponentProp(name = WXDomPropConstant.WX_RESIZE_MODE)
     public void setResizeMode(String resizeMode) {
-        ((ImageView) getView()).setScaleType(getResizeMode(resizeMode));
+        ((ImageView) getHostView()).setScaleType(getResizeMode(resizeMode));
     }
 
     private ScaleType getResizeMode(String resizeMode) {
@@ -309,7 +334,7 @@ public class WXImage extends WXComponent<ImageView> {
 
     @WXComponentProp(name = WXDomPropConstant.WX_RESIZE)
     public void setResize(String resize) {
-        ((ImageView) getView()).setScaleType(getResizeMode(resize));
+        ((ImageView) getHostView()).setScaleType(getResizeMode(resize));
     }
 
     @WXComponentProp(name = WXDomPropConstant.WX_ATTR_SRC)
@@ -323,7 +348,7 @@ public class WXImage extends WXComponent<ImageView> {
 
         IWXImgLoaderAdapter imgLoaderAdapter = mInstance.getImgLoaderAdapter();
         if (imgLoaderAdapter != null) {
-            imgLoaderAdapter.setImage(src, ((ImageView) getView()),
+            imgLoaderAdapter.setImage(src, ((ImageView) getHostView()),
                     mDomObj.attr.getImageQuality(), imageStrategy);
         }
     }
