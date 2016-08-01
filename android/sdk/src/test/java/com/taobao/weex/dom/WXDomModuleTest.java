@@ -202,129 +202,151 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.view.refresh.wrapper;
+package com.taobao.weex.dom;
 
-import android.content.Context;
-import android.support.v7.widget.OrientationHelper;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.FrameLayout;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.taobao.weappplus_sdk.BuildConfig;
+import com.taobao.weex.WXSDKInstanceTest;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
-import com.taobao.weex.ui.view.refresh.core.WXRefreshView;
-import com.taobao.weex.ui.view.refresh.core.WXSwipeLayout;
+import static com.taobao.weex.dom.WXDomModule.*;
+
+import static org.junit.Assert.*;
+
+import static org.mockito.Mockito.*;
 
 /**
- * BounceView(SwipeLayout) contains Scroller/List and refresh/loading view
- * @param <T> InnerView
+ * Created by sospartan on 7/29/16.
  */
-public abstract class BaseBounceView<T extends View> extends FrameLayout {
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 19)
+@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*","org.json.*" })
+@PrepareForTest()
+public class WXDomModuleTest {
 
-    private int mOrientation = OrientationHelper.VERTICAL;
-    protected WXSwipeLayout swipeLayout;
-    private T innerView;
+  static final String[] METHODS  = {
+    CREATE_BODY,
+    UPDATE_ATTRS ,
+    UPDATE_STYLE ,
+    REMOVE_ELEMENT,
+    ADD_ELEMENT ,
+    MOVE_ELEMENT,
+    ADD_EVENT ,
+    REMOVE_EVENT,
+    CREATE_FINISH ,
+    REFRESH_FINISH,
+      UPDATE_FINISH,
+    SCROLL_TO_ELEMENT,
+    null,
+    "unknown_method"
+  };
 
-    public BaseBounceView(Context context,int orientation) {
-        this(context, null,orientation);
+  static final Object[][] ARGS_CASES = {
+    null,
+    {new JSONObject()},
+    {"",new JSONObject()},
+    {"test",new JSONObject()},
+    {"test"},
+    {"",new JSONObject(),1},
+    {"test",new JSONObject(),1},
+    {"","",1},
+    {"test","test",1},
+    {"","test"},
+    {"test","test"},
+  };
+
+
+
+  WXDomModule module;
+
+  @Before
+  public void setUp() throws Exception {
+    module = new WXDomModule();
+    module.mWXSDKInstance = WXSDKInstanceTest.createInstance();
+  }
+
+  @Test
+  public void testCallDomMethod() throws Exception {
+    module.callDomMethod(null);
+
+    JSONObject obj = new JSONObject();
+    for (String m :
+      METHODS) {
+      obj.put(WXDomModule.METHOD,m);
+      module.callDomMethod(obj);
     }
 
-    public BaseBounceView(Context context, AttributeSet attrs,int orientataion) {
-        super(context, attrs);
-        mOrientation = orientataion;
-        init(context);
+
+    obj = new JSONObject();
+    for (Object[] args:ARGS_CASES
+         ) {
+      JSONArray ary = new JSONArray();
+      if(args == null){
+        ary = null;
+      }else {
+        for (Object arg : args
+          ) {
+          ary.add(arg);
+        }
+      }
+      obj.put(WXDomModule.ARGS,ary);
+      for (String m :
+        METHODS) {
+        obj.put(WXDomModule.METHOD,m);
+        module.callDomMethod(obj);
+      }
     }
+  }
 
-    public int getOrientation(){
-        return mOrientation;
-    }
+  @Test
+  public void testCreateBody() throws Exception {
 
-    private void init(Context context) {
-        createBounceView(context);
-    }
+  }
 
-    boolean isVertical(){
-        return mOrientation==OrientationHelper.VERTICAL;
-    }
+  @Test
+  public void testUpdateAttrs() throws Exception {
 
-    public void setOnRefreshListener(WXSwipeLayout.WXOnRefreshListener onRefreshListener) {
-        if (swipeLayout != null)
-            swipeLayout.setOnRefreshListener(onRefreshListener);
-    }
+  }
 
-    public void setOnLoadingListener(WXSwipeLayout.WXOnLoadingListener onLoadingListener) {
-        if (swipeLayout != null)
-            swipeLayout.setOnLoadingListener(onLoadingListener);
-    }
+  @Test
+  public void testUpdateStyle() throws Exception {
 
-    public void finishPullRefresh() {
-        if (swipeLayout != null)
-            swipeLayout.finishPullRefresh();
-    }
+  }
 
-    public void finishPullLoad() {
-        if (swipeLayout != null)
-            swipeLayout.finishPullLoad();
-    }
+  @Test
+  public void testRemoveElement() throws Exception {
 
-    /**
-     * Init Swipelayout
-     */
-    private WXSwipeLayout createBounceView(Context context) {
-        swipeLayout = new WXSwipeLayout(context);
-        swipeLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        innerView = setInnerView(context);
-        if (innerView == null)
-            return null;
-        swipeLayout.addView(innerView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        addView(swipeLayout, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        return swipeLayout;
-    }
+  }
 
-    /**
-     * @return the child of swipelayout : recyclerview or scrollview
-     */
-    public T getInnerView() {
-        return innerView;
-    }
+  @Test
+  public void testAddElement() throws Exception {
 
-    public abstract T setInnerView(Context context);
+  }
 
-    /**
-     *
-     * @param headerView should be {@link WXRefreshView}
-     */
-    public void setHeaderView(View headerView) {
-        setRefreshEnable(true);
-        if (swipeLayout != null)
-            if (swipeLayout.getHeaderView() != null)
-                swipeLayout.getHeaderView().setRefreshView(headerView);
-    }
+  @Test
+  public void testMoveElement() throws Exception {
 
-    /**
-     *
-     * @param footerView should be {@link WXRefreshView}
-     */
-    public void setFooterView(View footerView) {
-        setLoadmoreEnable(true);
-        if (swipeLayout != null)
-            if (swipeLayout.getFooterView() != null)
-                swipeLayout.getFooterView().setRefreshView(footerView);
-    }
+  }
 
-    public void setRefreshEnable(boolean enable) {
-        if (swipeLayout != null)
-            swipeLayout.setPullRefreshEnable(enable);
-    }
+  @Test
+  public void testAddEvent() throws Exception {
 
-    public void setLoadmoreEnable(boolean enable) {
-        if (swipeLayout != null)
-            swipeLayout.setPullLoadEnable(enable);
-    }
+  }
 
-    public WXSwipeLayout getSwipeLayout() {
-        return swipeLayout;
-    }
+  @Test
+  public void testRemoveEvent() throws Exception {
 
-    public abstract void onRefreshingComplete();
+  }
 
-    public abstract void onLoadmoreComplete();
+  @Test
+  public void testScrollToElement() throws Exception {
+
+  }
 }

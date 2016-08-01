@@ -202,129 +202,94 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.view.refresh.wrapper;
+package com.taobao.weex.utils;
 
-import android.content.Context;
-import android.support.v7.widget.OrientationHelper;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.FrameLayout;
+import android.graphics.Typeface;
 
-import com.taobao.weex.ui.view.refresh.core.WXRefreshView;
-import com.taobao.weex.ui.view.refresh.core.WXSwipeLayout;
+import java.net.URI;
 
-/**
- * BounceView(SwipeLayout) contains Scroller/List and refresh/loading view
- * @param <T> InnerView
- */
-public abstract class BaseBounceView<T extends View> extends FrameLayout {
+public class FontDO {
+  private final String mFontFamilyName;
+  private String mUrl = "";
+  private int mType = TYPE_NETWORK;
+  private Typeface mTypeface;
+  private int mState = STATE_INVALID;
 
-    private int mOrientation = OrientationHelper.VERTICAL;
-    protected WXSwipeLayout swipeLayout;
-    private T innerView;
+  public final static int STATE_INVALID = -1;
+  public final static int STATE_INIT = 0;
+  public final static int STATE_LOADING = 1;
+  public final static int STATE_SUCCESS = 2;
+  public final static int STATE_FAILED = 3;
 
-    public BaseBounceView(Context context,int orientation) {
-        this(context, null,orientation);
+  public final static int TYPE_LOCAL = 0;
+  public final static int TYPE_NETWORK = 1;
+  public final static int TYPE_FILE = 2;
+
+  public FontDO (String fontFamilyName, String src) {
+    this.mFontFamilyName = fontFamilyName;
+    parseSrc(src);
+  }
+  public String getFontFamilyName() {
+    return mFontFamilyName;
+  }
+
+  private void parseSrc(String src) {
+    src = (src != null )? src.trim() : "";
+    if (src.isEmpty()) {
+      mState = STATE_INVALID;
+      WXLogUtils.e("TypefaceUtil", "font src is empty.");
+      return;
     }
 
-    public BaseBounceView(Context context, AttributeSet attrs,int orientataion) {
-        super(context, attrs);
-        mOrientation = orientataion;
-        init(context);
+    if (src.matches("^url\\('.*'\\)$")) {
+      mUrl = src.substring(5, src.length() - 2);
+      try {
+        URI uri = URI.create(mUrl);
+        String scheme = uri.getScheme();
+        //TODO: use bundle url to process relative path. see #497
+        if (WXConst.SCHEME_HTTP.equals(scheme) ||
+                WXConst.SCHEME_HTTPS.equals(scheme)) {
+          mType = TYPE_NETWORK;
+        } else if (WXConst.SCHEME_FILE.equals(scheme)) {
+          mType = TYPE_FILE;
+          mUrl = uri.getPath();
+        } else {
+          mType = TYPE_LOCAL;
+        }
+        mState = STATE_INIT;
+      } catch (Exception e) {
+        mType = STATE_INVALID;
+        WXLogUtils.e("TypefaceUtil", "URI.create(mUrl) failed mUrl: " + mUrl);
+      }
+    } else {
+      mUrl = src;
+      mState = STATE_INVALID;
     }
 
-    public int getOrientation(){
-        return mOrientation;
-    }
+    WXLogUtils.d("TypefaceUtil", "src:" + src + ", mUrl:" + mUrl + ", mType:" + mType);
+  }
 
-    private void init(Context context) {
-        createBounceView(context);
-    }
+  public String getUrl() {
+    return mUrl;
+  }
 
-    boolean isVertical(){
-        return mOrientation==OrientationHelper.VERTICAL;
-    }
+  public int getType() {
+    return mType;
+  }
 
-    public void setOnRefreshListener(WXSwipeLayout.WXOnRefreshListener onRefreshListener) {
-        if (swipeLayout != null)
-            swipeLayout.setOnRefreshListener(onRefreshListener);
-    }
+  public Typeface getTypeface() {
+    return mTypeface;
+  }
 
-    public void setOnLoadingListener(WXSwipeLayout.WXOnLoadingListener onLoadingListener) {
-        if (swipeLayout != null)
-            swipeLayout.setOnLoadingListener(onLoadingListener);
-    }
+  public void setTypeface(Typeface typeface) {
+    this.mTypeface = typeface;
+  }
 
-    public void finishPullRefresh() {
-        if (swipeLayout != null)
-            swipeLayout.finishPullRefresh();
-    }
+  public int getState() {
+    return mState;
+  }
 
-    public void finishPullLoad() {
-        if (swipeLayout != null)
-            swipeLayout.finishPullLoad();
-    }
-
-    /**
-     * Init Swipelayout
-     */
-    private WXSwipeLayout createBounceView(Context context) {
-        swipeLayout = new WXSwipeLayout(context);
-        swipeLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        innerView = setInnerView(context);
-        if (innerView == null)
-            return null;
-        swipeLayout.addView(innerView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        addView(swipeLayout, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        return swipeLayout;
-    }
-
-    /**
-     * @return the child of swipelayout : recyclerview or scrollview
-     */
-    public T getInnerView() {
-        return innerView;
-    }
-
-    public abstract T setInnerView(Context context);
-
-    /**
-     *
-     * @param headerView should be {@link WXRefreshView}
-     */
-    public void setHeaderView(View headerView) {
-        setRefreshEnable(true);
-        if (swipeLayout != null)
-            if (swipeLayout.getHeaderView() != null)
-                swipeLayout.getHeaderView().setRefreshView(headerView);
-    }
-
-    /**
-     *
-     * @param footerView should be {@link WXRefreshView}
-     */
-    public void setFooterView(View footerView) {
-        setLoadmoreEnable(true);
-        if (swipeLayout != null)
-            if (swipeLayout.getFooterView() != null)
-                swipeLayout.getFooterView().setRefreshView(footerView);
-    }
-
-    public void setRefreshEnable(boolean enable) {
-        if (swipeLayout != null)
-            swipeLayout.setPullRefreshEnable(enable);
-    }
-
-    public void setLoadmoreEnable(boolean enable) {
-        if (swipeLayout != null)
-            swipeLayout.setPullLoadEnable(enable);
-    }
-
-    public WXSwipeLayout getSwipeLayout() {
-        return swipeLayout;
-    }
-
-    public abstract void onRefreshingComplete();
-
-    public abstract void onLoadmoreComplete();
+  public void setState(int state) {
+    this.mState = state;
+  }
 }

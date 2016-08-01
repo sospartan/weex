@@ -133,9 +133,8 @@ import com.taobao.weex.common.WXException;
 import com.taobao.weex.common.WXInstanceWrap;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.dom.*;
-import com.taobao.weex.dom.module.WXModalUIModule;
+import com.taobao.weex.ui.module.WXModalUIModule;
 import com.taobao.weex.http.WXStreamModule;
-import com.taobao.weex.ui.ComponentCreator;
 import com.taobao.weex.ui.IFComponentHolder;
 import com.taobao.weex.ui.SimpleComponentHolder;
 import com.taobao.weex.ui.WXComponentRegistry;
@@ -149,7 +148,6 @@ import com.taobao.weex.ui.module.WXWebViewModule;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXSoInstallMgrSdk;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -209,6 +207,7 @@ public class WXSDKEngine {
         return;
       }
       long start = System.currentTimeMillis();
+      WXEnvironment.sSDKInitStart = start;
       doInitInternal(application,config);
       WXEnvironment.sSDKInitInvokeTime = System.currentTimeMillis()-start;
       WXLogUtils.renderPerformanceLog("SDKInitInvokeTime", WXEnvironment.sSDKInitInvokeTime);
@@ -219,7 +218,6 @@ public class WXSDKEngine {
   private static void doInitInternal(final Application application,final InitConfig config){
     WXEnvironment.sApplication = application;
     WXEnvironment.JsFrameworkInit = false;
-    final long initStart = System.currentTimeMillis();
 
     WXBridgeManager.getInstance().getJSHandler().post(new Runnable() {
       @Override
@@ -245,8 +243,6 @@ public class WXSDKEngine {
 
         WXEnvironment.sSDKInitExecuteTime = System.currentTimeMillis() - start;
         WXLogUtils.renderPerformanceLog("SDKInitExecuteTime", WXEnvironment.sSDKInitExecuteTime);
-        WXEnvironment.sSDKInitTime = System.currentTimeMillis() - initStart;
-        WXLogUtils.renderPerformanceLog("SDKInitTime", WXEnvironment.sSDKInitTime);
       }
     });
     register();
@@ -347,7 +343,7 @@ public class WXSDKEngine {
       registerDomObject(WXBasicComponentType.HLIST, WXListDomObject.class);
       registerDomObject(WXBasicComponentType.SCROLLER, WXScrollerDomObject.class);
     } catch (WXException e) {
-      WXLogUtils.e("[WXSDKEngine] register:" + WXLogUtils.getStackTrace(e));
+      WXLogUtils.e("[WXSDKEngine] register:", e);
     }
   }
 
@@ -532,9 +528,9 @@ public class WXSDKEngine {
       WXEnvironment.sDebugMode = true;
       WXEnvironment.sDebugWsUrl = debugUrl;
       try {
-        Class cls = Class.forName("com.taobao.weex.WXDebugTool");
-        Method m = cls.getMethod("connect", new Class[]{String.class});
-        m.invoke(cls, new Object[]{debugUrl});
+        Class<?> cls = Class.forName("com.taobao.weex.WXDebugTool");
+        Method m = cls.getMethod("connect", String.class);
+        m.invoke(cls, debugUrl);
       } catch (Exception e) {
         Log.d("weex","WXDebugTool not found!");
       }
@@ -542,9 +538,9 @@ public class WXSDKEngine {
       WXEnvironment.sDebugMode = false;
       WXEnvironment.sDebugWsUrl = null;
       try {
-        Class cls = Class.forName("com.taobao.weex.WXDebugTool");
-        Method m = cls.getMethod("close", new Class[]{});
-        m.invoke(cls, new Object[]{});
+        Class<?> cls = Class.forName("com.taobao.weex.WXDebugTool");
+        Method m = cls.getMethod("close");
+        m.invoke(cls);
       } catch (Exception e) {
         Log.d("weex","WXDebugTool not found!");
       }

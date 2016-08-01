@@ -202,129 +202,65 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.view.refresh.wrapper;
+package com.taobao.weex.ui.module;
 
-import android.content.Context;
-import android.support.v7.widget.OrientationHelper;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.FrameLayout;
-
-import com.taobao.weex.ui.view.refresh.core.WXRefreshView;
-import com.taobao.weex.ui.view.refresh.core.WXSwipeLayout;
+import com.taobao.weappplus_sdk.BuildConfig;
+import com.taobao.weex.WXSDKInstanceTest;
+import com.taobao.weex.bridge.JSCallback;
+import com.taobao.weex.ui.module.WXModalUIModule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 /**
- * BounceView(SwipeLayout) contains Scroller/List and refresh/loading view
- * @param <T> InnerView
+ * Created by sospartan on 7/28/16.
  */
-public abstract class BaseBounceView<T extends View> extends FrameLayout {
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 19)
+@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*","org.json.*" })
+@PrepareForTest()
+public class WXModalUIModuleTest {
 
-    private int mOrientation = OrientationHelper.VERTICAL;
-    protected WXSwipeLayout swipeLayout;
-    private T innerView;
+  @Rule
+  public PowerMockRule rule = new PowerMockRule();
 
-    public BaseBounceView(Context context,int orientation) {
-        this(context, null,orientation);
-    }
+  WXModalUIModule module;
 
-    public BaseBounceView(Context context, AttributeSet attrs,int orientataion) {
-        super(context, attrs);
-        mOrientation = orientataion;
-        init(context);
-    }
+  @Before
+  public void setUp() throws Exception {
+    module = new WXModalUIModule();
+    module.mWXSDKInstance = WXSDKInstanceTest.createInstance();
 
-    public int getOrientation(){
-        return mOrientation;
-    }
+  }
 
-    private void init(Context context) {
-        createBounceView(context);
-    }
+  @Test
+  public void testToast() throws Exception {
+    module.toast("{}");
+  }
 
-    boolean isVertical(){
-        return mOrientation==OrientationHelper.VERTICAL;
-    }
+  @Test
+  public void testAlert() throws Exception {
+    JSCallback callback = Mockito.mock(JSCallback.class);
+    module.alert("{}",callback);
 
-    public void setOnRefreshListener(WXSwipeLayout.WXOnRefreshListener onRefreshListener) {
-        if (swipeLayout != null)
-            swipeLayout.setOnRefreshListener(onRefreshListener);
-    }
+  }
 
-    public void setOnLoadingListener(WXSwipeLayout.WXOnLoadingListener onLoadingListener) {
-        if (swipeLayout != null)
-            swipeLayout.setOnLoadingListener(onLoadingListener);
-    }
+  @Test
+  public void testConfirm() throws Exception {
+    JSCallback callback = Mockito.mock(JSCallback.class);
+    module.confirm("{}",callback);
+  }
 
-    public void finishPullRefresh() {
-        if (swipeLayout != null)
-            swipeLayout.finishPullRefresh();
-    }
-
-    public void finishPullLoad() {
-        if (swipeLayout != null)
-            swipeLayout.finishPullLoad();
-    }
-
-    /**
-     * Init Swipelayout
-     */
-    private WXSwipeLayout createBounceView(Context context) {
-        swipeLayout = new WXSwipeLayout(context);
-        swipeLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        innerView = setInnerView(context);
-        if (innerView == null)
-            return null;
-        swipeLayout.addView(innerView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        addView(swipeLayout, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        return swipeLayout;
-    }
-
-    /**
-     * @return the child of swipelayout : recyclerview or scrollview
-     */
-    public T getInnerView() {
-        return innerView;
-    }
-
-    public abstract T setInnerView(Context context);
-
-    /**
-     *
-     * @param headerView should be {@link WXRefreshView}
-     */
-    public void setHeaderView(View headerView) {
-        setRefreshEnable(true);
-        if (swipeLayout != null)
-            if (swipeLayout.getHeaderView() != null)
-                swipeLayout.getHeaderView().setRefreshView(headerView);
-    }
-
-    /**
-     *
-     * @param footerView should be {@link WXRefreshView}
-     */
-    public void setFooterView(View footerView) {
-        setLoadmoreEnable(true);
-        if (swipeLayout != null)
-            if (swipeLayout.getFooterView() != null)
-                swipeLayout.getFooterView().setRefreshView(footerView);
-    }
-
-    public void setRefreshEnable(boolean enable) {
-        if (swipeLayout != null)
-            swipeLayout.setPullRefreshEnable(enable);
-    }
-
-    public void setLoadmoreEnable(boolean enable) {
-        if (swipeLayout != null)
-            swipeLayout.setPullLoadEnable(enable);
-    }
-
-    public WXSwipeLayout getSwipeLayout() {
-        return swipeLayout;
-    }
-
-    public abstract void onRefreshingComplete();
-
-    public abstract void onLoadmoreComplete();
+  @Test
+  public void testPrompt() throws Exception {
+    JSCallback callback = Mockito.mock(JSCallback.class);
+    module.prompt("{}",callback);
+  }
 }

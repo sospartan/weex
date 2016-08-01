@@ -202,72 +202,69 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.dom.module;
+package com.taobao.weex.ui.animation;
 
-import android.app.AlertDialog;
+import android.view.View;
 import com.taobao.weappplus_sdk.BuildConfig;
 import com.taobao.weex.WXSDKInstanceTest;
-import com.taobao.weex.appfram.storage.WXDatabaseSupplier;
-import com.taobao.weex.bridge.JSCallback;
+import com.taobao.weex.common.Component;
+import com.taobao.weex.dom.TestDomObject;
+import com.taobao.weex.ui.component.TestComponent;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowAlertDialog;
 
 import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Created by sospartan on 7/28/16.
+ * Created by sospartan on 7/29/16.
  */
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 19)
 @PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*","org.json.*" })
 @PrepareForTest()
-public class WXModalUIModuleTest {
+public class WXAnimationModuleTest {
 
-  @Rule
-  public PowerMockRule rule = new PowerMockRule();
 
-  WXModalUIModule module;
-
+  WXAnimationModule module;
   @Before
   public void setUp() throws Exception {
-    module = new WXModalUIModule();
+    module = new WXAnimationModule();
     module.mWXSDKInstance = WXSDKInstanceTest.createInstance();
 
-  }
-
-  @Test
-  public void testToast() throws Exception {
-    module.toast("{}");
-  }
-
-  @Test
-  public void testAlert() throws Exception {
-    JSCallback callback = Mockito.mock(JSCallback.class);
-    module.alert("{}",callback);
 
   }
 
   @Test
-  public void testConfirm() throws Exception {
-    JSCallback callback = Mockito.mock(JSCallback.class);
-    module.confirm("{}",callback);
+  public void testTransition() throws Exception {
+    module.transition("","","");
+    module.transition("test","test","");
   }
 
   @Test
-  public void testPrompt() throws Exception {
-    JSCallback callback = Mockito.mock(JSCallback.class);
-    module.prompt("{}",callback);
+  public void testStartAnimation() throws Exception {
+    module.startAnimation(module.mWXSDKInstance,null,null,null);
+
+    TestComponent comp = new TestComponent(module.mWXSDKInstance,new TestDomObject(),null,false);
+    module.startAnimation(module.mWXSDKInstance,comp,null,null);
+
+    WXAnimationBean animation = new WXAnimationBean();
+    module.startAnimation(module.mWXSDKInstance,comp,animation,null);
+
+    comp.mHost = new View(module.mWXSDKInstance.getContext());
+    animation.styles = new WXAnimationBean.Style();
+    module.startAnimation(module.mWXSDKInstance,comp,animation,null);
+
+  }
+
+  @Test
+  public void testCreateAnimatorListener() throws Exception {
+
   }
 }
