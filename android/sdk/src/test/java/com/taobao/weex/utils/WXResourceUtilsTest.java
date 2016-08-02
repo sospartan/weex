@@ -202,35 +202,31 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.appfram.storage;
+package com.taobao.weex.utils;
 
-import java.util.Map;
+import android.graphics.Color;
+import com.taobao.weappplus_sdk.BuildConfig;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
+
+import static org.junit.Assert.*;
 
 /**
- * interface for {@link WXStorageModule} class.
- * this interface works as an adapter for different storage strategy.
- * the default is use {@link android.database.sqlite.SQLiteDatabase} to store k-v pairs.
- * You can call {@link com.taobao.weex.InitConfig.Builder#setStorageAdapter(IWXStorageAdapter)} to inject your own
- * storage implementation.
- * */
-public interface IWXStorageAdapter {
-    void setItem(String key, String value,OnResultReceivedListener listener);
+ * Created by sospartan on 8/2/16.
+ */
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 19)
+@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*" })
+@PrepareForTest()
+public class WXResourceUtilsTest {
 
-    void getItem(String key,OnResultReceivedListener listener);
-
-    void removeItem(String key,OnResultReceivedListener listener);
-
-    void length(OnResultReceivedListener listener);
-
-    void getAllKeys(OnResultReceivedListener listener);
-
-    void close();
-
-    /**
-     * the callback of storage operation.
-     * */
-    interface OnResultReceivedListener {
-        void onReceived(Map<String,Object> data);
-    }
-
+  @Test
+  public void testGetColor() throws Exception {
+    assertEquals(WXResourceUtils.getColor("red"), Color.RED);
+    assertEquals(WXResourceUtils.getColor(""), Integer.MIN_VALUE);
+  }
 }

@@ -205,7 +205,6 @@
 package com.taobao.weex.appfram.storage;
 
 import com.taobao.weappplus_sdk.BuildConfig;
-import com.taobao.weex.bridge.WXBridgeManager;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -219,7 +218,6 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.*;
 
@@ -229,10 +227,10 @@ import static org.mockito.Mockito.*;
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 19)
 @PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*" })
-@PrepareForTest(WXDatabaseSupplier.class)
+@PrepareForTest(WXSQLiteOpenHelper.class)
 public class DefaultWXStorageTest {
 
-  WXDatabaseSupplier supplier;
+  WXSQLiteOpenHelper supplier;
   DefaultWXStorage storage;
   IWXStorageAdapter.OnResultReceivedListener listener;
 
@@ -241,13 +239,13 @@ public class DefaultWXStorageTest {
 
   @Before
   public void setup(){
-    supplier = Mockito.mock(WXDatabaseSupplier.class);
+    supplier = Mockito.mock(WXSQLiteOpenHelper.class);
     listener = Mockito.mock(IWXStorageAdapter.OnResultReceivedListener.class);
     storage = new DefaultWXStorage(RuntimeEnvironment.application);
 
-    mockStatic(WXDatabaseSupplier.class);
+    mockStatic(WXSQLiteOpenHelper.class);
 
-    PowerMockito.when(WXDatabaseSupplier.getInstance(RuntimeEnvironment.application)).thenReturn(supplier);
+    PowerMockito.when(WXSQLiteOpenHelper.getInstance(RuntimeEnvironment.application)).thenReturn(supplier);
   }
 
 
@@ -256,6 +254,7 @@ public class DefaultWXStorageTest {
     storage.setItem("","",listener);
 
     verify(listener,timeout(3000).times(1)).onReceived(anyMapOf(String.class,Object.class));
+    storage.close();
   }
 
   @Test
@@ -263,6 +262,7 @@ public class DefaultWXStorageTest {
     storage.getItem("",listener);
 
     verify(listener,timeout(3000).times(1)).onReceived(anyMapOf(String.class,Object.class));
+    storage.close();
   }
 
   @Test
@@ -270,6 +270,7 @@ public class DefaultWXStorageTest {
     storage.removeItem("",listener);
 
     verify(listener,timeout(3000).times(1)).onReceived(anyMapOf(String.class,Object.class));
+    storage.close();
   }
 
   @Test
@@ -277,6 +278,7 @@ public class DefaultWXStorageTest {
     storage.length(listener);
 
     verify(listener,timeout(3000).times(1)).onReceived(anyMapOf(String.class,Object.class));
+    storage.close();
   }
 
   @Test
@@ -284,5 +286,6 @@ public class DefaultWXStorageTest {
     storage.getAllKeys(listener);
 
     verify(listener,timeout(3000).times(1)).onReceived(anyMapOf(String.class,Object.class));
+    storage.close();
   }
 }

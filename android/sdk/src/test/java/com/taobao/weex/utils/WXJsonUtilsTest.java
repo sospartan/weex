@@ -202,35 +202,53 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.appfram.storage;
+package com.taobao.weex.utils;
 
-import java.util.Map;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.Objects;
+
+import static org.junit.Assert.*;
 
 /**
- * interface for {@link WXStorageModule} class.
- * this interface works as an adapter for different storage strategy.
- * the default is use {@link android.database.sqlite.SQLiteDatabase} to store k-v pairs.
- * You can call {@link com.taobao.weex.InitConfig.Builder#setStorageAdapter(IWXStorageAdapter)} to inject your own
- * storage implementation.
- * */
-public interface IWXStorageAdapter {
-    void setItem(String key, String value,OnResultReceivedListener listener);
+ * Created by sospartan on 8/2/16.
+ */
+public class WXJsonUtilsTest {
 
-    void getItem(String key,OnResultReceivedListener listener);
 
-    void removeItem(String key,OnResultReceivedListener listener);
+  static class TestObj{
+    int a;
 
-    void length(OnResultReceivedListener listener);
-
-    void getAllKeys(OnResultReceivedListener listener);
-
-    void close();
-
-    /**
-     * the callback of storage operation.
-     * */
-    interface OnResultReceivedListener {
-        void onReceived(Map<String,Object> data);
+    public int getA() {
+      return a;
     }
+
+    public void setA(int a) {
+      this.a = a;
+    }
+  }
+
+  @Test
+  public void testGetList() throws Exception {
+    List<TestObj> list = WXJsonUtils.getList("[{'a':1},{'a':2}]",TestObj.class);
+
+    assertEquals(list.size(),2);
+    assertEquals(list.get(0).getA(),1);
+    assertEquals(list.get(1).getA(),2);
+
+    list = WXJsonUtils.getList("{}",TestObj.class);
+
+    assertEquals(list.size(),0);
+  }
+
+  @Test
+  public void testFromObjectToJSONString() throws Exception {
+    TestObj obj = new TestObj();
+    obj.a  = 1;
+    assertEquals(WXJsonUtils.fromObjectToJSONString(obj),"{\"a\":1}");
+    assertEquals(WXJsonUtils.fromObjectToJSONString(null),"null");
+    assertEquals(WXJsonUtils.fromObjectToJSONString(new Object()),"{}");
+  }
 
 }

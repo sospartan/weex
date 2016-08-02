@@ -202,101 +202,49 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.appfram.storage;
+package com.taobao.weex.utils;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import com.taobao.weappplus_sdk.BuildConfig;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
+import org.robolectric.util.Pair;
 
-import com.taobao.weex.utils.WXLogUtils;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
-public class WXDatabaseSupplier extends SQLiteOpenHelper {
+import static org.junit.Assert.*;
 
-    private static final String DATABASE_NAME = "WXStorage";
-    private static final int DATABASE_VERSION = 1;
+/**
+ * Created by sospartan on 8/2/16.
+ */
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 19)
+@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*" })
+public class WXReflectionUtilsTest {
 
-    private long mMaximumDatabaseSize = 5L * 1024L * 1024L;
+  static class TestA{
+    private boolean value = false;
+  }
 
-    private static WXDatabaseSupplier sInstance;
+  @Test
+  public void testParseArgument() throws Exception {
+   Object value =  WXReflectionUtils.parseArgument(String.class,"dkdkdkdk");
+    assertTrue(value instanceof String);
+    value = WXReflectionUtils.parseArgument(long.class,"123444");
+    assertTrue(value instanceof Long);
+  }
 
-    private Context mContext;
-    private SQLiteDatabase mDb;
+  @Test
+  public void testSetValue() throws Exception {
+    TestA a = new TestA();
 
-
-    static final String TABLE_STORAGE = "default_wx_storage";
-    static final String COLUMN_KEY = "key";
-    static final String COLUMN_VALUE = "value";
-
-    private static final String STATEMENT_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_STORAGE + " ("
-            + COLUMN_KEY
-            + " TEXT PRIMARY KEY,"
-            + COLUMN_VALUE
-            + " TEXT NOT NULL"
-            + ")";
-
-
-    private WXDatabaseSupplier(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.mContext = context;
-    }
-
-    public static WXDatabaseSupplier getInstance(Context context) {
-        if (context == null) {
-            WXLogUtils.e("can not get context instance...");
-            return null;
-        }
-        if (sInstance == null) {
-            sInstance = new WXDatabaseSupplier(context);
-        }
-        return sInstance;
-    }
-
-    SQLiteDatabase getDatabase() {
-        ensureDatabase();
-        return mDb;
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(STATEMENT_CREATE_TABLE);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion != newVersion) {
-            deleteDB();
-            onCreate(db);
-        }
-    }
-
-
-
-    synchronized void ensureDatabase() {
-        if (mDb != null && mDb.isOpen()) {
-            return;
-        }
-        mDb = getWritableDatabase();
-        mDb.setMaximumSize(mMaximumDatabaseSize);
-    }
-
-    public synchronized void setMaximumSize(long size) {
-        mMaximumDatabaseSize = size;
-        if (mDb != null) {
-            mDb.setMaximumSize(mMaximumDatabaseSize);
-        }
-    }
-
-    private boolean deleteDB() {
-        closeDatabase();
-        return mContext.deleteDatabase(DATABASE_NAME);
-    }
-
-    public void closeDatabase() {
-        if (mDb != null && mDb.isOpen()) {
-            mDb.close();
-            mDb = null;
-        }
-    }
+    WXReflectionUtils.setValue(a,"value","true");
+    assertTrue(a.value);
+  }
 
 
 }

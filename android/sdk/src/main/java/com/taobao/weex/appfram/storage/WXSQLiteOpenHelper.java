@@ -204,33 +204,99 @@
  */
 package com.taobao.weex.appfram.storage;
 
-import java.util.Map;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * interface for {@link WXStorageModule} class.
- * this interface works as an adapter for different storage strategy.
- * the default is use {@link android.database.sqlite.SQLiteDatabase} to store k-v pairs.
- * You can call {@link com.taobao.weex.InitConfig.Builder#setStorageAdapter(IWXStorageAdapter)} to inject your own
- * storage implementation.
- * */
-public interface IWXStorageAdapter {
-    void setItem(String key, String value,OnResultReceivedListener listener);
+import com.taobao.weex.utils.WXLogUtils;
 
-    void getItem(String key,OnResultReceivedListener listener);
+public class WXSQLiteOpenHelper extends SQLiteOpenHelper {
 
-    void removeItem(String key,OnResultReceivedListener listener);
+    private static final String DATABASE_NAME = "WXStorage";
+    private static final int DATABASE_VERSION = 1;
 
-    void length(OnResultReceivedListener listener);
+    private long mMaximumDatabaseSize = 5L * 1024L * 1024L;
 
-    void getAllKeys(OnResultReceivedListener listener);
+    private static WXSQLiteOpenHelper sInstance;
 
-    void close();
+    private Context mContext;
+    private SQLiteDatabase mDb;
 
-    /**
-     * the callback of storage operation.
-     * */
-    interface OnResultReceivedListener {
-        void onReceived(Map<String,Object> data);
+
+    static final String TABLE_STORAGE = "default_wx_storage";
+    static final String COLUMN_KEY = "key";
+    static final String COLUMN_VALUE = "value";
+
+    private static final String STATEMENT_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_STORAGE + " ("
+            + COLUMN_KEY
+            + " TEXT PRIMARY KEY,"
+            + COLUMN_VALUE
+            + " TEXT NOT NULL"
+            + ")";
+
+
+    private WXSQLiteOpenHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.mContext = context;
     }
+
+    public static WXSQLiteOpenHelper getInstance(Context context) {
+        if (context == null) {
+            WXLogUtils.e("can not get context instance...");
+            return null;
+        }
+        if (sInstance == null) {
+            sInstance = new WXSQLiteOpenHelper(context);
+        }
+        return sInstance;
+    }
+
+    SQLiteDatabase getDatabase() {
+        ensureDatabase();
+        return mDb;
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(STATEMENT_CREATE_TABLE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion != newVersion) {
+            deleteDB();
+            onCreate(db);
+        }
+    }
+
+
+
+    synchronized void ensureDatabase() {
+        if (mDb != null && mDb.isOpen()) {
+            return;
+        }
+        mDb = getWritableDatabase();
+        mDb.setMaximumSize(mMaximumDatabaseSize);
+    }
+
+    public synchronized void setMaximumSize(long size) {
+        mMaximumDatabaseSize = size;
+        if (mDb != null) {
+            mDb.setMaximumSize(mMaximumDatabaseSize);
+        }
+    }
+
+    private boolean deleteDB() {
+        closeDatabase();
+        return mContext.deleteDatabase(DATABASE_NAME);
+    }
+
+    public void closeDatabase() {
+        if (mDb != null && mDb.isOpen()) {
+            mDb.close();
+            mDb = null;
+        }
+    }
+
 
 }
