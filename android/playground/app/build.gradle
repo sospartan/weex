@@ -37,6 +37,7 @@ android {
 //        }
         debug {
             testCoverageEnabled true
+            jniDebuggable true
         }
     }
     sourceSets {

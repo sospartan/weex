@@ -33,17 +33,17 @@ android {
     buildToolsVersion "23.0.2"
     resourcePrefix "weex"
 
-//    def libsDir = projectDir.path + "/src/main/jni/"
+    def libsDir = projectDir.path + "/src/main/jni/"
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"
         ndk {
-//            moduleName "weexcore"
-//            cFlags "-I" + file(libsDir+"v8core").absolutePath
-//            ldLibs "log",libsDir + "libv8_base.a",libsDir + "libv8_snapshot.a"
-            abiFilters "armeabi"
+            moduleName "weexcore"
+            cFlags "-I" + file(libsDir+"v8core").absolutePath
+            ldLibs "log",libsDir + "libv8_base.a",libsDir + "libv8_snapshot.a"
+            abiFilters "armeabi", "armeabi-v7a"
         }
     }
     buildTypes {
@@ -54,6 +54,7 @@ android {
 
         debug {
             testCoverageEnabled true
+            jniDebuggable true
         }
     }
 
