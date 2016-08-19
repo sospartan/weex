@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +33,7 @@ public class IndexActivity extends AbstractWeexActivity {
   private static final int CAMARA_PERMISSION_REQUEST_CODE = 0x1;
   private static final String TAG = "IndexActivity";
   private static final String DEFAULT_IP = "your_current_IP";
-  private static String CURRENT_IP= DEFAULT_IP; // your_current_IP
+  private static String CURRENT_IP= "30.10.192.122"; // your_current_IP
   private static final String WEEX_INDEX_URL = "http://"+CURRENT_IP+":12580/examples/build/index.js";
 
   private ProgressBar mProgressBar;
@@ -46,11 +45,8 @@ public class IndexActivity extends AbstractWeexActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_index);
+    setContentView(R.layout.content_wx_main);
     setContainer((ViewGroup) findViewById(R.id.index_container));
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-    toolbar.setTitle("WEEX");
-    setSupportActionBar(toolbar);
 
     mProgressBar = (ProgressBar) findViewById(R.id.index_progressBar);
     mTipView = (TextView) findViewById(R.id.index_tip);
@@ -124,16 +120,6 @@ public class IndexActivity extends AbstractWeexActivity {
       return true;
     }
     return super.onOptionsItemSelected(item);
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode == CAMARA_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      startActivity(new Intent(this, CaptureActivity.class));
-    } else {
-      Toast.makeText(this, "request camara permission fail!", Toast.LENGTH_SHORT).show();
-    }
   }
 
   @Override

@@ -205,6 +205,7 @@
 package com.taobao.weex;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Message;
 import android.text.TextUtils;
@@ -217,6 +218,7 @@ import com.taobao.weex.adapter.IWXHttpAdapter;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 import com.taobao.weex.adapter.IWXUserTrackAdapter;
 import com.taobao.weex.bridge.WXBridgeManager;
+import com.taobao.weex.bridge.WXModuleManager;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.OnWXScrollListener;
 import com.taobao.weex.common.WXErrorCode;
@@ -252,7 +254,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Each instance of WXSDKInstance represents an running weex instance.
  * It can be a pure weex view, or mixed with native view
  */
-public class WXSDKInstance implements IWXActivityStateListener {
+public class WXSDKInstance implements IWXActivityStateListener ,IWXActivityExt{
 
   public boolean mEnd = false;
   public static final String BUNDLE_URL = "bundleUrl";
@@ -300,6 +302,8 @@ public class WXSDKInstance implements IWXActivityStateListener {
     void onDisappear();
   }
   private List<OnInstanceVisibleListener> mVisibleListeners = new ArrayList<>();
+
+  private List<IWXActivityExt> mIWXActivityExts=new ArrayList<>();
 
   public WXSDKInstance(Context context) {
     init(context);
@@ -617,6 +621,10 @@ public class WXSDKInstance implements IWXActivityStateListener {
     }
   }
 
+  public void registerIWXActivityExt(IWXActivityExt ext){
+    mIWXActivityExts.add(ext);
+  }
+
   /********************************
    * end register listener
    ********************************************************/
@@ -642,6 +650,22 @@ public class WXSDKInstance implements IWXActivityStateListener {
       listener.onActivityPause();
     }
     onViewDisappear();
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    WXModuleManager.onActivityResult(mInstanceId,requestCode,resultCode,data);
+    for(IWXActivityExt ext:mIWXActivityExts){
+      ext.onActivityResult(requestCode,resultCode,data);
+    }
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    WXModuleManager.onRequestPermissionsResult(mInstanceId,requestCode,permissions,grantResults);
+    for(IWXActivityExt ext:mIWXActivityExts){
+      ext.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
   }
 
   public void onViewDisappear(){
@@ -922,6 +946,10 @@ public class WXSDKInstance implements IWXActivityStateListener {
     if (mActivityStateListeners != null) {
       mActivityStateListeners.clear();
       mActivityStateListeners = null;
+    }
+
+    if(mIWXActivityExts!=null){
+      mIWXActivityExts.clear();
     }
 
     mContext = null;
