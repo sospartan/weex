@@ -89,7 +89,10 @@
 
             for (var i = 0; i < this.tabItems.length; i++) {
                 var tabItem = this.tabItems[i];
-                tabItem.src = "http:" + base + tabItem.src;
+                tabItem.src = base + tabItem.src;
+                if(tabItem.src.indexOf('file')<0){
+                    tabItem.src="http:"+tabItem.src;
+                }
                 console.log(tabItem.title + ":" + tabItem.src);
             }
         }

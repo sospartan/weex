@@ -3,7 +3,8 @@
         <text class="titleText">{{leftTitle}}</text>
         <div style="flex-direction: row;align-items: center;justify-content: center">
             <text class="titleText">{{rightTitle}}</text>
-            <image src="{{src}}" style="width: 50px;height: 50px" onclick="{{refresh}}"></image>
+            <image src="{{src}}" style="width: 50px;height: 50px;visibility: {{imageVisible}}"
+                   onclick="{{refresh}}"></image>
         </div>
     </div>
 </template>
@@ -28,7 +29,24 @@
         data: {
             leftTitle: "WEEX",
             rightTitle: "",
-            src: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png"
+            src: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
+            imageVisible: 'visible'
+        },
+        created: function () {
+            var bundleUrl = this.$getConfig().bundleUrl;
+            console.log("navigator:" + bundleUrl);
+            if (bundleUrl.indexOf('file') >= 0) {
+                this.imageVisible = 'hidden';
+                console.log("into--[indexof]")
+            }else{
+                this.imageVisible='visible';
+                console.log("into--[else]")
+            }
+            console.log("navigator:" + this.imageVisible);
+            console.log("navigator file:" + bundleUrl.indexOf('file'));
+            console.log("navigator ip:" + bundleUrl.indexOf('your_current_IP'));
+
+
         },
         methods: {
             refresh: function (event) {

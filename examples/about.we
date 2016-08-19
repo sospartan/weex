@@ -19,7 +19,7 @@
             <text class="header">Other</text>
             <about_item left="New Version" right="{{newVersion}}" right-color="{{versionColor}}"
                         src="http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"></about_item>
-            <about_item left="Feedback"
+            <about_item left="Feedback" onclick="feedback"
                         src="http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"></about_item>
             <about_item left="Help" onclick="help"
                         src="http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"></about_item>
@@ -53,7 +53,8 @@
             deviceWidth: "",
             deviceHeight: "",
             newVersion: "Nothing",
-            versionColor: "green"
+            versionColor: "green",
+            visible:"visible"
         },
         ready: function () {
             var config = this.$getConfig();
@@ -62,6 +63,7 @@
             this.osVersion = config.env.osVersion;
             this.deviceWidth = config.env.deviceWidth;
             this.deviceHeight = config.env.deviceHeight;
+
 
             var self = this;
 
@@ -79,6 +81,9 @@
         methods: {
             help: function (event) {
                 require('@weex-module/event').openBrowser("http://alibaba.github.io/weex/doc/");
+            },
+            feedback:function(event){
+                require('@weex-module/event').openBrowser("http://weex.help/");
             }
         }
     }
