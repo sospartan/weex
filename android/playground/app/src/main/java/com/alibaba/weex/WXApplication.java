@@ -5,6 +5,7 @@ import android.app.Application;
 import com.alibaba.weex.commons.adapter.ImageAdapter;
 import com.alibaba.weex.extend.PlayDebugAdapter;
 import com.alibaba.weex.extend.component.RichText;
+import com.alibaba.weex.extend.module.CamaraModule;
 import com.alibaba.weex.extend.module.MyModule;
 import com.alibaba.weex.extend.module.RenderModule;
 import com.alibaba.weex.extend.module.WXEventModule;
@@ -36,6 +37,7 @@ public class WXApplication extends Application {
       WXSDKEngine.registerModule("event", WXEventModule.class);
 
       WXSDKEngine.registerModule("myModule", MyModule.class);
+      WXSDKEngine.registerModule("camara", CamaraModule.class);
 
     } catch (WXException e) {
       e.printStackTrace();
