@@ -40,91 +40,82 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ({
+/******/ ([
+/* 0 */
+/***/ function(module, exports) {
 
-/***/ 0:
-/***/ function(module, exports, __webpack_require__) {
-
-	;__weex_define__("@weex-component/8e6cff2d0487efb24411ddaeb27766c3", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/744b10ba7bbb8fdb0f00c5c074e136ff", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	  __webpack_require__(34)
-	  __weex_module__.exports = {
-	    data: function () {return {
-	      items: [
-	        {title: 'A', url: 'a'},
-	        {title: 'B', url: 'b'},
-	        {title: 'C', url: 'c'}
-	      ]
-	    }}
-	  }
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            left: "",
+	            right: "",
+	            src: "",
+	            rightColor:"black"
+	        }},
+	        methods: {}
+	    }
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "list",
+	  "type": "div",
+	  "classList": [
+	    "panel"
+	  ],
 	  "children": [
 	    {
-	      "type": "cell",
-	      "append": "tree",
-	      "repeat": {
-	        "expression": function () {return this.items},
-	        "value": "item"
+	      "type": "text",
+	      "attr": {
+	        "value": function () {return this.left}
+	      }
+	    },
+	    {
+	      "type": "div",
+	      "style": {
+	        "alignItems": "center",
+	        "flexDirection": "row"
 	      },
 	      "children": [
 	        {
 	          "type": "text",
+	          "style": {
+	            "marginRight": 10,
+	            "color": function () {return this.rightColor}
+	          },
 	          "attr": {
-	            "value": function () {return this.item.title}
+	            "value": function () {return this.right}
 	          }
 	        },
 	        {
-	          "type": "sub",
+	          "type": "image",
 	          "attr": {
-	            "title": "a"
+	            "src": function () {return this.src}
+	          },
+	          "style": {
+	            "height": 40,
+	            "width": 40
 	          }
 	        }
 	      ]
 	    }
 	  ]
 	})
+	;__weex_module__.exports.style = __weex_module__.exports.style || {}
+	;Object.assign(__weex_module__.exports.style, {
+	  "panel": {
+	    "flexDirection": "row",
+	    "padding": 10,
+	    "alignItems": "center",
+	    "justifyContent": "space-between",
+	    "borderBottomWidth": 2,
+	    "borderBottomColor": "#D3D3D3"
+	  }
 	})
-	;__weex_bootstrap__("@weex-component/8e6cff2d0487efb24411ddaeb27766c3", {
+	})
+	;__weex_bootstrap__("@weex-component/744b10ba7bbb8fdb0f00c5c074e136ff", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
-/***/ },
-
-/***/ 34:
-/***/ function(module, exports) {
-
-	;__weex_define__("@weex-component/sub", [], function(__weex_require__, __weex_exports__, __weex_module__){
-
-	;
-	  __weex_module__.exports = {
-	    data: function () {return {
-	    title: ''
-	    }}
-	  }
-
-	;__weex_module__.exports.template = __weex_module__.exports.template || {}
-	;Object.assign(__weex_module__.exports.template, {
-	  "type": "text",
-	  "classList": [
-	    "item-txt"
-	  ],
-	  "attr": {
-	    "value": function () {return this.title}
-	  }
-	})
-	;__weex_module__.exports.style = __weex_module__.exports.style || {}
-	;Object.assign(__weex_module__.exports.style, {
-	  "item-txt": {
-	    "fontSize": 48,
-	    "color": "#555555"
-	  }
-	})
-	})
-
 /***/ }
-
-/******/ });
+/******/ ]);

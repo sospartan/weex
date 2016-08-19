@@ -44,10 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/2e3ee5c853359a76389401bc185c933a", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/f7388c5a061471833ba9beeb1ca50765", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	  __webpack_require__(1);
+	  __webpack_require__(2);
 
 	  __weex_module__.exports = {
 	    data: function () {return {
@@ -95,7 +95,7 @@
 	          me.getResult = "request failed";
 	        }else{
 	          console.log('get:'+ret);
-	          me.getResult = ret.data;
+	          me.getResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -110,8 +110,8 @@
 	        if(!ret.ok){
 	          me.postResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
-	          me.postResult = ret.data;
+	          console.log('get:'+JSON.stringify(ret));
+	          me.postResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -126,8 +126,8 @@
 	        if(!ret.ok){
 	          me.putResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
-	          me.putResult = ret.data;
+	          console.log('get:'+JSON.stringify(ret));
+	          me.putResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -143,8 +143,8 @@
 	        if(!ret.ok){
 	          me.deleteResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
-	          me.deleteResult = ret.data;
+	          console.log('get:'+JSON.stringify(ret));
+	          me.deleteResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -159,7 +159,7 @@
 	        if(ret.statusText !== 'I\'m a teapot'){
 	          me.headResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
+	          console.log('get:'+JSON.stringify(ret));
 	          me.headResult = ret.statusText;
 	        }
 	      },function(response){
@@ -175,8 +175,8 @@
 	        if(!ret.ok){
 	          me.patchResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
-	          me.patchResult = ret.data;
+	          console.log('get:'+JSON.stringify(ret));
+	          me.patchResult = JSON.stringify(request.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -299,18 +299,18 @@
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/2e3ee5c853359a76389401bc185c933a", {
+	;__weex_bootstrap__("@weex-component/f7388c5a061471833ba9beeb1ca50765", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
 /***/ },
-/* 1 */
+/* 1 */,
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/index", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	  __webpack_require__(2);
 	  __webpack_require__(3);
 	  __webpack_require__(4);
 	  __webpack_require__(5);
@@ -321,11 +321,12 @@
 	  __webpack_require__(10);
 	  __webpack_require__(11);
 	  __webpack_require__(12);
+	  __webpack_require__(13);
 
 	})
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-button", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -453,7 +454,7 @@
 	})
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-hn", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -514,7 +515,7 @@
 	})
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-list-item", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -572,7 +573,7 @@
 	})
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-panel", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -682,7 +683,7 @@
 	})
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-tip", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -753,7 +754,7 @@
 	})
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-countdown", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -870,7 +871,7 @@
 	})
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-marquee", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -971,7 +972,7 @@
 	})
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-navbar", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -1165,11 +1166,11 @@
 	})
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/wxc-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(9);
+	__webpack_require__(10);
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
@@ -1224,11 +1225,11 @@
 	})
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/wxc-tabbar", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(12);
+	__webpack_require__(13);
 
 	;
 	    __weex_module__.exports = {
@@ -1344,7 +1345,7 @@
 	})
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-tabitem", [], function(__weex_require__, __weex_exports__, __weex_module__){

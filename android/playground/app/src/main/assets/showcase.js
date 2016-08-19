@@ -44,51 +44,159 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/77383d5ddf1ca77c172b98d69af02adb", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/6d882c8e3c67b639707b08f05b98d25e", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	__webpack_require__(1);
 
 	;
-	  __webpack_require__(2);
-
-	  __weex_module__.exports = {
-	    data: function () {return {
-	      config: ''
-	    }},
-	    ready: function() {
-	      var config = this.$getConfig();
-	      console.log('config', JSON.stringify(config));
-	      this.config = JSON.stringify(config, null, 2);
-	    },
-	    methods: {}
-	  }
+	    __webpack_require__(17);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            root: 'examples',
+	            items: [
+	                // showcase
+	                {name: 'showcase/new-fashion/index', title: 'Activity'},
+	                {name: 'showcase/calculator', title: 'Calculator'},
+	                {name: 'showcase/minesweeper', title: 'Minesweeper'},
+	                {name: 'showcase/ui', title: 'UI Gallery'},
+	                {name: 'showcase/dropdown/dropdown-demo', title: 'Dropdown'}
+	            ]
+	        }}
+	    }
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "div",
+	  "style": {
+	    "flexDirection": "column"
+	  },
 	  "children": [
 	    {
-	      "type": "wxc-panel",
+	      "type": "navigator",
 	      "attr": {
-	        "title": "$getConfig()",
-	        "type": "primary"
+	        "leftTitle": "Showcase"
+	      }
+	    },
+	    {
+	      "type": "example-list",
+	      "attr": {
+	        "items": function () {return this.items},
+	        "root": function () {return this.root}
+	      }
+	    }
+	  ]
+	})
+	})
+	;__weex_bootstrap__("@weex-component/6d882c8e3c67b639707b08f05b98d25e", {
+	  "transformerVersion": "0.3.1"
+	},undefined)
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	;__weex_define__("@weex-component/navigator", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            leftTitle: "WEEX",
+	            rightTitle: "",
+	            src: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
+	            imageVisible: 'visible'
+	        }},
+	        created: function () {
+	            var bundleUrl = this.$getConfig().bundleUrl;
+	            console.log("navigator:" + bundleUrl);
+	            if (bundleUrl.indexOf('file') >= 0) {
+	                this.imageVisible = 'hidden';
+	                console.log("into--[indexof]")
+	            }else{
+	                this.imageVisible='visible';
+	                console.log("into--[else]")
+	            }
+	            console.log("navigator:" + this.imageVisible);
+	            console.log("navigator file:" + bundleUrl.indexOf('file'));
+	            console.log("navigator ip:" + bundleUrl.indexOf('your_current_IP'));
+
+
+	        },
+	        methods: {
+	            refresh: function (event) {
+	                __weex_require__("@weex-module/event").refresh();
+	            }
+	        }
+	    }
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "div",
+	  "classList": [
+	    "navigator"
+	  ],
+	  "children": [
+	    {
+	      "type": "text",
+	      "classList": [
+	        "titleText"
+	      ],
+	      "attr": {
+	        "value": function () {return this.leftTitle}
+	      }
+	    },
+	    {
+	      "type": "div",
+	      "style": {
+	        "flexDirection": "row",
+	        "alignItems": "center",
+	        "justifyContent": "center"
 	      },
 	      "children": [
 	        {
 	          "type": "text",
+	          "classList": [
+	            "titleText"
+	          ],
 	          "attr": {
-	            "value": function () {return this.config}
+	            "value": function () {return this.rightTitle}
+	          }
+	        },
+	        {
+	          "type": "image",
+	          "attr": {
+	            "src": function () {return this.src}
+	          },
+	          "style": {
+	            "width": 50,
+	            "height": 50,
+	            "visibility": function () {return this.imageVisible}
+	          },
+	          "events": {
+	            "click": "refresh"
 	          }
 	        }
 	      ]
 	    }
 	  ]
 	})
+	;__weex_module__.exports.style = __weex_module__.exports.style || {}
+	;Object.assign(__weex_module__.exports.style, {
+	  "navigator": {
+	    "backgroundColor": "#3F51B5",
+	    "padding": 20,
+	    "height": 90,
+	    "width": 750,
+	    "flexDirection": "row",
+	    "alignItems": "center",
+	    "justifyContent": "space-between"
+	  },
+	  "titleText": {
+	    "fontSize": 40,
+	    "color": "#FFFFFF"
+	  }
 	})
-	;__weex_bootstrap__("@weex-component/77383d5ddf1ca77c172b98d69af02adb", {
-	  "transformerVersion": "0.3.1"
-	},undefined)
+	})
 
 /***/ },
-/* 1 */,
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1224,6 +1332,144 @@
 	    "marginTop": 5,
 	    "textAlign": "center",
 	    "fontSize": 20
+	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/example-list", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	__webpack_require__(18);
+
+	;
+	  __webpack_require__(2);
+	  __weex_module__.exports = {
+	    data: function () {return {
+	      root: '', // examples, examples/syntax, test ...
+	      items: [
+	        {name: 'hello', title: 'Hello World', url: ''}
+	      ]
+	    }},
+	    created: function() {
+	      var bundleUrl = this.$getConfig().bundleUrl;
+	      console.log('hit', bundleUrl);
+	      var dirs = this.root.split('/');
+	      dirs.forEach(function(dir, index) {
+	        if (!dir) dirs.splice(index, 1);
+	      });
+	      var root = dirs.length > 0 ? dirs[0] : '';
+	      var subRoot = dirs.length > 1 ? dirs.slice(1).join('/') + '/' : '';
+
+	      var nativeBase;
+	      var isAndroidAssets = bundleUrl.indexOf('your_current_IP') >= 0 || bundleUrl.indexOf('file://assets/')>=0;
+	      var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 && bundleUrl.indexOf('WeexDemo.app') > 0;
+	      if (isAndroidAssets) {
+	        nativeBase = 'file://assets/';
+	      }
+	      else if (isiOSAssets) {
+	        // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
+	        // file:///Users/{user}/Library/Developer/CoreSimulator/Devices/{id}/data/Containers/Bundle/Application/{id}/WeexDemo.app/
+	        nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+	      }
+	      else {
+	        var host = 'localhost:12580';
+	        var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+	        if (matches && matches.length >= 2) {
+	          host = matches[1];
+	        }
+	        nativeBase = '//' + host + '/' + root + '/build/' + subRoot;
+	      }
+	      var h5Base = './index.html?page=./' + root + '/build/' + subRoot;
+	      // in Native
+	      var base = nativeBase;
+	      if (typeof window === 'object') {
+	        // in Browser or WebView
+	        base = h5Base;
+	      }
+
+	      for (var i in this.items) {
+	        var item = this.items[i];
+	        if (!item.url) {
+	          item.url = base + item.name + '.js';
+	        }
+	      }
+	      // see log in Android Logcat
+	      if (this.items.length) console.log('hit', this.items[0].url);
+	    }
+	  }
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "list",
+	  "children": [
+	    {
+	      "type": "cell",
+	      "append": "tree",
+	      "repeat": function () {return this.items},
+	      "children": [
+	        {
+	          "type": "example-list-item",
+	          "attr": {
+	            "title": function () {return this.title},
+	            "url": function () {return this.url}
+	          }
+	        }
+	      ]
+	    }
+	  ]
+	})
+	;__weex_module__.exports.style = __weex_module__.exports.style || {}
+	;Object.assign(__weex_module__.exports.style, {})
+	})
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/example-list-item", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	  __webpack_require__(2);
+	  __weex_module__.exports = {
+	    data: function () {return {
+	      title: '',
+	      url: ''
+	    }},
+	    methods: {
+	      redirect: function() {
+	        this.$openURL(this.url);
+	      }
+	    }
+	  }
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-list-item",
+	  "events": {
+	    "click": "redirect"
+	  },
+	  "children": [
+	    {
+	      "type": "text",
+	      "classList": [
+	        "item-txt"
+	      ],
+	      "attr": {
+	        "value": function () {return this.title}
+	      }
+	    }
+	  ]
+	})
+	;__weex_module__.exports.style = __weex_module__.exports.style || {}
+	;Object.assign(__weex_module__.exports.style, {
+	  "item-txt": {
+	    "fontSize": 48,
+	    "color": "#555555"
 	  }
 	})
 	})

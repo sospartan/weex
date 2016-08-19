@@ -44,51 +44,319 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/77383d5ddf1ca77c172b98d69af02adb", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/bad46388727f84f1d1fc2aee957b2273", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	__webpack_require__(1);
+
 
 	;
-	  __webpack_require__(2);
+	    __webpack_require__(2);
+	    __webpack_require__(14)
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            sdkVersion: "",
+	            appVersion: "",
+	            osVersion: "",
+	            deviceWidth: "",
+	            deviceHeight: "",
+	            newVersion: "Nothing",
+	            versionColor: "green",
+	            visible:"visible"
+	        }},
+	        ready: function () {
+	            var config = this.$getConfig();
+	            this.appVersion = config.env.appVersion;
+	            this.sdkVersion = config.env.weexVersion;
+	            this.osVersion = config.env.osVersion;
+	            this.deviceWidth = config.env.deviceWidth;
+	            this.deviceHeight = config.env.deviceHeight;
 
-	  __weex_module__.exports = {
-	    data: function () {return {
-	      config: ''
-	    }},
-	    ready: function() {
-	      var config = this.$getConfig();
-	      console.log('config', JSON.stringify(config));
-	      this.config = JSON.stringify(config, null, 2);
-	    },
-	    methods: {}
-	  }
+
+	            var self = this;
+
+	            var stream = __weex_require__('@weex-module/stream');
+	            stream.fetch({
+	                method: 'GET',
+	                url: 'http://weex.alibaba-inc.com/raw/html5/87652e940bcc9aeadcfe23973fe9b9a1.js',
+	                type: 'String'
+	            }, function (response) {
+	                self.versionColor = "red";
+	            }, function (progress) {
+	                console.log('progress:' + progress.length);
+	            });
+	        },
+	        methods: {
+	            help: function (event) {
+	                __weex_require__('@weex-module/event').openBrowser("http://alibaba.github.io/weex/doc/");
+	            }
+	        }
+	    }
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "div",
+	  "style": {
+	    "flexDirection": "column"
+	  },
 	  "children": [
 	    {
-	      "type": "wxc-panel",
+	      "type": "navigator",
 	      "attr": {
-	        "title": "$getConfig()",
-	        "type": "primary"
+	        "leftTitle": "About"
+	      }
+	    },
+	    {
+	      "type": "scroller",
+	      "children": [
+	        {
+	          "type": "div",
+	          "style": {
+	            "flexDirection": "column",
+	            "alignItems": "center"
+	          },
+	          "children": [
+	            {
+	              "type": "image",
+	              "attr": {
+	                "src": "http://gw.alicdn.com/tps/i2/TB1DpsmMpXXXXabaXXX20ySQVXX-512-512.png_400x400.jpg"
+	              },
+	              "style": {
+	                "alignContent": "center",
+	                "width": 400,
+	                "height": 400
+	              }
+	            }
+	          ]
+	        },
+	        {
+	          "type": "div",
+	          "style": {
+	            "flexDirection": "column",
+	            "marginLeft": 40,
+	            "marginRight": 40
+	          },
+	          "children": [
+	            {
+	              "type": "text",
+	              "classList": [
+	                "header"
+	              ],
+	              "attr": {
+	                "value": "Basic Info"
+	              }
+	            },
+	            {
+	              "type": "about_item",
+	              "attr": {
+	                "left": "Weex Version",
+	                "right": function () {return this.sdkVersion}
+	              }
+	            },
+	            {
+	              "type": "about_item",
+	              "attr": {
+	                "left": "Playground Version",
+	                "right": function () {return this.appVersion}
+	              }
+	            },
+	            {
+	              "type": "about_item",
+	              "attr": {
+	                "left": "Os version",
+	                "right": function () {return this.osVersion}
+	              }
+	            },
+	            {
+	              "type": "about_item",
+	              "attr": {
+	                "left": "Device width",
+	                "right": function () {return this.deviceWidth}
+	              }
+	            },
+	            {
+	              "type": "about_item",
+	              "attr": {
+	                "left": "Device height",
+	                "right": function () {return this.deviceHeight}
+	              }
+	            }
+	          ]
+	        },
+	        {
+	          "type": "div",
+	          "style": {
+	            "flexDirection": "column",
+	            "marginLeft": 40,
+	            "marginTop": 20,
+	            "marginBottom": 40
+	          },
+	          "children": [
+	            {
+	              "type": "text",
+	              "classList": [
+	                "header"
+	              ],
+	              "attr": {
+	                "value": "Other"
+	              }
+	            },
+	            {
+	              "type": "about_item",
+	              "attr": {
+	                "left": "New Version",
+	                "right": function () {return this.newVersion},
+	                "rightColor": function () {return this.versionColor},
+	                "src": "http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"
+	              }
+	            },
+	            {
+	              "type": "about_item",
+	              "attr": {
+	                "left": "Feedback",
+	                "src": "http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"
+	              }
+	            },
+	            {
+	              "type": "about_item",
+	              "attr": {
+	                "left": "Help",
+	                "src": "http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"
+	              },
+	              "events": {
+	                "click": "help"
+	              }
+	            }
+	          ]
+	        }
+	      ]
+	    }
+	  ]
+	})
+	;__weex_module__.exports.style = __weex_module__.exports.style || {}
+	;Object.assign(__weex_module__.exports.style, {
+	  "header": {
+	    "fontSize": 35,
+	    "color": "#A9A9A9",
+	    "fontStyle": "italic"
+	  },
+	  "content": {
+	    "fontSize": 30,
+	    "color": "#A9A9A9",
+	    "paddingLeft": 10,
+	    "margin": 15
+	  }
+	})
+	})
+	;__weex_bootstrap__("@weex-component/bad46388727f84f1d1fc2aee957b2273", {
+	  "transformerVersion": "0.3.1"
+	},undefined)
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	;__weex_define__("@weex-component/navigator", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            leftTitle: "WEEX",
+	            rightTitle: "",
+	            src: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
+	            imageVisible: 'visible'
+	        }},
+	        created: function () {
+	            var bundleUrl = this.$getConfig().bundleUrl;
+	            console.log("navigator:" + bundleUrl);
+	            if (bundleUrl.indexOf('file') >= 0) {
+	                this.imageVisible = 'hidden';
+	                console.log("into--[indexof]")
+	            }else{
+	                this.imageVisible='visible';
+	                console.log("into--[else]")
+	            }
+	            console.log("navigator:" + this.imageVisible);
+	            console.log("navigator file:" + bundleUrl.indexOf('file'));
+	            console.log("navigator ip:" + bundleUrl.indexOf('your_current_IP'));
+
+
+	        },
+	        methods: {
+	            refresh: function (event) {
+	                __weex_require__("@weex-module/event").refresh();
+	            }
+	        }
+	    }
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "div",
+	  "classList": [
+	    "navigator"
+	  ],
+	  "children": [
+	    {
+	      "type": "text",
+	      "classList": [
+	        "titleText"
+	      ],
+	      "attr": {
+	        "value": function () {return this.leftTitle}
+	      }
+	    },
+	    {
+	      "type": "div",
+	      "style": {
+	        "flexDirection": "row",
+	        "alignItems": "center",
+	        "justifyContent": "center"
 	      },
 	      "children": [
 	        {
 	          "type": "text",
+	          "classList": [
+	            "titleText"
+	          ],
 	          "attr": {
-	            "value": function () {return this.config}
+	            "value": function () {return this.rightTitle}
+	          }
+	        },
+	        {
+	          "type": "image",
+	          "attr": {
+	            "src": function () {return this.src}
+	          },
+	          "style": {
+	            "width": 50,
+	            "height": 50,
+	            "visibility": function () {return this.imageVisible}
+	          },
+	          "events": {
+	            "click": "refresh"
 	          }
 	        }
 	      ]
 	    }
 	  ]
 	})
+	;__weex_module__.exports.style = __weex_module__.exports.style || {}
+	;Object.assign(__weex_module__.exports.style, {
+	  "navigator": {
+	    "backgroundColor": "#3F51B5",
+	    "padding": 20,
+	    "height": 90,
+	    "width": 750,
+	    "flexDirection": "row",
+	    "alignItems": "center",
+	    "justifyContent": "space-between"
+	  },
+	  "titleText": {
+	    "fontSize": 40,
+	    "color": "#FFFFFF"
+	  }
 	})
-	;__weex_bootstrap__("@weex-component/77383d5ddf1ca77c172b98d69af02adb", {
-	  "transformerVersion": "0.3.1"
-	},undefined)
+	})
 
 /***/ },
-/* 1 */,
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1224,6 +1492,80 @@
 	    "marginTop": 5,
 	    "textAlign": "center",
 	    "fontSize": 20
+	  }
+	})
+	})
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	;__weex_define__("@weex-component/about_item", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            left: "",
+	            right: "",
+	            src: "",
+	            rightColor:"black"
+	        }},
+	        methods: {}
+	    }
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "div",
+	  "classList": [
+	    "panel"
+	  ],
+	  "children": [
+	    {
+	      "type": "text",
+	      "attr": {
+	        "value": function () {return this.left}
+	      }
+	    },
+	    {
+	      "type": "div",
+	      "style": {
+	        "alignItems": "center",
+	        "flexDirection": "row"
+	      },
+	      "children": [
+	        {
+	          "type": "text",
+	          "style": {
+	            "marginRight": 10,
+	            "color": function () {return this.rightColor}
+	          },
+	          "attr": {
+	            "value": function () {return this.right}
+	          }
+	        },
+	        {
+	          "type": "image",
+	          "attr": {
+	            "src": function () {return this.src}
+	          },
+	          "style": {
+	            "height": 40,
+	            "width": 40
+	          }
+	        }
+	      ]
+	    }
+	  ]
+	})
+	;__weex_module__.exports.style = __weex_module__.exports.style || {}
+	;Object.assign(__weex_module__.exports.style, {
+	  "panel": {
+	    "flexDirection": "row",
+	    "padding": 10,
+	    "alignItems": "center",
+	    "justifyContent": "space-between",
+	    "borderBottomWidth": 2,
+	    "borderBottomColor": "#D3D3D3"
 	  }
 	})
 	})

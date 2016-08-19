@@ -44,51 +44,188 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/77383d5ddf1ca77c172b98d69af02adb", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/0f37c0a544cef3f600a6aa7f505c9a21", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	__webpack_require__(1);
 
 	;
-	  __webpack_require__(2);
-
-	  __weex_module__.exports = {
-	    data: function () {return {
-	      config: ''
-	    }},
-	    ready: function() {
-	      var config = this.$getConfig();
-	      console.log('config', JSON.stringify(config));
-	      this.config = JSON.stringify(config, null, 2);
-	    },
-	    methods: {}
-	  }
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: 'WEEX',
+	            dir: 'examples',
+	            baseURL: '',
+	        }},
+	        methods: {
+	            scan: function (event) {
+	                __weex_require__('@weex-module/camara').openScan();
+	            }
+	        }
+	    };
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "div",
+	  "style": {
+	    "flexDirection": "column"
+	  },
 	  "children": [
 	    {
-	      "type": "wxc-panel",
+	      "type": "navigator",
 	      "attr": {
-	        "title": "$getConfig()",
-	        "type": "primary"
-	      },
+	        "leftTitle": "Scan"
+	      }
+	    },
+	    {
+	      "type": "scroller",
 	      "children": [
 	        {
-	          "type": "text",
-	          "attr": {
-	            "value": function () {return this.config}
-	          }
+	          "type": "div",
+	          "style": {
+	            "flex": 1,
+	            "flexDirection": "column",
+	            "alignItems": "center",
+	            "justifyContent": "center"
+	          },
+	          "children": [
+	            {
+	              "type": "image",
+	              "attr": {
+	                "src": "http://gw.alicdn.com/mt/TB13iCfMVXXXXXdXFXXXXXXXXXX-128-128.png"
+	              },
+	              "style": {
+	                "alignContent": "center",
+	                "width": 200,
+	                "height": 200
+	              },
+	              "events": {
+	                "click": "scan"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "attr": {
+	                "value": "Scan QR"
+	              }
+	            }
+	          ]
 	        }
 	      ]
 	    }
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/77383d5ddf1ca77c172b98d69af02adb", {
+	;__weex_bootstrap__("@weex-component/0f37c0a544cef3f600a6aa7f505c9a21", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
 /***/ },
-/* 1 */,
+/* 1 */
+/***/ function(module, exports) {
+
+	;__weex_define__("@weex-component/navigator", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            leftTitle: "WEEX",
+	            rightTitle: "",
+	            src: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
+	            imageVisible: 'visible'
+	        }},
+	        created: function () {
+	            var bundleUrl = this.$getConfig().bundleUrl;
+	            console.log("navigator:" + bundleUrl);
+	            if (bundleUrl.indexOf('file') >= 0) {
+	                this.imageVisible = 'hidden';
+	                console.log("into--[indexof]")
+	            }else{
+	                this.imageVisible='visible';
+	                console.log("into--[else]")
+	            }
+	            console.log("navigator:" + this.imageVisible);
+	            console.log("navigator file:" + bundleUrl.indexOf('file'));
+	            console.log("navigator ip:" + bundleUrl.indexOf('your_current_IP'));
+
+
+	        },
+	        methods: {
+	            refresh: function (event) {
+	                __weex_require__("@weex-module/event").refresh();
+	            }
+	        }
+	    }
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "div",
+	  "classList": [
+	    "navigator"
+	  ],
+	  "children": [
+	    {
+	      "type": "text",
+	      "classList": [
+	        "titleText"
+	      ],
+	      "attr": {
+	        "value": function () {return this.leftTitle}
+	      }
+	    },
+	    {
+	      "type": "div",
+	      "style": {
+	        "flexDirection": "row",
+	        "alignItems": "center",
+	        "justifyContent": "center"
+	      },
+	      "children": [
+	        {
+	          "type": "text",
+	          "classList": [
+	            "titleText"
+	          ],
+	          "attr": {
+	            "value": function () {return this.rightTitle}
+	          }
+	        },
+	        {
+	          "type": "image",
+	          "attr": {
+	            "src": function () {return this.src}
+	          },
+	          "style": {
+	            "width": 50,
+	            "height": 50,
+	            "visibility": function () {return this.imageVisible}
+	          },
+	          "events": {
+	            "click": "refresh"
+	          }
+	        }
+	      ]
+	    }
+	  ]
+	})
+	;__weex_module__.exports.style = __weex_module__.exports.style || {}
+	;Object.assign(__weex_module__.exports.style, {
+	  "navigator": {
+	    "backgroundColor": "#3F51B5",
+	    "padding": 20,
+	    "height": 90,
+	    "width": 750,
+	    "flexDirection": "row",
+	    "alignItems": "center",
+	    "justifyContent": "space-between"
+	  },
+	  "titleText": {
+	    "fontSize": 40,
+	    "color": "#FFFFFF"
+	  }
+	})
+	})
+
+/***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
