@@ -1,0 +1,39 @@
+<template>
+    <div class="navigator">
+        <text class="titleText">{{leftTitle}}</text>
+        <div style="flex-direction: row;align-items: center;justify-content: center">
+            <text class="titleText">{{rightTitle}}</text>
+            <image src="{{src}}" style="width: 50px;height: 50px" onclick="{{refresh}}"></image>
+        </div>
+    </div>
+</template>
+<style>
+    .navigator {
+        background-color: #3F51B5;
+        padding: 20px;
+        height: 90px;
+        width: 750px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .titleText {
+        font-size: 40px;
+        color: white;
+    }
+</style>
+<script>
+    module.exports = {
+        data: {
+            leftTitle: "WEEX",
+            rightTitle: "",
+            src: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png"
+        },
+        methods: {
+            refresh: function (event) {
+                require("@weex-module/event").refresh();
+            }
+        }
+    }
+</script>

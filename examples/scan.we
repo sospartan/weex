@@ -1,0 +1,28 @@
+<template>
+    <div style="flex-direction: column">
+        <navigator left-title="Scan"></navigator>
+        <scroller>
+            <div style="flex:1; flex-direction: column; align-items: center; justify-content: center;">
+                <image src="http://gw.alicdn.com/mt/TB13iCfMVXXXXXdXFXXXXXXXXXX-128-128.png"
+                       style="align-content: center;width: 200px;height: 200px" onclick="scan"/>
+                <text>Scan QR</text>
+            </div>
+        </scroller>
+    </div>
+</template>
+<script>
+    require('weex-components');
+    module.exports = {
+        data: {
+            navBarHeight: 88,
+            title: 'WEEX',
+            dir: 'examples',
+            baseURL: '',
+        },
+        methods: {
+            scan: function (event) {
+                require('@weex-module/camara').openScan();
+            }
+        }
+    };
+</script>

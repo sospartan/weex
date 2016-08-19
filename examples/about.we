@@ -1,0 +1,85 @@
+<template>
+    <div style="flex-direction: column">
+        <navigator left-title="About"></navigator>
+    <scroller>
+        <div style="flex-direction: column;align-items: center;">
+            <image src="http://gw.alicdn.com/tps/i2/TB1DpsmMpXXXXabaXXX20ySQVXX-512-512.png_400x400.jpg"
+                   style="align-content: center;width: 400px;height: 400px;">
+            </image>
+        </div>
+        <div style="flex-direction: column;margin-left: 40px;margin-right: 40px">
+            <text class="header">Basic Info</text>
+            <about_item left="Weex Version" right={{sdkVersion}}></about_item>
+            <about_item left="Playground Version" right={{appVersion}}></about_item>
+            <about_item left="Os version" right="{{osVersion}}"></about_item>
+            <about_item left="Device width" right="{{deviceWidth}}"></about_item>
+            <about_item left="Device height" right="{{deviceHeight}}"></about_item>
+        </div>
+        <div style="flex-direction: column;margin-left: 40px;margin-top: 20px;margin-bottom: 40px">
+            <text class="header">Other</text>
+            <about_item left="New Version" right="{{newVersion}}" right-color="{{versionColor}}"
+                        src="http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"></about_item>
+            <about_item left="Feedback"
+                        src="http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"></about_item>
+            <about_item left="Help" onclick="help"
+                        src="http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"></about_item>
+        </div>
+
+    </scroller>
+    </div>
+</template>
+<style>
+    .header {
+        font-size: 35px;
+        color: darkgray;
+        font-style: italic;
+    }
+
+    .content {
+        font-size: 30px;
+        color: darkgrey;
+        padding-left: 10px;
+        margin: 15px;
+    }
+</style>
+<script>
+    require('weex-components');
+    require('./about_item.we')
+    module.exports = {
+        data: {
+            sdkVersion: "",
+            appVersion: "",
+            osVersion: "",
+            deviceWidth: "",
+            deviceHeight: "",
+            newVersion: "Nothing",
+            versionColor: "green"
+        },
+        ready: function () {
+            var config = this.$getConfig();
+            this.appVersion = config.env.appVersion;
+            this.sdkVersion = config.env.weexVersion;
+            this.osVersion = config.env.osVersion;
+            this.deviceWidth = config.env.deviceWidth;
+            this.deviceHeight = config.env.deviceHeight;
+
+            var self = this;
+
+            var stream = require('@weex-module/stream');
+            stream.fetch({
+                method: 'GET',
+                url: 'http://weex.alibaba-inc.com/raw/html5/87652e940bcc9aeadcfe23973fe9b9a1.js',
+                type: 'String'
+            }, function (response) {
+                self.versionColor = "red";
+            }, function (progress) {
+                console.log('progress:' + progress.length);
+            });
+        },
+        methods: {
+            help: function (event) {
+                require('@weex-module/event').openBrowser("http://alibaba.github.io/weex/doc/");
+            }
+        }
+    }
+</script>
