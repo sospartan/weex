@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/0f37c0a544cef3f600a6aa7f505c9a21", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/a1bd12a89a4a5a7ef59b536f74a06c18", [], function(__weex_require__, __weex_exports__, __weex_module__){
 	__webpack_require__(1);
 
 	;
@@ -59,6 +59,9 @@
 	        methods: {
 	            scan: function (event) {
 	                __weex_require__('@weex-module/camara').openScan();
+	            },
+	            refresh: function (event) {
+	                __weex_require__("@weex-module/event").refresh('js_framework_reload');
 	            }
 	        }
 	    };
@@ -73,7 +76,8 @@
 	    {
 	      "type": "navigator",
 	      "attr": {
-	        "leftTitle": "Scan"
+	        "leftTitle": "Scan",
+	        "refresh": function () {return this.refresh}
 	      }
 	    },
 	    {
@@ -115,7 +119,7 @@
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/0f37c0a544cef3f600a6aa7f505c9a21", {
+	;__weex_bootstrap__("@weex-component/a1bd12a89a4a5a7ef59b536f74a06c18", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -130,28 +134,31 @@
 	        data: function () {return {
 	            leftTitle: "WEEX",
 	            rightTitle: "",
-	            src: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
-	            imageVisible: 'visible'
+	            rightImageSrc: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
+	            rightImageVisible: 'visible',
+	            leftImageVisible: 'hidden',
+	            leftImageSrc: 'http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png',
+	            leftImageWidth:'0px',
+	            leftImageVisible:'0px',
+	            leftImageHeight:'0px'
 	        }},
 	        created: function () {
 	            var bundleUrl = this.$getConfig().bundleUrl;
-	            console.log("navigator:" + bundleUrl);
 	            if (bundleUrl.indexOf('file') >= 0) {
-	                this.imageVisible = 'hidden';
-	                console.log("into--[indexof]")
-	            }else{
-	                this.imageVisible='visible';
-	                console.log("into--[else]")
+	                this.rightImageVisible = 'hidden';
 	            }
-	            console.log("navigator:" + this.imageVisible);
-	            console.log("navigator file:" + bundleUrl.indexOf('file'));
-	            console.log("navigator ip:" + bundleUrl.indexOf('your_current_IP'));
 
-
+	            if(this.leftImageVisible=='visible'){
+	                this.leftImageWidth='50px';
+	                this.leftImageHeight='50px';
+	            }
 	        },
 	        methods: {
 	            refresh: function (event) {
-	                __weex_require__("@weex-module/event").refresh();
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            },
+	            back: function (event) {
+	                __weex_require__("@weex-module/event").back();
 	            }
 	        }
 	    }
@@ -164,13 +171,39 @@
 	  ],
 	  "children": [
 	    {
-	      "type": "text",
-	      "classList": [
-	        "titleText"
-	      ],
-	      "attr": {
-	        "value": function () {return this.leftTitle}
-	      }
+	      "type": "div",
+	      "style": {
+	        "flexDirection": "row",
+	        "alignItems": "center"
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "attr": {
+	            "src": function () {return this.leftImageSrc}
+	          },
+	          "style": {
+	            "width": function () {return this.leftImageWidth},
+	            "height": function () {return this.leftImageHeight},
+	            "visibility": function () {return this.leftImageVisible}
+	          },
+	          "events": {
+	            "click": "back"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "titleText"
+	          ],
+	          "style": {
+	            "marginLeft": 20
+	          },
+	          "attr": {
+	            "value": function () {return this.leftTitle}
+	          }
+	        }
+	      ]
 	    },
 	    {
 	      "type": "div",
@@ -192,12 +225,12 @@
 	        {
 	          "type": "image",
 	          "attr": {
-	            "src": function () {return this.src}
+	            "src": function () {return this.rightImageSrc}
 	          },
 	          "style": {
 	            "width": 50,
 	            "height": 50,
-	            "visibility": function () {return this.imageVisible}
+	            "visibility": function () {return this.rightImageVisible}
 	          },
 	          "events": {
 	            "click": "refresh"

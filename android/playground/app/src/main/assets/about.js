@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/bad46388727f84f1d1fc2aee957b2273", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/cc502a09078c24e15f30247d112f315f", [], function(__weex_require__, __weex_exports__, __weex_module__){
 	__webpack_require__(1);
 
 
@@ -87,6 +87,12 @@
 	        methods: {
 	            help: function (event) {
 	                __weex_require__('@weex-module/event').openBrowser("http://alibaba.github.io/weex/doc/");
+	            },
+	            feedback:function(event){
+	                __weex_require__('@weex-module/event').openBrowser("http://weex.help/");
+	            },
+	            refresh:function(event){
+	                __weex_require__("@weex-module/event").refresh('js_framework_reload');
 	            }
 	        }
 	    }
@@ -101,7 +107,8 @@
 	    {
 	      "type": "navigator",
 	      "attr": {
-	        "leftTitle": "About"
+	        "leftTitle": "About",
+	        "refresh": function () {return this.refresh}
 	      }
 	    },
 	    {
@@ -213,6 +220,9 @@
 	              "attr": {
 	                "left": "Feedback",
 	                "src": "http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"
+	              },
+	              "events": {
+	                "click": "feedback"
 	              }
 	            },
 	            {
@@ -246,7 +256,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/bad46388727f84f1d1fc2aee957b2273", {
+	;__weex_bootstrap__("@weex-component/cc502a09078c24e15f30247d112f315f", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -261,28 +271,31 @@
 	        data: function () {return {
 	            leftTitle: "WEEX",
 	            rightTitle: "",
-	            src: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
-	            imageVisible: 'visible'
+	            rightImageSrc: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
+	            rightImageVisible: 'visible',
+	            leftImageVisible: 'hidden',
+	            leftImageSrc: 'http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png',
+	            leftImageWidth:'0px',
+	            leftImageVisible:'0px',
+	            leftImageHeight:'0px'
 	        }},
 	        created: function () {
 	            var bundleUrl = this.$getConfig().bundleUrl;
-	            console.log("navigator:" + bundleUrl);
 	            if (bundleUrl.indexOf('file') >= 0) {
-	                this.imageVisible = 'hidden';
-	                console.log("into--[indexof]")
-	            }else{
-	                this.imageVisible='visible';
-	                console.log("into--[else]")
+	                this.rightImageVisible = 'hidden';
 	            }
-	            console.log("navigator:" + this.imageVisible);
-	            console.log("navigator file:" + bundleUrl.indexOf('file'));
-	            console.log("navigator ip:" + bundleUrl.indexOf('your_current_IP'));
 
-
+	            if(this.leftImageVisible=='visible'){
+	                this.leftImageWidth='50px';
+	                this.leftImageHeight='50px';
+	            }
 	        },
 	        methods: {
 	            refresh: function (event) {
-	                __weex_require__("@weex-module/event").refresh();
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            },
+	            back: function (event) {
+	                __weex_require__("@weex-module/event").back();
 	            }
 	        }
 	    }
@@ -295,13 +308,39 @@
 	  ],
 	  "children": [
 	    {
-	      "type": "text",
-	      "classList": [
-	        "titleText"
-	      ],
-	      "attr": {
-	        "value": function () {return this.leftTitle}
-	      }
+	      "type": "div",
+	      "style": {
+	        "flexDirection": "row",
+	        "alignItems": "center"
+	      },
+	      "children": [
+	        {
+	          "type": "image",
+	          "attr": {
+	            "src": function () {return this.leftImageSrc}
+	          },
+	          "style": {
+	            "width": function () {return this.leftImageWidth},
+	            "height": function () {return this.leftImageHeight},
+	            "visibility": function () {return this.leftImageVisible}
+	          },
+	          "events": {
+	            "click": "back"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "titleText"
+	          ],
+	          "style": {
+	            "marginLeft": 20
+	          },
+	          "attr": {
+	            "value": function () {return this.leftTitle}
+	          }
+	        }
+	      ]
 	    },
 	    {
 	      "type": "div",
@@ -323,12 +362,12 @@
 	        {
 	          "type": "image",
 	          "attr": {
-	            "src": function () {return this.src}
+	            "src": function () {return this.rightImageSrc}
 	          },
 	          "style": {
 	            "width": 50,
 	            "height": 50,
-	            "visibility": function () {return this.imageVisible}
+	            "visibility": function () {return this.rightImageVisible}
 	          },
 	          "events": {
 	            "click": "refresh"
