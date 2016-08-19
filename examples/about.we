@@ -1,6 +1,6 @@
 <template>
     <div style="flex-direction: column">
-        <navigator left-title="About"></navigator>
+        <navigator left-title="About" refresh="{{refresh}}"></navigator>
     <scroller>
         <div style="flex-direction: column;align-items: center;">
             <image src="http://gw.alicdn.com/tps/i2/TB1DpsmMpXXXXabaXXX20ySQVXX-512-512.png_400x400.jpg"
@@ -84,6 +84,9 @@
             },
             feedback:function(event){
                 require('@weex-module/event').openBrowser("http://weex.help/");
+            },
+            refresh:function(event){
+                require("@weex-module/event").refresh('js_framework_reload');
             }
         }
     }

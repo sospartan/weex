@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -114,6 +115,8 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
   private JSONArray mData;
   private int count = 0;
 
+  private BroadcastReceiver mRefreshReceiver;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -160,6 +163,19 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     }
     mInstance.onActivityCreate();
     registerBroadcastReceiver();
+
+    mRefreshReceiver=new BroadcastReceiver() {
+      @Override
+      public void onReceive(Context context, Intent intent) {
+        String scheme=mUri.getScheme();
+        if (mUri.isHierarchical() && (TextUtils.equals(scheme,"http") || TextUtils.equals(scheme,"https"))) {
+          String weexTpl = mUri.getQueryParameter(Constants.WEEX_TPL_KEY);
+          String url = TextUtils.isEmpty(weexTpl) ? mUri.toString() : weexTpl;
+          loadWXfromService(url);
+        }
+      }
+    };
+    LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshReceiver,new IntentFilter(mUri.toString()));
   }
 
   private void loadWXfromLocal(boolean reload) {
@@ -274,6 +290,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     //        TopScrollHelper.getInstance(getApplicationContext()).onDestory();
     mWXHandler.obtainMessage(Constants.HOT_REFRESH_DISCONNECT).sendToTarget();
     unregisterBroadcastReceiver();
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshReceiver);
   }
 
   @Override

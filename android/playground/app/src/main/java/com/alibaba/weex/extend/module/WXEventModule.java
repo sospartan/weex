@@ -1,13 +1,14 @@
 package com.alibaba.weex.extend.module;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
-import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXModuleAnno;
+import com.taobao.weex.utils.WXLogUtils;
 
 
 public class WXEventModule extends WXModule {
@@ -35,8 +36,14 @@ public class WXEventModule extends WXModule {
   }
 
   @WXModuleAnno
-  public void refresh() {
-    LocalBroadcastManager.getInstance(mWXSDKInstance.getContext()).sendBroadcast(new Intent(WXSDKEngine.JS_FRAMEWORK_RELOAD));
+  public void refresh(String url) {
+    WXLogUtils.e("event",url);
+    LocalBroadcastManager.getInstance(mWXSDKInstance.getContext()).sendBroadcast(new Intent(url));
+  }
+
+  @WXModuleAnno
+  public void back(){
+    ((Activity)mWXSDKInstance.getContext()).finish();
   }
 
   @WXModuleAnno

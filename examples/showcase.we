@@ -1,6 +1,6 @@
 <template>
     <div style="flex-direction: column">
-        <navigator left-title="Showcase"></navigator>
+        <navigator left-title="Showcase" refresh="{{refresh}}"></navigator>
         <example-list items="{{items}}" root="{{root}}"></example-list>
     </div>
 </template>
@@ -18,6 +18,11 @@
                 {name: 'showcase/ui', title: 'UI Gallery'},
                 {name: 'showcase/dropdown/dropdown-demo', title: 'Dropdown'}
             ]
+        },
+        methods:{
+            refresh:function(event){
+                require("@weex-module/event").refresh('js_framework_reload');
+            }
         }
     }
 </script>

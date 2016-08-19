@@ -41,7 +41,6 @@ public class IndexActivity extends AbstractWeexActivity {
 
   private BroadcastReceiver mReloadReceiver;
 
-
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -70,13 +69,7 @@ public class IndexActivity extends AbstractWeexActivity {
     mReloadReceiver=new BroadcastReceiver() {
       @Override
       public void onReceive(Context context, Intent intent) {
-        createWeexInstance();
-        if(TextUtils.equals(CURRENT_IP,DEFAULT_IP)){
-          renderPage(WXFileUtils.loadAsset("index.js", IndexActivity.this),WEEX_INDEX_URL);
-        }else{
-          renderPageByURL(WEEX_INDEX_URL);
-        }
-        mProgressBar.setVisibility(View.VISIBLE);
+        reloadWeex();
       }
     };
 
@@ -98,13 +91,7 @@ public class IndexActivity extends AbstractWeexActivity {
     int id = item.getItemId();
     if (id == R.id.action_refresh) {
       if(!TextUtils.equals(CURRENT_IP,DEFAULT_IP)){
-        createWeexInstance();
-        if(TextUtils.equals(CURRENT_IP,DEFAULT_IP)){
-          renderPage(WXFileUtils.loadAsset("index.js", this),WEEX_INDEX_URL);
-        }else{
-          renderPageByURL(WEEX_INDEX_URL);
-        }
-        mProgressBar.setVisibility(View.VISIBLE);
+        reloadWeex();
         return true;
       }
     } else if (id == R.id.action_scan) {
@@ -120,6 +107,16 @@ public class IndexActivity extends AbstractWeexActivity {
       return true;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  private void reloadWeex() {
+    createWeexInstance();
+    if(TextUtils.equals(CURRENT_IP, DEFAULT_IP)){
+      renderPage(WXFileUtils.loadAsset("index.js", this), WEEX_INDEX_URL);
+    }else{
+      renderPageByURL(WEEX_INDEX_URL);
+    }
+    mProgressBar.setVisibility(View.VISIBLE);
   }
 
   @Override

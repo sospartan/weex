@@ -1,6 +1,6 @@
 <template>
     <div style="flex-direction: column">
-        <navigator left-title="Home"></navigator>
+        <navigator left-title="Home" refresh="{{refresh}}"></navigator>
         <example-list items="{{items}}" root="{{root}}"></example-list>
     </div>
 </template>
@@ -40,6 +40,11 @@
                 {name: 'module/storage-demo', title: 'Storage'},
                 {name: 'module/clipboard', title: 'Clipboard'}
             ]
+        },
+        methods: {
+            refresh: function (event) {
+                require("@weex-module/event").refresh('js_framework_reload');
+            }
         }
     }
 </script>
