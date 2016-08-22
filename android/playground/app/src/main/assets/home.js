@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/7cc600d3dd03e5882536a5fab342dfc9", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/ed5899bb6a80ba8f9075e9c40c87e8b8", [], function(__weex_require__, __weex_exports__, __weex_module__){
 	__webpack_require__(1);
 
 	;
@@ -100,7 +100,7 @@
 	    {
 	      "type": "navigator",
 	      "attr": {
-	        "leftTitle": "Home",
+	        "leftTitle": "Example",
 	        "refresh": function () {return this.refresh}
 	      }
 	    },
@@ -114,7 +114,7 @@
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/7cc600d3dd03e5882536a5fab342dfc9", {
+	;__weex_bootstrap__("@weex-component/ed5899bb6a80ba8f9075e9c40c87e8b8", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 

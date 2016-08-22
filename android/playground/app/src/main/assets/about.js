@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/cc502a09078c24e15f30247d112f315f", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/4d8597e053276405a0f1d289eeae7ff5", [], function(__weex_require__, __weex_exports__, __weex_module__){
 	__webpack_require__(1);
 
 
@@ -89,7 +89,7 @@
 	                __weex_require__('@weex-module/event').openBrowser("http://alibaba.github.io/weex/doc/");
 	            },
 	            feedback:function(event){
-	                __weex_require__('@weex-module/event').openBrowser("http://weex.help/");
+	                __weex_require__('@weex-module/event').openBrowser("https://github.com/alibaba/weex");
 	            },
 	            refresh:function(event){
 	                __weex_require__("@weex-module/event").refresh('js_framework_reload');
@@ -124,12 +124,13 @@
 	            {
 	              "type": "image",
 	              "attr": {
-	                "src": "http://gw.alicdn.com/tps/i2/TB1DpsmMpXXXXabaXXX20ySQVXX-512-512.png_400x400.jpg"
+	                "src": "http://gw.alicdn.com/mt/TB1189SMVXXXXXKaFXXXXXXXXXX-180-180.png"
 	              },
 	              "style": {
 	                "alignContent": "center",
-	                "width": 400,
-	                "height": 400
+	                "width": 200,
+	                "height": 200,
+	                "margin": 100
 	              }
 	            }
 	          ]
@@ -168,21 +169,21 @@
 	            {
 	              "type": "about_item",
 	              "attr": {
-	                "left": "Os version",
+	                "left": "OS Version",
 	                "right": function () {return this.osVersion}
 	              }
 	            },
 	            {
 	              "type": "about_item",
 	              "attr": {
-	                "left": "Device width",
+	                "left": "Screen Width",
 	                "right": function () {return this.deviceWidth}
 	              }
 	            },
 	            {
 	              "type": "about_item",
 	              "attr": {
-	                "left": "Device height",
+	                "left": "Screen Height",
 	                "right": function () {return this.deviceHeight}
 	              }
 	            }
@@ -194,7 +195,8 @@
 	            "flexDirection": "column",
 	            "marginLeft": 40,
 	            "marginTop": 20,
-	            "marginBottom": 40
+	            "marginBottom": 40,
+	            "marginRight": 40
 	          },
 	          "children": [
 	            {
@@ -212,14 +214,14 @@
 	                "left": "New Version",
 	                "right": function () {return this.newVersion},
 	                "rightColor": function () {return this.versionColor},
-	                "src": "http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"
+	                "src": "http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"
 	              }
 	            },
 	            {
 	              "type": "about_item",
 	              "attr": {
 	                "left": "Feedback",
-	                "src": "http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"
+	                "src": "http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"
 	              },
 	              "events": {
 	                "click": "feedback"
@@ -229,7 +231,7 @@
 	              "type": "about_item",
 	              "attr": {
 	                "left": "Help",
-	                "src": "http://gw.alicdn.com/mt/TB17VrgLpXXXXcFXpXXXXXXXXXX-64-64.png"
+	                "src": "http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"
 	              },
 	              "events": {
 	                "click": "help"
@@ -244,7 +246,7 @@
 	;__weex_module__.exports.style = __weex_module__.exports.style || {}
 	;Object.assign(__weex_module__.exports.style, {
 	  "header": {
-	    "fontSize": 35,
+	    "fontSize": 43,
 	    "color": "#A9A9A9",
 	    "fontStyle": "italic"
 	  },
@@ -256,7 +258,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/cc502a09078c24e15f30247d112f315f", {
+	;__weex_bootstrap__("@weex-component/4d8597e053276405a0f1d289eeae7ff5", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1561,6 +1563,9 @@
 	  "children": [
 	    {
 	      "type": "text",
+	      "style": {
+	        "fontSize": 38
+	      },
 	      "attr": {
 	        "value": function () {return this.left}
 	      }
@@ -1575,6 +1580,7 @@
 	        {
 	          "type": "text",
 	          "style": {
+	            "fontSize": 38,
 	            "marginRight": 10,
 	            "color": function () {return this.rightColor}
 	          },

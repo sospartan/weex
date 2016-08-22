@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/a7eab94783b2b2a6da021941d1b29430", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/9cc575cf59202dc7a48d1e71389c48b3", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
 	    __webpack_require__(2);
@@ -54,16 +54,26 @@
 	            tabItems: [
 	                {
 	                    index: 0,
-	                    title: 'Home',
+	                    title: 'Scan',
 	                    titleColor: '000000',
 	                    icon: '',
-	                    image: 'http://gw.alicdn.com/mt/TB1q3pzLpXXXXb7XFXXXXXXXXXX-46-46.png',
-	                    selectedImage: 'http://gw.alicdn.com/mt/TB1kSJmLpXXXXX5aXXXXXXXXXXX-46-46.png',
+	                    image: 'http://gw.alicdn.com/mt/TB18sK0LpXXXXcdXFXXXXXXXXXX-48-48.png',
+	                    selectedImage: 'http://gw.alicdn.com/mt/TB1uLiKLpXXXXcUaXXXXXXXXXXX-48-48.png',
+	                    src: 'scan.js',
+	                    visibility: 'hidden'
+	                },
+	                {
+	                    index: 1,
+	                    title: 'Example',
+	                    titleColor: '000000',
+	                    icon: '',
+	                    image: 'http://gw.alicdn.com/mt/TB1W3PpMVXXXXciXXXXXXXXXXXX-46-46.png',
+	                    selectedImage: 'http://gw.alicdn.com/mt/TB1miWTMVXXXXXxaFXXXXXXXXXX-46-46.png',
 	                    src: 'home.js',
 	                    visibility: 'visible'
 	                },
 	                {
-	                    index: 1,
+	                    index: 2,
 	                    title: 'Showcase',
 	                    titleColor: '000000',
 	                    icon: '',
@@ -72,16 +82,6 @@
 	                    src: 'showcase.js',
 	                    visibility: 'hidden'
 	                }, {
-	                    index: 2,
-	                    title: 'Scan',
-	                    titleColor: '000000',
-	                    icon: '',
-	                    image: 'http://gw.alicdn.com/mt/TB18sK0LpXXXXcdXFXXXXXXXXXX-48-48.png',
-	                    selectedImage: 'http://gw.alicdn.com/mt/TB1uLiKLpXXXXcUaXXXXXXXXXXX-48-48.png',
-	                    src: 'scan.js',
-	                    visibility: 'hidden'
-	                }
-	                , {
 	                    index: 3,
 	                    title: 'About',
 	                    titleColor: '000000',
@@ -133,8 +133,8 @@
 	            for (var i = 0; i < this.tabItems.length; i++) {
 	                var tabItem = this.tabItems[i];
 	                tabItem.src = base + tabItem.src;
-	                if(tabItem.src.indexOf('file')<0){
-	                    tabItem.src="http:"+tabItem.src;
+	                if (tabItem.src.indexOf('file') < 0) {
+	                    tabItem.src = "http:" + tabItem.src;
 	                }
 	                console.log(tabItem.title + ":" + tabItem.src);
 	            }
@@ -157,7 +157,7 @@
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/a7eab94783b2b2a6da021941d1b29430", {
+	;__weex_bootstrap__("@weex-component/9cc575cf59202dc7a48d1e71389c48b3", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 

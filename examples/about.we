@@ -3,8 +3,8 @@
         <navigator left-title="About" refresh="{{refresh}}"></navigator>
     <scroller>
         <div style="flex-direction: column;align-items: center;">
-            <image src="http://gw.alicdn.com/tps/i2/TB1DpsmMpXXXXabaXXX20ySQVXX-512-512.png_400x400.jpg"
-                   style="align-content: center;width: 400px;height: 400px;">
+            <image src="http://gw.alicdn.com/mt/TB1189SMVXXXXXKaFXXXXXXXXXX-180-180.png"
+                   style="align-content: center;width: 200px;height: 200px;margin: 100px">
             </image>
         </div>
         <div style="flex-direction: column;margin-left: 40px;margin-right: 40px">
