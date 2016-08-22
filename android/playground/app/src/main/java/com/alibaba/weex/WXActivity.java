@@ -88,6 +88,11 @@ public class WXActivity extends WXBaseActivity implements IWXRenderListener,
   }
 
 
+  /**
+   * create weex instance
+   *
+   * @param template weex bundle template
+   */
   private void createInstance(String template) {
     if (mWXSDKInstance != null) {
       mWXSDKInstance.destroy();
@@ -102,6 +107,11 @@ public class WXActivity extends WXBaseActivity implements IWXRenderListener,
     mWXSDKInstance.render(template, options, null);
   }
 
+  /**
+   * send request by http
+   *
+   * @param uri bundle url
+   */
   private void sendRequestByNetwork(Uri uri) {
     WXHttpTask httpTask = new WXHttpTask();
     httpTask.requestListener = this;
@@ -111,6 +121,12 @@ public class WXActivity extends WXBaseActivity implements IWXRenderListener,
     mTipView.setVisibility(View.GONE);
   }
 
+  /**
+   * remove '/'
+   *
+   * @param uri bundle url
+   * @return file path or null
+   */
   private String getAssetsFilePath(Uri uri) {
     if (uri != null && uri.getPath() != null) {
       return uri.getPath().replaceFirst("/", "");
@@ -118,6 +134,12 @@ public class WXActivity extends WXBaseActivity implements IWXRenderListener,
     return "";
   }
 
+  /**
+   * check bundle url
+   *
+   * @param uri bundle url
+   * @return bundle url or null
+   */
   private Uri checkAndAssembleUri(Uri uri) {
     if (uri != null) {
       String scheme = uri.getScheme();
@@ -193,6 +215,11 @@ public class WXActivity extends WXBaseActivity implements IWXRenderListener,
     }
   }
 
+  /**
+   * start Webview
+   *
+   * @param uri bundle url
+   */
   private void degradeToWebView(Uri uri) {
 
   }
@@ -254,6 +281,9 @@ public class WXActivity extends WXBaseActivity implements IWXRenderListener,
     unRegisterRefreshBroadcastReceiver();
   }
 
+  /**
+   * refresh current page
+   */
   class RefreshReceive extends BroadcastReceiver {
 
     @Override
