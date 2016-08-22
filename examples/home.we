@@ -1,6 +1,6 @@
 <template>
     <div style="flex-direction: column">
-        <navigator left-title="Home" refresh="{{refresh}}"></navigator>
+        <navigator left-title="Example" refresh="{{refresh}}"></navigator>
         <example-list items="{{items}}" root="{{root}}"></example-list>
     </div>
 </template>

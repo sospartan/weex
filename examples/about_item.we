@@ -1,8 +1,8 @@
 <template>
     <div class="panel">
-        <text>{{left}}</text>
+        <text style="font-size: 38px">{{left}}</text>
         <div style="align-items: center;flex-direction: row">
-            <text style="margin-right: 10px;color:{{rightColor}}">{{right}}</text>
+            <text style="font-size:38px;margin-right: 10px;color:{{rightColor}}">{{right}}</text>
             <image src="{{src}}" style="height: 40px;width: 40px;"></image>
         </div>
     </div>
