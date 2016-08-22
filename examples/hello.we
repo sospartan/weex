@@ -1,6 +1,37 @@
 <template>
-  <div>
-    <navigator left-image-visible="visible" left-title="Hello world!"></navigator>
-    <text style="font-size:100px;">Hello World.</text>
-  </div>
+    <wxc-navpage data-role="none" height={{navBarHeight}} background-color="#3F51B5"
+                 left-item-src="http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png"
+                 left-item-title="Hello"
+                 left-item-color="white"
+                 right-item-src="http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png">
+        <text style="font-size:100px;">Hello World.</text>
+    </wxc-navpage>
 </template>
+<script>
+    require('weex-components');
+    module.exports = {
+        data: {
+            navBarHeight: 88,
+            title: '',
+            dir: 'examples',
+            baseUrl: '',
+            src: ''
+        },
+        created: function () {
+            this.src = this.$getConfig().bundleUrl;
+            this.$on('naviBar.rightItem.click', function (e) {
+                require("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+            });
+            this.$on('naviBar.leftItem.click', function (e) {
+                var vm = this;
+                var params = {
+                    'animated': 'true'
+                }
+                vm.$call('navigator', 'pop', params, function () {
+                });
+            });
+        }, methods: {}
+    }
+
+</script>
+
