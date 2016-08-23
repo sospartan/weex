@@ -10,7 +10,8 @@
 <style>
     .panel {
         flex-direction: row;
-        padding: 10px;
+        padding-top: 25px;
+        padding-bottom: 25px;
         align-items: center;
         justify-content: space-between;
         border-bottom-width: 2px;
