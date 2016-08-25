@@ -2,10 +2,11 @@
     <div style="flex-direction: column">
         <navigator left-title="Scan" refresh="{{refresh}}"></navigator>
         <scroller>
-            <div style="flex:1; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="margin-top: 200px; flex-direction: column; align-items: center;">
+                <text style="font-size: 40px;font-style: italic;margin-bottom: 80px;">Run weex on device</text>
                 <image src="http://gw.alicdn.com/mt/TB13iCfMVXXXXXdXFXXXXXXXXXX-128-128.png"
                        style="align-content: center;width: 200px;height: 200px" onclick="scan"/>
-                <text>Scan QR</text>
+                <text style="margin-top: 50px">Scan QR</text>
             </div>
         </scroller>
     </div>
