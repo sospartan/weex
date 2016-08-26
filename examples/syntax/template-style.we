@@ -1,25 +1,23 @@
-
-
 <template>
-<playground-navpage>
-  <div onclick="update">
-    <text style="font-size: 48px; color: #0000ff">Hello</text>
-    <text style="font-size: {{size}}; color: {{color}}">Hello</text>
-  </div>
-</playground-navpage>
+    <playground-navpage>
+        <div onclick="update">
+            <text style="font-size: 48px; color: #0000ff">Hello</text>
+            <text style="font-size: {{size}}; color: {{color}}">Hello</text>
+        </div>
+    </playground-navpage>
 </template>
 
 <script>
-require('../playground-navpage.we');
-  module.exports = {
-    data: {
-      size: 32,
-      color: '#ff0000'
-    },
-    methods: {
-      update: function (e) {
-        this.size = 48
-      }
+    require('../playground-navpage.we');
+    module.exports = {
+        data: {
+            size: 32,
+            color: '#ff0000'
+        },
+        methods: {
+            update: function (e) {
+                this.size = 48
+            }
+        }
     }
-  }
 </script>
