@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="width x height" type="primary">
       <wxc-tip type="warning" value="Weex screen width is 750" style="margin-bottom: 20px;"></wxc-tip>
@@ -25,6 +26,7 @@
       </wxc-panel>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <style>
@@ -34,6 +36,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
   module.exports = {
     data: {

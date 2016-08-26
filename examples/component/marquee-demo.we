@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="Marquee" type="primary">
       <wxc-marquee id="marquee" style="width: 700; height: {{marquee.height * 2}}; background-color: rgb(223, 240, 216); border-radius: 8; padding-left: 10; padding-right: 10;" step="{{marquee.height * 2}}" count="{{marquee.list.length}}" interval="{{marquee.interval}}" duration="{{marquee.duration}}">
@@ -8,9 +9,11 @@
       </wxc-marquee>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
 
   module.exports = {

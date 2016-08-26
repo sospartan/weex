@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="Toast" type="primary">
       <wxc-button type="primary" onclick="{{toast}}" value="Toast"></wxc-button>
@@ -10,9 +11,11 @@
       <wxc-button type="warning" onclick="{{prompt}}" value="Prompt"></wxc-button>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
   module.exports = {
     data: {},

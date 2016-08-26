@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <container>
     <text class="btn">{{board}}</text>
     <container repeat="{{row}}" style="flex-direction: row; flex: 1;">
@@ -8,9 +9,11 @@
     </container>
     <text onclick="restart" class="btn">START</text>
   </container>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   module.exports = {
     data: {
       size: 9,

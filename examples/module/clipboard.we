@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="Clipboard" type="primary">
       <wxc-panel title="Copy to clipboard5">
@@ -17,9 +18,11 @@
 
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
 
   module.exports = {

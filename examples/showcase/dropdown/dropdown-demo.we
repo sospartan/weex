@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
     <div class="wrapper" >
         <we-dropdown class="dropdown" status-id="{{status}}">
             <div style="height: {{screenHeight}}">
@@ -16,6 +17,7 @@
         </we-dropdown>
     </div>
 
+</playground-navpage>
 </template>
 
 <style>
@@ -86,6 +88,7 @@
 </style>
 
 <script>
+require('../../playground-navpage.we');
     require('./we-dropdown.we');
 
     var initData = '[{\"addTime\":\"2016-07-14\",\"questionStatus\":\"2\",\"questionStatusValue\":\"Closed\",\"title\":\"This is a demo\",\"vid\":\"AW5PMSC\"},{\"addTime\":\"2016-07-14\",\"questionStatus\":\"1\",\"questionStatusValue\":\"Waiting\",\"title\":\"This is a demo\",\"vid\":\"AW5PMSM\"},{\"addTime\":\"2016-07-14\",\"questionStatus\":\"2\",\"questionStatusValue\":\"Confirmed\",\"title\":\"This is a demo\",\"vid\":\"AW5PMSA\"}]';

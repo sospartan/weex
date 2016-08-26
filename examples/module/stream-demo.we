@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="stream.fetch" type="primary">
       <wxc-panel title="method = GET">
@@ -30,9 +31,11 @@
       </wxc-panel>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
 
   module.exports = {

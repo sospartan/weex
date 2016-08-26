@@ -1,12 +1,15 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="$getConfig()" type="primary">
       <text>{{config}}</text>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
 
   module.exports = {

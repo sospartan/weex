@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
     <div class="wrapper">
         <div class="toolbar" append = "tree">
             <wxc-button type="primary" size="small" value="back" onclick="goback"
@@ -10,6 +11,7 @@
         </div>
         <web class="content" id="webview" src='https://m.taobao.com/?spm=0.0.0.0&v=0#index' onpagestart="startload" onpagefinish="finishload" onerror="failload"></web>
     </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -41,6 +43,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
     require('weex-components');
 
     module.exports = {

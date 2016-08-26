@@ -6,6 +6,7 @@
 
 <script>
 require('../playground-navpage.we');
+require('../playground-navpage.we');
   require('../include/example-list.we');
   module.exports = {
     data: {

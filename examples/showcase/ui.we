@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="Title Levels" type="primary">
       <wxc-hn repeat="{{levels}}" level="{{level}}" value="H{{level}}, Level {{level}}"></wxc-hn>
@@ -13,11 +14,11 @@
                     style="margin-left:5px;"></wxc-button>
       </div>
 
-      <!--<div style="flex-direction: row; margin-top: 12px">-->
-      <!--<wxc-button disabled="{{true}}" type="" size="large" value="Disabled" onclick="{{clicked}}"></wxc-button>-->
-      <!--<wxc-button disabled="{{false}}" type="primary" size="large" value="Enabled" onclick="{{clicked}}"-->
-      <!--style="margin-left: 12px"></wxc-button>-->
-      <!--</div>-->
+      
+      
+      
+      
+      
     </wxc-panel>
 
     <wxc-panel title="Panels" type="primary">
@@ -38,9 +39,11 @@
                value="Panels {{type}} content. Panels {{type}} content. Panels {{type}} content."></wxc-tip>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
 
   module.exports = {

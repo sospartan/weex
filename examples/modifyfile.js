@@ -15,7 +15,7 @@ function walk(path) {
 walk('syntax');
 
 fileList.forEach(function (item) {
-    addNav(item)
+    //addNav(item)
 });
 function addNav(path) {
     var data = fs.readFileSync(path, "utf-8");
@@ -54,4 +54,16 @@ function removeJsComments(data) {
     end = removeJsComments(end);
     return start + end;
 }
+
+var items = [
+    {name: 'showcase/new-fashion/index', title: 'Activity'},
+    {name: 'showcase/calculator', title: 'Calculator'},
+    {name: 'showcase/minesweeper', title: 'Minesweeper'},
+    {name: 'showcase/ui', title: 'UI Gallery'},
+    {name: 'showcase/dropdown/dropdown-demo', title: 'Dropdown'}]
+
+items.forEach(function (item){
+    console.log(item.name);
+    addNav(item.name+".we");
+});
 

@@ -73,6 +73,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
   module.exports = {
     methods: {
