@@ -1,17 +1,12 @@
-<!--
-  * components
-  * data
-  * computed
-  * methods
-  * events
-  * init/created/ready
--->
+
 
 <template>
+<playground-navpage>
   <div>
     <text class="title">Please check out the source code.</text>
-    <!-- <sub></sub> -->
+    
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -19,6 +14,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   // // import sub components
   // require('./components/sub.vue')
   module.exports = {

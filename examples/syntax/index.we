@@ -1,8 +1,11 @@
 <template>
+<playground-navpage>
   <example-list items="{{items}}" root="{{root}}"></example-list>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   require('../include/example-list.we');
   module.exports = {
     data: {

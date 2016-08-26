@@ -1,10 +1,7 @@
-<!--
-  * mustache delimiters can be ignored
-  * repeat="item in list": assign item and $index to this
-  * repeat="(index, item) in list" assign index and item to this
--->
+
 
 <template>
+<playground-navpage>
   <div>
     <text class="title">Basic</text>
     <text class="subtitle" repeat="list2">{{$index}}-{{text}}-{{normal}}</text>
@@ -21,6 +18,7 @@
     <text class="title">Array of Object</text>
     <text class="subtitle" repeat="{{item in list2}}">{{$index}}-{{item.text}}-{{normal}}</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -29,6 +27,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   module.exports = {
     data: {
       normal: 'x',

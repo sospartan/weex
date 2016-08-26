@@ -1,16 +1,14 @@
-<!--
-  * track-by="primary": diff array by this as the primary key, default is the index
-  * use `list.$set(index, value)` to set a item value, do not use `list[index] = value`
-  * use `list.splice()`, `list.push()`, `list.pop()`, `list.shift()`, `list.unshift()`, `list.sort()`, `list.reverse()`, do not use `list.length = x`
--->
+
 
 <template>
+<playground-navpage>
   <div>
     <text class="title">Track by</text>
     <text class="subtitle" repeat="{{item in list}}" track-by="key">{{$index}}-{{item.text}}</text>
     <text class="btn" onclick="update">Update</text>
     <text class="btn" onclick="mutate">Mutate</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -20,6 +18,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   module.exports = {
     data: {
       list: [

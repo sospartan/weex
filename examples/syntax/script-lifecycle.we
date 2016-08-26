@@ -1,7 +1,9 @@
 <template>
+<playground-navpage>
   <div>
     <text class="title" repeat="value in list">{{value}}</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -9,6 +11,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   var initMessage
   module.exports = {
     data: {

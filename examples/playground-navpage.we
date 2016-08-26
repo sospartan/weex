@@ -1,7 +1,13 @@
 <template>
-    <playground-navpage>
-        <text style="font-size:100px;">Hello World.</text>
-    </playground-navpage>
+    <wxc-navpage height={{navBarHeight}} background-color="#3F51B5"
+                 left-item-src="http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png"
+                 left-item-title="Hello"
+                 left-item-color="white"
+                 title-color="white"
+                 title="{{title}}"
+                 right-item-src="{{rightItemSrc}}">
+        <content></content>
+    </wxc-navpage>
 </template>
 <script>
     require('weex-components');
@@ -9,16 +15,15 @@
         data: {
             navBarHeight: 88,
             title: '',
-            dir: 'examples',
-            baseUrl: '',
-            src: '',
             rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
         },
         created: function () {
-            this.src = this.$getConfig().bundleUrl;
-            console.log("bundleUrl:"+this.src);
-            if (this.src.indexOf('file')>=0) {
-                this.rightItemSrc='';
+            var src = this.$getConfig().bundleUrl;
+            if (src != null) {
+                this.title = src.substring(src.lastIndexOf("/") + 1, src.length);
+            }
+            if (src.indexOf('file') >= 0) {
+                this.rightItemSrc = '';
             }
             this.$on('naviBar.rightItem.click', function (e) {
                 require("@weex-module/event").refresh(this.$getConfig().bundleUrl);

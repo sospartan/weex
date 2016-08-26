@@ -1,18 +1,12 @@
-<!--
-  * access data
-  * access computed
-  * call methods
-  * get config
-  * listen and fire component events
-  * parent component and sub components
-  * find element
--->
+
 
 <template>
+<playground-navpage>
   <div>
     <text id="title" class="title">Please check out the source code.</text>
-    <!-- <subcomponent id="sub"></subcomponent> -->
+    
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -20,6 +14,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   module.exports = {
     data: {
       x: 1,

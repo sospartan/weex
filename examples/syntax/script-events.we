@@ -1,16 +1,11 @@
-<!--
-  * `events` option registers a set of component event listeners
-  * `this.$on(type, handler)`: registers a component event listener
-  * `this.$off(type, handler)`: removes a component event listener
-  * `this.$emit(type, detail)`: sends component event to itself
-  * `this.$dispatch(type, detail)`: sends component event to itself and its ancestors
-  * `this.$broadcast(type, detail)`: sends component event to itself and its descendants
--->
+
 
 <template>
+<playground-navpage>
   <div>
     <text class="title" repeat="value in list">{{value}}</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -18,6 +13,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   module.exports = {
     data: {
       list: []

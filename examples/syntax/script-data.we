@@ -1,16 +1,14 @@
-<!--
-  * in root component `data` is an plain object
-  * in sub component `data` is a function which returns an plain object
-  * `computed` support a single getter or a getter/setter object
--->
+
 
 <template>
+<playground-navpage>
   <div onclick="update">
     <text class="title">{{firstName}}</text>
     <text class="title">{{lastName}}</text>
     <text class="title">{{fullName}}</text>
     <text class="title">{{today}}</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -18,6 +16,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   // // if this is a sub component and the parent component could set `firstName` and `lastName` by:
   // // `<subcomponent first-name="John" last-name="Smith"></subcomponent>`
   // module.exports = {

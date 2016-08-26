@@ -1,12 +1,11 @@
-<!--
-  * `var module = require('@weex-module/module')` to import a native module
-  * `module.method(...)` to call a native API
--->
+
 
 <template>
+<playground-navpage>
   <div>
     <text class="btn" onclick="test">Toast!</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -14,6 +13,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   var modal = require('@weex-module/modal')
   module.exports = {
     methods: {

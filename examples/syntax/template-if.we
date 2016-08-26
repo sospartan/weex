@@ -1,14 +1,13 @@
-<!--
-  * mustache delimiters can be ignored
-  * if="flag": display or not by the truthy/falsy result
--->
+
 
 <template>
+<playground-navpage>
   <div>
     <text class="btn" onclick="toggle">Toggle</text>
     <text if="flag" class="title">I'm ON</text>
     <text if="!flag" class="title">I'm Off</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -17,6 +16,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   module.exports = {
     data: {
       flag: true

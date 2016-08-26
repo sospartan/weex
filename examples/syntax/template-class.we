@@ -1,13 +1,13 @@
-<!--
-  * class name with data binding
--->
+
 
 <template>
+<playground-navpage>
   <div onclick="update">
     <text class="a">Hello</text>
     <text class="b">Hello</text>
     <text class="a {{x}}">Hello</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -16,6 +16,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   module.exports = {
     data: {
       x: ''

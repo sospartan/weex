@@ -1,17 +1,12 @@
-<!--
-  * <template>: html-like syntax
-  * CSS-like inline style
-  * <style>: only support single-class selector
-  * <script>: define the behavior of component
-  * mustache-like data-binding support
-  * onxxx syntax to bind event with a component method
--->
+
 
 <template>
+<playground-navpage>
   <div class="wrapper" onclick="update">
     <image src="{{logoUrl}}" class="logo"></image>
     <text class="title">Hello {{target}}</text>
   </div>
+</playground-navpage>
 </template>
 
 <style>
@@ -21,6 +16,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   module.exports = {
     data: {
       logoUrl: 'http://alibaba.github.io/weex/img/weex_logo_blue@3x.png',
