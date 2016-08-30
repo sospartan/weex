@@ -56,14 +56,12 @@ function removeJsComments(data) {
 }
 
 var items = [
-    {name: 'showcase/new-fashion/index', title: 'Activity'},
-    {name: 'showcase/calculator', title: 'Calculator'},
-    {name: 'showcase/minesweeper', title: 'Minesweeper'},
-    {name: 'showcase/ui', title: 'UI Gallery'},
-    {name: 'showcase/dropdown/dropdown-demo', title: 'Dropdown'}]
+    {name: 'style/index', title: 'Common Style'},
+    {name: 'animation', title: 'Animation'},
+]
 
-items.forEach(function (item){
+items.forEach(function (item) {
     console.log(item.name);
-    addNav(item.name+".we");
+    addNav(item.name + ".we");
 });
 

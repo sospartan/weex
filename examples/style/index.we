@@ -35,6 +35,7 @@
 </style>
 <script>
 require('../playground-navpage.we');
+require('../playground-navpage.we');
   require('weex-components');
   module.exports = {
     data: {}

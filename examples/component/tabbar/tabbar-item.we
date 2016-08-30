@@ -1,7 +1,9 @@
 <template>
+    <playground-navpage>
     <div class="wrapper">
         <text class="text" style="color:{{color}}">{{text}}</text>
     </div>
+        </playground-navpage>
 </template>
 
 <style>
@@ -23,6 +25,7 @@
 </style>
 
 <script>
+    require('../../playground-navpage.we');
     module.exports = {
         data: {
             color: '#ff0000',

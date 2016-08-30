@@ -1,13 +1,11 @@
 <template>
-    <playground-navpage>
+
         <div style="flex-direction: column;">
             <wxc-tabbar tab-items={{tabItems}}></wxc-tabbar>
         </div>
-    </playground-navpage>
 </template>
 
 <script>
-    require('../../playground-navpage.we');
     require('weex-components');
     module.exports = {
         data: {

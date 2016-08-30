@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <div>
     <wxc-panel title="Transform" type="primary">
       <wxc-button value="Rotate" onclick="{{rotate}}" type="primary" size="middle"></wxc-button>
@@ -20,6 +21,7 @@
       <text class="block-txt">Anim</text>
     </div>
   </div>
+</playground-navpage>
 </template>
 
 <script>

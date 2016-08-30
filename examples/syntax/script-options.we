@@ -1,57 +1,60 @@
-
-
 <template>
-<playground-navpage>
-  <div>
-    <text class="title">Please check out the source code.</text>
-    
-  </div>
-</playground-navpage>
+    <playground-navpage>
+        <div>
+            <text class="title">Please check out the source code.</text>
+
+        </div>
+    </playground-navpage>
 </template>
 
 <style>
-  .title {font-size: 48px;}
+    .title {
+        font-size: 48px;
+    }
 </style>
 
 <script>
-require('../playground-navpage.we');
-  // // import sub components
-  // require('./components/sub.vue')
-  module.exports = {
+    require('../playground-navpage.we');
+    // // import sub components
+    // require('./components/sub.vue')
+    module.exports = {
 
-    // for root component only
-    data: {
-      x: 1,
-      y: 2
-    },
-    // // for sub component only
-    // data: function () {
-    //   return {
-    //     x: 1,
-    //     y: 2
-    //   }
-    // }
+        // for root component only
+        data: {
+            x: 1,
+            y: 2
+        },
+        // // for sub component only
+        // data: function () {
+        //   return {
+        //     x: 1,
+        //     y: 2
+        //   }
+        // }
 
-    methods: {
-      foo: function () {
-        console.log('foo')
-      }
-    },
+        methods: {
+            foo: function () {
+                console.log('foo')
+            }
+        },
 
-    computed: {
-      z: function () {
-        return this.x + this.y
-      }
-    },
+        computed: {
+            z: function () {
+                return this.x + this.y
+            }
+        },
 
-    events: {
-      custom: function (e) {
-        console.log(e)
-      }
-    },
+        events: {
+            custom: function (e) {
+                console.log(e)
+            }
+        },
 
-    init: function () {},
-    created: function () {},
-    ready: function () {}
-  }
+        init: function () {
+        },
+        created: function () {
+        },
+        ready: function () {
+        }
+    }
 </script>

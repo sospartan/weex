@@ -1,16 +1,14 @@
-
-
 <template>
-<playground-navpage>
-  <div>
-    <btn>
-      <text>Click!</text>
-    </btn>
-  </div>
-</playground-navpage>
+    <playground-navpage>
+        <div>
+            <btn>
+                <text>Click!</text>
+            </btn>
+        </div>
+    </playground-navpage>
 </template>
 
 <script>
-require('../playground-navpage.we');
-  require('./include/btn.we')
+    require('../playground-navpage.we');
+    require('./include/btn.we')
 </script>

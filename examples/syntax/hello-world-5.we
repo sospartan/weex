@@ -1,31 +1,39 @@
-
-
 <template>
-<playground-navpage>
-  <div class="wrapper" onclick="update">
-    <image src="{{logoUrl}}" class="logo"></image>
-    <text class="title">Hello {{target}}</text>
-  </div>
-</playground-navpage>
+    <playground-navpage>
+        <div class="wrapper" onclick="update">
+            <image src="{{logoUrl}}" class="logo"></image>
+            <text class="title">Hello {{target}}</text>
+        </div>
+    </playground-navpage>
 </template>
 
 <style>
-  .wrapper {align-items: center; margin-top: 120px;}
-  .title {font-size: 48px;}
-  .logo {width: 360px; height: 82px;}
+    .wrapper {
+        align-items: center;
+        margin-top: 120px;
+    }
+
+    .title {
+        font-size: 48px;
+    }
+
+    .logo {
+        width: 360px;
+        height: 82px;
+    }
 </style>
 
 <script>
-require('../playground-navpage.we');
-  module.exports = {
-    data: {
-      logoUrl: 'http://alibaba.github.io/weex/img/weex_logo_blue@3x.png',
-      target: 'World'
-    },
-    methods: {
-      update: function (e) {
-        this.target = 'Weex'
-      }
+    require('../playground-navpage.we');
+    module.exports = {
+        data: {
+            logoUrl: 'http://alibaba.github.io/weex/img/weex_logo_blue@3x.png',
+            target: 'World'
+        },
+        methods: {
+            update: function (e) {
+                this.target = 'Weex'
+            }
+        }
     }
-  }
 </script>

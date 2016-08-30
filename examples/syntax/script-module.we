@@ -1,28 +1,33 @@
-
-
 <template>
-<playground-navpage>
-  <div>
-    <text class="btn" onclick="test">Toast!</text>
-  </div>
-</playground-navpage>
+    <playground-navpage>
+        <div>
+            <text class="btn" onclick="test">Toast!</text>
+        </div>
+    </playground-navpage>
 </template>
 
 <style>
-  .btn {font-size: 36px; text-align: center; color: white; background-color: gray; padding: 20px; border-radius: 5px;}
+    .btn {
+        font-size: 36px;
+        text-align: center;
+        color: white;
+        background-color: gray;
+        padding: 20px;
+        border-radius: 5px;
+    }
 </style>
 
 <script>
-require('../playground-navpage.we');
-  var modal = require('@weex-module/modal')
-  module.exports = {
-    methods: {
-      test: function () {
-        modal.toast({
-          message: 'Toast!',
-          duration: 3
-        })
-      }
+    require('../playground-navpage.we');
+    var modal = require('@weex-module/modal')
+    module.exports = {
+        methods: {
+            test: function () {
+                modal.toast({
+                    message: 'Toast!',
+                    duration: 3
+                })
+            }
+        }
     }
-  }
 </script>

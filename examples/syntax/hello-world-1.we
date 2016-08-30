@@ -1,10 +1,10 @@
-
-
 <template>
-<playground-navpage>
-  <div>
-    <text>Hello World</text>
-  </div>
-</playground-navpage>
+    <playground-navpage>
+        <div>
+            <text>Hello World</text>
+        </div>
+    </playground-navpage>
 </template>
-<script>require('../playground-navpage.we');</script>
+<script>
+    require('../playground-navpage.we');
+</script>

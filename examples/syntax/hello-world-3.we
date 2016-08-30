@@ -1,20 +1,28 @@
-
-
 <template>
-<playground-navpage>
-  <div class="wrapper">
-    <image
-      src="http://alibaba.github.io/weex/img/weex_logo_blue@3x.png"
-      class="logo"
-    ></image>
-    <text class="title">Hello World</text>
-  </div>
-</playground-navpage>
+    <playground-navpage>
+        <div class="wrapper">
+            <image
+                    src="http://alibaba.github.io/weex/img/weex_logo_blue@3x.png"
+                    class="logo"
+            ></image>
+            <text class="title">Hello World</text>
+        </div>
+    </playground-navpage>
 </template>
 
 <style>
-  .wrapper {align-items: center; margin-top: 120px;}
-  .title {font-size: 48px;}
-  .logo {width: 360px; height: 82px;}
+    .wrapper {
+        align-items: center;
+        margin-top: 120px;
+    }
+
+    .title {
+        font-size: 48px;
+    }
+
+    .logo {
+        width: 360px;
+        height: 82px;
+    }
 </style>
 <script>require('../playground-navpage.we');</script>
