@@ -1,4 +1,5 @@
 <template>
+  <playground-navpage>
   <scroller class="list" append="tree">
     <div class="section" repeat="{{sections}}">
       <div class="header">
@@ -14,6 +15,8 @@
     </loading>
 
   </scroller>
+    </playground-navpage>
+
 </template>
 
 <style>
