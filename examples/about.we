@@ -74,9 +74,9 @@
             }, function (response) {
                 console.log(response);
                 var obj = JSON.parse(response.data);
-                if (self.appVersion < obj.appVersion) {
+                if (self.appVersion < obj.androidVersion) {
                     self.versionColor = "red";
-                    self.newVersion = obj.appVersion;
+                    self.newVersion = obj.androidVersion;
                 }
             }, function (progress) {
                 console.log('progress:' + progress.length);
