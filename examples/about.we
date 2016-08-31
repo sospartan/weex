@@ -1,31 +1,32 @@
 <template>
     <div style="flex-direction: column">
         <navigator left-title="About" refresh="{{refresh}}"></navigator>
-    <scroller>
-        <div style="flex-direction: column;align-items: center;">
-            <image src="http://gw.alicdn.com/mt/TB1189SMVXXXXXKaFXXXXXXXXXX-180-180.png"
-                   style="align-content: center;width: 200px;height: 200px;margin: 100px">
-            </image>
-        </div>
-        <div style="flex-direction: column;margin-left: 40px;margin-right: 40px">
-            <text class="header">Basic Info</text>
-            <about_item left="Weex Version" right={{sdkVersion}}></about_item>
-            <about_item left="Playground Version" right={{appVersion}}></about_item>
-            <about_item left="OS Version" right="{{osVersion}}"></about_item>
-            <about_item left="Screen Width" right="{{deviceWidth}}"></about_item>
-            <about_item left="Screen Height" right="{{deviceHeight}}"></about_item>
-        </div>
-        <div style="flex-direction: column;margin-left: 40px;margin-top: 20px;margin-bottom: 40px;margin-right: 40px">
-            <text class="header">Other</text>
-            <about_item left="New Version" right="{{newVersion}}" right-color="{{versionColor}}"
-                        src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"></about_item>
-            <about_item left="Feedback" onclick="feedback"
-                        src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"></about_item>
-            <about_item left="Help" onclick="help"
-                        src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"></about_item>
-        </div>
+        <scroller>
+            <div style="flex-direction: column;align-items: center;">
+                <image src="http://gw.alicdn.com/mt/TB1189SMVXXXXXKaFXXXXXXXXXX-180-180.png"
+                       style="align-content: center;width: 200px;height: 200px;margin: 100px">
+                </image>
+            </div>
+            <div style="flex-direction: column;margin-left: 40px;margin-right: 40px">
+                <text class="header">Basic Info</text>
+                <about_item left="Weex Version" right={{sdkVersion}}></about_item>
+                <about_item left="Playground Version" right={{appVersion}}></about_item>
+                <about_item left="OS Version" right="{{osVersion}}"></about_item>
+                <about_item left="Screen Width" right="{{deviceWidth}}"></about_item>
+                <about_item left="Screen Height" right="{{deviceHeight}}"></about_item>
+            </div>
+            <div style="flex-direction: column;margin-left: 40px;margin-top: 20px;margin-bottom: 40px;margin-right: 40px">
+                <text class="header">Other</text>
+                <about_item left="New Version" right="{{newVersion}}" right-color="{{versionColor}}"
+                            src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"
+                            onclick="goDownload"></about_item>
+                <about_item left="Feedback" onclick="feedback"
+                            src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"></about_item>
+                <about_item left="Help" onclick="help"
+                            src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"></about_item>
+            </div>
 
-    </scroller>
+        </scroller>
     </div>
 </template>
 <style>
@@ -54,7 +55,7 @@
             deviceHeight: "",
             newVersion: "Nothing",
             versionColor: "green",
-            visible:"visible"
+            visible: "visible"
         },
         ready: function () {
             var config = this.$getConfig();
@@ -64,16 +65,19 @@
             this.deviceWidth = config.env.deviceWidth;
             this.deviceHeight = config.env.deviceHeight;
 
-
             var self = this;
-
             var stream = require('@weex-module/stream');
             stream.fetch({
                 method: 'GET',
-                url: 'http://weex.alibaba-inc.com/raw/html5/87652e940bcc9aeadcfe23973fe9b9a1.js',
+                url: 'http://h5.m.taobao.com/json/weex/playground/app/info.json',
                 type: 'String'
             }, function (response) {
-                self.versionColor = "red";
+                console.log(response);
+                var obj = JSON.parse(response.data);
+                if (self.appVersion < obj.appVersion) {
+                    self.versionColor = "red";
+                    self.newVersion = obj.appVersion;
+                }
             }, function (progress) {
                 console.log('progress:' + progress.length);
             });
@@ -82,11 +86,21 @@
             help: function (event) {
                 require('@weex-module/event').openBrowser("http://alibaba.github.io/weex/doc/");
             },
-            feedback:function(event){
+            feedback: function (event) {
                 require('@weex-module/event').openBrowser("https://github.com/alibaba/weex");
             },
-            refresh:function(event){
+            refresh: function (event) {
                 require("@weex-module/event").refresh('js_framework_reload');
+            },
+            goDownload: function (event) {
+                if (this.appVersion < this.newVersion) {
+                    require('@weex-module/event').openBrowser("http://alibaba.github.io/weex/download.html");
+                } else {
+                    require('@weex-module/modal').toast({
+                        'message': "This is the latest version",
+                        'duration': 1
+                    });
+                }
             }
         }
     }
