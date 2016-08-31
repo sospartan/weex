@@ -18,9 +18,13 @@
             rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
         },
         created: function () {
-            var src = this.$getConfig().bundleUrl;
+            var config = this.$getConfig();
+            var src = config.bundleUrl;
             if (src != null) {
-                this.title = src.substring(src.lastIndexOf("/") + 1, src.length);
+                var end = src.lastIndexOf('?');
+                end = end < 0 ? src.length : end;
+                console.log("end:" + end);
+                this.title = src.substring(src.lastIndexOf("/") + 1, end);
             }
             if (src.indexOf('file') >= 0) {
                 this.rightItemSrc = '';

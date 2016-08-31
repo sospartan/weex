@@ -72,11 +72,11 @@
                 url: 'http://h5.m.taobao.com/json/weex/playground/app/info.json',
                 type: 'String'
             }, function (response) {
-                console.log(response);
                 var obj = JSON.parse(response.data);
-                if (self.appVersion < obj.androidVersion) {
+                var version = config.env.platform == "android" ? obj.androidVersion : obj.iosVersion;
+                if (self.appVersion < version) {
                     self.versionColor = "red";
-                    self.newVersion = obj.androidVersion;
+                    self.newVersion = version;
                 }
             }, function (progress) {
                 console.log('progress:' + progress.length);
@@ -93,7 +93,7 @@
                 require("@weex-module/event").refresh('js_framework_reload');
             },
             goDownload: function (event) {
-                if (this.appVersion < this.newVersion) {
+                if (this.newVersion != "Nothing") {
                     require('@weex-module/event').openBrowser("http://alibaba.github.io/weex/download.html");
                 } else {
                     require('@weex-module/modal').toast({
