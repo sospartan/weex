@@ -1,32 +1,34 @@
 package com.alibaba.weex;
 
 import android.app.Application;
+import android.util.Log;
 
-import com.alibaba.weex.commons.adapter.FrescoImageAdapter;
-import com.alibaba.weex.commons.adapter.FrescoImageComponent;
-import com.alibaba.weex.commons.adapter.ImageAdapter;
 import com.alibaba.weex.extend.PlayDebugAdapter;
 import com.alibaba.weex.extend.component.RichText;
 import com.alibaba.weex.extend.module.MyModule;
 import com.alibaba.weex.extend.module.RenderModule;
 import com.alibaba.weex.extend.module.WXEventModule;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
-import com.facebook.imagepipeline.listener.RequestListener;
-import com.facebook.imagepipeline.listener.RequestLoggingListener;
+import com.taobao.phenix.cache.disk.DiskCachePriority;
+import com.taobao.phenix.common.UnitedLog;
+import com.taobao.phenix.compat.NonCatalogDiskCacheSupplier;
+import com.taobao.phenix.intf.Phenix;
+import com.taobao.tao.image.ImageInitBusinss;
 import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.common.WXException;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public class WXApplication extends Application {
 
   @Override
   public void onCreate() {
     super.onCreate();
+    UnitedLog.setMinLevel(Log.ERROR);
+    ImageInitBusinss.setMinLogLevel(Log.ERROR);
+    Phenix.instance().with(this);
+    Phenix.instance().diskCacheBuilder().with(new NonCatalogDiskCacheSupplier()).maxSize(DiskCachePriority.TOP_USED_1, 30 *1024*1024);
+
 
     /**
      * Set up for fresco usage.
@@ -43,13 +45,13 @@ public class WXApplication extends Application {
     WXSDKEngine.initialize(this,
                            new InitConfig.Builder()
                                //.setImgAdapter(new FrescoImageAdapter())// use fresco adapter
-                               .setImgAdapter(new ImageAdapter())
+                               .setImgAdapter(new TBWXImgLoaderAdapter(this))
                                .setDebugAdapter(new PlayDebugAdapter())
                                .build()
                           );
 
     try {
-      Fresco.initialize(this);
+//      Fresco.initialize(this);
       WXSDKEngine.registerComponent("richtext", RichText.class);
       WXSDKEngine.registerModule("render", RenderModule.class);
       WXSDKEngine.registerModule("event", WXEventModule.class);

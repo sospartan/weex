@@ -202,185 +202,203 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex;
+package com.alibaba.weex;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Environment;
-import android.telephony.TelephonyManager;
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
+import android.widget.ImageView;
 
-import com.taobao.weappplus_sdk.BuildConfig;
-import com.taobao.weex.common.WXConfig;
-import com.taobao.weex.utils.LogLevel;
+import com.taobao.phenix.common.Constant;
+import com.taobao.phenix.intf.Phenix;
+import com.taobao.phenix.intf.PhenixCreator;
+import com.taobao.phenix.intf.PhenixTicket;
+import com.taobao.phenix.intf.event.FailPhenixEvent;
+import com.taobao.phenix.intf.event.IPhenixListener;
+import com.taobao.phenix.intf.event.SuccPhenixEvent;
+import com.taobao.tao.image.ImageStrategyConfig;
+import com.taobao.tao.util.ImageStrategyDecider;
+import com.taobao.tao.util.TaobaoImageUrlStrategy;
+import com.taobao.weex.WXEnvironment;
+import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.IWXImgLoaderAdapter;
+import com.taobao.weex.common.WXImageStrategy;
+import com.taobao.weex.dom.WXImageQuality;
 import com.taobao.weex.utils.WXLogUtils;
-import com.taobao.weex.utils.WXSoInstallMgrSdk;
-import com.taobao.weex.utils.WXUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+//import com.squareup.picasso.Picasso;
 
-public class WXEnvironment {
+public class TBWXImgLoaderAdapter implements IWXImgLoaderAdapter {
 
-  public static final String OS = "android";
-  public static final String SYS_VERSION = android.os.Build.VERSION.RELEASE;
-  public static final String SYS_MODEL = android.os.Build.MODEL;
-  public static final String ENVIRONMENT = "environment";
-  /*********************
-   * Global config
-   ***************************/
+  private ImageStrategyConfig mConfig;
 
-  public static String JS_LIB_SDK_VERSION = BuildConfig.buildJavascriptFrameworkVersion;
 
-  public static String WXSDK_VERSION = BuildConfig.buildVersion;
-  public static Application sApplication;
-  public static final String DEV_Id = getDevId();
-  public static int sDefaultWidth = 750;
-  public volatile static boolean JsFrameworkInit = false;
-
-  public static final String SETTING_EXCLUDE_X86SUPPORT = "env_exclude_x86";
-
-  public static boolean SETTING_FORCE_VERTICAL_SCREEN = false;
-  /**
-   * Debug model
-   */
-  public static boolean sDebugMode = false;
-  public static String sDebugWsUrl = "";
-  public static boolean sRemoteDebugMode = false;
-  public static String sRemoteDebugProxyUrl = "";
-  public static long sJSLibInitTime = 0;
-
-  public static long sSDKInitStart = 0;// init start timestamp
-  public static long sSDKInitInvokeTime = 0;//time cost to invoke init method
-  public static long sSDKInitExecuteTime = 0;//time cost to execute init job
-  /** from init to sdk-ready **/
-  public static long sSDKInitTime =0;
-
-  public static LogLevel sLogLevel = LogLevel.DEBUG;
-  private static boolean isApkDebug = true;
-  private static boolean isPerf = true;
-
-  public static boolean sShow3DLayer=true;
-
-  private static Map<String, String> options = new HashMap<>();
-
-  /**
-   * dynamic
-   */
-  public static boolean sDynamicMode = false;
-  public static String sDynamicUrl = "";
-
-  /**
-   * Fetch system information.
-   * @return map contains system information.
-   */
-  public static Map<String, String> getConfig() {
-    Map<String, String> configs = new HashMap<>();
-    configs.put(WXConfig.os, OS);
-    configs.put(WXConfig.appVersion, getAppVersionName());
-    configs.put(WXConfig.devId, DEV_Id);
-    configs.put(WXConfig.sysVersion, SYS_VERSION);
-    configs.put(WXConfig.sysModel, SYS_MODEL);
-    configs.put(WXConfig.weexVersion, String.valueOf(WXSDK_VERSION));
-    configs.put(WXConfig.logLevel,sLogLevel.getName());
-    configs.putAll(options);
-    if(configs!=null&&configs.get(WXConfig.appName)==null && sApplication!=null){
-       configs.put(WXConfig.appName, sApplication.getPackageName());
-    }
-    return configs;
+  @Deprecated
+  public TBWXImgLoaderAdapter(WXSDKInstance instance) {
   }
 
-  /**
-   * Get the version of the current app.
-   */
-  private static String getAppVersionName() {
-    String versionName = "";
-    PackageManager manager;
-    PackageInfo info = null;
-    try {
-      manager = sApplication.getPackageManager();
-      info = manager.getPackageInfo(sApplication.getPackageName(), 0);
-      versionName = info.versionName;
-    } catch (Exception e) {
-      WXLogUtils.e("WXEnvironment getAppVersionName Exception: ", e);
-    }
-    return versionName;
+  public TBWXImgLoaderAdapter(Context cxt){
+
   }
 
-  public static void addCustomOptions(String key, String value) {
-    options.put(key, value);
-  }
+  @Override
+  public void setImage(final String url, final ImageView view, final WXImageQuality quality, final WXImageStrategy strategy) {
 
-  public static boolean isSupport() {
-    boolean excludeX86 = "true".equals(options.get(SETTING_EXCLUDE_X86SUPPORT));
-    boolean isX86AndExcluded = WXSoInstallMgrSdk.isX86()&&excludeX86;
-    boolean isCPUSupport = WXSoInstallMgrSdk.isCPUSupport()&&!isX86AndExcluded;
     if (WXEnvironment.isApkDebugable()) {
-      WXLogUtils.d("WXEnvironment.sSupport:" + isCPUSupport
-                   + " WXSDKEngine.isInitialized():" + WXSDKEngine.isInitialized()
-                   + " !WXUtils.isTabletDevice():" + !WXUtils.isTabletDevice());
+      WXLogUtils.w("TBWAImgLoaderAdapter", url);
     }
-    return isCPUSupport && WXSDKEngine.isInitialized() && !WXUtils.isTabletDevice();
+
+    WXSDKManager.getInstance().postOnUiThread(new Runnable() {
+
+      @Override
+      public void run() {
+        if (view == null ) {
+          return;
+        }
+
+        String realUrl = getImageRealURL(view, url, quality, strategy);
+
+        String lastUrl = (String)view.getTag(0x11);
+        Drawable lastDrawable = view.getDrawable();
+        if (lastDrawable != null && lastUrl != null && lastUrl.equals(realUrl)) {
+          return;
+        }
+
+        PhenixTicket ticket = (PhenixTicket) view.getTag();
+        Phenix.instance().cancel(ticket);
+
+        if (TextUtils.isEmpty(url)) {
+          view.setImageDrawable(null);
+          return;
+        }
+
+
+        /*if(!TextUtils.isEmpty(strategy.placeHolder) && view.getTag(strategy.placeHolder.hashCode())==null){
+          PhenixTicket ticket=Phenix.instance().with(view.getContext()).load(strategy.placeHolder).notSharedDrawable(true).into(view);
+          view.setTag(strategy.placeHolder.hashCode(), ticket);
+        }*/
+
+
+
+
+        /*if (view.getTag() == null) {*/
+
+          PhenixCreator creator = Phenix.instance().load(realUrl).secondary(strategy.placeHolder).limitSize(view).notSharedDrawable(true).addLoaderExtra(Constant.BUNDLE_BIZ_CODE,"70");
+          creator.succListener(new IPhenixListener<SuccPhenixEvent>() {
+            @Override
+            public boolean onHappen(SuccPhenixEvent succPhenixEvent) {
+              Drawable drawable = succPhenixEvent.getDrawable();
+              if (drawable != null) {
+                if (!succPhenixEvent.isIntermediate() && strategy.getImageListener() != null) {
+                  strategy.getImageListener().onImageFinish(url,view,true,null);
+                }
+                view.setImageDrawable(drawable);
+              }
+              return false;
+            }
+          });
+
+          creator.failListener(new IPhenixListener<FailPhenixEvent>() {
+            @Override
+            public boolean onHappen(FailPhenixEvent failPhenixEvent) {
+              if(strategy.getImageListener()!=null){
+                strategy.getImageListener().onImageFinish(url,view,false,null);
+              }
+              return false;
+            }
+          });
+          ticket = creator.fetch();
+          view.setTag(ticket);
+          view.setTag(0x11, realUrl);
+
+        /*} else if (view.getTag() instanceof PhenixTicket) {
+          PhenixTicket phenixTicket = (PhenixTicket) view.getTag();
+          phenixTicket.cancel();
+          Phenix.instance().with(view.getContext()).load(realUrl).notSharedDrawable(true).succListener(new IPhenixListener<SuccPhenixEvent>() {
+            @Override
+            public boolean onHappen(SuccPhenixEvent succPhenixEvent) {
+              if (succPhenixEvent != null && succPhenixEvent.getDrawable() != null && !succPhenixEvent.isIntermediate()) {
+                if (!TextUtils.isEmpty(strategy.placeHolder) && view.getTag(strategy.placeHolder.hashCode()) instanceof PhenixTicket) {
+                  PhenixTicket ticket1 = (PhenixTicket) view.getTag(strategy.placeHolder.hashCode());
+                  ticket1.cancel();
+                  if (strategy.getImageListener() != null) {
+                    strategy.getImageListener().onImageFinish(url, view, true, null);
+                  }
+                }
+                Drawable drawable = succPhenixEvent.getDrawable();
+                view.setImageDrawable(drawable);
+              }
+              return false;
+            }
+          }).failListener(new IPhenixListener<FailPhenixEvent>() {
+            @Override
+            public boolean onHappen(FailPhenixEvent failPhenixEvent) {
+              if (strategy.getImageListener() != null) {
+                strategy.getImageListener().onImageFinish(url, view, true, null);
+              }
+//              Toast.makeText(view.getContext(), "我失败了", Toast.LENGTH_SHORT).show();
+              return false;
+            }
+          }).fetch();
+        }*/
+
+      }
+    }, 0);
+
   }
 
-  public static boolean isApkDebugable() {
-    if (sApplication == null) {
-      return false;
+  public String getImageRealURL(ImageView view, String url, WXImageQuality quality, WXImageStrategy strategy) {
+    if (view == null || TextUtils.isEmpty(url) || quality == WXImageQuality.ORIGINAL) {
+      return url;
     }
 
-    if (isPerf) {
-      return false;
-    }
-
-    if (!isApkDebug) {
-      return false;
-    }
-    try {
-      ApplicationInfo info = sApplication.getApplicationInfo();
-      isApkDebug = (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
-      return isApkDebug;
-    } catch (Exception e) {
-      /**
-       * Don't call WXLogUtils.e here,will cause stackoverflow
-       */
-      e.printStackTrace();
-    }
-    return false;
+    return decideUrl(view, url, strategy.isSharpen, quality);
   }
 
-  public static boolean isPerf() {
-    return isPerf;
-  }
-
-  private static String getDevId() {
-    return sApplication == null ? "" : ((TelephonyManager) sApplication
-        .getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-  }
-
-  public static Application getApplication() {
-    return sApplication;
-  }
-
-  public void initMetrics() {
-    if (sApplication == null) {
-      return;
+  public String decideUrl(ImageView view, String url, boolean isSharpen, WXImageQuality quality) {
+    mConfig = getConfig(isSharpen, quality);
+    if (mConfig == null) {
+      return url;
     }
-  }
-
-  public static String getDiskCacheDir(Context context) {
-    if (context == null) {
-      return null;
-    }
-    String cachePath;
-    if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-            || !Environment.isExternalStorageRemovable()) {
-      cachePath = context.getExternalCacheDir().getPath();
+    int height = 0;
+    int width = 0;
+    if (view.getLayoutParams() != null) {
+      height = view.getLayoutParams().height;
+      width = view.getLayoutParams().width;
     } else {
-      cachePath = context.getCacheDir().getPath();
+      height = view.getHeight();
+      width = view.getWidth();
     }
-    return cachePath;
+
+    if (WXEnvironment.isApkDebugable()) {
+      StringBuilder builder = new StringBuilder();
+      builder.append("[TBWXImgLoaderAdapter] decideUrl---->url:").append(url).append("  width:").append(width).append("  height:").append(height);
+      WXLogUtils.d(builder.substring(0));
+    }
+
+    String decideUrl = ImageStrategyDecider.decideUrl(url, width, height, mConfig);
+
+    return decideUrl;
+  }
+
+  private ImageStrategyConfig getConfig(boolean isSharpen, WXImageQuality quality) {
+    TaobaoImageUrlStrategy.ImageQuality q = TaobaoImageUrlStrategy.ImageQuality.q75;
+    if (quality == null || quality == WXImageQuality.NORMAL) {
+      q = TaobaoImageUrlStrategy.ImageQuality.q75;
+    } else if (quality == WXImageQuality.LOW) {
+      q = TaobaoImageUrlStrategy.ImageQuality.q50;
+    } else if (quality == WXImageQuality.HIGH) {
+      q = TaobaoImageUrlStrategy.ImageQuality.q90;
+    } else if (quality == WXImageQuality.ORIGINAL) {
+      q = TaobaoImageUrlStrategy.ImageQuality.non;
+    }
+    // 锐化参数
+    if (isSharpen) {
+      return ImageStrategyConfig.newBuilderWithName(ImageStrategyConfig.WEAPPSHARPEN, 70).setFinalImageQuality(q).build();
+    }
+
+    return ImageStrategyConfig.newBuilderWithName(ImageStrategyConfig.WEAPP, 70).setFinalImageQuality(q).build();
   }
 
 }

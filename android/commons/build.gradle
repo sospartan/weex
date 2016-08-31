@@ -15,6 +15,9 @@ apply plugin: 'com.github.hierynomus.license'
 
 repositories {
     jcenter()
+    maven {
+        url "http://mvnrepo.alibaba-inc.com/mvn/repository"
+    }
 }
 
 android {
@@ -23,8 +26,8 @@ android {
     resourcePrefix "weexcomm"
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 19
+        minSdkVersion 16
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -48,6 +51,7 @@ dependencies {
     compile project(':weex_sdk')
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.facebook.fresco:fresco:0.10.0'
+
 
 
     testCompile 'junit:junit:4.12'
