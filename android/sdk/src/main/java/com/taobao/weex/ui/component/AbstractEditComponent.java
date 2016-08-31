@@ -509,11 +509,6 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
     getHostView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
   }
 
-  @Override
-  public WXTextDomObject getDomObject() {
-    return (WXTextDomObject) super.getDomObject();
-  }
-
   private int getInputType(String type) {
     int inputType;
     switch (type) {
