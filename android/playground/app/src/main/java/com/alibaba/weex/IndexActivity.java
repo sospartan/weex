@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -34,7 +35,7 @@ public class IndexActivity extends AbstractWeexActivity {
   private static final String TAG = "IndexActivity";
   private static final String DEFAULT_IP = "your_current_IP";
   private static String CURRENT_IP= DEFAULT_IP; // your_current_IP
-  private static final String WEEX_INDEX_URL = "http://30.10.208.139:12580/examples/build/index.js";
+  private  String WEEX_INDEX_URL = "http://"+CURRENT_IP+":12580/examples/build/index.js";
 
   private ProgressBar mProgressBar;
   private TextView mTipView;
@@ -74,6 +75,18 @@ public class IndexActivity extends AbstractWeexActivity {
     };
 
     LocalBroadcastManager.getInstance(this).registerReceiver(mReloadReceiver,new IntentFilter(WXSDKEngine.JS_FRAMEWORK_RELOAD));
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    Uri uri=intent.getData();
+    if(uri!=null){
+      String ip=uri.getQueryParameter("_wx_ip");
+      CURRENT_IP=ip;
+      WEEX_INDEX_URL=WEEX_INDEX_URL.replace(DEFAULT_IP,CURRENT_IP);
+      reloadWeex();
+    }
   }
 
   @Override
