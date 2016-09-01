@@ -44,9 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/d85567fb2927f77c3ebf58a790f42fe2", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/2f2a8b90cb0b22784d5a327d6de68500", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
+	__webpack_require__(15);
 	    __webpack_require__(2);
 
 	    __weex_module__.exports = {
@@ -80,85 +81,90 @@
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "div",
-	  "classList": [
-	    "wrapper"
-	  ],
+	  "type": "playground-navpage",
 	  "children": [
 	    {
 	      "type": "div",
 	      "classList": [
-	        "toolbar"
+	        "wrapper"
 	      ],
-	      "append": "tree",
 	      "children": [
 	        {
-	          "type": "wxc-button",
-	          "attr": {
-	            "type": "primary",
-	            "size": "small",
-	            "value": "back"
-	          },
-	          "events": {
-	            "click": "goback"
-	          },
-	          "style": {
-	            "marginLeft": 30,
-	            "width": 210,
-	            "marginTop": 5,
-	            "marginBottom": 5
-	          }
+	          "type": "div",
+	          "classList": [
+	            "toolbar"
+	          ],
+	          "append": "tree",
+	          "children": [
+	            {
+	              "type": "wxc-button",
+	              "attr": {
+	                "type": "primary",
+	                "size": "small",
+	                "value": "back"
+	              },
+	              "events": {
+	                "click": "goback"
+	              },
+	              "style": {
+	                "marginLeft": 30,
+	                "width": 210,
+	                "marginTop": 5,
+	                "marginBottom": 5
+	              }
+	            },
+	            {
+	              "type": "wxc-button",
+	              "attr": {
+	                "type": "primary",
+	                "size": "small",
+	                "value": "forward"
+	              },
+	              "events": {
+	                "click": "goforward"
+	              },
+	              "style": {
+	                "marginLeft": 30,
+	                "width": 210,
+	                "marginTop": 5,
+	                "marginBottom": 5
+	              }
+	            },
+	            {
+	              "type": "wxc-button",
+	              "attr": {
+	                "type": "primary",
+	                "size": "small",
+	                "value": "refresh"
+	              },
+	              "events": {
+	                "click": "refresh"
+	              },
+	              "style": {
+	                "marginLeft": 30,
+	                "width": 210,
+	                "marginTop": 5,
+	                "marginBottom": 5
+	              }
+	            }
+	          ]
 	        },
 	        {
-	          "type": "wxc-button",
+	          "type": "web",
+	          "classList": [
+	            "content"
+	          ],
+	          "id": "webview",
 	          "attr": {
-	            "type": "primary",
-	            "size": "small",
-	            "value": "forward"
+	            "src": "https://m.taobao.com/?spm=0.0.0.0&v=0#index"
 	          },
 	          "events": {
-	            "click": "goforward"
-	          },
-	          "style": {
-	            "marginLeft": 30,
-	            "width": 210,
-	            "marginTop": 5,
-	            "marginBottom": 5
-	          }
-	        },
-	        {
-	          "type": "wxc-button",
-	          "attr": {
-	            "type": "primary",
-	            "size": "small",
-	            "value": "refresh"
-	          },
-	          "events": {
-	            "click": "refresh"
-	          },
-	          "style": {
-	            "marginLeft": 30,
-	            "width": 210,
-	            "marginTop": 5,
-	            "marginBottom": 5
+	            "pagestart": "startload",
+	            "pagefinish": "finishload",
+	            "error": "failload"
 	          }
 	        }
 	      ]
-	    },
-	    {
-	      "type": "web",
-	      "classList": [
-	        "content"
-	      ],
-	      "id": "webview",
-	      "attr": {
-	        "src": "https://m.taobao.com/?spm=0.0.0.0&v=0#index"
-	      },
-	      "events": {
-	        "pagestart": "startload",
-	        "pagefinish": "finishload",
-	        "error": "failload"
-	      }
 	    }
 	  ]
 	})
@@ -191,7 +197,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/d85567fb2927f77c3ebf58a790f42fe2", {
+	;__weex_bootstrap__("@weex-component/2f2a8b90cb0b22784d5a327d6de68500", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1333,6 +1339,69 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
 	})
 	})
 

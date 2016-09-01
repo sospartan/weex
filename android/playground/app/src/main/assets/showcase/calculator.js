@@ -44,9 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/50d2d99c419670e2df5e49ecb0f9ac05", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/4530f956baffc2bcac4ca67e9bd159f7", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
+	__webpack_require__(15);
 	  __webpack_require__(2);
 	  var OP = ['+', '-', '*', '/'];
 	  var inputs = [];
@@ -87,245 +88,250 @@
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "div",
-	  "style": {
-	    "padding": 5
-	  },
+	  "type": "playground-navpage",
 	  "children": [
 	    {
-	      "type": "text",
-	      "classList": [
-	        "result"
-	      ],
-	      "attr": {
-	        "value": function () {return this.result}
-	      }
-	    },
-	    {
 	      "type": "div",
-	      "classList": [
-	        "row"
-	      ],
+	      "style": {
+	        "padding": 5
+	      },
 	      "children": [
 	        {
 	          "type": "text",
 	          "classList": [
-	            "btn"
+	            "result"
 	          ],
-	          "events": {
-	            "click": "input"
-	          },
 	          "attr": {
-	            "value": "1"
+	            "value": function () {return this.result}
 	          }
 	        },
 	        {
-	          "type": "text",
+	          "type": "div",
 	          "classList": [
-	            "btn"
+	            "row"
 	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "2"
-	          }
+	          "children": [
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "1"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "2"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "3"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn",
+	                "btn-operator"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "+"
+	              }
+	            }
+	          ]
 	        },
 	        {
-	          "type": "text",
+	          "type": "div",
 	          "classList": [
-	            "btn"
+	            "row"
 	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "3"
-	          }
+	          "children": [
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "4"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "5"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "6"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn",
+	                "btn-operator"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "-"
+	              }
+	            }
+	          ]
 	        },
 	        {
-	          "type": "text",
+	          "type": "div",
 	          "classList": [
-	            "btn",
-	            "btn-operator"
+	            "row"
 	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "+"
-	          }
-	        }
-	      ]
-	    },
-	    {
-	      "type": "div",
-	      "classList": [
-	        "row"
-	      ],
-	      "children": [
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "4"
-	          }
+	          "children": [
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "7"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "8"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "9"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn",
+	                "btn-operator"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "*"
+	              }
+	            }
+	          ]
 	        },
 	        {
-	          "type": "text",
+	          "type": "div",
 	          "classList": [
-	            "btn"
+	            "row"
 	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "5"
-	          }
-	        },
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "6"
-	          }
-	        },
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn",
-	            "btn-operator"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "-"
-	          }
-	        }
-	      ]
-	    },
-	    {
-	      "type": "div",
-	      "classList": [
-	        "row"
-	      ],
-	      "children": [
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "7"
-	          }
-	        },
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "8"
-	          }
-	        },
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "9"
-	          }
-	        },
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn",
-	            "btn-operator"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "*"
-	          }
-	        }
-	      ]
-	    },
-	    {
-	      "type": "div",
-	      "classList": [
-	        "row"
-	      ],
-	      "children": [
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "0"
-	          }
-	        },
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn"
-	          ],
-	          "events": {
-	            "click": "input"
-	          },
-	          "attr": {
-	            "value": "."
-	          }
-	        },
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn"
-	          ],
-	          "events": {
-	            "click": "clear"
-	          },
-	          "attr": {
-	            "value": "AC"
-	          }
-	        },
-	        {
-	          "type": "text",
-	          "classList": [
-	            "btn",
-	            "btn-operator"
-	          ],
-	          "events": {
-	            "click": "calculate"
-	          },
-	          "attr": {
-	            "value": "="
-	          }
+	          "children": [
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "0"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "input"
+	              },
+	              "attr": {
+	                "value": "."
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn"
+	              ],
+	              "events": {
+	                "click": "clear"
+	              },
+	              "attr": {
+	                "value": "AC"
+	              }
+	            },
+	            {
+	              "type": "text",
+	              "classList": [
+	                "btn",
+	                "btn-operator"
+	              ],
+	              "events": {
+	                "click": "calculate"
+	              },
+	              "attr": {
+	                "value": "="
+	              }
+	            }
+	          ]
 	        }
 	      ]
 	    }
@@ -361,7 +367,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/50d2d99c419670e2df5e49ecb0f9ac05", {
+	;__weex_bootstrap__("@weex-component/4530f956baffc2bcac4ca67e9bd159f7", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1503,6 +1509,69 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
 	})
 	})
 

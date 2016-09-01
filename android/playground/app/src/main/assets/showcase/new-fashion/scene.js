@@ -46,7 +46,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/41333d527ccae7db33e37491c3583a26", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(20);
+	__webpack_require__(21);
 
 	;
 	  __weex_module__.exports = {
@@ -408,7 +408,7 @@
 
 /***/ },
 
-/***/ 20:
+/***/ 21:
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/banner", [], function(__weex_require__, __weex_exports__, __weex_module__){

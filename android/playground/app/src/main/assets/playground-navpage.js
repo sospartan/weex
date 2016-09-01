@@ -44,268 +44,64 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/3003084efa5d811ae8d91f1f04c3ea3a", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/fe73517fabf24dc706d094cefc3ebe62", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	__webpack_require__(15);
-	  __webpack_require__(2);
-
-	  __weex_module__.exports = {
-	    data: function () {return {
-	      getJsonpResult: 'loading...',
-	      getResult: 'loading...',
-	      postResult: 'loading...',
-	      putResult: 'loading...',
-	      deleteResult: 'loading...',
-	      headResult: 'loading...',
-	      patchResult: 'loading...',
-	    }},
-	    ready: function() {
-	      var stream = __weex_require__('@weex-module/stream');
-	      var me = this;
-	      var GET_URL_JSONP = 'http://jsfiddle.net/echo/jsonp/?callback=anything&result=content_in_response';
-	      var GET_URL = 'http://httpbin.org/get';
-	      var POST_URL = 'http://httpbin.org/post';
-	      var PUT_URL = 'http://httpbin.org/put';
-	      var DELETE_URL = 'http://httpbin.org/delete';
-	      var HEAD_URL = 'http://httpbin.org/status/418';
-	      var PATCH_URL = 'http://httpbin.org/patch';
-	      
-	      stream.fetch({
-	        method: 'GET',
-	        url: GET_URL_JSONP,
-	        type:'jsonp'
-	      }, function(ret) {
-	        if(!ret.ok){
-	          me.getJsonpResult = "request failed";
-	        }else{
-	          console.log('get:'+ret);
-	          me.getJsonpResult = ret.data;
-	        }
-	      },function(response){
-	        console.log('get jsonp in progress:'+response.length);
-	        me.getJsonpResult = "bytes received:"+response.length;
-	      });
-
-	      stream.fetch({
-	        method: 'GET',
-	        url: GET_URL,
-	        type:'json'
-	      }, function(ret) {
-	        if(!ret.ok){
-	          me.getResult = "request failed";
-	        }else{
-	          console.log('get:'+ret);
-	          me.getResult = JSON.stringify(ret.data);
-	        }
-	      },function(response){
-	        console.log('get in progress:'+response.length);
-	        me.getResult = "bytes received:"+response.length;
-	      });
-
-	      stream.fetch({
-	        method: 'POST',
-	        url: POST_URL,
-	        type:'json'
-	      }, function(ret) {
-	        if(!ret.ok){
-	          me.postResult = "request failed";
-	        }else{
-	          console.log('get:'+JSON.stringify(ret));
-	          me.postResult = JSON.stringify(ret.data);
-	        }
-	      },function(response){
-	        console.log('get in progress:'+response.length);
-	        me.postResult = "bytes received:"+response.length;
-	      });
-
-	      stream.fetch({
-	        method: 'PUT',
-	        url: PUT_URL,
-	        type:'json'
-	      }, function(ret) {
-	        if(!ret.ok){
-	          me.putResult = "request failed";
-	        }else{
-	          console.log('get:'+JSON.stringify(ret));
-	          me.putResult = JSON.stringify(ret.data);
-	        }
-	      },function(response){
-	        console.log('get in progress:'+response.length);
-	        me.putResult = "bytes received:"+response.length;
-	      });
-
-	      stream.fetch({
-	        method: 'DELETE',
-	        url: DELETE_URL,
-	        type:'json'
-	      }, function(ret) {
-
-	        if(!ret.ok){
-	          me.deleteResult = "request failed";
-	        }else{
-	          console.log('get:'+JSON.stringify(ret));
-	          me.deleteResult = JSON.stringify(ret.data);
-	        }
-	      },function(response){
-	        console.log('get in progress:'+response.length);
-	        me.deleteResult = "bytes received:"+response.length;
-	      });
-	      
-	      stream.fetch({
-	        method: 'HEAD',
-	        url: HEAD_URL,
-	        type:'json'
-	      }, function(ret) {
-	        if(ret.statusText !== 'I\'m a teapot'){
-	          me.headResult = "request failed";
-	        }else{
-	          console.log('get:'+JSON.stringify(ret));
-	          me.headResult = ret.statusText;
-	        }
-	      },function(response){
-	        console.log('get in progress:'+response.length);
-	        me.headResult = "bytes received:"+response.length;
-	      });
-
-	      stream.fetch({
-	        method: 'PATCH',
-	        url: PATCH_URL,
-	        type:'json'
-	      }, function(ret) {
-	        if(!ret.ok){
-	          me.patchResult = "request failed";
-	        }else{
-	          console.log('get:'+JSON.stringify(ret));
-	          me.patchResult = JSON.stringify(request.data);
-	        }
-	      },function(response){
-	        console.log('get in progress:'+response.length);
-	        me.patchResult = "bytes received:"+response.length;
-	      });
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
 	    }
-	  };
+
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "playground-navpage",
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
 	  "children": [
 	    {
-	      "type": "scroller",
-	      "children": [
-	        {
-	          "type": "wxc-panel",
-	          "attr": {
-	            "title": "stream.fetch",
-	            "type": "primary"
-	          },
-	          "children": [
-	            {
-	              "type": "wxc-panel",
-	              "attr": {
-	                "title": "method = GET"
-	              },
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "attr": {
-	                    "value": function () {return this.getResult}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "wxc-panel",
-	              "attr": {
-	                "title": "method = GET / type = jsonp"
-	              },
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "attr": {
-	                    "value": function () {return this.getJsonpResult}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "wxc-panel",
-	              "attr": {
-	                "title": "method = POST"
-	              },
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "attr": {
-	                    "value": function () {return this.postResult}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "wxc-panel",
-	              "attr": {
-	                "title": "method = PUT"
-	              },
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "attr": {
-	                    "value": function () {return this.putResult}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "wxc-panel",
-	              "attr": {
-	                "title": "method = DELETE"
-	              },
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "attr": {
-	                    "value": function () {return this.deleteResult}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "wxc-panel",
-	              "attr": {
-	                "title": "method = HEAD"
-	              },
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "attr": {
-	                    "value": function () {return this.headResult}
-	                  }
-	                }
-	              ]
-	            },
-	            {
-	              "type": "wxc-panel",
-	              "attr": {
-	                "title": "method = PATCH"
-	              },
-	              "children": [
-	                {
-	                  "type": "text",
-	                  "attr": {
-	                    "value": function () {return this.patchResult}
-	                  }
-	                }
-	              ]
-	            }
-	          ]
-	        }
-	      ]
+	      "type": "content"
 	    }
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/3003084efa5d811ae8d91f1f04c3ea3a", {
+	;__weex_bootstrap__("@weex-component/fe73517fabf24dc706d094cefc3ebe62", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1447,69 +1243,6 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
-	})
-	})
-
-/***/ },
-/* 14 */,
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
-
-	;
-	    __webpack_require__(2);
-	    __weex_module__.exports = {
-	        data: function () {return {
-	            navBarHeight: 88,
-	            title: '',
-	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
-	        }},
-	        created: function () {
-	            var config = this.$getConfig();
-	            var src = config.bundleUrl;
-	            if (src != null) {
-	                var end = src.lastIndexOf('?');
-	                end = end < 0 ? src.length : end;
-	                console.log("end:" + end);
-	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
-	            }
-	            if (src.indexOf('file') >= 0) {
-	                this.rightItemSrc = '';
-	            }
-	            this.$on('naviBar.rightItem.click', function (e) {
-	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
-	            });
-	            this.$on('naviBar.leftItem.click', function (e) {
-	                var vm = this;
-	                var params = {
-	                    'animated': 'true'
-	                }
-	                vm.$call('navigator', 'pop', params, function () {
-	                });
-	            });
-	        }, methods: {}
-	    }
-
-
-	;__weex_module__.exports.template = __weex_module__.exports.template || {}
-	;Object.assign(__weex_module__.exports.template, {
-	  "type": "wxc-navpage",
-	  "attr": {
-	    "height": function () {return this.navBarHeight},
-	    "backgroundColor": "#3F51B5",
-	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
-	    "leftItemTitle": "Hello",
-	    "leftItemColor": "white",
-	    "titleColor": "white",
-	    "title": function () {return this.title},
-	    "rightItemSrc": function () {return this.rightItemSrc}
-	  },
-	  "children": [
-	    {
-	      "type": "content"
-	    }
-	  ]
 	})
 	})
 

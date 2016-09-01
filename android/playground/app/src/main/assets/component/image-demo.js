@@ -44,9 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/6589634d5a77b3848b1cc0288cbce5ec", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/05dbee7c7e9d905cff30bbaa1c19f01e", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
+	__webpack_require__(15);
 	  __webpack_require__(2);
 	  __weex_module__.exports = {
 	    data: function () {return {
@@ -56,148 +57,153 @@
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "playground-navpage",
 	  "children": [
 	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "width x height",
-	        "type": "primary"
-	      },
-	      "children": [
-	        {
-	          "type": "wxc-tip",
-	          "attr": {
-	            "type": "warning",
-	            "value": "Weex screen width is 750"
-	          },
-	          "style": {
-	            "marginBottom": 20
-	          }
-	        },
-	        {
-	          "type": "wxc-panel",
-	          "attr": {
-	            "title": "400 X 400"
-	          },
-	          "children": [
-	            {
-	              "type": "image",
-	              "classList": [
-	                "img"
-	              ],
-	              "style": {
-	                "width": 400,
-	                "height": 400
-	              },
-	              "attr": {
-	                "src": function () {return this.img}
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "wxc-panel",
-	          "attr": {
-	            "title": "200 x 200"
-	          },
-	          "children": [
-	            {
-	              "type": "image",
-	              "classList": [
-	                "img"
-	              ],
-	              "style": {
-	                "width": 200,
-	                "height": 200
-	              },
-	              "attr": {
-	                "src": function () {return this.img}
-	              }
-	            }
-	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "resize",
-	        "type": "primary"
-	      },
+	      "type": "scroller",
 	      "children": [
 	        {
 	          "type": "wxc-panel",
 	          "attr": {
-	            "title": "resize=stretch(default) 600 X 200"
+	            "title": "width x height",
+	            "type": "primary"
 	          },
 	          "children": [
 	            {
-	              "type": "image",
-	              "classList": [
-	                "img"
-	              ],
-	              "style": {
-	                "width": 600,
-	                "height": 200,
-	                "borderStyle": "solid",
-	                "borderWidth": 1,
-	                "borderColor": "#333333"
-	              },
+	              "type": "wxc-tip",
 	              "attr": {
-	                "src": function () {return this.img},
-	                "resize": "stretch"
+	                "type": "warning",
+	                "value": "Weex screen width is 750"
+	              },
+	              "style": {
+	                "marginBottom": 20
 	              }
+	            },
+	            {
+	              "type": "wxc-panel",
+	              "attr": {
+	                "title": "400 X 400"
+	              },
+	              "children": [
+	                {
+	                  "type": "image",
+	                  "classList": [
+	                    "img"
+	                  ],
+	                  "style": {
+	                    "width": 400,
+	                    "height": 400
+	                  },
+	                  "attr": {
+	                    "src": function () {return this.img}
+	                  }
+	                }
+	              ]
+	            },
+	            {
+	              "type": "wxc-panel",
+	              "attr": {
+	                "title": "200 x 200"
+	              },
+	              "children": [
+	                {
+	                  "type": "image",
+	                  "classList": [
+	                    "img"
+	                  ],
+	                  "style": {
+	                    "width": 200,
+	                    "height": 200
+	                  },
+	                  "attr": {
+	                    "src": function () {return this.img}
+	                  }
+	                }
+	              ]
 	            }
 	          ]
 	        },
 	        {
 	          "type": "wxc-panel",
 	          "attr": {
-	            "title": "resize=contain 600 X 200"
+	            "title": "resize",
+	            "type": "primary"
 	          },
 	          "children": [
 	            {
-	              "type": "image",
-	              "classList": [
-	                "img"
-	              ],
-	              "style": {
-	                "width": 600,
-	                "height": 200,
-	                "borderStyle": "solid",
-	                "borderWidth": 1,
-	                "borderColor": "#333333"
-	              },
+	              "type": "wxc-panel",
 	              "attr": {
-	                "src": function () {return this.img},
-	                "resize": "contain"
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "wxc-panel",
-	          "attr": {
-	            "title": "resize=cover 600 X 200"
-	          },
-	          "children": [
+	                "title": "resize=stretch(default) 600 X 200"
+	              },
+	              "children": [
+	                {
+	                  "type": "image",
+	                  "classList": [
+	                    "img"
+	                  ],
+	                  "style": {
+	                    "width": 600,
+	                    "height": 200,
+	                    "borderStyle": "solid",
+	                    "borderWidth": 1,
+	                    "borderColor": "#333333"
+	                  },
+	                  "attr": {
+	                    "src": function () {return this.img},
+	                    "resize": "stretch"
+	                  }
+	                }
+	              ]
+	            },
 	            {
-	              "type": "image",
-	              "classList": [
-	                "img"
-	              ],
-	              "style": {
-	                "width": 600,
-	                "height": 200,
-	                "borderStyle": "solid",
-	                "borderWidth": 1,
-	                "borderColor": "#333333"
-	              },
+	              "type": "wxc-panel",
 	              "attr": {
-	                "src": function () {return this.img},
-	                "resize": "cover"
-	              }
+	                "title": "resize=contain 600 X 200"
+	              },
+	              "children": [
+	                {
+	                  "type": "image",
+	                  "classList": [
+	                    "img"
+	                  ],
+	                  "style": {
+	                    "width": 600,
+	                    "height": 200,
+	                    "borderStyle": "solid",
+	                    "borderWidth": 1,
+	                    "borderColor": "#333333"
+	                  },
+	                  "attr": {
+	                    "src": function () {return this.img},
+	                    "resize": "contain"
+	                  }
+	                }
+	              ]
+	            },
+	            {
+	              "type": "wxc-panel",
+	              "attr": {
+	                "title": "resize=cover 600 X 200"
+	              },
+	              "children": [
+	                {
+	                  "type": "image",
+	                  "classList": [
+	                    "img"
+	                  ],
+	                  "style": {
+	                    "width": 600,
+	                    "height": 200,
+	                    "borderStyle": "solid",
+	                    "borderWidth": 1,
+	                    "borderColor": "#333333"
+	                  },
+	                  "attr": {
+	                    "src": function () {return this.img},
+	                    "resize": "cover"
+	                  }
+	                }
+	              ]
 	            }
 	          ]
 	        }
@@ -212,7 +218,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/6589634d5a77b3848b1cc0288cbce5ec", {
+	;__weex_bootstrap__("@weex-component/05dbee7c7e9d905cff30bbaa1c19f01e", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1354,6 +1360,69 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
 	})
 	})
 

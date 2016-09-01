@@ -44,9 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/bc4c0b8a8289e72be1319e2652149e97", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/a2f27351ff73ff0387f6340feec7736a", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
+	__webpack_require__(15);
 	  __webpack_require__(2);
 
 	  __weex_module__.exports = {
@@ -90,157 +91,162 @@
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "playground-navpage",
 	  "children": [
 	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "Countdown",
-	        "type": "primary"
-	      },
+	      "type": "scroller",
 	      "children": [
 	        {
-	          "type": "wxc-countdown",
-	          "id": "countdown1",
+	          "type": "wxc-panel",
 	          "attr": {
-	            "remain": function () {return this.countdown1.remain}
-	          },
-	          "style": {
-	            "width": 750,
-	            "marginTop": 20,
-	            "marginBottom": 20
+	            "title": "Countdown",
+	            "type": "primary"
 	          },
 	          "children": [
 	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno1"
-	              ],
+	              "type": "wxc-countdown",
+	              "id": "countdown1",
 	              "attr": {
-	                "value": function () {return this.countdown1.time.D}
-	              }
-	            },
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno1"
-	              ],
-	              "style": {
-	                "backgroundColor": "#FFFFFF",
-	                "color": "#AAAAAA"
+	                "remain": function () {return this.countdown1.remain}
 	              },
-	              "attr": {
-	                "value": "day(s)"
-	              }
-	            },
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno1"
-	              ],
-	              "attr": {
-	                "value": function () {return this.countdown1.time.hh}
-	              }
-	            },
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno1"
-	              ],
 	              "style": {
-	                "backgroundColor": "#FFFFFF",
-	                "color": "#AAAAAA"
+	                "width": 750,
+	                "marginTop": 20,
+	                "marginBottom": 20
 	              },
-	              "attr": {
-	                "value": "hour(s)"
-	              }
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno1"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return this.countdown1.time.D}
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno1"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "#FFFFFF",
+	                    "color": "#AAAAAA"
+	                  },
+	                  "attr": {
+	                    "value": "day(s)"
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno1"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return this.countdown1.time.hh}
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno1"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "#FFFFFF",
+	                    "color": "#AAAAAA"
+	                  },
+	                  "attr": {
+	                    "value": "hour(s)"
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno1"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return this.countdown1.time.mm}
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno1"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "#FFFFFF",
+	                    "color": "#AAAAAA"
+	                  },
+	                  "attr": {
+	                    "value": "minute(s)"
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno1"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return this.countdown1.time.ss}
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno1"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "#FFFFFF",
+	                    "color": "#AAAAAA"
+	                  },
+	                  "attr": {
+	                    "value": "second(s)"
+	                  }
+	                }
+	              ]
 	            },
 	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno1"
-	              ],
+	              "type": "wxc-countdown",
+	              "id": "countdown2",
 	              "attr": {
-	                "value": function () {return this.countdown1.time.mm}
-	              }
-	            },
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno1"
-	              ],
+	                "remain": function () {return this.countdown2.remain}
+	              },
 	              "style": {
-	                "backgroundColor": "#FFFFFF",
-	                "color": "#AAAAAA"
+	                "width": 600
 	              },
-	              "attr": {
-	                "value": "minute(s)"
-	              }
-	            },
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno1"
-	              ],
-	              "attr": {
-	                "value": function () {return this.countdown1.time.ss}
-	              }
-	            },
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno1"
-	              ],
-	              "style": {
-	                "backgroundColor": "#FFFFFF",
-	                "color": "#AAAAAA"
-	              },
-	              "attr": {
-	                "value": "second(s)"
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "wxc-countdown",
-	          "id": "countdown2",
-	          "attr": {
-	            "remain": function () {return this.countdown2.remain}
-	          },
-	          "style": {
-	            "width": 600
-	          },
-	          "children": [
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno2"
-	              ],
-	              "attr": {
-	                "value": function () {return this.countdown2.time.MM}
-	              }
-	            },
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno2"
-	              ],
-	              "style": {
-	                "backgroundColor": "#FFFFFF",
-	                "color": "#AAAAAA"
-	              },
-	              "attr": {
-	                "value": ":"
-	              }
-	            },
-	            {
-	              "type": "text",
-	              "classList": [
-	                "ctno2"
-	              ],
-	              "attr": {
-	                "value": function () {return this.countdown2.time.ss}
-	              }
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno2"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return this.countdown2.time.MM}
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno2"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "#FFFFFF",
+	                    "color": "#AAAAAA"
+	                  },
+	                  "attr": {
+	                    "value": ":"
+	                  }
+	                },
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "ctno2"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return this.countdown2.time.ss}
+	                  }
+	                }
+	              ]
 	            }
 	          ]
 	        }
@@ -274,7 +280,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/bc4c0b8a8289e72be1319e2652149e97", {
+	;__weex_bootstrap__("@weex-component/a2f27351ff73ff0387f6340feec7736a", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1416,6 +1422,69 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
 	})
 	})
 

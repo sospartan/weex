@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/a1bd12a89a4a5a7ef59b536f74a06c18", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/227a297c2ad3e14c24698e60c12e19c3", [], function(__weex_require__, __weex_exports__, __weex_module__){
 	__webpack_require__(1);
 
 	;
@@ -86,12 +86,22 @@
 	        {
 	          "type": "div",
 	          "style": {
-	            "flex": 1,
+	            "marginTop": 200,
 	            "flexDirection": "column",
-	            "alignItems": "center",
-	            "justifyContent": "center"
+	            "alignItems": "center"
 	          },
 	          "children": [
+	            {
+	              "type": "text",
+	              "style": {
+	                "fontSize": 40,
+	                "fontStyle": "italic",
+	                "marginBottom": 80
+	              },
+	              "attr": {
+	                "value": "Run weex on device"
+	              }
+	            },
 	            {
 	              "type": "image",
 	              "attr": {
@@ -108,6 +118,9 @@
 	            },
 	            {
 	              "type": "text",
+	              "style": {
+	                "marginTop": 50
+	              },
 	              "attr": {
 	                "value": "Scan QR"
 	              }
@@ -119,7 +132,7 @@
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/a1bd12a89a4a5a7ef59b536f74a06c18", {
+	;__weex_bootstrap__("@weex-component/227a297c2ad3e14c24698e60c12e19c3", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 

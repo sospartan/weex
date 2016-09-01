@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/4d8597e053276405a0f1d289eeae7ff5", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/5e776259ff580c386088231357289681", [], function(__weex_require__, __weex_exports__, __weex_module__){
 	__webpack_require__(1);
 
 
@@ -60,7 +60,7 @@
 	            deviceHeight: "",
 	            newVersion: "Nothing",
 	            versionColor: "green",
-	            visible:"visible"
+	            visible: "visible"
 	        }},
 	        ready: function () {
 	            var config = this.$getConfig();
@@ -70,16 +70,19 @@
 	            this.deviceWidth = config.env.deviceWidth;
 	            this.deviceHeight = config.env.deviceHeight;
 
-
 	            var self = this;
-
 	            var stream = __weex_require__('@weex-module/stream');
 	            stream.fetch({
 	                method: 'GET',
-	                url: 'http://weex.alibaba-inc.com/raw/html5/87652e940bcc9aeadcfe23973fe9b9a1.js',
+	                url: 'http://h5.m.taobao.com/json/weex/playground/app/info.json',
 	                type: 'String'
 	            }, function (response) {
-	                self.versionColor = "red";
+	                var obj = JSON.parse(response.data);
+	                var version = config.env.platform == "android" ? obj.androidVersion : obj.iosVersion;
+	                if (self.appVersion < version) {
+	                    self.versionColor = "red";
+	                    self.newVersion = version;
+	                }
 	            }, function (progress) {
 	                console.log('progress:' + progress.length);
 	            });
@@ -88,11 +91,21 @@
 	            help: function (event) {
 	                __weex_require__('@weex-module/event').openBrowser("http://alibaba.github.io/weex/doc/");
 	            },
-	            feedback:function(event){
+	            feedback: function (event) {
 	                __weex_require__('@weex-module/event').openBrowser("https://github.com/alibaba/weex");
 	            },
-	            refresh:function(event){
+	            refresh: function (event) {
 	                __weex_require__("@weex-module/event").refresh('js_framework_reload');
+	            },
+	            goDownload: function (event) {
+	                if (this.newVersion != "Nothing") {
+	                    __weex_require__('@weex-module/event').openBrowser("http://alibaba.github.io/weex/download.html");
+	                } else {
+	                    __weex_require__('@weex-module/modal').toast({
+	                        'message': "This is the latest version",
+	                        'duration': 1
+	                    });
+	                }
 	            }
 	        }
 	    }
@@ -215,6 +228,9 @@
 	                "right": function () {return this.newVersion},
 	                "rightColor": function () {return this.versionColor},
 	                "src": "http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"
+	              },
+	              "events": {
+	                "click": "goDownload"
 	              }
 	            },
 	            {
@@ -258,7 +274,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/4d8597e053276405a0f1d289eeae7ff5", {
+	;__weex_bootstrap__("@weex-component/5e776259ff580c386088231357289681", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1606,7 +1622,8 @@
 	;Object.assign(__weex_module__.exports.style, {
 	  "panel": {
 	    "flexDirection": "row",
-	    "padding": 10,
+	    "paddingTop": 25,
+	    "paddingBottom": 25,
 	    "alignItems": "center",
 	    "justifyContent": "space-between",
 	    "borderBottomWidth": 2,

@@ -44,9 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/13c6f8f9dc2ed874e5f24be910e31f26", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/c86ff4b23a2d14113bb394fef876a55e", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
+	__webpack_require__(15);
 	  __webpack_require__(2);
 	  __weex_module__.exports = {
 	    data: function () {return {
@@ -80,53 +81,58 @@
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "playground-navpage",
 	  "children": [
 	    {
-	      "type": "video",
-	      "classList": [
-	        "video"
-	      ],
-	      "events": {
-	        "pause": "onpause",
-	        "start": "onstart",
-	        "finish": "onfinish",
-	        "fail": "onfail"
-	      },
-	      "attr": {
-	        "src": "http://g.tbcdn.cn/ali-wireless-h5/res/0.0.6/toy.mp4",
-	        "autoPlay": "true",
-	        "playStatus": function () {return this.playStatus}
-	      }
-	    },
-	    {
-	      "type": "div",
-	      "style": {
-	        "flexDirection": "row",
-	        "justifyContent": "center"
-	      },
+	      "type": "scroller",
 	      "children": [
 	        {
-	          "type": "wxc-button",
-	          "attr": {
-	            "value": "Pause"
-	          },
+	          "type": "video",
+	          "classList": [
+	            "video"
+	          ],
 	          "events": {
-	            "click": "pause"
+	            "pause": "onpause",
+	            "start": "onstart",
+	            "finish": "onfinish",
+	            "fail": "onfail"
+	          },
+	          "attr": {
+	            "src": "http://g.tbcdn.cn/ali-wireless-h5/res/0.0.6/toy.mp4",
+	            "autoPlay": "true",
+	            "playStatus": function () {return this.playStatus}
 	          }
 	        },
 	        {
-	          "type": "wxc-button",
-	          "attr": {
-	            "value": "Play",
-	            "type": "primary"
-	          },
-	          "events": {
-	            "click": "play"
-	          },
+	          "type": "div",
 	          "style": {
-	            "marginLeft": 20
-	          }
+	            "flexDirection": "row",
+	            "justifyContent": "center"
+	          },
+	          "children": [
+	            {
+	              "type": "wxc-button",
+	              "attr": {
+	                "value": "Pause"
+	              },
+	              "events": {
+	                "click": "pause"
+	              }
+	            },
+	            {
+	              "type": "wxc-button",
+	              "attr": {
+	                "value": "Play",
+	                "type": "primary"
+	              },
+	              "events": {
+	                "click": "play"
+	              },
+	              "style": {
+	                "marginLeft": 20
+	              }
+	            }
+	          ]
 	        }
 	      ]
 	    }
@@ -141,7 +147,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/13c6f8f9dc2ed874e5f24be910e31f26", {
+	;__weex_bootstrap__("@weex-component/c86ff4b23a2d14113bb394fef876a55e", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1283,6 +1289,69 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
 	})
 	})
 

@@ -49,7 +49,7 @@
 
 
 	;
-	    __webpack_require__(19);
+	    __webpack_require__(20);
 
 	    var initData = '[{\"addTime\":\"2016-07-14\",\"questionStatus\":\"2\",\"questionStatusValue\":\"Closed\",\"title\":\"This is a demo\",\"vid\":\"AW5PMSC\"},{\"addTime\":\"2016-07-14\",\"questionStatus\":\"1\",\"questionStatusValue\":\"Waiting\",\"title\":\"This is a demo\",\"vid\":\"AW5PMSM\"},{\"addTime\":\"2016-07-14\",\"questionStatus\":\"2\",\"questionStatusValue\":\"Confirmed\",\"title\":\"This is a demo\",\"vid\":\"AW5PMSA\"}]';
 
@@ -262,7 +262,7 @@
 
 /***/ },
 
-/***/ 19:
+/***/ 20:
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/we-dropdown", [], function(__weex_require__, __weex_exports__, __weex_module__){

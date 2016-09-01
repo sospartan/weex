@@ -44,9 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/64bb9dafb42adff502b07e697409ea4f", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/3fb416efb5c90bbc890e031ded5b20d5", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
+	__webpack_require__(15);
 	  __webpack_require__(2);
 	  __weex_module__.exports = {
 	    methods: {
@@ -139,74 +140,78 @@
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
-	  "classList": [
-	    "list"
-	  ],
-	  "append": "tree",
+	  "type": "playground-navpage",
 	  "children": [
 	    {
-	      "type": "div",
+	      "type": "scroller",
 	      "classList": [
-	        "section"
+	        "list"
 	      ],
-	      "repeat": function () {return this.sections},
 	      "children": [
 	        {
 	          "type": "div",
 	          "classList": [
-	            "header"
+	            "section"
 	          ],
+	          "repeat": function () {return this.sections},
 	          "children": [
 	            {
-	              "type": "text",
+	              "type": "div",
 	              "classList": [
-	                "header-title"
+	                "header"
 	              ],
-	              "attr": {
-	                "value": function () {return this.title}
-	              }
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "header-title"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return this.title}
+	                  }
+	                }
+	              ]
+	            },
+	            {
+	              "type": "div",
+	              "classList": [
+	                "item"
+	              ],
+	              "repeat": function () {return this.items},
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "item-title"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return 'row ' + (this.id)}
+	                  }
+	                }
+	              ]
 	            }
 	          ]
 	        },
 	        {
-	          "type": "div",
+	          "type": "loading",
 	          "classList": [
-	            "item"
+	            "loading-view"
 	          ],
-	          "repeat": function () {return this.items},
+	          "attr": {
+	            "display": function () {return this.loading_display}
+	          },
+	          "events": {
+	            "loading": "onloading"
+	          },
 	          "children": [
 	            {
-	              "type": "text",
-	              "classList": [
-	                "item-title"
-	              ],
-	              "attr": {
-	                "value": function () {return 'row ' + (this.id)}
+	              "type": "loading-indicator",
+	              "style": {
+	                "height": 60,
+	                "width": 60
 	              }
 	            }
 	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "loading",
-	      "classList": [
-	        "loading-view"
-	      ],
-	      "attr": {
-	        "display": function () {return this.loading_display}
-	      },
-	      "events": {
-	        "loading": "onloading"
-	      },
-	      "children": [
-	        {
-	          "type": "loading-indicator",
-	          "style": {
-	            "height": 60,
-	            "width": 60
-	          }
 	        }
 	      ]
 	    }
@@ -257,7 +262,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/64bb9dafb42adff502b07e697409ea4f", {
+	;__weex_bootstrap__("@weex-component/3fb416efb5c90bbc890e031ded5b20d5", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1399,6 +1404,69 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
 	})
 	})
 

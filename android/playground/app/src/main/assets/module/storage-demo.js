@@ -44,9 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/1c7fe998e56023469f05215078466ca1", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/0cbf149a424856305a473d03c144c0d6", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
+	__webpack_require__(15);
 	__webpack_require__(2);
 	__weex_module__.exports = {
 	  data: function () {return {
@@ -107,82 +108,87 @@
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "playground-navpage",
 	  "children": [
 	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "storage API",
-	        "type": "primary"
-	      },
+	      "type": "scroller",
 	      "children": [
 	        {
 	          "type": "wxc-panel",
 	          "attr": {
-	            "title": "setItem"
+	            "title": "storage API",
+	            "type": "primary"
 	          },
 	          "children": [
 	            {
-	              "type": "text",
+	              "type": "wxc-panel",
 	              "attr": {
-	                "value": function () {return this.setItemResult}
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "wxc-panel",
-	          "attr": {
-	            "title": "getItem"
-	          },
-	          "children": [
+	                "title": "setItem"
+	              },
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "attr": {
+	                    "value": function () {return this.setItemResult}
+	                  }
+	                }
+	              ]
+	            },
 	            {
-	              "type": "text",
+	              "type": "wxc-panel",
 	              "attr": {
-	                "value": function () {return this.getItemResult}
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "wxc-panel",
-	          "attr": {
-	            "title": "length"
-	          },
-	          "children": [
+	                "title": "getItem"
+	              },
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "attr": {
+	                    "value": function () {return this.getItemResult}
+	                  }
+	                }
+	              ]
+	            },
 	            {
-	              "type": "text",
+	              "type": "wxc-panel",
 	              "attr": {
-	                "value": function () {return this.lengthResult}
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "wxc-panel",
-	          "attr": {
-	            "title": "getAllKeys"
-	          },
-	          "children": [
+	                "title": "length"
+	              },
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "attr": {
+	                    "value": function () {return this.lengthResult}
+	                  }
+	                }
+	              ]
+	            },
 	            {
-	              "type": "text",
+	              "type": "wxc-panel",
 	              "attr": {
-	                "value": function () {return this.getAllKeysResult}
-	              }
-	            }
-	          ]
-	        },
-	        {
-	          "type": "wxc-panel",
-	          "attr": {
-	            "title": "removeItem"
-	          },
-	          "children": [
+	                "title": "getAllKeys"
+	              },
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "attr": {
+	                    "value": function () {return this.getAllKeysResult}
+	                  }
+	                }
+	              ]
+	            },
 	            {
-	              "type": "text",
+	              "type": "wxc-panel",
 	              "attr": {
-	                "value": function () {return this.removeItemResult}
-	              }
+	                "title": "removeItem"
+	              },
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "attr": {
+	                    "value": function () {return this.removeItemResult}
+	                  }
+	                }
+	              ]
 	            }
 	          ]
 	        }
@@ -191,7 +197,7 @@
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/1c7fe998e56023469f05215078466ca1", {
+	;__weex_bootstrap__("@weex-component/0cbf149a424856305a473d03c144c0d6", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1333,6 +1339,69 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
 	})
 	})
 

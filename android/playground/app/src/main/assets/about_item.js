@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports) {
 
-	;__weex_define__("@weex-component/16a36f64b19464734edf40a8826d4d13", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/48e4e4b24529a36beb2213fa8ba0e696", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
 	    __weex_module__.exports = {
@@ -109,7 +109,8 @@
 	;Object.assign(__weex_module__.exports.style, {
 	  "panel": {
 	    "flexDirection": "row",
-	    "padding": 10,
+	    "paddingTop": 25,
+	    "paddingBottom": 25,
 	    "alignItems": "center",
 	    "justifyContent": "space-between",
 	    "borderBottomWidth": 2,
@@ -117,7 +118,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/16a36f64b19464734edf40a8826d4d13", {
+	;__weex_bootstrap__("@weex-component/48e4e4b24529a36beb2213fa8ba0e696", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
