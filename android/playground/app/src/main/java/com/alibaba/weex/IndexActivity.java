@@ -81,10 +81,10 @@ public class IndexActivity extends AbstractWeexActivity {
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     Uri uri=intent.getData();
-    if(uri!=null){
-      String ip=uri.getQueryParameter("_wx_ip");
+    String ip=uri.getQueryParameter("_wx_ip");
+    if(uri!=null && !TextUtils.isEmpty(ip)){
+      WEEX_INDEX_URL=WEEX_INDEX_URL.replace(CURRENT_IP,ip);
       CURRENT_IP=ip;
-      WEEX_INDEX_URL=WEEX_INDEX_URL.replace(DEFAULT_IP,CURRENT_IP);
       reloadWeex();
     }
   }
