@@ -16,6 +16,7 @@
 
 <script>
     require('../playground-navpage.we');
+
     module.exports = {
         data: {
             size: 9,

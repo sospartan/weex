@@ -44,73 +44,73 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/36ed20b1a9756638c89c52178998c769", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/5273d2c64af926524c0ae9aaa2979622", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	__webpack_require__(15);
-	  __webpack_require__(2);
-	  __weex_module__.exports = {
-	    data: function () {return {}},
-	    methods: {
-	      toast: function(msg, duration) {
-	        if (!msg || typeof msg !== 'string') {
-	          msg = 'I am Toast show!';
+	    __webpack_require__(15);
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {}},
+	        methods: {
+	            toast: function (msg, duration) {
+	                if (!msg || typeof msg !== 'string') {
+	                    msg = 'I am Toast show!';
+	                }
+
+	                duration = duration || 2;
+	                var modal = __weex_require__('@weex-module/modal');
+	                modal.toast({
+	                    'message': msg,
+	                    'duration': duration
+	                });
+
+	            },
+	            alert: function (msg, okTitle, cancelTitle) {
+	                var self = this;
+	                if (!msg || typeof msg !== 'string') {
+	                    msg = "I am Alert!";
+	                }
+	                var modal = __weex_require__('@weex-module/modal');
+	                modal.alert({
+	                    'message': msg,
+	                    'okTitle': okTitle,
+	                    'cancelTitle': cancelTitle
+	                }, function () {
+	                    self.toast("Click Alert OK Bnt!!");
+	                });
+
+	            },
+	            confirm: function (msg, okTitle, cancelTitle) {
+	                var self = this
+	                if (!msg || typeof msg !== 'string') {
+	                    msg = "I am Confirm!";
+	                }
+	                var modal = __weex_require__('@weex-module/modal');
+	                okTitle = okTitle || "OK";
+	                cancelTitle = cancelTitle || "Cancel";
+	                modal.confirm({
+	                    'message': msg,
+	                    'okTitle': okTitle,
+	                    'cancelTitle': cancelTitle
+	                }, function (result) {
+	                    self.toast("Click Confirm  " + result);
+	                });
+
+	            },
+	            prompt: function () {
+	                var self = this;
+	                var modal = __weex_require__('@weex-module/modal');
+	                modal.prompt({
+	                    'message': 'I am Prompt!',
+	                    'okTitle': 'ok',
+	                    'cancelTitle': 'cancel'
+	                }, function (result) {
+	                    self.toast("Click Prompt  " + result);
+	                });
+
+	            }
 	        }
-
-	        duration = duration || 2;
-	        var modal = __weex_require__('@weex-module/modal');
-	        modal.toast({
-	          'message': msg,
-	          'duration': duration
-	        });
-
-	      },
-	      alert: function(msg, okTitle, cancelTitle) {
-	        var self = this;
-	        if (!msg || typeof msg !== 'string') {
-	          msg = "I am Alert!";
-	        }
-	         var modal = __weex_require__('@weex-module/modal');
-	         modal.alert({
-	          'message': msg,
-	          'okTitle': okTitle,
-	          'cancelTitle': cancelTitle
-	        }, function() {
-	          self.toast("Click Alert OK Bnt!!");
-	        });
-
-	      },
-	      confirm: function(msg, okTitle, cancelTitle) {
-	        var self = this
-	        if (!msg || typeof msg !== 'string') {
-	          msg = "I am Confirm!";
-	        }
-	       var modal = __weex_require__('@weex-module/modal');
-	        okTitle = okTitle || "OK";
-	        cancelTitle = cancelTitle || "Cancel";
-	        modal.confirm({
-	          'message': msg,
-	          'okTitle': okTitle,
-	          'cancelTitle': cancelTitle
-	        }, function(result) {
-	          self.toast("Click Confirm  " + result);
-	        });
-
-	      },
-	      prompt: function() {
-	        var self = this;
-	        var modal = __weex_require__('@weex-module/modal');
-	        modal.prompt( {
-	          'message': 'I am Prompt!',
-	          'okTitle': 'ok',
-	          'cancelTitle': 'cancel'
-	        }, function(result) {
-	          self.toast("Click Prompt  " + result);
-	        });
-	       
-	      }
 	    }
-	  }
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
@@ -190,7 +190,7 @@
 	;__weex_module__.exports.style = __weex_module__.exports.style || {}
 	;Object.assign(__weex_module__.exports.style, {})
 	})
-	;__weex_bootstrap__("@weex-component/36ed20b1a9756638c89c52178998c769", {
+	;__weex_bootstrap__("@weex-component/5273d2c64af926524c0ae9aaa2979622", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 

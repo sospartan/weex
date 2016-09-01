@@ -34,8 +34,8 @@
 </template>
 
 <script>
-    require('../playground-navpage.we');
     require('weex-components');
+    require('../playground-navpage.we');
 
     module.exports = {
         data: {

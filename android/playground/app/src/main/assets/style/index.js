@@ -44,149 +44,155 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/434dd75dfa97596800fbabc5f6646b3e", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/7c387a2cac3ff69044595c368528dd0d", [], function(__weex_require__, __weex_exports__, __weex_module__){
 	__webpack_require__(32);
 	__webpack_require__(34);
 	__webpack_require__(33);
 
 	;
-	  __webpack_require__(2);
-	  __weex_module__.exports = {
-	    data: function () {return {}}
-	  }
+	    __webpack_require__(15);
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {}}
+	    }
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "playground-navpage",
 	  "children": [
 	    {
-	      "type": "style-box"
-	    },
-	    {
-	      "type": "style-flex"
-	    },
-	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "opacity",
-	        "type": "primary"
-	      },
+	      "type": "scroller",
 	      "children": [
 	        {
-	          "type": "div",
-	          "style": {
-	            "flexDirection": "row"
+	          "type": "style-box"
+	        },
+	        {
+	          "type": "style-flex"
+	        },
+	        {
+	          "type": "wxc-panel",
+	          "attr": {
+	            "title": "opacity",
+	            "type": "primary"
 	          },
 	          "children": [
 	            {
-	              "type": "style-item",
+	              "type": "div",
 	              "style": {
-	                "opacity": 1
+	                "flexDirection": "row"
 	              },
-	              "attr": {
-	                "value": "1"
-	              }
-	            },
-	            {
-	              "type": "style-item",
-	              "style": {
-	                "opacity": 0.9
-	              },
-	              "attr": {
-	                "value": "0.9"
-	              }
-	            },
-	            {
-	              "type": "style-item",
-	              "style": {
-	                "opacity": 0.5
-	              },
-	              "attr": {
-	                "value": "0.5"
-	              }
-	            },
-	            {
-	              "type": "style-item",
-	              "style": {
-	                "opacity": 0.2
-	              },
-	              "attr": {
-	                "value": "0.2"
-	              }
+	              "children": [
+	                {
+	                  "type": "style-item",
+	                  "style": {
+	                    "opacity": 1
+	                  },
+	                  "attr": {
+	                    "value": "1"
+	                  }
+	                },
+	                {
+	                  "type": "style-item",
+	                  "style": {
+	                    "opacity": 0.9
+	                  },
+	                  "attr": {
+	                    "value": "0.9"
+	                  }
+	                },
+	                {
+	                  "type": "style-item",
+	                  "style": {
+	                    "opacity": 0.5
+	                  },
+	                  "attr": {
+	                    "value": "0.5"
+	                  }
+	                },
+	                {
+	                  "type": "style-item",
+	                  "style": {
+	                    "opacity": 0.2
+	                  },
+	                  "attr": {
+	                    "value": "0.2"
+	                  }
+	                }
+	              ]
 	            }
 	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "background-color",
-	        "type": "primary"
-	      },
-	      "children": [
+	        },
 	        {
-	          "type": "div",
+	          "type": "wxc-panel",
+	          "attr": {
+	            "title": "background-color",
+	            "type": "primary"
+	          },
 	          "children": [
 	            {
-	              "type": "style-item",
-	              "classList": [
-	                "bg-item"
-	              ],
-	              "style": {
-	                "backgroundColor": "#333333"
-	              },
-	              "attr": {
-	                "value": "#333"
-	              }
-	            },
-	            {
-	              "type": "style-item",
-	              "classList": [
-	                "bg-item"
-	              ],
-	              "style": {
-	                "backgroundColor": "#333333"
-	              },
-	              "attr": {
-	                "value": "#333333"
-	              }
-	            },
-	            {
-	              "type": "style-item",
-	              "classList": [
-	                "bg-item"
-	              ],
-	              "style": {
-	                "backgroundColor": "rgb(238,162,54)"
-	              },
-	              "attr": {
-	                "value": "rgb()"
-	              }
-	            },
-	            {
-	              "type": "style-item",
-	              "classList": [
-	                "bg-item"
-	              ],
-	              "style": {
-	                "backgroundColor": "rgba(238,162,54,0.5)"
-	              },
-	              "attr": {
-	                "value": "rgba()"
-	              }
-	            },
-	            {
-	              "type": "style-item",
-	              "classList": [
-	                "bg-item"
-	              ],
-	              "style": {
-	                "backgroundColor": "#FF0000"
-	              },
-	              "attr": {
-	                "value": "red"
-	              }
+	              "type": "div",
+	              "children": [
+	                {
+	                  "type": "style-item",
+	                  "classList": [
+	                    "bg-item"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "#333333"
+	                  },
+	                  "attr": {
+	                    "value": "#333"
+	                  }
+	                },
+	                {
+	                  "type": "style-item",
+	                  "classList": [
+	                    "bg-item"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "#333333"
+	                  },
+	                  "attr": {
+	                    "value": "#333333"
+	                  }
+	                },
+	                {
+	                  "type": "style-item",
+	                  "classList": [
+	                    "bg-item"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "rgb(238,162,54)"
+	                  },
+	                  "attr": {
+	                    "value": "rgb()"
+	                  }
+	                },
+	                {
+	                  "type": "style-item",
+	                  "classList": [
+	                    "bg-item"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "rgba(238,162,54,0.5)"
+	                  },
+	                  "attr": {
+	                    "value": "rgba()"
+	                  }
+	                },
+	                {
+	                  "type": "style-item",
+	                  "classList": [
+	                    "bg-item"
+	                  ],
+	                  "style": {
+	                    "backgroundColor": "#FF0000"
+	                  },
+	                  "attr": {
+	                    "value": "red"
+	                  }
+	                }
+	              ]
 	            }
 	          ]
 	        }
@@ -202,7 +208,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/434dd75dfa97596800fbabc5f6646b3e", {
+	;__weex_bootstrap__("@weex-component/7c387a2cac3ff69044595c368528dd0d", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1349,7 +1355,68 @@
 
 /***/ },
 /* 14 */,
-/* 15 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
+	})
+	})
+
+/***/ },
 /* 16 */,
 /* 17 */,
 /* 18 */,
