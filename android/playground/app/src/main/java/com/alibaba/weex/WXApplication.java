@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.alibaba.weex.extend.PlayDebugAdapter;
 import com.alibaba.weex.extend.component.RichText;
+import com.alibaba.weex.extend.component.WXTabIndicator;
+import com.alibaba.weex.extend.component.WXTabPager;
 import com.alibaba.weex.extend.module.MyModule;
 import com.alibaba.weex.extend.module.RenderModule;
 import com.alibaba.weex.extend.module.WXEventModule;
@@ -45,14 +47,19 @@ public class WXApplication extends Application {
     WXSDKEngine.initialize(this,
                            new InitConfig.Builder()
                                //.setImgAdapter(new FrescoImageAdapter())// use fresco adapter
-                               .setImgAdapter(new TBWXImgLoaderAdapter(this))
+                               .setImgAdapter(new TBWXImgLoaderAdapter())
                                .setDebugAdapter(new PlayDebugAdapter())
                                .build()
                           );
 
     try {
 //      Fresco.initialize(this);
+      WXSDKEngine.registerComponent("tab-pager", WXTabPager.class,true);
+      WXSDKEngine.registerComponent("tab-indicator", WXTabIndicator.class,true);
+
       WXSDKEngine.registerComponent("richtext", RichText.class);
+
+
       WXSDKEngine.registerModule("render", RenderModule.class);
       WXSDKEngine.registerModule("event", WXEventModule.class);
 
