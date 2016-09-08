@@ -1,0 +1,19 @@
+<template>
+    <div>
+        <text>globalEvent</text>
+    </div>
+</template>
+<script>
+    module.exports = {
+        data: {},
+        ready: function (e) {
+            var event = require('@weex-module/globalEvent');
+            event.addEventListener('myevent',function(){
+                console.log("测试Event");
+            });
+
+            require('@weex-module/render').performClick();
+        },
+        methods: {}
+    }
+</script>

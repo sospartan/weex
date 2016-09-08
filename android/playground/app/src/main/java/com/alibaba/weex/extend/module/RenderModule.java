@@ -11,5 +11,6 @@ public class RenderModule extends WXModule {
   @WXModuleAnno
   public void performClick() {
     Log.d("Render", "Render");
+    mWXSDKInstance.fireGlobalEventCallback("myevent",null);
   }
 }
