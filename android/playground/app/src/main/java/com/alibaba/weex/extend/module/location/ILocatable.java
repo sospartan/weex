@@ -3,74 +3,83 @@ package com.alibaba.weex.extend.module.location;
 import com.taobao.weex.WXSDKInstance;
 
 /**
- * Created by lixinke on 16/9/10.
  */
 public interface ILocatable {
 
+  /**
+   * request location persimmon
+   */
+  int REQUEST_CUR_PERMISSION_CODE = 0x12;
+  int REQUEST_WATCH_PERMISSION_CODE = 0x13;
+
+
+  String REQUEST_PERMISSION_CODE = "REQUEST_PERMISSION_CODE";
   String ERROR_CODE = "errorCode";
   String ERROR_MSG = "errorMsg";
   String COORDS = "coords";
   String ADDRESS = "address";
   String REGISTER_ID = "registerId";
 
+  /**
+   * error code
+   */
   interface ErrorCode {
 
-    int SUCCESS=90000;
+    int SUCCESS = 90000;
     int NO_PERMISSION_ERROR = 90001;
     int PARAMS_ERROR = 90002;
     int LOCATION_ERROR = 9003;
     int LOCATION_TIME_OUT = 9004;
   }
 
+  /**
+   * error msg
+   */
   interface ErrorMsg {
 
     String NO_PERMISSION_ERROR = "NO PERMISSION";
     String PARAMS_ERROR = "PARAMS_ERROR";
     String LOCATION_ERROR = "LOCATION_FAIL";
     String LOCATION_TIME_OUT = "LOCATION_TIME_OUT";
-    String SUCCESS="SUCCESS";
+    String SUCCESS = "SUCCESS";
 
   }
 
-  //  interface Coords {
-  //
-  //    String LONGITUDE = "longitude";
-  //    String LATITUDE = "latitude";
-  //    String ALTITUDE = "altitude";
-  //    String ACCURACY = "accuracy";
-  //    String HEADING = "heading";
-  //    String SPEED = "speed";
-  //  }
-  //
-  //  interface Address{
-  //
-  //  }
-
   /**
-   * 获取当前位置信息，只回调一次。
+   * Get current location information, the callback only once
    *
-   * @param successCallback 成功回调function id.
-   * @param errorCallback   错误回调function id.(例如:没有权限)
-   * @param params          JSON格式的参数(例如:准确度等).
+   * @param successCallback success callback function id.
+   * @param errorCallback   error callback function id.(example:no persimmon)
+   * @param params          JSON parameter(example:address).
    */
   void getCurrentPosition(String successCallback, String errorCallback, String params);
 
   /**
-   * 注册监听全局定位
+   * register global location listener，if location change，you will be notify.
    *
-   * @param successCallback 定位成功回调function id.
-   * @param errorCallback   错误回调(例如:没有权限等).
-   * @param params          SON格式的参数(例如:准确度等).
+   * @param successCallback location success callback function id.
+   * @param errorCallback   location error callback (example:no persimmon).
+   * @param params          JSON parameter(example:address).
    */
   void watchPosition(String successCallback, String errorCallback, String params);
 
   /**
-   * 注销监听全局定位
+   * remove global location listener.
    *
-   * @param registerID 注册时返回的唯一ID。
+   * @param registerID register id,you can get from watchPosition method。
    */
   void clearWatch(String registerID);
 
+  /**
+   * set instance
+   *
+   * @param instance instance
+   */
   void setWXSDKInstance(WXSDKInstance instance);
+
+  /**
+   * this method will call when module destroy.
+   */
+  void destroy();
 
 }
