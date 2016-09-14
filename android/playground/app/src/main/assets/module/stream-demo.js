@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/2e3ee5c853359a76389401bc185c933a", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/370cbef3deefb1f4c210fc17ae529790", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
 	  __webpack_require__(1);
@@ -79,7 +79,7 @@
 	          me.getJsonpResult = "request failed";
 	        }else{
 	          console.log('get:'+ret);
-	          me.getJsonpResult = ret.data;
+	          me.getJsonpResult =  JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get jsonp in progress:'+response.length);
@@ -95,7 +95,7 @@
 	          me.getResult = "request failed";
 	        }else{
 	          console.log('get:'+ret);
-	          me.getResult = ret.data;
+	          me.getResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -110,8 +110,8 @@
 	        if(!ret.ok){
 	          me.postResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
-	          me.postResult = ret.data;
+	          console.log('get:'+JSON.stringify(ret));
+	          me.postResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -126,8 +126,8 @@
 	        if(!ret.ok){
 	          me.putResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
-	          me.putResult = ret.data;
+	          console.log('get:'+JSON.stringify(ret));
+	          me.putResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -143,8 +143,8 @@
 	        if(!ret.ok){
 	          me.deleteResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
-	          me.deleteResult = ret.data;
+	          console.log('get:'+JSON.stringify(ret));
+	          me.deleteResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -159,7 +159,7 @@
 	        if(ret.statusText !== 'I\'m a teapot'){
 	          me.headResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
+	          console.log('get:'+JSON.stringify(ret));
 	          me.headResult = ret.statusText;
 	        }
 	      },function(response){
@@ -175,8 +175,8 @@
 	        if(!ret.ok){
 	          me.patchResult = "request failed";
 	        }else{
-	          console.log('get:'+ret);
-	          me.patchResult = ret.data;
+	          console.log('get:'+JSON.stringify(ret));
+	          me.patchResult = JSON.stringify(ret.data);
 	        }
 	      },function(response){
 	        console.log('get in progress:'+response.length);
@@ -299,7 +299,7 @@
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/2e3ee5c853359a76389401bc185c933a", {
+	;__weex_bootstrap__("@weex-component/370cbef3deefb1f4c210fc17ae529790", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 

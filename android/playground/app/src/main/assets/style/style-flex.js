@@ -45,7 +45,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/2f482d7aef70ea2a1dd251c635dac048", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(30);
+	__webpack_require__(32);
 
 	;
 	  __webpack_require__(1);
@@ -1848,7 +1848,9 @@
 /* 27 */,
 /* 28 */,
 /* 29 */,
-/* 30 */
+/* 30 */,
+/* 31 */,
+/* 32 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/style-item", [], function(__weex_require__, __weex_exports__, __weex_module__){

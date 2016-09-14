@@ -44,15 +44,15 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/73a943c402110a473f70526894de4e0c", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(21);
-	__webpack_require__(22);
+	;__weex_define__("@weex-component/139b28cf6684f5c1b814fa5da9a7727d", [], function(__weex_require__, __weex_exports__, __weex_module__){
 	__webpack_require__(23);
 	__webpack_require__(24);
 	__webpack_require__(25);
 	__webpack_require__(26);
 	__webpack_require__(27);
 	__webpack_require__(28);
+	__webpack_require__(29);
+	__webpack_require__(30);
 
 	;
 	  __webpack_require__(1)
@@ -736,18 +736,9 @@
 	      handleRefresh: function (e) {
 	        var vm = this
 	        vm.displayRefresh = 'show'
-	        var timer = __weex_require__('@weex-module/timer')
-	        if (timer) {
-	          timer.setTimeout(function () {
-	            vm.displayRefresh = 'hide'
-	          }, 2000)
-	        } else {
-	          this.$call('modal', 'alert',  {
-	            message: 'refreshing.'
-	          }, function () {
-	            vm.displayRefresh = 'hide'
-	          })
-	        }
+	        setTimeout(function () {
+	          vm.displayRefresh = 'hide'
+	        }, 2000)
 	      },
 	      handleLoading: function (e) {
 	        var vm = this
@@ -755,16 +746,10 @@
 	        this.$call('modal', 'toast', {
 	          message: 'loading.'
 	        })
-	        var timer = __weex_require__('@weex-module/timer')
-	        if (timer) {
-	          timer.setTimeout(function () {
-	            vm.simLoadingData(vm.cnt++)
-	            vm.displayLoading = 'hide'
-	          }, 2000)
-	        } else {
+	        setTimeout(function () {
 	          vm.simLoadingData(vm.cnt++)
 	          vm.displayLoading = 'hide'
-	        }
+	        }, 2000)
 	      },
 	      simLoadingData: function (num) {
 	        if (num >= 3) {
@@ -940,7 +925,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/73a943c402110a473f70526894de4e0c", {
+	;__weex_bootstrap__("@weex-component/139b28cf6684f5c1b814fa5da9a7727d", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -2090,7 +2075,9 @@
 /* 15 */,
 /* 16 */,
 /* 17 */,
-/* 18 */
+/* 18 */,
+/* 19 */,
+/* 20 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/banner", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -2136,11 +2123,11 @@
 	})
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/banners", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(18);
+	__webpack_require__(20);
 
 	;
 	  __weex_module__.exports = {
@@ -2230,7 +2217,7 @@
 	})
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/link", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -2268,12 +2255,12 @@
 	})
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/headlines", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(20);
-	__webpack_require__(19);
+	__webpack_require__(22);
+	__webpack_require__(21);
 
 	;
 	  __weex_module__.exports = {
@@ -2416,11 +2403,11 @@
 	})
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/category", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(18);
+	__webpack_require__(20);
 
 	;
 	  __weex_module__.exports = {
@@ -3073,7 +3060,7 @@
 	})
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/coupon", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -3204,11 +3191,11 @@
 	})
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/goods", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(18);
+	__webpack_require__(20);
 
 	;
 	  __weex_module__.exports = {
@@ -3376,12 +3363,12 @@
 	})
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/resource", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(18);
-	__webpack_require__(19);
+	__webpack_require__(20);
+	__webpack_require__(21);
 
 	;
 	  __weex_module__.exports = {
@@ -3441,11 +3428,11 @@
 	})
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/scene", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(18);
+	__webpack_require__(20);
 
 	;
 	  __weex_module__.exports = {
@@ -3803,11 +3790,11 @@
 	})
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/match", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(18);
+	__webpack_require__(20);
 
 	;
 	  __weex_module__.exports = {
@@ -3927,11 +3914,11 @@
 	})
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/brand", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(19);
+	__webpack_require__(21);
 
 	;
 	  __weex_module__.exports = {

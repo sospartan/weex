@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/1c7fe998e56023469f05215078466ca1", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/f412f1d6f008b1c17951a7d313baf67a", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
 	__webpack_require__(1);
@@ -91,10 +91,9 @@
 	    //getAllKeys
 	    storage.getAllKeys(function(e){
 	      console.log('getAllKeys:'+JSON.stringify(e));
-	      me.getAllKeysResult = e.data;
+	      me.getAllKeysResult = '' + e.data;
 	      //me.getAllKeysResult +=' '+ typeof e.data
 	    });
-
 	    //removeItem
 	    storage.removeItem('foo',function(e){
 	      console.log('remove foo:'+JSON.stringify(e));
@@ -191,7 +190,7 @@
 	  ]
 	})
 	})
-	;__weex_bootstrap__("@weex-component/1c7fe998e56023469f05215078466ca1", {
+	;__weex_bootstrap__("@weex-component/f412f1d6f008b1c17951a7d313baf67a", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 

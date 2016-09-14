@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/9789d0e14ae2b78a4968f43ed1875039", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/ade0ba646486b7a0d84142aef6bb28eb", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
 	  __webpack_require__(1);
@@ -53,12 +53,16 @@
 	      onrefresh: function(e) {
 	        var self = this;
 	        self.refresh_display = 'show';
-	        self.refresh_display = 'hide';
+	        setTimeout(function () {
+	          self.refresh_display = 'hide';
+	        }, 1000)
 	      },
 	      onloading: function(e) {
 	        var self = this;
 	        self.loading_display = 'show';
-	        self.loading_display = 'hide';
+	        setTimeout(function () {
+	          self.loading_display = 'hide';
+	        }, 1000)
 	      }
 	    },
 	    data: function () {return {
@@ -139,9 +143,7 @@
 	  "classList": [
 	    "list"
 	  ],
-	  "attr": {
-	    "append＝\"tree\"": ""
-	  },
+	  "append": "tree",
 	  "children": [
 	    {
 	      "type": "div",
@@ -184,27 +186,6 @@
 	              }
 	            }
 	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "loading",
-	      "classList": [
-	        "loading-view"
-	      ],
-	      "attr": {
-	        "display": function () {return this.loading_display}
-	      },
-	      "events": {
-	        "loading": "onloading"
-	      },
-	      "children": [
-	        {
-	          "type": "loading-indicator",
-	          "style": {
-	            "height": 60,
-	            "width": 60
-	          }
 	        }
 	      ]
 	    }
@@ -255,7 +236,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/9789d0e14ae2b78a4968f43ed1875039", {
+	;__weex_bootstrap__("@weex-component/ade0ba646486b7a0d84142aef6bb28eb", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 

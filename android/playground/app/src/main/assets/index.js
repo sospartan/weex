@@ -44,20 +44,24 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/5e6c4a62a4f2ddfd7c2d1010facc95ec", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/96d683f0a6d07298ef4a251d262d4f75", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	  __webpack_require__(15);
+	  __webpack_require__(17);
 	  __weex_module__.exports = {
 	    data: function () {return {
 	      root: 'examples',
 	      items: [
+	        // FORMAT:
 	        // `name` key is the example filename without '.we'
 	        // Support sub directory, e.g. 'new-fashion/index'
+
+	        // common
 	        {name: 'hello', title: 'Hello World'},
 	        {name: 'syntax/index', title: 'More Syntax'},
 	        {name: 'style/index', title: 'Common Style'},
 	        {name: 'animation', title: 'Animation'},
+
 	        // component
 	        {name: 'component/text-demo', title: 'Text'},
 	        {name: 'component/image-demo', title: 'Image'},
@@ -79,7 +83,7 @@
 	        {name: 'module/modal', title: 'Modal'},
 	        {name: 'module/stream-demo', title: 'Stream'},
 	        {name: 'module/storage-demo',title:'Storage'},
-	        {name: 'module/clipboard', title: 'Clipboard'},
+	         {name: 'module/clipboard', title: 'Clipboard'}, // 0.8 , developing
 
 	        // showcase
 	        {name: 'showcase/new-fashion/index', title: 'Activity'},
@@ -100,7 +104,7 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/5e6c4a62a4f2ddfd7c2d1010facc95ec", {
+	;__weex_bootstrap__("@weex-component/96d683f0a6d07298ef4a251d262d4f75", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
@@ -1247,11 +1251,13 @@
 /***/ },
 /* 13 */,
 /* 14 */,
-/* 15 */
+/* 15 */,
+/* 16 */,
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/example-list", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(16);
+	__webpack_require__(18);
 
 	;
 	  __webpack_require__(1);
@@ -1335,7 +1341,7 @@
 	})
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/example-list-item", [], function(__weex_require__, __weex_exports__, __weex_module__){

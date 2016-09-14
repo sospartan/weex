@@ -48,7 +48,7 @@
 	;__weex_define__("@weex-component/8e6cff2d0487efb24411ddaeb27766c3", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	  __webpack_require__(32)
+	  __webpack_require__(34)
 	  __weex_module__.exports = {
 	    data: function () {return {
 	      items: [
@@ -94,7 +94,7 @@
 
 /***/ },
 
-/***/ 32:
+/***/ 34:
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/sub", [], function(__weex_require__, __weex_exports__, __weex_module__){

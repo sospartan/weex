@@ -9,9 +9,9 @@
       </div>
     </div>
 
-    <loading class="loading-view" display="{{loading_display}}" onloading="onloading">
-      <loading-indicator style="height:60;width:60" ></loading-indicator>
-    </loading>
+    <!--<loading class="loading-view" display="{{loading_display}}" onloading="onloading">-->
+      <!--<loading-indicator style="height:60;width:60" ></loading-indicator>-->
+    <!--</loading>-->
 
   </scroller>
 </template>
