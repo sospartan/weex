@@ -228,6 +228,8 @@ import com.taobao.weex.utils.WXViewUtils;
 
 public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleListener,NestedContainer {
 
+  public static final String ITEM_ID = "itemId";
+
   private String src;
   private WXSDKInstance mNestedInstance;
   private final static int ERROR_IMG_WIDTH = (int) WXViewUtils.getRealPxByWidth(270);
@@ -236,7 +238,10 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
   private boolean mIsVisible = true;
   private EmbedRenderListener mListener;
 
-
+  public interface EmbedManager {
+    WXEmbed getEmbed(String itemId);
+    void putEmbed(String itemId,WXEmbed comp);
+  }
 
   public static class FailToH5Listener extends ClickToReloadListener {
     @SuppressLint("SetJavaScriptEnabled")
@@ -295,6 +300,11 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
     }
 
     @Override
+    public String transformUrl(String origin) {
+      return origin;
+    }
+
+    @Override
     public void onCreated(NestedContainer comp, WXSDKInstance nestedInstance) {
 
     }
@@ -342,6 +352,11 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
   public WXEmbed(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) {
     super(instance, node, parent, lazy);
     mListener = new EmbedRenderListener(this);
+
+    if(instance instanceof EmbedManager) {
+      String itemId = (String) node.getAttrs().get(ITEM_ID);
+      ((EmbedManager) instance).putEmbed(itemId, this);
+    }
   }
 
   @Override
@@ -372,8 +387,20 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
     loadInstance();
   }
 
+
+  public String getOriginUrl() {
+    return originUrl;
+  }
+
+  public void setOriginUrl(String originUrl) {
+    this.originUrl = originUrl;
+  }
+
+  private String originUrl;
+
   @WXComponentProp(name = Constants.Name.SRC)
   public void setSrc(String src) {
+    originUrl=src;
     this.src = src;
     if (mNestedInstance != null) {
       mNestedInstance.destroy();
@@ -402,16 +429,23 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
     getInstance().addOnInstanceVisibleListener(this);
     sdkInstance.registerRenderListener(mListener);
 
+    String url=src;
     if(mListener != null && mListener.mEventListener != null){
+      url=mListener.mEventListener.transformUrl(src);
       if(!mListener.mEventListener.onPreCreate(this,src)){
         //cancel render
         return null;
       }
     }
 
+    if(TextUtils.isEmpty(url)){
+      mListener.mEventListener.onException(this,WXRenderErrorCode.WX_USER_INTERCEPT_ERROR,"degradeToH5");
+      return sdkInstance;
+    }
+
     ViewGroup.LayoutParams layoutParams = getHostView().getLayoutParams();
     sdkInstance.renderByUrl(WXPerformance.DEFAULT,
-                            src,
+                            url,
                             null, null, layoutParams.width,
                             layoutParams.height,
                             WXRenderStrategy.APPEND_ASYNC);
@@ -421,7 +455,7 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
   @Override
   public void setVisibility(String visibility) {
     super.setVisibility(visibility);
-    boolean visible = TextUtils.equals(getVisibility(), Constants.Value.VISIBLE);
+    boolean visible = TextUtils.equals(visibility, Constants.Value.VISIBLE);
     if (!TextUtils.isEmpty(src) && visible) {
       if (mNestedInstance == null) {
         loadInstance();
