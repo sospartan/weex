@@ -244,7 +244,7 @@ class WXBridge implements IWXBridge {
    * @param tasks
    * @param callback
    */
-  public int callNative(String instanceId, String tasks, String callback) {
+  public int callNative(String instanceId, byte[] tasks, String callback) {
     long start = System.currentTimeMillis();
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(instanceId);
     if(instance != null) {
@@ -252,7 +252,7 @@ class WXBridge implements IWXBridge {
     }
     int errorCode = IWXBridge.INSTANCE_RENDERING;
     try {
-      errorCode = WXBridgeManager.getInstance().callNative(instanceId, tasks, callback);
+      errorCode = WXBridgeManager.getInstance().callNative(instanceId, new String(tasks,UTF_8), callback);
     }catch (Throwable e){
       //catch everything during call native.
       if(WXEnvironment.isApkDebugable()){

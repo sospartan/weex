@@ -211,7 +211,7 @@ import com.taobao.weex.bridge.WXParams;
  * Bridge interface, native bridge and debug bridge both need to implement this interface
  */
 public interface IWXBridge extends IWXObject {
-
+  public final static String UTF_8= "UTF-8";
   int DESTROY_INSTANCE = -1;
   int INSTANCE_RENDERING = 1;
   int INSTANCE_RENDERING_ERROR = 0;
@@ -233,7 +233,7 @@ public interface IWXBridge extends IWXObject {
    * js call native
 
    */
-  int callNative(String instanceId, String tasks, String callback);
+  int callNative(String instanceId, byte[] tasks, String callback);
 
   int callAddElement(String instanceId, String ref,String dom,String index, String callback);
 

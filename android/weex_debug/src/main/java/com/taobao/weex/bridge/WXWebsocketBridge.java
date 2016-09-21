@@ -219,6 +219,7 @@ import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.websocket.WXWebSocketManager;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -266,10 +267,15 @@ public class WXWebsocketBridge implements IWXBridge,WXWebSocketManager.JSDebugge
     }
 
     @Override
-    public int callNative(String instanceId, String tasks, String callback) {
+    public int callNative(String instanceId, byte[] tasks, String callback) {
         if (!mInit || mJsManager == null)
             return IWXBridge.INSTANCE_RENDERING_ERROR ;
-        mJsManager.callNative(instanceId, tasks, callback);
+        try {
+            mJsManager.callNative(instanceId, new String(tasks,UTF_8), callback);
+        } catch (UnsupportedEncodingException e) {
+            WXLogUtils.e(WXLogUtils.getStackTrace(e));
+            return IWXBridge.INSTANCE_RENDERING_ERROR ;
+        }
         return IWXBridge.INSTANCE_RENDERING;
     }
 
@@ -321,7 +327,7 @@ public class WXWebsocketBridge implements IWXBridge,WXWebSocketManager.JSDebugge
             }
             if (name.toString().equals("callNative")) {
                 JSONArray jsonArray = JSONObject.parseArray(value.toString());
-                callNative(jsonArray.getString(0), jsonArray.getString(1),
+                callNative(jsonArray.getString(0), jsonArray.getString(1).getBytes(UTF_8),
                            jsonArray.getString(2));
             }
         } catch (Exception e) {
