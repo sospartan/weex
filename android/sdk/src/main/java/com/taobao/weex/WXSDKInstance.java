@@ -941,6 +941,13 @@ public class WXSDKInstance implements IWXActivityStateListener {
       mActivityStateListeners = null;
     }
 
+    if(mGlobalEvents!=null){
+      mGlobalEvents.clear();
+    }
+
+    mNestedInstanceInterceptor = null;
+    mUserTrackAdapter = null;
+    mWXHttpAdapter = null;
     rootView = null;
     mScrollView = null;
     mContext = null;
@@ -1037,7 +1044,7 @@ public class WXSDKInstance implements IWXActivityStateListener {
     List<String> callbacks=mGlobalEvents.get(eventName);
     if(callbacks!=null){
       for(String callback:callbacks){
-        WXSDKManager.getInstance().callback(mInstanceId,callback,params);
+        WXSDKManager.getInstance().callback(mInstanceId,callback,params,true);
       }
     }
   }
