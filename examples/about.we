@@ -69,10 +69,11 @@
             var stream = require('@weex-module/stream');
             stream.fetch({
                 method: 'GET',
-                url: 'http://h5.m.taobao.com/json/weex/playground/app/info.json',
-                type: 'String'
+                url: 'http://h5.m.taobao.com/js/weex/playground/app/info.js',
+                type: 'jsonp'
             }, function (response) {
-                var obj = JSON.parse(response.data);
+                console.log(response.data);
+                var obj = response.data;
                 var version = config.env.platform == "android" ? obj.androidVersion : obj.iosVersion;
                 if (self.appVersion < version) {
                     self.versionColor = "red";
