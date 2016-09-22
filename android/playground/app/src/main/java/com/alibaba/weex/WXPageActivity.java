@@ -21,11 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.weex.commons.util.ScreenUtil;
 import com.alibaba.weex.constants.Constants;
 import com.alibaba.weex.https.HotRefreshManager;
@@ -159,7 +157,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     actionBar.setTitle(mUri.toString().substring(mUri.toString().lastIndexOf(File.separator) + 1));
 
     mContainer = (ViewGroup) findViewById(R.id.container);
-    mProgressBar = (ProgressBar) findViewById(R.id.progress);
+    mProgressBar = (ProgressBar) findViewById(R.id.wx_progressbar);
     mWXHandler = new Handler(this);
     HotRefreshManager.getInstance().setHandler(mWXHandler);
     addOnListener();
