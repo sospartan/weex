@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="Hyperlink" type="primary">
       <a href="http://g.tbcdn.cn/ali-wireless-h5/res/0.0.16/hello.js">
@@ -7,9 +8,11 @@
       </a>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
   module.exports = {
     data: {

@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="color" type="primary">
       <text class="txt">default is black</text>
@@ -10,11 +11,11 @@
     </wxc-panel>
 
     <wxc-panel title="font-size" type="primary">
-      <!--<div style="flex-direction: row">-->
+      
         <text class="txt" style="font-size: 32px;">32</text>
         <text class="txt" style="font-size: 64px;">64</text>
         <text class="txt" style="font-size: 100px;">100</text>
-      <!--</div>-->
+      
     </wxc-panel>
 
     <wxc-panel title="font-style" type="primary">
@@ -50,6 +51,7 @@
       <text class="txt" style="line-height: 80"> lineheight 80</text>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <style>
@@ -60,5 +62,6 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
 </script>

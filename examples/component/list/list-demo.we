@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <list class="list" loadmoreoffset=2000>
     <cell class="cell" onclick="oncellclick" rownumber={{id}} repeat="{{shopList}}" scope="{{scopeValue}}" append="tree"
           composite={{composite}}>
@@ -140,6 +141,7 @@
       <loading-indicator style="height:60;width:60;color:#3192e1"></loading-indicator>
     </loading>
   </list>
+</playground-navpage>
 </template>
 
 <style>
@@ -235,6 +237,7 @@
 </style>
 
 <script>
+require('../../playground-navpage.we');
   module.exports = {
     data: {
       refresh_display : 'hide',

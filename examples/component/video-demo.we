@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <video class="video" onpause="onpause" onstart="onstart" onfinish="onfinish" onfail="onfail"
            src="http://g.tbcdn.cn/ali-wireless-h5/res/0.0.6/toy.mp4"
@@ -9,6 +10,7 @@
       <wxc-button value="Play" onclick="{{play}}" type="primary" style="margin-left:20px;"></wxc-button>
     </div>
   </scroller>
+</playground-navpage>
 </template>
 
 <style>
@@ -20,6 +22,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
   module.exports = {
     data: {

@@ -1,0 +1,32 @@
+<template>
+    <div class="panel">
+        <text style="font-size: 38px">{{left}}</text>
+        <div style="align-items: center;flex-direction: row">
+            <text style="font-size:38px;margin-right: 10px;color:{{rightColor}}">{{right}}</text>
+            <image src="{{src}}" style="height: 40px;width: 40px;"></image>
+        </div>
+    </div>
+</template>
+<style>
+    .panel {
+        flex-direction: row;
+        padding-top: 25px;
+        padding-bottom: 25px;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom-width: 2px;
+        border-bottom-color: lightgrey;
+    }
+</style>
+
+<script>
+    module.exports = {
+        data: {
+            left: "",
+            right: "",
+            src: "",
+            rightColor:"black"
+        },
+        methods: {}
+    }
+</script>

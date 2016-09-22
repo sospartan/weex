@@ -1,0 +1,28 @@
+<template>
+    <div style="flex-direction: column">
+        <navigator left-title="Showcase" refresh="{{refresh}}"></navigator>
+        <example-list items="{{items}}" root="{{root}}"></example-list>
+    </div>
+</template>
+
+<script>
+    require('./include/example-list.we');
+    module.exports = {
+        data: {
+            root: 'examples',
+            items: [
+                // showcase
+                {name: 'showcase/new-fashion/index', title: 'Activity'},
+                {name: 'showcase/calculator', title: 'Calculator'},
+                {name: 'showcase/minesweeper', title: 'Minesweeper'},
+                {name: 'showcase/ui', title: 'UI Gallery'},
+                {name: 'showcase/dropdown/dropdown-demo', title: 'Dropdown'}
+            ]
+        },
+        methods:{
+            refresh:function(event){
+                require("@weex-module/event").refresh('js_framework_reload');
+            }
+        }
+    }
+</script>

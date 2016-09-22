@@ -1,5 +1,6 @@
 <template>
-  <scroller class="list" append="tree">
+  <playground-navpage>
+  <scroller class="list">
     <div class="section" repeat="{{sections}}">
       <div class="header">
         <text class="header-title">{{title}}</text>
@@ -14,6 +15,8 @@
     </loading>
 
   </scroller>
+    </playground-navpage>
+
 </template>
 
 <style>
@@ -73,6 +76,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
   module.exports = {
     methods: {

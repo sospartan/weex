@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="Countdown" type="primary">
       <wxc-countdown id="countdown1" remain="{{countdown1.remain}}"
@@ -20,6 +21,7 @@
       </wxc-countdown>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <style>
@@ -49,6 +51,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
 
   module.exports = {

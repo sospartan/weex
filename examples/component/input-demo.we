@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="input" type="primary">
       <input
@@ -14,6 +15,7 @@
       <text>onchange: {{txtChange}}</text>
     </wxc-panel>
   </scroller>
+</playground-navpage>
 </template>
 
 <style>
@@ -25,6 +27,7 @@
 </style>
 
 <script>
+require('../playground-navpage.we');
   require('weex-components');
   module.exports = {
     data: {

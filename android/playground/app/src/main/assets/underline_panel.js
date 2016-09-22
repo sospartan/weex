@@ -44,38 +44,76 @@
 /* 0 */
 /***/ function(module, exports) {
 
-	;__weex_define__("@weex-component/fca21923ec1c1c0065eb4383d4822356", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/744b10ba7bbb8fdb0f00c5c074e136ff", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	  __weex_module__.exports = {
-	    data: function () {return {
-	      img: '//gw.alicdn.com/tps/i2/TB1DpsmMpXXXXabaXXX20ySQVXX-512-512.png_400x400.jpg'
-	    }}
-	  }
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            left: "",
+	            right: "",
+	            src: "",
+	            rightColor:"black"
+	        }},
+	        methods: {}
+	    }
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "image",
+	  "type": "div",
 	  "classList": [
-	    "img"
+	    "panel"
 	  ],
-	  "style": {
-	    "width": 400,
-	    "height": 400
-	  },
-	  "attr": {
-	    "src": function () {return this.img},
-	    "placeHolder": "hehe"
-	  }
+	  "children": [
+	    {
+	      "type": "text",
+	      "attr": {
+	        "value": function () {return this.left}
+	      }
+	    },
+	    {
+	      "type": "div",
+	      "style": {
+	        "alignItems": "center",
+	        "flexDirection": "row"
+	      },
+	      "children": [
+	        {
+	          "type": "text",
+	          "style": {
+	            "marginRight": 10,
+	            "color": function () {return this.rightColor}
+	          },
+	          "attr": {
+	            "value": function () {return this.right}
+	          }
+	        },
+	        {
+	          "type": "image",
+	          "attr": {
+	            "src": function () {return this.src}
+	          },
+	          "style": {
+	            "height": 40,
+	            "width": 40
+	          }
+	        }
+	      ]
+	    }
+	  ]
 	})
 	;__weex_module__.exports.style = __weex_module__.exports.style || {}
 	;Object.assign(__weex_module__.exports.style, {
-	  "img": {
-	    "marginBottom": 20
+	  "panel": {
+	    "flexDirection": "row",
+	    "padding": 10,
+	    "alignItems": "center",
+	    "justifyContent": "space-between",
+	    "borderBottomWidth": 2,
+	    "borderBottomColor": "#D3D3D3"
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/fca21923ec1c1c0065eb4383d4822356", {
+	;__weex_bootstrap__("@weex-component/744b10ba7bbb8fdb0f00c5c074e136ff", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 

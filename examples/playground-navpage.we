@@ -1,0 +1,47 @@
+<template>
+    <wxc-navpage height={{navBarHeight}} background-color="#3F51B5"
+                 left-item-src="http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png"
+                 left-item-title="Hello"
+                 left-item-color="white"
+                 title-color="white"
+                 title="{{title}}"
+                 right-item-src="{{rightItemSrc}}">
+        <content></content>
+    </wxc-navpage>
+</template>
+<script>
+    require('weex-components');
+    module.exports = {
+        data: {
+            navBarHeight: 88,
+            title: '',
+            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+        },
+        created: function () {
+            var config = this.$getConfig();
+            var src = config.bundleUrl;
+            if (src != null) {
+                var end = src.lastIndexOf('?');
+                end = end < 0 ? src.length : end;
+                console.log("end:" + end);
+                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+            }
+            if (src.indexOf('file') >= 0) {
+                this.rightItemSrc = '';
+            }
+            this.$on('naviBar.rightItem.click', function (e) {
+                require("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+            });
+            this.$on('naviBar.leftItem.click', function (e) {
+                var vm = this;
+                var params = {
+                    'animated': 'true'
+                }
+                vm.$call('navigator', 'pop', params, function () {
+                });
+            });
+        }, methods: {}
+    }
+
+</script>
+

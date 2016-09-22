@@ -44,180 +44,186 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	;__weex_define__("@weex-component/1dea4445cee750c00054262507165c9b", [], function(__weex_require__, __weex_exports__, __weex_module__){
+	;__weex_define__("@weex-component/deed834bf59608a18910f11bec8361d5", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	  __webpack_require__(1);
+	    __webpack_require__(2);
+	    __webpack_require__(15);
 
-	  __weex_module__.exports = {
-	    data: function () {return {
-	      levels: [{level: 1}, {level: 2}, {level: 3}],
-	      buttons: [{type: 'default'}, {type: 'primary'}, {type: 'success'}, {type: 'info'}, {type: 'warning'}, {type: 'danger'}, {type: 'link'}],
-	      panels: [{type: 'default'}, {type: 'primary'}, {type: 'success'}, {type: 'info'}, {type: 'warning'}, {type: 'danger'}],
-	      tips: [{type: 'success'}, {type: 'info'}, {type: 'warning'}, {type: 'danger'}],
-	    }},
-	    methods: {
-	      clicked: function() {
-	        var $modal = __weex_require__('@weex-module/modal');
-	        $modal.toast({'message': 'clicked!', duration: 0.5});
-	      }
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            levels: [{level: 1}, {level: 2}, {level: 3}],
+	            buttons: [{type: 'default'}, {type: 'primary'}, {type: 'success'}, {type: 'info'}, {type: 'warning'}, {type: 'danger'}, {type: 'link'}],
+	            panels: [{type: 'default'}, {type: 'primary'}, {type: 'success'}, {type: 'info'}, {type: 'warning'}, {type: 'danger'}],
+	            tips: [{type: 'success'}, {type: 'info'}, {type: 'warning'}, {type: 'danger'}],
+	        }},
+	        methods: {
+	            clicked: function () {
+	                var $modal = __weex_require__('@weex-module/modal');
+	                $modal.toast({'message': 'clicked!', duration: 0.5});
+	            }
+	        }
 	    }
-	  }
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
-	  "type": "scroller",
+	  "type": "playground-navpage",
 	  "children": [
 	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "Title Levels",
-	        "type": "primary"
-	      },
-	      "children": [
-	        {
-	          "type": "wxc-hn",
-	          "repeat": function () {return this.levels},
-	          "attr": {
-	            "level": function () {return this.level},
-	            "value": function () {return 'H' + (this.level) + ', Level ' + (this.level)}
-	          }
-	        }
-	      ]
-	    },
-	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "Buttons",
-	        "type": "primary"
-	      },
-	      "append": "tree",
-	      "children": [
-	        {
-	          "type": "div",
-	          "style": {
-	            "flexDirection": "row",
-	            "marginTop": 12
-	          },
-	          "repeat": function () {return this.buttons},
-	          "children": [
-	            {
-	              "type": "wxc-button",
-	              "attr": {
-	                "type": function () {return this.type},
-	                "size": "large",
-	                "value": function () {return this.type}
-	              },
-	              "events": {
-	                "click": "clicked"
-	              }
-	            },
-	            {
-	              "type": "wxc-button",
-	              "attr": {
-	                "type": function () {return this.type},
-	                "size": "middle",
-	                "value": function () {return this.type}
-	              },
-	              "events": {
-	                "click": "clicked"
-	              },
-	              "style": {
-	                "marginLeft": 5,
-	                "width": 210
-	              }
-	            },
-	            {
-	              "type": "wxc-button",
-	              "attr": {
-	                "type": function () {return this.type},
-	                "size": "small",
-	                "value": function () {return this.type}
-	              },
-	              "events": {
-	                "click": "clicked"
-	              },
-	              "style": {
-	                "marginLeft": 5
-	              }
-	            }
-	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "Panels",
-	        "type": "primary"
-	      },
+	      "type": "scroller",
 	      "children": [
 	        {
 	          "type": "wxc-panel",
-	          "repeat": function () {return this.panels},
 	          "attr": {
-	            "title": function () {return 'Panels-' + (this.type)},
-	            "type": function () {return this.type},
-	            "border": "1"
-	          },
-	          "style": {
-	            "marginLeft": 12,
-	            "marginRight": 12
+	            "title": "Title Levels",
+	            "type": "primary"
 	          },
 	          "children": [
 	            {
-	              "type": "text",
+	              "type": "wxc-hn",
+	              "repeat": function () {return this.levels},
+	              "attr": {
+	                "level": function () {return this.level},
+	                "value": function () {return 'H' + (this.level) + ', Level ' + (this.level)}
+	              }
+	            }
+	          ]
+	        },
+	        {
+	          "type": "wxc-panel",
+	          "attr": {
+	            "title": "Buttons",
+	            "type": "primary"
+	          },
+	          "append": "tree",
+	          "children": [
+	            {
+	              "type": "div",
+	              "style": {
+	                "flexDirection": "row",
+	                "marginTop": 12
+	              },
+	              "repeat": function () {return this.buttons},
+	              "children": [
+	                {
+	                  "type": "wxc-button",
+	                  "attr": {
+	                    "type": function () {return this.type},
+	                    "size": "large",
+	                    "value": function () {return this.type}
+	                  },
+	                  "events": {
+	                    "click": "clicked"
+	                  }
+	                },
+	                {
+	                  "type": "wxc-button",
+	                  "attr": {
+	                    "type": function () {return this.type},
+	                    "size": "middle",
+	                    "value": function () {return this.type}
+	                  },
+	                  "events": {
+	                    "click": "clicked"
+	                  },
+	                  "style": {
+	                    "marginLeft": 5,
+	                    "width": 210
+	                  }
+	                },
+	                {
+	                  "type": "wxc-button",
+	                  "attr": {
+	                    "type": function () {return this.type},
+	                    "size": "small",
+	                    "value": function () {return this.type}
+	                  },
+	                  "events": {
+	                    "click": "clicked"
+	                  },
+	                  "style": {
+	                    "marginLeft": 5
+	                  }
+	                }
+	              ]
+	            }
+	          ]
+	        },
+	        {
+	          "type": "wxc-panel",
+	          "attr": {
+	            "title": "Panels",
+	            "type": "primary"
+	          },
+	          "children": [
+	            {
+	              "type": "wxc-panel",
+	              "repeat": function () {return this.panels},
+	              "attr": {
+	                "title": function () {return 'Panels-' + (this.type)},
+	                "type": function () {return this.type},
+	                "border": "1"
+	              },
+	              "style": {
+	                "marginLeft": 12,
+	                "marginRight": 12
+	              },
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "attr": {
+	                    "value": function () {return 'Panels ' + (this.type) + ' content. Panels ' + (this.type) + ' content. Panels ' + (this.type) + ' content.'}
+	                  }
+	                }
+	              ]
+	            }
+	          ]
+	        },
+	        {
+	          "type": "wxc-panel",
+	          "attr": {
+	            "title": "List",
+	            "type": "primary"
+	          },
+	          "children": [
+	            {
+	              "type": "wxc-list-item",
+	              "repeat": function () {return this.tips},
+	              "events": {
+	                "click": "clicked"
+	              },
+	              "children": [
+	                {
+	                  "type": "text",
+	                  "classList": [
+	                    "item-txt"
+	                  ],
+	                  "attr": {
+	                    "value": function () {return this.type}
+	                  }
+	                }
+	              ]
+	            }
+	          ]
+	        },
+	        {
+	          "type": "wxc-panel",
+	          "attr": {
+	            "title": "Tips",
+	            "type": "primary"
+	          },
+	          "children": [
+	            {
+	              "type": "wxc-tip",
+	              "repeat": function () {return this.tips},
+	              "style": {
+	                "marginBottom": 20
+	              },
 	              "attr": {
 	                "value": function () {return 'Panels ' + (this.type) + ' content. Panels ' + (this.type) + ' content. Panels ' + (this.type) + ' content.'}
 	              }
 	            }
 	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "List",
-	        "type": "primary"
-	      },
-	      "children": [
-	        {
-	          "type": "wxc-list-item",
-	          "repeat": function () {return this.tips},
-	          "events": {
-	            "click": "clicked"
-	          },
-	          "children": [
-	            {
-	              "type": "text",
-	              "classList": [
-	                "item-txt"
-	              ],
-	              "attr": {
-	                "value": function () {return this.type}
-	              }
-	            }
-	          ]
-	        }
-	      ]
-	    },
-	    {
-	      "type": "wxc-panel",
-	      "attr": {
-	        "title": "Tips",
-	        "type": "primary"
-	      },
-	      "children": [
-	        {
-	          "type": "wxc-tip",
-	          "repeat": function () {return this.tips},
-	          "style": {
-	            "marginBottom": 20
-	          },
-	          "attr": {
-	            "value": function () {return 'Panels ' + (this.type) + ' content. Panels ' + (this.type) + ' content. Panels ' + (this.type) + ' content.'}
-	          }
 	        }
 	      ]
 	    }
@@ -231,18 +237,18 @@
 	  }
 	})
 	})
-	;__weex_bootstrap__("@weex-component/1dea4445cee750c00054262507165c9b", {
+	;__weex_bootstrap__("@weex-component/deed834bf59608a18910f11bec8361d5", {
 	  "transformerVersion": "0.3.1"
 	},undefined)
 
 /***/ },
-/* 1 */
+/* 1 */,
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/index", [], function(__weex_require__, __weex_exports__, __weex_module__){
 
 	;
-	  __webpack_require__(2);
 	  __webpack_require__(3);
 	  __webpack_require__(4);
 	  __webpack_require__(5);
@@ -253,11 +259,12 @@
 	  __webpack_require__(10);
 	  __webpack_require__(11);
 	  __webpack_require__(12);
+	  __webpack_require__(13);
 
 	})
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-button", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -385,7 +392,7 @@
 	})
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-hn", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -446,7 +453,7 @@
 	})
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-list-item", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -504,7 +511,7 @@
 	})
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-panel", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -614,7 +621,7 @@
 	})
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-tip", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -685,7 +692,7 @@
 	})
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-countdown", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -802,7 +809,7 @@
 	})
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-marquee", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -903,7 +910,7 @@
 	})
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-navbar", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -1097,11 +1104,11 @@
 	})
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/wxc-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(9);
+	__webpack_require__(10);
 
 	;__weex_module__.exports.template = __weex_module__.exports.template || {}
 	;Object.assign(__weex_module__.exports.template, {
@@ -1156,11 +1163,11 @@
 	})
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	;__weex_define__("@weex-component/wxc-tabbar", [], function(__weex_require__, __weex_exports__, __weex_module__){
-	__webpack_require__(12);
+	__webpack_require__(13);
 
 	;
 	    __weex_module__.exports = {
@@ -1276,7 +1283,7 @@
 	})
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	;__weex_define__("@weex-component/wxc-tabitem", [], function(__weex_require__, __weex_exports__, __weex_module__){
@@ -1372,6 +1379,69 @@
 	    "textAlign": "center",
 	    "fontSize": 20
 	  }
+	})
+	})
+
+/***/ },
+/* 14 */,
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	;__weex_define__("@weex-component/playground-navpage", [], function(__weex_require__, __weex_exports__, __weex_module__){
+
+	;
+	    __webpack_require__(2);
+	    __weex_module__.exports = {
+	        data: function () {return {
+	            navBarHeight: 88,
+	            title: '',
+	            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+	        }},
+	        created: function () {
+	            var config = this.$getConfig();
+	            var src = config.bundleUrl;
+	            if (src != null) {
+	                var end = src.lastIndexOf('?');
+	                end = end < 0 ? src.length : end;
+	                console.log("end:" + end);
+	                this.title = src.substring(src.lastIndexOf("/") + 1, end);
+	            }
+	            if (src.indexOf('file') >= 0) {
+	                this.rightItemSrc = '';
+	            }
+	            this.$on('naviBar.rightItem.click', function (e) {
+	                __weex_require__("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+	            });
+	            this.$on('naviBar.leftItem.click', function (e) {
+	                var vm = this;
+	                var params = {
+	                    'animated': 'true'
+	                }
+	                vm.$call('navigator', 'pop', params, function () {
+	                });
+	            });
+	        }, methods: {}
+	    }
+
+
+	;__weex_module__.exports.template = __weex_module__.exports.template || {}
+	;Object.assign(__weex_module__.exports.template, {
+	  "type": "wxc-navpage",
+	  "attr": {
+	    "height": function () {return this.navBarHeight},
+	    "backgroundColor": "#3F51B5",
+	    "leftItemSrc": "http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png",
+	    "leftItemTitle": "Hello",
+	    "leftItemColor": "white",
+	    "titleColor": "white",
+	    "title": function () {return this.title},
+	    "rightItemSrc": function () {return this.rightItemSrc}
+	  },
+	  "children": [
+	    {
+	      "type": "content"
+	    }
+	  ]
 	})
 	})
 

@@ -1,0 +1,64 @@
+<template>
+    <div class="navigator">
+        <div style="flex-direction: row;align-items: center;">
+            <image src="{{leftImageSrc}}" style="width: {{leftImageWidth}};height: {{leftImageHeight}};visibility: {{leftImageVisible}}"
+                   onclick="{{back}}"></image>
+            <text class="titleText" style="margin-left: 20px">{{leftTitle}}</text>
+        </div>
+        <div style="flex-direction: row;align-items: center;justify-content: center">
+            <text class="titleText">{{rightTitle}}</text>
+            <image src="{{rightImageSrc}}" style="width: 50px;height: 50px;visibility: {{rightImageVisible}}"
+                   onclick="{{refresh}}"></image>
+        </div>
+    </div>
+</template>
+<style>
+    .navigator {
+        background-color: #3F51B5;
+        padding: 20px;
+        height: 90px;
+        width: 750px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .titleText {
+        font-size: 40px;
+        color: white;
+    }
+</style>
+<script>
+    module.exports = {
+        data: {
+            leftTitle: "WEEX",
+            rightTitle: "",
+            rightImageSrc: "http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png",
+            rightImageVisible: 'visible',
+            leftImageVisible: 'hidden',
+            leftImageSrc: 'http://gw.alicdn.com/mt/TB1z6ilMVXXXXciXVXXXXXXXXXX-46-46.png',
+            leftImageWidth:'0px',
+            leftImageVisible:'0px',
+            leftImageHeight:'0px'
+        },
+        created: function () {
+            var bundleUrl = this.$getConfig().bundleUrl;
+            if (bundleUrl.indexOf('file') >= 0) {
+                this.rightImageVisible = 'hidden';
+            }
+
+            if(this.leftImageVisible=='visible'){
+                this.leftImageWidth='50px';
+                this.leftImageHeight='50px';
+            }
+        },
+        methods: {
+            refresh: function (event) {
+                require("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+            },
+            back: function (event) {
+                require("@weex-module/event").back();
+            }
+        }
+    }
+</script>

@@ -1,5 +1,38 @@
 <template>
-  <div>
-    <text style="font-size:100px;">Hello World.</text>
-  </div>
+    <playground-navpage>
+        <text style="font-size:100px;">Hello World.</text>
+    </playground-navpage>
 </template>
+<script>
+    require('weex-components');
+    module.exports = {
+        data: {
+            navBarHeight: 88,
+            title: '',
+            dir: 'examples',
+            baseUrl: '',
+            src: '',
+            rightItemSrc: 'http://gw.alicdn.com/mt/TB17Re.LpXXXXajXpXXXXXXXXXX-46-46.png'
+        },
+        created: function () {
+            this.src = this.$getConfig().bundleUrl;
+            console.log("bundleUrl:"+this.src);
+            if (this.src.indexOf('file')>=0) {
+                this.rightItemSrc='';
+            }
+            this.$on('naviBar.rightItem.click', function (e) {
+                require("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+            });
+            this.$on('naviBar.leftItem.click', function (e) {
+                var vm = this;
+                var params = {
+                    'animated': 'true'
+                }
+                vm.$call('navigator', 'pop', params, function () {
+                });
+            });
+        }, methods: {}
+    }
+
+</script>
+

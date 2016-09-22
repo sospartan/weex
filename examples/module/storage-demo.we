@@ -1,4 +1,5 @@
 <template>
+<playground-navpage>
   <scroller>
     <wxc-panel title="storage API" type="primary">
       <wxc-panel title="setItem">
@@ -26,10 +27,12 @@
     </wxc-panel>
   </scroller>
 
+</playground-navpage>
 </template>
 
 
 <script>
+require('../playground-navpage.we');
 require('weex-components');
 module.exports = {
   data: {

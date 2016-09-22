@@ -1,55 +1,100 @@
 <template>
-  <example-list items="{{items}}" root="{{root}}"></example-list>
+    <div style="flex-direction: column;">
+        <wxc-tabbar tab-items={{tabItems}}></wxc-tabbar>
+    </div>
 </template>
-
 <script>
-  require('./include/example-list.we');
-  module.exports = {
-    data: {
-      root: 'examples',
-      items: [
-        // FORMAT:
-        // `name` key is the example filename without '.we'
-        // Support sub directory, e.g. 'new-fashion/index'
+    require('weex-components');
+    module.exports = {
+        data: {
+            root: 'examples',
+            tabItems: [
+                {
+                    index: 0,
+                    title: 'Scan',
+                    titleColor: '000000',
+                    icon: '',
+                    image: 'http://gw.alicdn.com/mt/TB18sK0LpXXXXcdXFXXXXXXXXXX-48-48.png',
+                    selectedImage: 'http://gw.alicdn.com/mt/TB1uLiKLpXXXXcUaXXXXXXXXXXX-48-48.png',
+                    src: 'scan.js',
+                    visibility: 'hidden'
+                },
+                {
+                    index: 1,
+                    title: 'Example',
+                    titleColor: '000000',
+                    icon: '',
+                    image: 'http://gw.alicdn.com/mt/TB1W3PpMVXXXXciXXXXXXXXXXXX-46-46.png',
+                    selectedImage: 'http://gw.alicdn.com/mt/TB1miWTMVXXXXXxaFXXXXXXXXXX-46-46.png',
+                    src: 'home.js',
+                    visibility: 'visible'
+                },
+                {
+                    index: 2,
+                    title: 'Showcase',
+                    titleColor: '000000',
+                    icon: '',
+                    image: 'http://gtms03.alicdn.com/tps/i1/TB1qw.hMpXXXXagXXXX9t7RGVXX-46-46.png',
+                    selectedImage: 'http://gtms02.alicdn.com/tps/i4/TB16jjPMpXXXXazXVXX9t7RGVXX-46-46.png',
+                    src: 'showcase.js',
+                    visibility: 'hidden'
+                }, {
+                    index: 3,
+                    title: 'About',
+                    titleColor: '000000',
+                    icon: '',
+                    image: 'http://gw.alicdn.com/mt/TB17IxCLpXXXXaUXFXXXXXXXXXX-46-46.png',
+                    selectedImage: 'http://gw.alicdn.com/mt/TB1yDRrLpXXXXcXXVXXXXXXXXXX-46-46.png',
+                    src: 'about.js',
+                    visibility: 'hidden'
+                }
+            ]
+        },
+        created: function () {
+            var bundleUrl = this.$getConfig().bundleUrl;
+            console.log('hit', bundleUrl);
+            var dirs = this.root.split('/');
+            dirs.forEach(function (dir, index) {
+                if (!dir) dirs.splice(index, 1);
+            });
+            var root = dirs.length > 0 ? dirs[0] : '';
+            var subRoot = dirs.length > 1 ? dirs.slice(1).join('/') + '/' : '';
 
-        // common
-        {name: 'hello', title: 'Hello World'},
-        {name: 'syntax/index', title: 'More Syntax'},
-        {name: 'style/index', title: 'Common Style'},
-        {name: 'animation', title: 'Animation'},
+            var nativeBase;
+            var isAndroidAssets = bundleUrl.indexOf('your_current_IP') >= 0 || bundleUrl.indexOf('file://assets/') >= 0;
+            var isiOSAssets = bundleUrl.indexOf('file:///') >= 0 && bundleUrl.indexOf('WeexDemo.app') > 0;
+            if (isAndroidAssets) {
+                nativeBase = 'file://assets/';
+            }
+            else if (isiOSAssets) {
+                // file:///var/mobile/Containers/Bundle/Application/{id}/WeexDemo.app/
+                // file:///Users/{user}/Library/Developer/CoreSimulator/Devices/{id}/data/Containers/Bundle/Application/{id}/WeexDemo.app/
+                nativeBase = bundleUrl.substring(0, bundleUrl.lastIndexOf('/') + 1);
+            }
+            else {
+                var host = 'localhost:12580';
+                var matches = /\/\/([^\/]+?)\//.exec(this.$getConfig().bundleUrl);
+                if (matches && matches.length >= 2) {
+                    host = matches[1];
+                }
+                nativeBase = '//' + host + '/' + root + '/build/' + subRoot;
+            }
+            var h5Base = './index.html?page=./' + root + '/build/' + subRoot;
+            // in Native
+            var base = nativeBase;
+            if (typeof window === 'object') {
+                // in Browser or WebView
+                base = h5Base;
+            }
 
-        // component
-        {name: 'component/text-demo', title: 'Text'},
-        {name: 'component/image-demo', title: 'Image'},
-        {name: 'component/input-demo', title: 'Input'},
-        {name: 'component/scroller-demo', title: 'Scroller'},
-        {name: 'component/list/list-basic', title: 'List (Basic)'},
-        {name: 'component/list/list-demo', title: 'List (Advanced)'},
-        {name: 'component/slider/index', title: 'Slider'},
-        {name: 'component/slider-neighbor/silder-neighbor', title: 'Slider-Neighbor'},
-        {name: 'component/a-demo', title: 'A'},
-        {name: 'component/video-demo', title: 'Video'},
-        {name: 'component/countdown-demo', title: 'Countdown'},
-        {name: 'component/marquee-demo', title: 'Marquee'},
-        {name: 'component/web-demo', title: 'Web'},
-        {name: 'component/navigator-demo', title: 'Navigator'},
-        {name: 'component/tabbar/tabbar-demo', title: 'Tabbar'},
-        {name: 'component/process-bar-demo', title: 'ProcessBar'},
-
-        // module
-        {name: 'module/instance-api', title: 'Instance API'},
-        {name: 'module/modal', title: 'Modal'},
-        {name: 'module/stream-demo', title: 'Stream'},
-        {name: 'module/storage-demo',title:'Storage'},
-        // {name: 'module/clipboard', title: 'Clipboard'}, // 0.8 , developing
-
-        // showcase
-        {name: 'showcase/new-fashion/index', title: 'Activity'},
-        {name: 'showcase/calculator', title: 'Calculator'},
-        {name: 'showcase/minesweeper', title: 'Minesweeper'},
-        {name: 'showcase/ui', title: 'UI Gallery'},
-        {name: 'showcase/dropdown/dropdown-demo', title: 'Dropdown'}
-      ]
+            for (var i = 0; i < this.tabItems.length; i++) {
+                var tabItem = this.tabItems[i];
+                tabItem.src = base + tabItem.src;
+                if (tabItem.src.indexOf('file') < 0) {
+                    tabItem.src = "http:" + tabItem.src;
+                }
+                console.log(tabItem.title + ":" + tabItem.src);
+            }
+        }
     }
-  }
 </script>

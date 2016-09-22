@@ -1,0 +1,108 @@
+<template>
+    <div style="flex-direction: column">
+        <navigator left-title="About" refresh="{{refresh}}"></navigator>
+        <scroller>
+            <div style="flex-direction: column;align-items: center;">
+                <image src="http://gw.alicdn.com/mt/TB1189SMVXXXXXKaFXXXXXXXXXX-180-180.png"
+                       style="align-content: center;width: 200px;height: 200px;margin: 100px">
+                </image>
+            </div>
+            <div style="flex-direction: column;margin-left: 40px;margin-right: 40px">
+                <text class="header">Basic Info</text>
+                <about_item left="Weex Version" right={{sdkVersion}}></about_item>
+                <about_item left="Playground Version" right={{appVersion}}></about_item>
+                <about_item left="OS Version" right="{{osVersion}}"></about_item>
+                <about_item left="Screen Width" right="{{deviceWidth}}"></about_item>
+                <about_item left="Screen Height" right="{{deviceHeight}}"></about_item>
+            </div>
+            <div style="flex-direction: column;margin-left: 40px;margin-top: 20px;margin-bottom: 40px;margin-right: 40px">
+                <text class="header">Other</text>
+                <about_item left="New Version" right="{{newVersion}}" right-color="{{versionColor}}"
+                            src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"
+                            onclick="goDownload"></about_item>
+                <about_item left="Feedback" onclick="feedback"
+                            src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"></about_item>
+                <about_item left="Help" onclick="help"
+                            src="http://gw.alicdn.com/mt/TB1qVvfMVXXXXaOXVXXXXXXXXXX-64-64.png"></about_item>
+            </div>
+
+        </scroller>
+    </div>
+</template>
+<style>
+    .header {
+        font-size: 43px;
+        color: darkgray;
+        font-style: italic;
+    }
+
+    .content {
+        font-size: 30px;
+        color: darkgrey;
+        padding-left: 10px;
+        margin: 15px;
+    }
+</style>
+<script>
+    require('weex-components');
+    require('./about_item.we')
+    module.exports = {
+        data: {
+            sdkVersion: "",
+            appVersion: "",
+            osVersion: "",
+            deviceWidth: "",
+            deviceHeight: "",
+            newVersion: "Nothing",
+            versionColor: "green",
+            visible: "visible"
+        },
+        ready: function () {
+            var config = this.$getConfig();
+            this.appVersion = config.env.appVersion;
+            this.sdkVersion = config.env.weexVersion;
+            this.osVersion = config.env.osVersion;
+            this.deviceWidth = config.env.deviceWidth;
+            this.deviceHeight = config.env.deviceHeight;
+
+            var self = this;
+            var stream = require('@weex-module/stream');
+            stream.fetch({
+                method: 'GET',
+                url: 'http://h5.m.taobao.com/js/weex/playground/app/info.js',
+                type: 'jsonp'
+            }, function (response) {
+                console.log(response.data);
+                var obj = response.data;
+                var version = config.env.platform == "android" ? obj.androidVersion : obj.iosVersion;
+                if (self.appVersion < version) {
+                    self.versionColor = "red";
+                    self.newVersion = version;
+                }
+            }, function (progress) {
+                console.log('progress:' + progress.length);
+            });
+        },
+        methods: {
+            help: function (event) {
+                require('@weex-module/event').openBrowser("http://alibaba.github.io/weex/doc/");
+            },
+            feedback: function (event) {
+                require('@weex-module/event').openBrowser("https://github.com/alibaba/weex");
+            },
+            refresh: function (event) {
+                require("@weex-module/event").refresh('js_framework_reload');
+            },
+            goDownload: function (event) {
+                if (this.newVersion != "Nothing") {
+                    require('@weex-module/event').openBrowser("http://alibaba.github.io/weex/download.html");
+                } else {
+                    require('@weex-module/modal').toast({
+                        'message': "This is the latest version",
+                        'duration': 1
+                    });
+                }
+            }
+        }
+    }
+</script>
