@@ -217,9 +217,9 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.adapter.IWXUserTrackAdapter;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXErrorCode;
-import com.taobao.weex.dom.flex.CSSLayoutContext;
-import com.taobao.weex.dom.flex.CSSNode;
-import com.taobao.weex.dom.flex.Spacing;
+import com.facebook.csslayout.CSSLayoutContext;
+import com.facebook.csslayout.CSSNode;
+import com.facebook.csslayout.Spacing;
 import com.taobao.weex.ui.IWXRenderTask;
 import com.taobao.weex.ui.WXRenderManager;
 import com.taobao.weex.ui.animation.WXAnimationBean;
@@ -321,7 +321,7 @@ class WXDomStatement {
    * Batch the execution of command objects and execute all the command objects created other
    * places, e.g. call {@link IWXRenderTask#execute()}.
    * First, it will rebuild the dom tree and do pre layout staff.
-   * Then call {@link com.taobao.weex.dom.flex.CSSNode#calculateLayout(CSSLayoutContext)} to
+   * Then call {@link com.facebook.csslayout.CSSNode#calculateLayout(CSSLayoutContext)} to
    * start calculate layout.
    * Next, call {@link #applyUpdate(WXDomObject)} to get changed dom and creating
    * corresponding command object.
@@ -1244,13 +1244,13 @@ class WXDomStatement {
    * Creating the mapping between Reference to {@link WXDomObject}
    * and store the mapping in {@link #mRegistry}.
    * Then, parse and copy style
-   * from DOM to {@link com.taobao.weex.dom.flex.CSSNode}.
+   * from DOM to {@link com.facebook.csslayout.CSSNode}.
    * Finally, DOM's children are also added to
-   * {@link com.taobao.weex.dom.flex.CSSNode#mChildren} if added is true.
+   * {@link com.facebook.csslayout.CSSNode#mChildren} if added is true.
    * The above procedure will be done recursively.
    * @param dom the original DOM Object
    * @param isAdd true for adding children of
-   * {@link WXDomObject} {@link com.taobao.weex.dom.flex.CSSNode#mChildren} and parsing style,
+   * {@link WXDomObject} {@link com.facebook.csslayout.CSSNode#mChildren} and parsing style,
    *              false for only parsing style.
    */
   /** package **/ void transformStyle(WXDomObject dom, boolean isAdd) {

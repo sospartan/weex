@@ -202,87 +202,58 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.component.list;
+package com.facebook.csslayout;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.common.Component;
-import com.taobao.weex.dom.WXDomObject;
-import com.facebook.csslayout.CSSLayout;
-import com.taobao.weex.ui.component.WXVContainer;
-import com.taobao.weex.ui.view.WXFrameLayout;
+import static com.facebook.csslayout.CSSLayout.*;
+import static com.facebook.csslayout.Spacing.*;
 
 /**
- * Root component for components in {@link WXListComponent}
+ * Created by sospartan on 29/09/2016.
  */
-@Component(lazyload = false)
+public class CSSUtility {
 
-public class WXCell extends WXVContainer<WXFrameLayout> {
+  public static void copy(CSSLayout layout, CSSLayout dest) {
+    dest.position[POSITION_LEFT] = layout.position[POSITION_LEFT];
+    dest.position[POSITION_TOP] = layout.position[POSITION_TOP];
+    dest.position[POSITION_RIGHT] = layout.position[POSITION_RIGHT];
+    dest.position[POSITION_BOTTOM] = layout.position[POSITION_BOTTOM];
+    dest.dimensions[DIMENSION_WIDTH] = layout.dimensions[DIMENSION_WIDTH];
+    dest.dimensions[DIMENSION_HEIGHT] = layout.dimensions[DIMENSION_HEIGHT];
+    dest.direction = layout.direction;
+  }
 
-    public int lastLocationY = -1;
-    private ViewGroup mRealView;
-    private View mTempStickyView;
-    private View mHeadView;
+  public static void copy(CSSStyle cssStyle, CSSStyle dest) {
+    dest.direction = cssStyle.direction;
+    dest.flexDirection = cssStyle.flexDirection;
+    dest.justifyContent = cssStyle.justifyContent;
 
-    @Deprecated
-    public WXCell(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
-        this(instance,dom,parent,isLazy);
+    dest.alignContent = cssStyle.alignContent;
+    dest.alignItems = cssStyle.alignItems;
+    dest.alignSelf = cssStyle.alignSelf;
+    dest.positionType = cssStyle.positionType;
+    dest.flexWrap = cssStyle.flexWrap;
+    dest.flexBasis = cssStyle.flexBasis;
+    dest.flexGrow = cssStyle.flexGrow;
+
+    copy(cssStyle.margin, dest.margin);
+    copy(cssStyle.padding, dest.padding);
+    copy(cssStyle.border, dest.border);
+    copy(cssStyle.position, dest.position);
+
+    dest.dimensions[DIMENSION_WIDTH] = cssStyle.dimensions[DIMENSION_WIDTH];
+    dest.dimensions[DIMENSION_HEIGHT] = cssStyle.dimensions[DIMENSION_HEIGHT];
+    dest.minWidth = cssStyle.minWidth;
+    dest.minHeight = cssStyle.minHeight;
+    dest.maxWidth = cssStyle.maxWidth;
+    dest.maxHeight = cssStyle.maxHeight;
+  }
+
+  public static void copy(Spacing from, Spacing dest) {
+    int[] types = {TOP, LEFT, RIGHT, BOTTOM, START, END, HORIZONTAL, VERTICAL, ALL};
+    for (int type : types) {
+      dest.set(type, from.get(type));
     }
+  }
 
-    public WXCell(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, boolean isLazy) {
-        super(instance, dom, parent,true );
-    }
-
-
-    /**
-     * If Cell is Sticky, need wraped FrameLayout
-     */
-    @Override
-    protected WXFrameLayout initComponentHostView(@NonNull Context context) {
-        if (isSticky()) {
-            WXFrameLayout view = new WXFrameLayout(context);
-            mRealView = new WXFrameLayout(context);
-            view.addView(mRealView);
-            return view;
-        } else {
-            WXFrameLayout view = new WXFrameLayout(context);
-            mRealView = view;
-            return view;
-        }
-    }
-
-    @Override
-    public ViewGroup getRealView() {
-        return mRealView;
-    }
-
-    public void removeSticky() {
-        mHeadView = getHostView().getChildAt(0);
-        int[] location = new int[2];
-        int[] parentLocation = new int[2];
-        getHostView().getLocationOnScreen(location);
-        getParentScroller().getView().getLocationOnScreen(parentLocation);
-        int headerViewOffsetX = location[0] - parentLocation[0];
-        int headerViewOffsetY = getParent().getHostView().getTop();
-        getHostView().removeView(mHeadView);
-        mRealView = (ViewGroup) mHeadView;
-        mTempStickyView = new FrameLayout(getContext());
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) getDomObject().getLayoutWidth(),
-                (int) getDomObject().getLayoutHeight());
-        getHostView().addView(mTempStickyView, lp);
-        mHeadView.setTranslationX(headerViewOffsetX);
-        mHeadView.setTranslationY(headerViewOffsetY);
-    }
-
-    public void recoverySticky() {
-        getHostView().removeView(mTempStickyView);
-        getHostView().addView(mHeadView);
-        mHeadView.setTranslationX(0);
-        mHeadView.setTranslationY(0);
-    }
 }

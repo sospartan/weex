@@ -209,11 +209,11 @@ import android.text.Layout;
 import android.text.TextUtils;
 
 import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.flex.CSSAlign;
-import com.taobao.weex.dom.flex.CSSFlexDirection;
-import com.taobao.weex.dom.flex.CSSJustify;
-import com.taobao.weex.dom.flex.CSSPositionType;
-import com.taobao.weex.dom.flex.CSSWrap;
+import com.facebook.csslayout.CSSAlign;
+import com.facebook.csslayout.CSSFlexDirection;
+import com.facebook.csslayout.CSSJustify;
+import com.facebook.csslayout.CSSPositionType;
+import com.facebook.csslayout.CSSWrap;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.ui.component.WXTextDecoration;
 import com.taobao.weex.utils.WXUtils;

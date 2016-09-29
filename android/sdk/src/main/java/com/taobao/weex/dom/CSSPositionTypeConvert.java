@@ -2,7 +2,7 @@ package com.taobao.weex.dom;
 
 import android.text.TextUtils;
 
-import com.taobao.weex.dom.flex.CSSPositionType;
+import com.facebook.csslayout.CSSPositionType;
 
 class CSSPositionTypeConvert {
 

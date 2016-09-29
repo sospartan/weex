@@ -210,7 +210,7 @@ import com.taobao.weex.WXSDKInstanceTest;
 import com.taobao.weex.dom.TestDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.dom.WXEvent;
-import com.taobao.weex.dom.flex.Spacing;
+import com.facebook.csslayout.Spacing;
 
 import org.junit.Before;
 import org.junit.Test;

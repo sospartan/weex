@@ -212,7 +212,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.flex.Spacing;
+import com.facebook.csslayout.Spacing;
 import com.taobao.weex.utils.WXResourceUtils;
 
 import org.junit.Before;

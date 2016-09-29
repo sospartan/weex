@@ -209,11 +209,9 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.facebook.csslayout.*;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.flex.CSSLayoutContext;
-import com.taobao.weex.dom.flex.CSSNode;
-import com.taobao.weex.dom.flex.Spacing;
 import com.taobao.weex.ui.component.WXBasicComponentType;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXViewUtils;
@@ -230,7 +228,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Actually, {@link com.taobao.weex.ui.component.WXComponent} hold references to
  * {@link android.view.View} and {@link WXDomObject}.
  */
-public class WXDomObject extends CSSNode implements Cloneable {
+public class WXDomObject extends CompatCSSNode implements Cloneable {
 
   public static final String TAG = WXDomObject.class.getSimpleName();
   public static final String ROOT = "_root";
@@ -332,7 +330,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
   }
 
   protected final void copyFields(WXDomObject dest) {
-    dest.cssstyle.copy(this.cssstyle);
+    this.copyTo(dest);
     dest.setModifyHeight(isModifyHeight);
     dest.setModifyWidth(isModifyWidth);
     dest.ref = ref;
@@ -340,7 +338,6 @@ public class WXDomObject extends CSSNode implements Cloneable {
     dest.style = style == null ? null : style.clone();//mStyles == null ? null : mStyles.clone();
     dest.attr = attr == null ? null : attr.clone();//mAttrs == null ? null : mAttrs.clone();
     dest.event = event == null ? null : event.clone();
-    dest.csslayout.copy(this.csslayout);
   }
 
   /**
@@ -613,16 +610,16 @@ public class WXDomObject extends CSSNode implements Cloneable {
             setWrap(stylesMap.getCSSWrap());
             break;
           case Constants.Name.MIN_WIDTH:
-            setMinWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMinWidth()));
+            setStyleMinWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMinWidth()));
             break;
           case Constants.Name.MIN_HEIGHT:
-            setMinHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMinHeight()));
+            setStyleMinHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMinHeight()));
             break;
           case Constants.Name.MAX_WIDTH:
-            setMaxWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMaxWidth()));
+            setStyleMaxWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMaxWidth()));
             break;
           case Constants.Name.MAX_HEIGHT:
-            setMaxHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMaxHeight()));
+            setStyleMaxHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMaxHeight()));
             break;
           case Constants.Name.HEIGHT:
             setStyleHeight(WXViewUtils.getRealPxByWidth(stylesMap.getHeight()));
@@ -634,16 +631,16 @@ public class WXDomObject extends CSSNode implements Cloneable {
             setPositionType(stylesMap.getPosition());
             break;
           case Constants.Name.LEFT:
-            setPositionLeft(WXViewUtils.getRealPxByWidth(stylesMap.getLeft()));
+            setPosition(Spacing.LEFT,WXViewUtils.getRealPxByWidth(stylesMap.getLeft()));
             break;
           case Constants.Name.TOP:
-            setPositionTop(WXViewUtils.getRealPxByWidth(stylesMap.getTop()));
+            setPosition(Spacing.TOP,WXViewUtils.getRealPxByWidth(stylesMap.getTop()));
             break;
           case Constants.Name.RIGHT:
-            setPositionRight(WXViewUtils.getRealPxByWidth(stylesMap.getRight()));
+            setPosition(Spacing.RIGHT,WXViewUtils.getRealPxByWidth(stylesMap.getRight()));
             break;
           case Constants.Name.BOTTOM:
-            setPositionBottom(WXViewUtils.getRealPxByWidth(stylesMap.getBottom()));
+            setPosition(Spacing.BOTTOM,WXViewUtils.getRealPxByWidth(stylesMap.getBottom()));
             break;
           case Constants.Name.MARGIN:
             setMargin(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getMargin()));

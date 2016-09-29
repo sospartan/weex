@@ -218,23 +218,23 @@ public class WXSwitchDomObject extends WXDomObject{
     }
 
     @Override
-    public void setMaxWidth(float maxWidth) {
-        super.setMaxWidth(WXViewUtils.getRealPxByWidth(FIXED_WIDTH));
+    public void setStyleMaxWidth(float maxWidth) {
+        super.setStyleMaxWidth(WXViewUtils.getRealPxByWidth(FIXED_WIDTH));
     }
 
     @Override
-    public void setMinWidth(float minWidth) {
-        super.setMinWidth(WXViewUtils.getRealPxByWidth(FIXED_WIDTH));
+    public void setStyleMinWidth(float minWidth) {
+        super.setStyleMinWidth(WXViewUtils.getRealPxByWidth(FIXED_WIDTH));
     }
 
     @Override
-    public void setMaxHeight(float maxHeight) {
-        super.setMaxHeight(WXViewUtils.getRealPxByWidth(FIXED_HEIGHT));
+    public void setStyleMaxHeight(float maxHeight) {
+        super.setStyleMaxHeight(WXViewUtils.getRealPxByWidth(FIXED_HEIGHT));
     }
 
     @Override
-    public void setMinHeight(float minHeight) {
-        super.setMinHeight(WXViewUtils.getRealPxByWidth(FIXED_HEIGHT));
+    public void setStyleMinHeight(float minHeight) {
+        super.setStyleMinHeight(WXViewUtils.getRealPxByWidth(FIXED_HEIGHT));
     }
 
     @Override

@@ -144,6 +144,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.facebook.csslayout.CSSUtility;
 import com.taobao.weex.IWXActivityStateListener;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
@@ -152,8 +153,8 @@ import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.IWXObject;
 import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.CSSLayout;
-import com.taobao.weex.dom.flex.Spacing;
+import com.facebook.csslayout.CSSLayout;
+import com.facebook.csslayout.Spacing;
 import com.taobao.weex.ui.IFComponentHolder;
 import com.taobao.weex.ui.component.list.WXCell;
 import com.taobao.weex.ui.component.list.WXListComponent;
@@ -217,8 +218,8 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
       mHost.getLocationOnScreen(location);
       params.put("x", location[0]);
       params.put("y", location[1]);
-      params.put("width", mDomObj.getCSSLayoutWidth());
-      params.put("height", mDomObj.getCSSLayoutHeight());
+      params.put("width", mDomObj.getLayoutWidth());
+      params.put("height", mDomObj.getLayoutHeight());
       getInstance().fireEvent(mCurrentRef,
           Constants.Event.CLICK,
           params);
@@ -389,7 +390,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
 
     if (this instanceof WXRefresh && mParent instanceof WXScroller &&
             hasScrollParent(mParent)) {
-      mInstance.setRefreshMargin(mDomObj.getCSSLayoutHeight());
+      mInstance.setRefreshMargin(mDomObj.getLayoutHeight());
     }
     if ((this instanceof WXBaseRefresh && mParent instanceof WXScroller)) {
       return;
@@ -397,10 +398,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
 
     if (mParent instanceof WXScroller && hasScrollParent(mParent)) {
       if (!(this instanceof WXBaseRefresh)) {
-          CSSLayout newLayout = new CSSLayout();
-          newLayout.copy(mDomObj.csslayout);
-          newLayout.position[CSSLayout.POSITION_TOP] = mDomObj.getCSSLayoutTop() - mInstance.getRefreshMargin();
-          mDomObj.csslayout.copy(newLayout);
+        mDomObj.setPosition(Spacing.TOP,mDomObj.getLayoutY()-mInstance.getRefreshMargin());
       }
     }
 

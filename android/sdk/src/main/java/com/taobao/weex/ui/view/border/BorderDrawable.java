@@ -219,8 +219,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
 
-import com.taobao.weex.dom.flex.FloatUtil;
-import com.taobao.weex.dom.flex.Spacing;
+import com.facebook.csslayout.FloatUtil;
+import com.facebook.csslayout.Spacing;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXViewUtils;
 

@@ -26,13 +26,9 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
 
+import com.facebook.csslayout.*;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.flex.CSSConstants;
-import com.taobao.weex.dom.flex.CSSNode;
-import com.taobao.weex.dom.flex.FloatUtil;
-import com.taobao.weex.dom.flex.MeasureOutput;
-import com.taobao.weex.dom.flex.Spacing;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.ui.component.WXTextDecoration;
 import com.taobao.weex.utils.WXLogUtils;
@@ -73,14 +69,19 @@ public class WXTextDomObject extends WXDomObject {
 
   /**
    * Object for calculating text's width and height. This class is an anonymous class of
-   * implementing {@link com.taobao.weex.dom.flex.CSSNode.MeasureFunction}
+   * implementing {@link com.facebook.csslayout.CSSNode.MeasureFunction}
    */
   /** package **/ static final CSSNode.MeasureFunction TEXT_MEASURE_FUNCTION = new CSSNode.MeasureFunction() {
     @Override
-    public void measure(CSSNode node, float width, @NonNull MeasureOutput measureOutput) {
+    public void measure(CSSNodeAPI node,
+                        float width,
+                        CSSMeasureMode widthMode,
+                        float height,
+                        CSSMeasureMode heightMode,
+                        MeasureOutput measureOutput) {
       WXTextDomObject textDomObject = (WXTextDomObject) node;
       if (CSSConstants.isUndefined(width)) {
-        width = node.cssstyle.maxWidth;
+        width = node.getStyleMaxWidth();
       }
       if(textDomObject.getTextWidth(textDomObject.mTextPaint,width,false)>0) {
         textDomObject.layout = textDomObject.createLayout(width, false, null);

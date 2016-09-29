@@ -202,87 +202,28 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.component.list;
-
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.common.Component;
-import com.taobao.weex.dom.WXDomObject;
-import com.facebook.csslayout.CSSLayout;
-import com.taobao.weex.ui.component.WXVContainer;
-import com.taobao.weex.ui.view.WXFrameLayout;
+package com.facebook.csslayout;
 
 /**
- * Root component for components in {@link WXListComponent}
+ * Created by sospartan on 29/09/2016.
  */
-@Component(lazyload = false)
+public class CompatCSSNode extends CSSNode {
+  private boolean mShow = true;
 
-public class WXCell extends WXVContainer<WXFrameLayout> {
+  public final void copyTo(CSSNode dest) {
+    CSSUtility.copy(layout, dest.layout);
+    CSSUtility.copy(style, dest.style);
+  }
 
-    public int lastLocationY = -1;
-    private ViewGroup mRealView;
-    private View mTempStickyView;
-    private View mHeadView;
+  public boolean isShow() {
+    return mShow;
+  }
 
-    @Deprecated
-    public WXCell(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
-        this(instance,dom,parent,isLazy);
+  public void setVisible(boolean isShow) {
+    if (!mShow && isShow) {
+      markLayoutSeen();
     }
-
-    public WXCell(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, boolean isLazy) {
-        super(instance, dom, parent,true );
-    }
-
-
-    /**
-     * If Cell is Sticky, need wraped FrameLayout
-     */
-    @Override
-    protected WXFrameLayout initComponentHostView(@NonNull Context context) {
-        if (isSticky()) {
-            WXFrameLayout view = new WXFrameLayout(context);
-            mRealView = new WXFrameLayout(context);
-            view.addView(mRealView);
-            return view;
-        } else {
-            WXFrameLayout view = new WXFrameLayout(context);
-            mRealView = view;
-            return view;
-        }
-    }
-
-    @Override
-    public ViewGroup getRealView() {
-        return mRealView;
-    }
-
-    public void removeSticky() {
-        mHeadView = getHostView().getChildAt(0);
-        int[] location = new int[2];
-        int[] parentLocation = new int[2];
-        getHostView().getLocationOnScreen(location);
-        getParentScroller().getView().getLocationOnScreen(parentLocation);
-        int headerViewOffsetX = location[0] - parentLocation[0];
-        int headerViewOffsetY = getParent().getHostView().getTop();
-        getHostView().removeView(mHeadView);
-        mRealView = (ViewGroup) mHeadView;
-        mTempStickyView = new FrameLayout(getContext());
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) getDomObject().getLayoutWidth(),
-                (int) getDomObject().getLayoutHeight());
-        getHostView().addView(mTempStickyView, lp);
-        mHeadView.setTranslationX(headerViewOffsetX);
-        mHeadView.setTranslationY(headerViewOffsetY);
-    }
-
-    public void recoverySticky() {
-        getHostView().removeView(mTempStickyView);
-        getHostView().addView(mHeadView);
-        mHeadView.setTranslationX(0);
-        mHeadView.setTranslationY(0);
-    }
+    mShow = isShow;
+    dirty();
+  }
 }

@@ -205,10 +205,8 @@
 package com.taobao.weex.dom;
 
 import android.text.TextPaint;
+import com.facebook.csslayout.*;
 import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.flex.CSSConstants;
-import com.taobao.weex.dom.flex.CSSNode;
-import com.taobao.weex.dom.flex.MeasureOutput;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.utils.TypefaceUtil;
 import com.taobao.weex.utils.WXViewUtils;
@@ -231,9 +229,14 @@ public class BasicEditTextDomObject extends WXDomObject {
     mPaint.setTextSize(WXViewUtils.getRealPxByWidth(WXText.sDEFAULT_SIZE));
     setMeasureFunction(new MeasureFunction() {
       @Override
-      public void measure(CSSNode node, float width, MeasureOutput measureOutput) {
+      public void measure(CSSNodeAPI node,
+                          float width,
+                          CSSMeasureMode widthMode,
+                          float height,
+                          CSSMeasureMode heightMode,
+                          MeasureOutput measureOutput) {
         if (CSSConstants.isUndefined(width)) {
-          width = node.cssstyle.maxWidth;
+          width = node.getStyleMaxWidth();
         }
         measureOutput.height = getMeasureHeight();
         measureOutput.width = width;
