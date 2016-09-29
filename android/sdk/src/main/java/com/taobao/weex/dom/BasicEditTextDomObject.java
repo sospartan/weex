@@ -202,10 +202,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
 package com.taobao.weex.dom;
 
 import android.text.TextPaint;
-import com.facebook.csslayout.*;
+import com.facebook.csslayout.CSSConstants;
+import com.facebook.csslayout.CSSMeasureMode;
+import com.facebook.csslayout.CSSNodeAPI;
+import com.facebook.csslayout.MeasureOutput;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.utils.TypefaceUtil;

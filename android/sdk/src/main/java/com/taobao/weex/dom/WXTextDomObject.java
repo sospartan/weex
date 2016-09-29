@@ -25,8 +25,13 @@ import android.text.style.AlignmentSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
-
-import com.facebook.csslayout.*;
+import com.facebook.csslayout.CSSConstants;
+import com.facebook.csslayout.CSSMeasureMode;
+import com.facebook.csslayout.CSSNode;
+import com.facebook.csslayout.CSSNodeAPI;
+import com.facebook.csslayout.Spacing;
+import com.facebook.csslayout.MeasureOutput;
+import com.facebook.csslayout.FloatUtil;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.ui.component.WXText;
