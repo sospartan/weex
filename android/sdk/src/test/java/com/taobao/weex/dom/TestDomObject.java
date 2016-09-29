@@ -204,9 +204,9 @@
  */
 package com.taobao.weex.dom;
 
+import com.facebook.csslayout.Spacing;
 import com.taobao.weex.common.Constants;
 import com.facebook.csslayout.CSSLayout;
-import com.taobao.weex.dom.flex.Spacing;
 
 import static com.taobao.weex.common.Constants.Event;
 
