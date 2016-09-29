@@ -204,6 +204,7 @@
  */
 package com.taobao.weex.dom;
 
+import com.facebook.csslayout.CSSMeasureMode;
 import com.taobao.weappplus_sdk.BuildConfig;
 import com.taobao.weex.common.Constants;
 import static com.taobao.weex.common.Constants.Name.*;
@@ -252,7 +253,7 @@ public class WXTextDomObjectTest {
     MeasureOutput output = new MeasureOutput();
     WXTextDomObject mock = PowerMockito.spy(dom);
     PowerMockito.when(mock,"getTextWidth",dom.getTextPaint(),100f,false).thenReturn(10f);
-    WXTextDomObject.TEXT_MEASURE_FUNCTION.measure(mock,100,output);
+    WXTextDomObject.TEXT_MEASURE_FUNCTION.measure(mock,100, CSSMeasureMode.EXACTLY,100,CSSMeasureMode.EXACTLY,output);
 
     assertEquals(output.width,10f,0.1f);
   }
