@@ -3,6 +3,7 @@ package com.taobao.weex.dom;
 import android.text.TextUtils;
 
 import com.facebook.csslayout.CSSAlign;
+import com.taobao.weex.common.Constants;
 
 final class CSSAlignConvert {
 
@@ -10,14 +11,14 @@ final class CSSAlignConvert {
     CSSAlign align = CSSAlign.STRETCH;
     if (TextUtils.isEmpty(s)) {
       align = CSSAlign.STRETCH;
-    } else if (s.equals("stretch")) {
+    } else if (s.equals(Constants.Value.STRETCH)) {
       align = CSSAlign.STRETCH;
-    } else if (s.equals("flex-end")) {
+    } else if (s.equals(Constants.Value.FLEX_END)) {
       align = CSSAlign.FLEX_END;
-    } else if (s.equals("auto")) {
-      align = CSSAlign.AUTO;
-    } else if (s.equals("center")) {
+    } else if (s.equals(Constants.Value.CENTER)) {
       align = CSSAlign.CENTER;
+    } else if (s.equals(Constants.Value.FLEX_START)){
+      align = CSSAlign.FLEX_START;
     }
 
     return align;
@@ -27,13 +28,13 @@ final class CSSAlignConvert {
     CSSAlign align = CSSAlign.AUTO;
     if (TextUtils.isEmpty(s)) {
       align = CSSAlign.AUTO;
-    } else if (s.equals("flex-start")) {
+    } else if (s.equals(Constants.Value.FLEX_START)) {
       align = CSSAlign.FLEX_START;
-    } else if (s.equals("flex-end")) {
+    } else if (s.equals(Constants.Value.FLEX_END)) {
       align = CSSAlign.FLEX_END;
-    } else if (s.equals("stretch")) {
+    } else if (s.equals(Constants.Value.STRETCH)) {
       align = CSSAlign.STRETCH;
-    } else if (s.equals("center")) {
+    } else if (s.equals(Constants.Value.CENTER)) {
       align = CSSAlign.CENTER;
     }
 
