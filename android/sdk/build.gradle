@@ -140,28 +140,12 @@ dependencies {
     testCompile "org.powermock:powermock-module-junit4-rule:1.6.4"
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile "org.robolectric:shadows-httpclient:3.0"
-    testCompile 'org.json:json:20160212'
 }
 
 license{
     header=file('license/LICENSE')
     excludes (["**/WXDataStructureUtil.java",
-               "**/Spacing.java",
-               "**/MeasureOutput.java",
-               "**/LayoutEngine.java",
-               "**/FloatUtil.java",
-               "**/CSSWrap.java",
-               "**/CSSStyle.java",
-               "**/CSSPositionType.java",
-               "**/CSSNode.java",
-               "**/CSSLayoutContext.java",
-               "**/CSSLayout.java",
-               "**/CSSJustify.java",
-               "**/CSSFlexDirection.java",
                "**/CSSDirection.java",
-               "**/CSSConstants.java",
-               "**/CSSAlign.java",
-               "**/CachedCSSLayout.java",
                "**/CSSAlignConvert.java",
                "**/CSSFlexDirectionConvert.java",
                "**/CSSJustifyConvert.java",
