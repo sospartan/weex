@@ -130,6 +130,7 @@ package com.taobao.weex.ui.component;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.NonNull;
@@ -137,7 +138,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -184,6 +184,11 @@ import java.util.Set;
  */
 public abstract class  WXComponent<T extends View> implements IWXObject, IWXActivityStateListener {
 
+  public static final String PROP_FIXED_SIZE = "fixedSize";
+  public static final String PROP_FS_MATCH_PARENT = "m";
+  public static final String PROP_FS_WRAP_CONTENT = "w";
+
+  private int mFixedProp = 0;
   public static int mComponentNum = 0;
   /** package **/ T mHost;
 
@@ -227,6 +232,14 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
 
   public String getInstanceId() {
     return mInstance.getInstanceId();
+  }
+
+  public Rect getComponentSize() {
+     Rect size=new Rect();
+    if(mHost!=null){
+      mHost.getGlobalVisibleRect(size);
+    }
+    return size;
   }
 
   interface OnClickListener{
@@ -538,8 +551,14 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
    */
   protected MeasureOutput measure(int width, int height) {
     MeasureOutput measureOutput = new MeasureOutput();
-    measureOutput.width = width;
-    measureOutput.height = height;
+
+    if(mFixedProp != 0){
+      measureOutput.width = mFixedProp;
+      measureOutput.height = mFixedProp;
+    }else {
+      measureOutput.width = width;
+      measureOutput.height = height;
+    }
     return measureOutput;
   }
 
@@ -639,6 +658,10 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
         if (visibility != null)
           setVisibility(visibility);
         return true;
+      case PROP_FIXED_SIZE:
+        String fixedSize = WXUtils.getString(param, PROP_FS_MATCH_PARENT);
+        setFixedSize(fixedSize);
+        return true;
       case Constants.Name.WIDTH:
       case Constants.Name.MIN_WIDTH:
       case Constants.Name.MAX_WIDTH:
@@ -668,6 +691,29 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
         return true;
       default:
         return false;
+    }
+  }
+
+  /**
+   * Avoid large size view fail in GPU-Animation.
+   * @param fixedSize
+   */
+  private void setFixedSize(String fixedSize) {
+    if(PROP_FS_MATCH_PARENT.equals(fixedSize)){
+      mFixedProp = ViewGroup.LayoutParams.MATCH_PARENT;
+    }else if(PROP_FS_WRAP_CONTENT.equals(fixedSize)){
+      mFixedProp = ViewGroup.LayoutParams.WRAP_CONTENT;
+    }else{
+      mFixedProp = 0;
+      return;
+    }
+    if(mHost != null){
+      ViewGroup.LayoutParams layoutParams = mHost.getLayoutParams();
+      if(layoutParams != null){
+        layoutParams.height = mFixedProp;
+        layoutParams.width = mFixedProp;
+        mHost.setLayoutParams(layoutParams);
+      }
     }
   }
 
@@ -933,6 +979,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
 
   public void setOpacity(float opacity) {
     if (opacity >= 0 && opacity <= 1 && mHost.getAlpha() != opacity) {
+      mHost.setLayerType(View.LAYER_TYPE_HARDWARE, null);
       mHost.setAlpha(opacity);
     }
   }
@@ -1091,6 +1138,9 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   public void destroy() {
     if (WXEnvironment.isApkDebugable() && !WXUtils.isUiThread()) {
       throw new WXRuntimeException("[WXComponent] destroy can only be called in main thread");
+    }
+    if(mHost!= null && mHost.getLayerType()==View.LAYER_TYPE_HARDWARE) {
+      mHost.setLayerType(View.LAYER_TYPE_NONE, null);
     }
     removeAllEvent();
     removeStickyStyle();

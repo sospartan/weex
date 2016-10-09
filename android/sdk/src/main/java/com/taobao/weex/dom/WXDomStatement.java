@@ -329,16 +329,20 @@ class WXDomStatement {
    * in the queue.
    */
   void batch() {
-    long start0 = System.currentTimeMillis();
 
     if (!mDirty || mDestroy) {
       return;
     }
 
     WXDomObject rootDom = mRegistry.get(WXDomObject.ROOT);
+    layout(rootDom);
+  }
+
+  void layout(WXDomObject rootDom) {
     if (rootDom == null) {
       return;
     }
+    long start0 = System.currentTimeMillis();
 
     rebuildingDomTree(rootDom);
 
@@ -349,7 +353,7 @@ class WXDomStatement {
     rootDom.calculateLayout(mLayoutContext);
 
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
-    if(instance != null) {
+    if (instance != null) {
       instance.cssLayoutTime(System.currentTimeMillis() - start);
     }
 
@@ -358,20 +362,17 @@ class WXDomStatement {
     start = System.currentTimeMillis();
     applyUpdate(rootDom);
 
-    if(instance != null) {
+    if (instance != null) {
       instance.applyUpdateTime(System.currentTimeMillis() - start);
     }
 
     start = System.currentTimeMillis();
     updateDomObj();
-    if(instance != null) {
+    if (instance != null) {
       instance.updateDomObjTime(System.currentTimeMillis() - start);
     }
-
-    WXLogUtils.d("Batch","animation size :" +animations.size());
     parseAnimation();
 
-    WXLogUtils.d("Batch","task size :" +mNormalTasks.size());
     int count = mNormalTasks.size();
     for (int i = 0; i < count && !mDestroy; ++i) {
       mWXRenderManager.runOnThread(mInstanceId, mNormalTasks.get(i));
@@ -380,10 +381,9 @@ class WXDomStatement {
     mAddDom.clear();
     animations.clear();
     mDirty = false;
-    if(instance != null) {
+    if (instance != null) {
       instance.batchTime(System.currentTimeMillis() - start0);
     }
-
   }
 
   /**
@@ -733,8 +733,8 @@ class WXDomStatement {
       }
       return;
     }
-    if(domObject.parent.equals(parentObject)){
-      return ;
+    if (domObject.parent.equals(parentObject) && parentObject.index(domObject) == index) {
+      return;
     }
     domObject.parent.remove(domObject);
     parentObject.add(domObject, index);
@@ -919,10 +919,12 @@ class WXDomStatement {
         return "updateStyle";
       }
     });
-    if (update.containsKey("padding") || update.containsKey("paddingTop") ||
-        update.containsKey("paddingLeft") ||
-        update.containsKey("paddingRight") ||
-        update.containsKey("paddingBottom") || update.containsKey("borderWidth")) {
+    if (update.containsKey(Constants.Name.PADDING) ||
+        update.containsKey(Constants.Name.PADDING_TOP) ||
+        update.containsKey(Constants.Name.PADDING_LEFT) ||
+        update.containsKey(Constants.Name.PADDING_RIGHT) ||
+        update.containsKey(Constants.Name.PADDING_BOTTOM) ||
+        update.containsKey(Constants.Name.BORDER_WIDTH)) {
       mNormalTasks.add(new IWXRenderTask() {
 
         @Override
@@ -1251,7 +1253,7 @@ class WXDomStatement {
    * {@link WXDomObject} {@link com.taobao.weex.dom.flex.CSSNode#mChildren} and parsing style,
    *              false for only parsing style.
    */
-  private void transformStyle(WXDomObject dom, boolean isAdd) {
+  /** package **/ void transformStyle(WXDomObject dom, boolean isAdd) {
     if (dom == null) {
       return;
     }
@@ -1285,6 +1287,30 @@ class WXDomStatement {
       child = dom.getChild(i);
       transformStyle(child, isAdd);
     }
+  }
+
+  public void getComponentSize(final String ref, final String callback) {
+    if (mDestroy) {
+      Map<String, Object> options = new HashMap<>();
+      options.put("result", false);
+      options.put("errMsg", "Component does not exist");
+      WXSDKManager.getInstance().callback(mInstanceId, callback, options);
+      return;
+    }
+
+    mNormalTasks.add(new IWXRenderTask() {
+
+      @Override
+      public void execute() {
+        mWXRenderManager.getComponentSize(mInstanceId, ref, callback);
+      }
+
+      @Override
+      public String toString() {
+        return "getComponentSize";
+      }
+    });
+
   }
 
   static class AddDomInfo {

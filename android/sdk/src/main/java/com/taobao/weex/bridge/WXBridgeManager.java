@@ -284,7 +284,7 @@ public class WXBridgeManager implements Callback,BactchExecutor {
 
   public static final String KEY_METHOD = "method";
   public static final String KEY_ARGS = "args";
-  
+
   // args
   public static final String MODULE = "module";
   public static final String METHOD = "method";
@@ -427,9 +427,13 @@ public class WXBridgeManager implements Callback,BactchExecutor {
       return;
     }
 
-    Message m = Message.obtain(mJSHandler, WXThread.secure(r));
-    m.obj = token;
-    m.sendToTarget();
+    if (isJSThread() && r != null) {
+      r.run();
+    } else {
+      Message m = Message.obtain(mJSHandler, WXThread.secure(r));
+      m.obj = token;
+      m.sendToTarget();
+    }
   }
 
   void setTimeout(String callbackId, String time) {
@@ -549,12 +553,7 @@ public class WXBridgeManager implements Callback,BactchExecutor {
       }
       sDomModule = getDomModule(instanceId);
       sDomModule.addElement(ref, domObject, Integer.parseInt(index));
-
-
     }
-
-
-
 
     if (UNDEFINED.equals(callback)) {
       return IWXBridge.INSTANCE_RENDERING_ERROR;
@@ -982,11 +981,11 @@ public class WXBridgeManager implements Callback,BactchExecutor {
       mLodBuilder.setLength(0);
     }
 
-    if(mDestroyedInstanceId!=null && !mDestroyedInstanceId.contains(instanceId)) {
+//    if(mDestroyedInstanceId!=null && !mDestroyedInstanceId.contains(instanceId)) {
       mWXBridge.execJS(instanceId, namespace, function, args);
-    }else{
-      WXLogUtils.w("invokeExecJS: instanceId: "+instanceId+"was  destroy !! ExecJS abandon !!");
-    }
+//    }else{
+//      WXLogUtils.w("invokeExecJS: instanceId: "+instanceId+"was  destroy !! ExecJS abandon !!");
+//    }
   }
 
   private WXJSObject[] createTimerArgs(int instanceId, int funcId, boolean keepAlive) {
@@ -1168,6 +1167,10 @@ public class WXBridgeManager implements Callback,BactchExecutor {
         invokeRegisterComponents(components);
       }
     }, null);
+  }
+
+  private boolean isJSThread() {
+    return mJSThread != null && mJSThread.getId() == Thread.currentThread().getId();
   }
 
   private void invokeRegisterModules(Map<String, Object> modules) {

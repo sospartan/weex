@@ -242,10 +242,6 @@ public class WXSliderNeighbor extends WXSlider {
 
     private static final float WX_DEFAULT_MAIN_NEIGHBOR_SCALE = 0.9f;
 
-    public WXSliderNeighbor(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
-        super(instance, dom, parent, instanceId, isLazy);
-    }
-
     public WXSliderNeighbor(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) {
         super(instance, node, parent, lazy);
     }
@@ -288,13 +284,17 @@ public class WXSliderNeighbor extends WXSlider {
         mViewPager.addOnPageChangeListener(mPageChangeListener);
 
         // set animation
-        mViewPager.setPageTransformer(true, new ZoomTransformer());
+        mViewPager.setPageTransformer(true, createTransformer());
         mViewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
         view.setClipChildren(false);
         registerActivityStateListener();
 
         return view;
     }
+
+  ZoomTransformer createTransformer() {
+    return new ZoomTransformer();
+  }
 
     @Override
     protected void addSubView(View view, int index) {

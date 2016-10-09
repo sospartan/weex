@@ -204,6 +204,7 @@
  */
 package com.taobao.weex.dom;
 
+import android.graphics.Rect;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -215,6 +216,8 @@ import com.taobao.weex.common.WXModule;
 import com.taobao.weex.utils.WXLogUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -245,6 +248,7 @@ public final class WXDomModule extends WXModule {
   static final String UPDATE_FINISH = "updateFinish";
   static final String SCROLL_TO_ELEMENT = "scrollToElement";
   static final String ADD_RULE = "addRule";
+  static final String GET_COMPONENT_SIZE = "getComponentSize";
 
   public static final String WXDOM = "dom";
 
@@ -254,7 +258,7 @@ public final class WXDomModule extends WXModule {
    */
   public static final String[] METHODS = {CREATE_BODY, UPDATE_ATTRS, UPDATE_STYLE,
       REMOVE_ELEMENT, ADD_ELEMENT, MOVE_ELEMENT, ADD_EVENT, REMOVE_EVENT, CREATE_FINISH,
-      REFRESH_FINISH, UPDATE_FINISH, SCROLL_TO_ELEMENT, ADD_RULE};
+      REFRESH_FINISH, UPDATE_FINISH, SCROLL_TO_ELEMENT, ADD_RULE,GET_COMPONENT_SIZE};
 
   public void callDomMethod(JSONObject task) {
     if (task == null) {
@@ -338,6 +342,11 @@ public final class WXDomModule extends WXModule {
             return;
           }
           addRule((String) args.get(0), (JSONObject) args.get(1));
+        case GET_COMPONENT_SIZE:
+          if(args == null){
+            return;
+          }
+          getComponentSize((String) args.get(0),(String) args.get(1));
       }
 
     } catch (IndexOutOfBoundsException e) {
@@ -583,5 +592,52 @@ public final class WXDomModule extends WXModule {
     msg.what = WXDomHandler.MsgType.WX_DOM_ADD_RULE;
     msg.obj = task;
     WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+  }
+
+  /**
+   * By ref the width and height of the component.
+   *
+   * @param ref      the refer of component
+   * @param callback function id
+   */
+  public void getComponentSize(String ref, String callback) {
+    if (TextUtils.isEmpty(ref) || TextUtils.isEmpty(callback)) {
+      Map<String, Object> options = new HashMap<>();
+      options.put("result", false);
+      options.put("errMsg", "Illegal parameter");
+      WXSDKManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callback, options);
+      return;
+    } else if ("viewport".equalsIgnoreCase(ref)) {
+      if(mWXSDKInstance!=null && mWXSDKInstance.getRootView()!=null){
+        Map<String, Object> options = new HashMap<>();
+        Map<String, String> sizes = new HashMap<>();
+        Rect rect=new Rect();
+        mWXSDKInstance.getRootView().getGlobalVisibleRect(rect);
+        sizes.put("width", String.valueOf(rect.width()));
+        sizes.put("height", String.valueOf(rect.height()));
+        sizes.put("bottom",String.valueOf(rect.bottom));
+        sizes.put("left",String.valueOf(rect.left));
+        sizes.put("right",String.valueOf(rect.right));
+        sizes.put("top",String.valueOf(rect.top));
+        options.put("size", sizes);
+        options.put("result", true);
+        WXSDKManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callback, options);
+      }else{
+        Map<String, Object> options = new HashMap<>();
+        options.put("result", false);
+        options.put("errMsg", "Component does not exist");
+        WXSDKManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callback, options);
+      }
+    } else {
+      Message msg = Message.obtain();
+      WXDomTask task = new WXDomTask();
+      task.instanceId = mWXSDKInstance.getInstanceId();
+      task.args = new ArrayList<>();
+      task.args.add(ref);
+      task.args.add(callback);
+      msg.what = WXDomHandler.MsgType.WX_COMPONENT_SIZE;
+      msg.obj = task;
+      WXSDKManager.getInstance().getWXDomManager().sendMessage(msg);
+    }
   }
 }
