@@ -205,8 +205,7 @@
 package com.taobao.weex.dom;
 
 import com.facebook.csslayout.Spacing;
-import com.taobao.weex.common.Constants;
-import com.facebook.csslayout.CSSLayout;
+
 
 import static com.taobao.weex.common.Constants.Event;
 
@@ -214,22 +213,30 @@ import static com.taobao.weex.common.Constants.Event;
  * Created by sospartan on 7/27/16.
  */
 public class TestDomObject extends WXDomObject {
+  public static void setRef(WXDomObject dom,String ref){
+    dom.mRef = ref;
+  }
+
+  public static void setAttribute(WXDomObject dom,WXAttr attr){
+    dom.mAttributes = attr;
+  }
+
   public TestDomObject(){
-    style = new WXStyle();
+    mStyles = new WXStyle();
     setStyleHeight(100);
     setStyleWidth(50);
     setPosition(Spacing.LEFT,10);
     setPosition(Spacing.RIGHT,20);
     setPosition(Spacing.TOP,20);
     setPosition(Spacing.BOTTOM,30);
-    attr = new WXAttr();
+    mAttributes = new WXAttr();
 
-    event = new WXEvent();
-    event.add(Event.DISAPPEAR);
-    event.add(Event.APPEAR);
-    event.add(Event.CHANGE);
-    event.add(Event.BLUR);
-    event.add(Event.INPUT);
-    event.add(Event.FOCUS);
+    mEvents = new WXEvent();
+    mEvents.add(Event.DISAPPEAR);
+    mEvents.add(Event.APPEAR);
+    mEvents.add(Event.CHANGE);
+    mEvents.add(Event.BLUR);
+    mEvents.add(Event.INPUT);
+    mEvents.add(Event.FOCUS);
   }
 }
