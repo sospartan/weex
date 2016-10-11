@@ -202,161 +202,69 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.alibaba.weex.commons;
+package com.taobao.weex.common;
 
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.ViewGroup;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 
-import com.alibaba.weex.commons.util.AssertUtil;
-import com.alibaba.weex.commons.util.ScreenUtil;
-import com.taobao.weex.IWXRenderListener;
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.common.WXRenderStrategy;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.taobao.weex.WXEnvironment;
 
 /**
- * Created by sospartan on 5/30/16.
+ * Created by lixinke on 16/10/10.
  */
-public abstract class AbstractWeexActivity extends AppCompatActivity implements IWXRenderListener {
-  private static final String TAG = "AbstractWeexActivity";
 
-  private ViewGroup mContainer;
-  private WXSDKInstance mInstance;
+public abstract class AppCompatModule extends WXModule implements Destroyable {
+
+  private ModuleReceive mModuleReceive;
+
+  public AppCompatModule() {
+    mModuleReceive = new ModuleReceive(this);
+    LocalBroadcastManager.getInstance(WXEnvironment.getApplication())
+        .registerReceiver(mModuleReceive, new IntentFilter(WXModule.ACTION_ACTIVITY_RESULT));
+    LocalBroadcastManager.getInstance(WXEnvironment.getApplication())
+        .registerReceiver(mModuleReceive, new IntentFilter(WXModule.ACTION_REQUEST_PERMISSIONS_RESULT));
+  }
+
+  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+  }
+
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+  }
 
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    createWeexInstance();
-    mInstance.onActivityCreate();
-    getWindow().setFormat(PixelFormat.TRANSLUCENT);
-
+  public void destroy() {
+    LocalBroadcastManager.getInstance(WXEnvironment.getApplication())
+        .unregisterReceiver(mModuleReceive);
   }
 
-  protected final void setContainer(ViewGroup container){
-    mContainer = container;
-  }
+  static class ModuleReceive extends BroadcastReceiver {
 
-  protected final ViewGroup getContainer(){
-    return mContainer;
-  }
+    private AppCompatModule mAppCompatModule;
 
-  protected void destoryWeexInstance(){
-    if(mInstance != null){
-      mInstance.registerRenderListener(null);
-      mInstance.destroy();
-      mInstance = null;
+    ModuleReceive(AppCompatModule module) {
+      mAppCompatModule = module;
     }
-  }
 
-  protected void createWeexInstance(){
-    destoryWeexInstance();
-
-    Rect outRect = new Rect();
-    getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect);
-
-    mInstance = new WXSDKInstance(this);
-    mInstance.registerRenderListener(this);
-  }
-
-  protected void renderPage(String template,String source){
-    renderPage(template,source,null);
-  }
-
-  protected void renderPage(String template,String source,String jsonInitData){
-    AssertUtil.throwIfNull(mContainer,new RuntimeException("Can't render page, container is null"));
-    Map<String, Object> options = new HashMap<>();
-    options.put(WXSDKInstance.BUNDLE_URL, source);
-    mInstance.render(
-      getPageName(),
-      template,
-      options,
-      jsonInitData,
-      ScreenUtil.getDisplayWidth(this),
-      ScreenUtil.getDisplayHeight(this),
-      WXRenderStrategy.APPEND_ASYNC);
-  }
-
-  protected void renderPageByURL(String url){
-    renderPageByURL(url,null);
-  }
-
-  protected void renderPageByURL(String url,String jsonInitData){
-    AssertUtil.throwIfNull(mContainer,new RuntimeException("Can't render page, container is null"));
-    Map<String, Object> options = new HashMap<>();
-    options.put(WXSDKInstance.BUNDLE_URL, url);
-    mInstance.renderByUrl(
-      getPageName(),
-      url,
-      options,
-      jsonInitData,
-      ScreenUtil.getDisplayWidth(this),
-      ScreenUtil.getDisplayHeight(this),
-      WXRenderStrategy.APPEND_ASYNC);
-  }
-
-  protected String getPageName(){
-    return TAG;
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    if(mInstance!=null){
-      mInstance.onActivityStart();
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      String action = intent.getAction();
+      switch (action) {
+        case WXModule.ACTION_ACTIVITY_RESULT:
+          int requestCode = intent.getIntExtra(WXModule.REQUEST_CODE, -1);
+          int resultCode = intent.getIntExtra(WXModule.RESULT_CODE, Activity.RESULT_OK);
+          mAppCompatModule.onActivityResult(requestCode, resultCode, intent);
+          break;
+        case WXModule.ACTION_REQUEST_PERMISSIONS_RESULT:
+          requestCode = intent.getIntExtra(WXModule.REQUEST_CODE, -1);
+          String[] permissions = intent.getStringArrayExtra(WXModule.PERMISSIONS);
+          int[] grantResults = intent.getIntArrayExtra(WXModule.GRANT_RESULTS);
+          mAppCompatModule.onRequestPermissionsResult(requestCode, permissions, grantResults);
+          break;
+      }
     }
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    if(mInstance!=null){
-      mInstance.onActivityResume();
-    }
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-    if(mInstance!=null){
-      mInstance.onActivityPause();
-    }
-  }
-
-  @Override
-  public void onStop() {
-    super.onStop();
-    if(mInstance!=null){
-      mInstance.onActivityStop();
-    }
-  }
-
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    if(mInstance!=null){
-      mInstance.onActivityDestroy();
-    }
-  }
-
-  @Override
-  public void onViewCreated(WXSDKInstance wxsdkInstance, View view) {
-    if (mContainer != null) {
-      mContainer.removeAllViews();
-      mContainer.addView(view);
-    }
-  }
-
-
-
-  @Override
-  public void onRefreshSuccess(WXSDKInstance wxsdkInstance, int i, int i1) {
-
   }
 }
