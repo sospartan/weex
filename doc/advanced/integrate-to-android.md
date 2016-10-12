@@ -40,10 +40,10 @@ First, you need to git clone `weex` from github:
 git clone https://github.com/alibaba/weex.git
 ```
 ##### 2. Build APK
-  ***   1) Android stuido build APK ***
+  ***   1) Android studio build APK ***
  
  ```
-     Step 1: run android stuido 
+     Step 1: run android studio 
      Step 2: open the file of ~/weex/android/playground/build.gradle 
      Step 3: Run the Project and the Apk will auto install in your android device
  ```
@@ -160,16 +160,22 @@ public class WXApplication extends Application {
 Next, 
 
 ```java
+// Create or find RenderContainer view. 
+// Notice: If you create RenderContainer manually, don't forget add it to view tree.
+RenderContainer renderContainer = (RenderContainer)findViewById(R.id.container);
+
 //crate Weex instance
 WXSDKInstance mInstance = new WXSDKInstance(this);
+//set render container
+mInstance.setRenderContainer(renderContainer);
 //set image Adapter
 mInstance.setImgLoaderAdapter(new ImageAdapter(this));
 //register render listener
 mInstance.registerRenderListener(new IWXRenderListener() {
    @Override
-   public void onViewCreated(WXSDKInstance instance, View view) {
-       // addview
-       mViewGroup.addView(view);
+   public void onViewCreated(WXSDKInstance instance, View resultView) {
+       // Notice: If you don't setRenderContainer before render, you need add the resultView to view tree here.
+
    } 
    @Override
    public void onRenderSuccess(WXSDKInstance instance) {

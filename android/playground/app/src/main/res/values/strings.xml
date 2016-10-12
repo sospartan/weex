@@ -21,6 +21,5 @@
         launched local service\n2.Make sure you modify "your_current_ip" to your local IP in
         "WXMainActivity"
     </string>
-    <!--tip-->
-    <string name="illegal_url_tip">It\'s a illegal url!</string>
+    <string name="title_activity_dynamic">DynamicActivity</string>
 </resources>

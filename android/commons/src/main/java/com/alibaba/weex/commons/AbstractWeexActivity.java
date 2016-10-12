@@ -127,6 +127,7 @@
  */
 package com.alibaba.weex.commons;
 
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -159,6 +160,8 @@ public abstract class AbstractWeexActivity extends AppCompatActivity implements 
     super.onCreate(savedInstanceState);
     createWeexInstance();
     mInstance.onActivityCreate();
+    getWindow().setFormat(PixelFormat.TRANSLUCENT);
+
   }
 
   protected final void setContainer(ViewGroup container) {

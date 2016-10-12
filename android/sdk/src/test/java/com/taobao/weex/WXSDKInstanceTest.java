@@ -210,7 +210,6 @@ import com.taobao.weappplus_sdk.BuildConfig;
 import com.taobao.weex.bridge.WXBridgeManagerTest;
 import com.taobao.weex.common.WXPerformance;
 import com.taobao.weex.common.WXRenderStrategy;
-import com.taobao.weex.dom.WXDomManager;
 import com.taobao.weex.dom.WXDomManagerTest;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.*;
@@ -222,16 +221,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.junit.runners.Suite;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowLooper;
 
 import java.util.HashMap;
@@ -256,7 +252,7 @@ public class WXSDKInstanceTest {
   public PowerMockRule rule = new PowerMockRule();
 
   public static WXSDKInstance createInstance(){
-    WXSDKInstance instance =  new WXSDKInstance(Robolectric.setupActivity(TestActivity.class));
+    WXSDKInstance instance =  new WXSDKInstance(Robolectric.setupActivity(TestActivity.class),"1");
     final FrameLayout container = new FrameLayout(instance.getContext());
     instance.registerRenderListener(new IWXRenderListener() {
       @Override
@@ -279,7 +275,6 @@ public class WXSDKInstanceTest {
 
       }
     });
-    instance.mInstanceId = "1";
     instance.mContext = Robolectric.setupActivity(TestActivity.class);
 
     return instance;
@@ -288,14 +283,13 @@ public class WXSDKInstanceTest {
   public static void setupRoot(WXSDKInstance instance){
 
     WXDomObject domObject = new WXDomObject();
-    WXDomObject.prepareGod(domObject);
     WXVContainer comp = (WXVContainer) WXComponentFactory.newInstance(instance, domObject, null);
 
     WXComponent root = WXDivTest.create(comp);
     comp.addChild(root);
     comp.createView(null, -1);
 
-    instance.onViewCreated(comp);
+    instance.onCreateFinish();
     ShadowLooper.idleMainLooper();
   }
 
