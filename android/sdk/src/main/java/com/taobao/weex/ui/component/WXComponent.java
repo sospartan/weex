@@ -148,11 +148,8 @@ import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.IWXObject;
 import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.CSSLayout;
 import com.taobao.weex.dom.flex.Spacing;
 import com.taobao.weex.ui.IFComponentHolder;
-import com.taobao.weex.ui.component.list.WXListComponent;
-import com.taobao.weex.ui.view.WXCircleIndicator;
 import com.taobao.weex.ui.view.border.BorderDrawable;
 import com.taobao.weex.ui.view.gesture.WXGesture;
 import com.taobao.weex.ui.view.gesture.WXGestureObservable;
@@ -190,9 +187,9 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   private WXSDKInstance mInstance;
   private Context mContext;
 
-  protected int mAbsoluteY = 0;
-  protected int mAbsoluteX = 0;
-  protected Set<String> mGestureType;
+  private int mAbsoluteY = 0;
+  private int mAbsoluteX = 0;
+  private Set<String> mGestureType;
 
   private BorderDrawable mBackgroundDrawable;
   private boolean mLazy;
@@ -379,38 +376,25 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
    * layout view
    */
   public final void setLayout(WXDomObject domObject) {
-    if (mParent == null || domObject == null || TextUtils.isEmpty(mCurrentRef)) {
+    if ( domObject == null || TextUtils.isEmpty(mCurrentRef)) {
       return;
     }
 
+    boolean nullParent = mParent == null;//parent is nullable
     mDomObj = domObject;
 
-    if (this instanceof WXRefresh && mParent instanceof WXScroller &&
-            hasScrollParent(mParent)) {
-      mInstance.setRefreshMargin(mDomObj.getCSSLayoutHeight());
-    }
-    if ((this instanceof WXBaseRefresh && mParent instanceof WXScroller)) {
-      return;
-    }
+    //offset by sibling
+    int siblingOffset = nullParent?0:mParent.getChildrenLayoutTopOffset();
 
-    if (mParent instanceof WXScroller && hasScrollParent(mParent)) {
-      if (!(this instanceof WXBaseRefresh)) {
-          CSSLayout newLayout = new CSSLayout();
-          newLayout.copy(mDomObj.csslayout);
-          newLayout.position[CSSLayout.POSITION_TOP] = mDomObj.getCSSLayoutTop() - mInstance.getRefreshMargin();
-          mDomObj.csslayout.copy(newLayout);
-      }
-    }
-
-    Spacing parentPadding = mParent.getDomObject().getPadding();
-    Spacing parentBorder = mParent.getDomObject().getBorder();
+    Spacing parentPadding = (nullParent?new Spacing():mParent.getDomObject().getPadding());
+    Spacing parentBorder = (nullParent?new Spacing():mParent.getDomObject().getBorder());
     Spacing margin = mDomObj.getMargin();
     int realWidth = (int) mDomObj.getLayoutWidth();
     int realHeight = (int) mDomObj.getLayoutHeight();
     int realLeft = (int) (mDomObj.getLayoutX() - parentPadding.get(Spacing.LEFT) -
                           parentBorder.get(Spacing.LEFT));
     int realTop = (int) (mDomObj.getLayoutY() - parentPadding.get(Spacing.TOP) -
-                         parentBorder.get(Spacing.TOP));
+                         parentBorder.get(Spacing.TOP)) + siblingOffset;
     int realRight = (int) margin.get(Spacing.RIGHT);
     int realBottom = (int) margin.get(Spacing.BOTTOM);
 
@@ -418,13 +402,10 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
       return;
     }
 
-    if (mParent != null) {
-      mAbsoluteY = (int) (mParent.mAbsoluteY + mDomObj.getLayoutY());
-      mAbsoluteX = (int) (mParent.mAbsoluteX + mDomObj.getLayoutX());
-    }
+    mAbsoluteY = (int) (nullParent?0:mParent.getAbsoluteY() + mDomObj.getLayoutY());
+    mAbsoluteX = (int) (nullParent?0:mParent.getAbsoluteX() + mDomObj.getLayoutX());
 
     //calculate first screen time
-
     if (!mInstance.mEnd &&!(mHost instanceof ViewGroup) && mAbsoluteY+realHeight > mInstance.getWeexHeight()+1) {
       mInstance.firstScreenRenderFinished();
     }
@@ -437,43 +418,55 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     realWidth = measureOutput.width;
     realHeight = measureOutput.height;
 
-    if (mHost instanceof WXCircleIndicator) {
-      FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(realWidth, realHeight);
-      params.setMargins(realLeft, realTop, realRight, realBottom);
-      mHost.setLayoutParams(params);
-      return;
-    }
-
     //fixed style
-    if (mDomObj.isFixed() && mInstance.getRootView() != null) {
-      if (mHost.getParent() instanceof ViewGroup) {
-        ViewGroup viewGroup = (ViewGroup) mHost.getParent();
-        viewGroup.removeView(mHost);
-      }
-      FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-      params.width = realWidth;
-      params.height = realHeight;
-      params.setMargins(realLeft, realTop, realRight, realBottom);
-      mHost.setLayoutParams(params);
-      mInstance.addFixedView(mHost);
-
-      if (WXEnvironment.isApkDebugable()) {
-        WXLogUtils.d("Weex_Fixed_Style", "WXComponent:setLayout :" + realLeft + " " + realTop + " " + realWidth + " " + realHeight);
-        WXLogUtils.d("Weex_Fixed_Style", "WXComponent:setLayout Left:" + mDomObj.getStyles().getLeft() + " " + (int) mDomObj.getStyles().getTop());
-      }
-      return;
-    }
-
-    ViewGroup.LayoutParams lp = mParent.getChildLayoutParams(mHost,realWidth, realHeight, realLeft,realRight,realTop,realBottom);
-    if(lp != null) {
-      mHost.setLayoutParams(lp);
+    if (mDomObj.isFixed()) {
+      setFixedHostLayoutParams(mHost,realWidth,realHeight,realLeft,realRight,realTop,realBottom);
+    }else {
+      setHostLayoutParams(mHost, realWidth, realHeight, realLeft, realRight, realTop, realBottom);
     }
 
     mPreRealWidth = realWidth;
     mPreRealHeight = realHeight;
     mPreRealLeft = realLeft;
     mPreRealTop = realTop;
+  }
+
+
+  public int getLayoutTopOffsetForSibling(){
+    return 0;
+  }
+
+  protected void setHostLayoutParams(T host, int width, int height, int left, int right, int top, int bottom){
+    ViewGroup.LayoutParams lp;
+    if(mParent == null){
+      FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width,height);
+      params.setMargins(left, top, right, bottom);
+      lp = params;
+    }else{
+      lp = mParent.getChildLayoutParams(host,width, height, left,right,top,bottom);
+    }
+    if(lp != null) {
+      mHost.setLayoutParams(lp);
+    }
+  }
+
+  private void setFixedHostLayoutParams(T host, int width, int height, int left, int right, int top, int bottom){
+    if (host.getParent() instanceof ViewGroup) {
+      ViewGroup viewGroup = (ViewGroup) host.getParent();
+      viewGroup.removeView(host);
+    }
+    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+    params.width = width;
+    params.height = height;
+    params.setMargins(left, top, right, bottom);
+    host.setLayoutParams(params);
+    mInstance.addFixedView(host);
+
+    if (WXEnvironment.isApkDebugable()) {
+      WXLogUtils.d("Weex_Fixed_Style", "WXComponent:setLayout :" + left + " " + top + " " + width + " " + height);
+      WXLogUtils.d("Weex_Fixed_Style", "WXComponent:setLayout Left:" + mDomObj.getStyles().getLeft() + " " + (int) mDomObj.getStyles().getTop());
+    }
   }
 
   public void setPadding(Spacing padding, Spacing border) {
@@ -487,15 +480,6 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     }
     mHost.setPadding(left, top, right, bottom);
   }
-
-//  private void updateProperties() {
-//    if (mDomObj.attr != null && mDomObj.attr.size() > 0) {
-//      updateProperties(mDomObj.attr);
-//    }
-//    if (mDomObj.style != null && mDomObj.style.size() > 0) {
-//      updateProperties(mDomObj.style);
-//    }
-//  }
 
   private void addEvents() {
     int count = mDomObj.getEvents().size();
@@ -790,16 +774,14 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   /**
    * create view
    *
-   * @param parent
-   * @param index
    */
-  public final void createView(WXVContainer parent, int index) {
+  public final void createView() {
     if(!isLazy()) {
-      createViewImpl(parent, index);
+      createViewImpl();
     }
   }
 
-  protected void createViewImpl(WXVContainer parent, int index) {
+  protected void createViewImpl() {
     if (mContext != null) {
       mHost = initComponentHostView(mContext);
       if (mHost == null) {
@@ -807,9 +789,6 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
         initView();
       }
       onHostViewInitialized(mHost);
-      if (parent != null) {
-        parent.addSubView(mHost, index);
-      }
     }else{
       WXLogUtils.e("createViewImpl","Context is null");
     }
@@ -1140,7 +1119,6 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
    * The default implementation uses the scrollX and scrollY of the view as the result,
    * and put the value in the parameter pointer.
    * Components with different computation algorithm
-   * (e.g. {@link WXListComponent#computeVisiblePointInViewCoordinate(PointF)} )
    * <strong> should override </strong> this method.
    *
    * @param pointF the user visible left-top point in view's coordinate.
@@ -1176,13 +1154,4 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     public int height;
   }
 
-  public boolean hasScrollParent(WXComponent component) {
-    if (component.getParent() == null) {
-      return true;
-    } else if (component.getParent() instanceof WXScroller) {
-      return false;
-    } else {
-      return hasScrollParent(component.getParent());
-    }
-  }
 }

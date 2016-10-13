@@ -209,6 +209,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.common.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.dom.WXDomObject;
 
@@ -232,6 +233,14 @@ public abstract class WXVContainer<T extends ViewGroup> extends WXComponent<T> {
   }
 
   /**
+   * Offset top for children layout.
+   * @return
+   */
+  protected int getChildrenLayoutTopOffset(){
+    return 0;
+  }
+
+  /**
    * use {@link #getHostView()} instead
    * @return
    */
@@ -249,8 +258,10 @@ public abstract class WXVContainer<T extends ViewGroup> extends WXComponent<T> {
       super.applyLayoutAndEvent(component);
       int count = childCount();
       for (int i = 0; i < count; i++) {
-        getChild(i).applyLayoutAndEvent(((WXVContainer)component).getChild(i));
+        WXComponent child = getChild(i);
+        child.applyLayoutAndEvent(((WXVContainer)component).getChild(i));
       }
+
     }
   }
 
@@ -317,11 +328,13 @@ public abstract class WXVContainer<T extends ViewGroup> extends WXComponent<T> {
   }
 
   @Override
-  public void createViewImpl(WXVContainer parent, int index) {
-    super.createViewImpl(parent, index);
+  public void createViewImpl() {
+    super.createViewImpl();
     int count = childCount();
     for (int i = 0; i < count; ++i) {
-      getChild(i).createViewImpl(this, i);
+      WXComponent child = getChild(i);
+      child.createViewImpl();
+      addSubView(child.getHostView(),i);
     }
     if(getHostView()!=null){
        getHostView().setClipToPadding(false);
@@ -379,6 +392,23 @@ public abstract class WXVContainer<T extends ViewGroup> extends WXComponent<T> {
     } else {
       mChildren.add(index, child);
     }
+  }
+
+  public final int indexOf(WXComponent comp){
+    return mChildren.indexOf(comp);
+  }
+
+  public void createChildViewAt(int index){
+    int indexToCreate = index;
+    if(indexToCreate < 0){
+      indexToCreate = childCount()-1;
+      if(indexToCreate < 0 ){
+        return;
+      }
+    }
+    WXComponent child = getChild(indexToCreate);
+    child.createView();
+    addSubView(child.getHostView(),indexToCreate);
   }
 
   protected void addSubView(View child, int index) {
