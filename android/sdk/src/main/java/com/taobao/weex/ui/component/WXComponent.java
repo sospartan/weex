@@ -187,9 +187,9 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   private WXSDKInstance mInstance;
   private Context mContext;
 
-  protected int mAbsoluteY = 0;
-  protected int mAbsoluteX = 0;
-  protected Set<String> mGestureType;
+  private int mAbsoluteY = 0;
+  private int mAbsoluteX = 0;
+  private Set<String> mGestureType;
 
   private BorderDrawable mBackgroundDrawable;
   private boolean mLazy;
@@ -402,8 +402,8 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
       return;
     }
 
-    mAbsoluteY = (int) (nullParent?0:mParent.mAbsoluteY + mDomObj.getLayoutY());
-    mAbsoluteX = (int) (nullParent?0:mParent.mAbsoluteX + mDomObj.getLayoutX());
+    mAbsoluteY = (int) (nullParent?0:mParent.getAbsoluteY() + mDomObj.getLayoutY());
+    mAbsoluteX = (int) (nullParent?0:mParent.getAbsoluteX() + mDomObj.getLayoutX());
 
     //calculate first screen time
     if (!mInstance.mEnd &&!(mHost instanceof ViewGroup) && mAbsoluteY+realHeight > mInstance.getWeexHeight()+1) {
@@ -480,15 +480,6 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     }
     mHost.setPadding(left, top, right, bottom);
   }
-
-//  private void updateProperties() {
-//    if (mDomObj.attr != null && mDomObj.attr.size() > 0) {
-//      updateProperties(mDomObj.attr);
-//    }
-//    if (mDomObj.style != null && mDomObj.style.size() > 0) {
-//      updateProperties(mDomObj.style);
-//    }
-//  }
 
   private void addEvents() {
     int count = mDomObj.getEvents().size();
@@ -783,16 +774,14 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   /**
    * create view
    *
-   * @param parent
-   * @param index
    */
-  public final void createView(WXVContainer parent, int index) {
+  public final void createView() {
     if(!isLazy()) {
-      createViewImpl(parent, index);
+      createViewImpl();
     }
   }
 
-  protected void createViewImpl(WXVContainer parent, int index) {
+  protected void createViewImpl() {
     if (mContext != null) {
       mHost = initComponentHostView(mContext);
       if (mHost == null) {
@@ -800,9 +789,6 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
         initView();
       }
       onHostViewInitialized(mHost);
-      if (parent != null) {
-        parent.addSubView(mHost, index);
-      }
     }else{
       WXLogUtils.e("createViewImpl","Context is null");
     }

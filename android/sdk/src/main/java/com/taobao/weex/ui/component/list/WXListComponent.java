@@ -310,7 +310,7 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
     protected MeasureOutput measure(int width, int height) {
         int screenH = WXViewUtils.getScreenHeight(WXEnvironment.sApplication);
         int weexH = WXViewUtils.getWeexHeight(getInstanceId());
-        int outHeight = height > (weexH >= screenH ? screenH : weexH) ? weexH - mAbsoluteY : height;
+        int outHeight = height > (weexH >= screenH ? screenH : weexH) ? weexH - getAbsoluteY() : height;
         return super.measure(width, outHeight);
     }
 
@@ -731,10 +731,7 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
      */
     @Override
     protected void addSubView(View child, int index) {
-      BounceRecyclerView view =  getHostView();
-      if(view == null){
-        return;
-      }
+
     }
 
     /**
@@ -855,7 +852,7 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
                             return new ListBaseViewHolder(component, viewType);
                         } else {
                             component.lazy(false);
-                            component.createView(this, -1);
+                            component.createView();
                             component.applyLayoutAndEvent(component);
                             return new ListBaseViewHolder(component, viewType);
                         }
