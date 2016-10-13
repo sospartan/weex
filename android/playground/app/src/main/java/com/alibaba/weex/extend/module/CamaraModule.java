@@ -10,13 +10,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
-import com.taobao.weex.common.WXModule;
+import com.taobao.weex.common.WXCompatModule;
 import com.taobao.weex.common.WXModuleAnno;
 
 /**
  * Created by lixinke on 16/8/19.
  */
-public class CamaraModule extends WXModule {
+public class CamaraModule extends WXCompatModule {
 
   private static final int CAMARA_PERMISSION_REQUEST_CODE = 0x1;
 
@@ -37,9 +37,9 @@ public class CamaraModule extends WXModule {
     }
   }
 
-//  @Override
+  @Override
   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     if (mWXSDKInstance.getContext() != null && mWXSDKInstance.getContext() instanceof Activity) {
       Activity activity = (Activity) mWXSDKInstance.getContext();
       if (requestCode == CAMARA_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

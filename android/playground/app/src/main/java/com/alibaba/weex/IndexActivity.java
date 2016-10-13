@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,10 +45,10 @@ public class IndexActivity extends AbstractWeexActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_index);
+    setContentView(R.layout.content_wx_main);
     setContainer((ViewGroup) findViewById(R.id.index_container));
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-    setSupportActionBar(toolbar);
+//    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//    setSupportActionBar(toolbar);
     getWindow().setFormat(PixelFormat.TRANSLUCENT);
 
     mProgressBar = (ProgressBar) findViewById(R.id.index_progressBar);
@@ -123,16 +122,6 @@ public class IndexActivity extends AbstractWeexActivity {
     }
 
     return super.onOptionsItemSelected(item);
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      startActivity(new Intent(this, CaptureActivity.class));
-    } else {
-      Toast.makeText(this, "request camara permission fail!", Toast.LENGTH_SHORT).show();
-    }
   }
 
   @Override

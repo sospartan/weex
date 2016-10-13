@@ -273,6 +273,7 @@ public class WXSDKInstance implements IWXActivityStateListener {
   private NestedInstanceInterceptor mNestedInstanceInterceptor;
   private String mBundleUrl = "";
   private boolean isDestroy=false;
+  private String mParentId =null;
 
   /**
    * Render strategy.
@@ -1197,7 +1198,15 @@ public class WXSDKInstance implements IWXActivityStateListener {
     mGlobalEvents.remove(eventName);
   }
 
-    /**
+  public String getParentId() {
+    return mParentId;
+  }
+
+  public void setParentId(String parentId) {
+    mParentId = parentId;
+  }
+
+  /**
      * load bundle js listener
      */
   class WXHttpListener implements IWXHttpAdapter.OnHttpListener {

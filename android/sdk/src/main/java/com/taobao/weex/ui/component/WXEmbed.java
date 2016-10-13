@@ -225,6 +225,10 @@ import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXUtils;
 import com.taobao.weex.utils.WXViewUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
 @Component(lazyload = false)
 public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleListener,NestedContainer {
 
@@ -232,6 +236,7 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
 
   private String src;
   private WXSDKInstance mNestedInstance;
+  private String mParentId;
   private final static int ERROR_IMG_WIDTH = (int) WXViewUtils.getRealPxByWidth(270);
   private final static int ERROR_IMG_HEIGHT = (int) WXViewUtils.getRealPxByWidth(260);
 
@@ -352,6 +357,7 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
   public WXEmbed(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) {
     super(instance, node, parent, lazy);
     mListener = new EmbedRenderListener(this);
+    mParentId=instance.getInstanceId();
 
     if(instance instanceof EmbedManager) {
       Object itemId = node.getAttrs().get(ITEM_ID);
@@ -446,11 +452,15 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
     }
 
     ViewGroup.LayoutParams layoutParams = getHostView().getLayoutParams();
+    Map<String,Object> options=new HashMap<>();
+    options.put("embRef",getRef());
+    options.put("type","emb");
     sdkInstance.renderByUrl(WXPerformance.DEFAULT,
                             url,
-                            null, null, layoutParams.width,
+                            options, null, layoutParams.width,
                             layoutParams.height,
                             WXRenderStrategy.APPEND_ASYNC);
+    sdkInstance.setParentId(mParentId);
     return sdkInstance;
   }
 

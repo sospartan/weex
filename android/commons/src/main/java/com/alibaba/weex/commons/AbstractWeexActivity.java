@@ -127,6 +127,7 @@
  */
 package com.alibaba.weex.commons;
 
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -281,7 +282,13 @@ public abstract class AbstractWeexActivity extends AppCompatActivity implements 
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//    mInstance.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    mInstance.onRequestPermissionsResult(requestCode, permissions, grantResults);
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    mInstance.onActivityResult(requestCode,resultCode,data);
   }
 
   @Override

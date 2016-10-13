@@ -6,9 +6,12 @@ import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXModuleAnno;
-import com.taobao.weex.utils.WXLogUtils;
+
+import java.util.Map;
 
 
 public class WXEventModule extends WXModule {
@@ -38,9 +41,13 @@ public class WXEventModule extends WXModule {
   }
 
   @WXModuleAnno
-  public void refresh(String url) {
-    WXLogUtils.e("event",url);
-    LocalBroadcastManager.getInstance(mWXSDKInstance.getContext()).sendBroadcast(new Intent(url));
+  public void refresh(Map<String,Object> params) {
+    Object type=params.get("type");
+    if(type!=null && TextUtils.equals(type.toString(),"emb")){
+      WXSDKManager.getInstance().getSDKInstance(mWXSDKInstance.getParentId()).fireEvent("_root", Constants.Event.ONREFRESH,params);
+    }else{
+      LocalBroadcastManager.getInstance(mWXSDKInstance.getContext()).sendBroadcast(new Intent(params.get("src").toString()));
+    }
   }
 
   @WXModuleAnno
