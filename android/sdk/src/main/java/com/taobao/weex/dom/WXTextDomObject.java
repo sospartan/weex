@@ -29,13 +29,13 @@ import com.facebook.csslayout.CSSConstants;
 import com.facebook.csslayout.CSSMeasureMode;
 import com.facebook.csslayout.CSSNode;
 import com.facebook.csslayout.CSSNodeAPI;
-import com.facebook.csslayout.Spacing;
 import com.facebook.csslayout.MeasureOutput;
 import com.facebook.csslayout.FloatUtil;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.ui.component.WXTextDecoration;
+import com.taobao.weex.utils.WXDomUtils;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXResourceUtils;
 
@@ -161,7 +161,8 @@ public class WXTextDomObject extends WXDomObject {
   @Override
   public void layoutAfter() {
     if (hasBeenMeasured) {
-      if (layout != null && !FloatUtil.floatsEqual(getTextContentWidth(), previousWidth)) {
+      if (layout != null &&
+          !FloatUtil.floatsEqual(WXDomUtils.getContentWidth(this), previousWidth)) {
         recalculateLayout();
       }
     } else {
@@ -219,36 +220,10 @@ public class WXTextDomObject extends WXDomObject {
   }
 
   /**
-   * Get the content width of the dom.
-   * @return the width of the dom that excludes left-padding and right-padding.
-   */
-  private float getTextContentWidth() {
-    float rawWidth = getLayoutWidth();
-    float leftPadding, rightPadding, leftBorder, rightBorder;
-    Spacing padding = getPadding();
-    Spacing border = getBorder();
-
-    if (!CSSConstants.isUndefined((leftPadding = padding.get(Spacing.LEFT)))) {
-      rawWidth -= leftPadding;
-    }
-    if (!CSSConstants.isUndefined((rightPadding = padding.get(Spacing.RIGHT)))) {
-      rawWidth -= rightPadding;
-    }
-
-    if (!CSSConstants.isUndefined(leftBorder = border.get(Spacing.LEFT))) {
-      rawWidth -= leftBorder;
-    }
-    if (!CSSConstants.isUndefined(rightBorder = border.get(Spacing.RIGHT))) {
-      rawWidth -= rightBorder;
-    }
-    return rawWidth;
-  }
-
-  /**
    * RecalculateLayout.
    */
   private void recalculateLayout() {
-    float contentWidth = getTextContentWidth();
+    float contentWidth = WXDomUtils.getContentWidth(this);
     if (contentWidth > 0) {
       spanned = createSpanned(mText);
       layout = createLayout(contentWidth, true, layout);
@@ -477,5 +452,4 @@ public class WXTextDomObject extends WXDomObject {
     }
     return result;
   }
-
 }

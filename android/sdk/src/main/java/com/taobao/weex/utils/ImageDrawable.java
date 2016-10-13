@@ -1,4 +1,4 @@
-/**
+/*
  *
  *                                  Apache License
  *                            Version 2.0, January 2004
@@ -202,69 +202,110 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.common;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
+package com.taobao.weex.utils;
 
-import com.taobao.weex.WXEnvironment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Matrix;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
-/**
- * Created by lixinke on 16/10/10.
- */
+public class ImageDrawable extends PaintDrawable {
 
-public abstract class AppCompatModule extends WXModule implements Destroyable {
+  public static Drawable createImageDrawable(@Nullable Drawable original,
+                                             @NonNull ImageView.ScaleType scaleType,
+                                             int vWidth,
+                                             int vHeight,
+                                             boolean gif) {
+    Bitmap bm;
+    if (!gif && vWidth > 0 && vHeight > 0) {
+      if (original instanceof BitmapDrawable &&
+          (bm = ((BitmapDrawable) original).getBitmap()) != null) {
+        ImageDrawable imageDrawable;
+        imageDrawable = new ImageDrawable();
+        imageDrawable.setIntrinsicWidth(vWidth);
+        imageDrawable.setIntrinsicHeight(vHeight);
+        imageDrawable.bitmapWidth = bm.getWidth();
+        imageDrawable.bitmapHeight = bm.getHeight();
 
-  private ModuleReceive mModuleReceive;
+        BitmapShader bitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        Matrix matrix = createShaderMatrix(scaleType, vWidth, vHeight,
+                                           imageDrawable.bitmapWidth,
+                                           imageDrawable.bitmapHeight);
+        bitmapShader.setLocalMatrix(matrix);
+        imageDrawable.getPaint().setShader(bitmapShader);
+        return imageDrawable;
+      } else if (original instanceof ImageDrawable) {
+        ImageDrawable imageDrawable = (ImageDrawable) original;
+        imageDrawable.setIntrinsicWidth(vWidth);
+        imageDrawable.setIntrinsicHeight(vHeight);
+        if (imageDrawable.getPaint() != null &&
+            imageDrawable.getPaint().getShader() instanceof BitmapShader) {
+          BitmapShader bitmapShader = (BitmapShader) imageDrawable.getPaint().getShader();
+          Matrix matrix = createShaderMatrix(scaleType, vWidth, vHeight,
+                                             imageDrawable.bitmapWidth,
+                                             imageDrawable.bitmapHeight);
+          bitmapShader.setLocalMatrix(matrix);
+          return imageDrawable;
+        }
+      }
 
-  public AppCompatModule() {
-    mModuleReceive = new ModuleReceive(this);
-    LocalBroadcastManager.getInstance(WXEnvironment.getApplication())
-        .registerReceiver(mModuleReceive, new IntentFilter(WXModule.ACTION_ACTIVITY_RESULT));
-    LocalBroadcastManager.getInstance(WXEnvironment.getApplication())
-        .registerReceiver(mModuleReceive, new IntentFilter(WXModule.ACTION_REQUEST_PERMISSIONS_RESULT));
+    }
+    return original;
   }
 
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+  @NonNull
+  private static Matrix createShaderMatrix(@NonNull ImageView.ScaleType scaleType, int vWidth,
+                                           int vHeight, int bmWidth, int bmHeight) {
+    float scale, translateX = 0, translateY = 0;
+
+    if (bmWidth * vHeight > bmHeight * vWidth) {
+      scale = vHeight / (float) bmHeight;
+      translateX = (vWidth - bmWidth * scale) * 0.5f;
+    } else {
+      scale = vWidth / (float) bmWidth;
+      translateY = (vHeight - bmHeight * scale) * 0.5f;
+    }
+
+    Matrix mMatrix = new Matrix();
+    if (scaleType == ImageView.ScaleType.FIT_XY) {
+      mMatrix.setScale(vWidth / (float) bmWidth, vHeight / (float) bmHeight);
+    } else if (scaleType == ImageView.ScaleType.FIT_CENTER) {
+      RectF src = new RectF(0, 0, bmWidth, bmHeight);
+      RectF dist = new RectF(0, 0, vWidth, vHeight);
+      mMatrix.setRectToRect(src, dist, Matrix.ScaleToFit.CENTER);
+    } else if (scaleType == ImageView.ScaleType.CENTER_CROP) {
+      mMatrix.setScale(scale, scale);
+      mMatrix.postTranslate(translateX + 0.5f, translateY + 0.5f);
+    }
+    return mMatrix;
   }
 
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+  private float[] radii;
+  private int bitmapHeight;
+  private int bitmapWidth;
+
+  private ImageDrawable() {
+
   }
 
   @Override
-  public void destroy() {
-    LocalBroadcastManager.getInstance(WXEnvironment.getApplication())
-        .unregisterReceiver(mModuleReceive);
+  public void setCornerRadii(float[] radii) {
+    this.radii = radii;
+    super.setCornerRadii(radii);
   }
 
-  static class ModuleReceive extends BroadcastReceiver {
-
-    private AppCompatModule mAppCompatModule;
-
-    ModuleReceive(AppCompatModule module) {
-      mAppCompatModule = module;
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      String action = intent.getAction();
-      switch (action) {
-        case WXModule.ACTION_ACTIVITY_RESULT:
-          int requestCode = intent.getIntExtra(WXModule.REQUEST_CODE, -1);
-          int resultCode = intent.getIntExtra(WXModule.RESULT_CODE, Activity.RESULT_OK);
-          mAppCompatModule.onActivityResult(requestCode, resultCode, intent);
-          break;
-        case WXModule.ACTION_REQUEST_PERMISSIONS_RESULT:
-          requestCode = intent.getIntExtra(WXModule.REQUEST_CODE, -1);
-          String[] permissions = intent.getStringArrayExtra(WXModule.PERMISSIONS);
-          int[] grantResults = intent.getIntArrayExtra(WXModule.GRANT_RESULTS);
-          mAppCompatModule.onRequestPermissionsResult(requestCode, permissions, grantResults);
-          break;
-      }
-    }
+  public
+  @Nullable
+  float[] getCornerRadii() {
+    return this.radii;
   }
+
 }

@@ -208,6 +208,7 @@ package com.taobao.weex.ui.view.border;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 
 import com.facebook.csslayout.Spacing;
 
@@ -218,13 +219,16 @@ class BorderUtil {
            array.get(position, array.get(Spacing.ALL));
   }
 
-  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value) {
-    updateSparseArray(array, position, value, true);
+  static int fetchFromSparseArray(@Nullable SparseIntArray array, int position, int fallback) {
+    return array == null ? fallback :
+           array.get(position, array.get(Spacing.ALL));
   }
 
-  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value,
-                             boolean useSpacing) {
-    if (useSpacing) {
+  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value) {
+    updateSparseArray(array, position, value, false);
+  }
+
+  static void updateSparseArray(@NonNull SparseIntArray array, int position, int value) {
       if (position == Spacing.ALL) {
         array.put(Spacing.ALL, value);
         array.put(Spacing.TOP, value);
@@ -234,13 +238,27 @@ class BorderUtil {
       } else {
         array.put(position, value);
       }
-    } else {
+    }
+
+  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value,
+                             boolean borderRadius) {
+    if (borderRadius) {
       if (position == BorderDrawable.BORDER_RADIUS_ALL) {
         array.put(BorderDrawable.BORDER_RADIUS_ALL, value);
         array.put(BorderDrawable.BORDER_TOP_LEFT_RADIUS, value);
         array.put(BorderDrawable.BORDER_TOP_RIGHT_RADIUS, value);
         array.put(BorderDrawable.BORDER_BOTTOM_LEFT_RADIUS, value);
         array.put(BorderDrawable.BORDER_BOTTOM_RIGHT_RADIUS, value);
+      } else {
+        array.put(position, value);
+      }
+    } else {
+      if (position == Spacing.ALL) {
+        array.put(Spacing.ALL, value);
+        array.put(Spacing.TOP, value);
+        array.put(Spacing.LEFT, value);
+        array.put(Spacing.RIGHT, value);
+        array.put(Spacing.BOTTOM, value);
       } else {
         array.put(position, value);
       }

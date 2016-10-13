@@ -1,4 +1,4 @@
-/**
+/*
  *
  *                                  Apache License
  *                            Version 2.0, January 2004
@@ -202,240 +202,66 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.view;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Looper;
-import android.os.Message;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.animation.Interpolator;
+package com.taobao.weex.utils;
 
-import com.taobao.weex.common.WXThread;
-import com.taobao.weex.ui.view.gesture.WXGesture;
-import com.taobao.weex.ui.view.gesture.WXGestureObservable;
-import com.taobao.weex.utils.WXLogUtils;
+import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.dom.flex.CSSConstants;
+import com.taobao.weex.dom.flex.Spacing;
 
-import java.lang.reflect.Field;
+public class WXDomUtils {
 
-/**
- */
-@SuppressLint("HandlerLeak")
-public class WXCircleViewPager extends ViewPager implements Callback, WXGestureObservable {
+  /**
+   * Get the content width of the dom.
+   * @return the width of the dom that excludes left-padding, left-border-width,
+   * right-border-width and right-padding.
+   */
+  public static float getContentWidth(WXDomObject domObject) {
+    float rawWidth = domObject.getLayoutWidth();
+    float leftPadding, rightPadding, leftBorder, rightBorder;
+    Spacing padding = domObject.getPadding();
+    Spacing border = domObject.getBorder();
 
-  private WXGesture wxGesture;
-  private Handler mCircleHandler;
-  private boolean isAutoScroll;
-  private boolean isPause;
-  private long intervalTime = 3 * 1000;
-  private WXSmoothScroller mScroller;
+    if (!CSSConstants.isUndefined((leftPadding = padding.get(Spacing.LEFT)))) {
+      rawWidth -= leftPadding;
+    }
+    if (!CSSConstants.isUndefined((rightPadding = padding.get(Spacing.RIGHT)))) {
+      rawWidth -= rightPadding;
+    }
 
-  @SuppressLint("NewApi")
-  public WXCircleViewPager(Context context) {
-    super(context);
-    initView();
-    setOverScrollMode(View.OVER_SCROLL_NEVER);
-    postInitViewPager();
-
-  }
-
-  private void initView() {
-    mCircleHandler = new Handler(Looper.getMainLooper(), WXThread.secure(this));
+    if (!CSSConstants.isUndefined(leftBorder = border.get(Spacing.LEFT))) {
+      rawWidth -= leftBorder;
+    }
+    if (!CSSConstants.isUndefined(rightBorder = border.get(Spacing.RIGHT))) {
+      rawWidth -= rightBorder;
+    }
+    return rawWidth;
   }
 
   /**
-   * Override the Scroller instance with our own class so we can change the
-   * duration
+   * Get the content height of the dom.
+   * @return the height of the dom that excludes top-padding, top-border-width, bottom-padding
+   * and bottom-border-width.
    */
-  private void postInitViewPager() {
-    if (isInEditMode()) {
-      return;
+  public static float getContentHeight(WXDomObject domObject) {
+    float rawHeight = domObject.getLayoutHeight();
+    float topPadding, bottomPadding, topBorder, bottomBorder;
+    Spacing padding = domObject.getPadding();
+    Spacing border = domObject.getBorder();
+
+    if (!CSSConstants.isUndefined((topPadding = padding.get(Spacing.TOP)))) {
+      rawHeight -= topPadding;
     }
-    try {
-      Field scroller = ViewPager.class.getDeclaredField("mScroller");
-      scroller.setAccessible(true);
-      Field interpolator = ViewPager.class
-          .getDeclaredField("sInterpolator");
-      interpolator.setAccessible(true);
-
-      mScroller = new WXSmoothScroller(getContext(),
-          (Interpolator) interpolator.get(null));
-      scroller.set(this, mScroller);
-    } catch (Exception e) {
-      WXLogUtils.e("[CircleViewPager] postInitViewPager: ", e);
-    }
-  }
-
-  @SuppressLint("NewApi")
-  public WXCircleViewPager(Context context, AttributeSet attrs) {
-    super(context, attrs);
-    initView();
-    setOverScrollMode(View.OVER_SCROLL_NEVER);
-    postInitViewPager();
-  }
-
-  @Override
-  public boolean handleMessage(Message msg) {
-    if (isAutoScroll && !isPause) {
-
-      setCurrentItem(getCurrentItem() + 1);
-      mCircleHandler.removeCallbacksAndMessages(null);
-      mCircleHandler.sendEmptyMessageDelayed(0, intervalTime);
-    }
-    return true;
-  }
-
-  @Override
-  public int getCurrentItem() {
-    if (getAdapter().getCount() == 0) {
-      return super.getCurrentItem();
-    }
-    int position = super.getCurrentItem();
-    if (getAdapter() instanceof WXCirclePageAdapter) {
-      WXCirclePageAdapter infAdapter = (WXCirclePageAdapter) getAdapter();
-      // Return the actual item position in the data backing InfinitePagerAdapter
-      return (position % infAdapter.getRealCount());
-    } else {
-      return super.getCurrentItem();
-    }
-  }
-
-  @Override
-  public boolean onTouchEvent(MotionEvent ev) {
-    boolean result = super.onTouchEvent(ev);
-    if (wxGesture != null) {
-      result |= wxGesture.onTouch(this, ev);
-    }
-    return result;
-  }
-
-  /**
-   * Start auto scroll. Must be called after {@link #setAdapter(PagerAdapter)}
-   */
-  public void startAutoScroll() {
-    isAutoScroll = true;
-    //		mViewPager.setCurrentItem(0);
-    mCircleHandler.sendEmptyMessageDelayed(0, intervalTime);
-  }
-
-  /**
-   * Stop auto scroll.
-   */
-  public void stopAutoScroll() {
-    isAutoScroll = false;
-    mCircleHandler.removeCallbacksAndMessages(null);
-  }
-
-  public boolean isAutoScroll() {
-    return isAutoScroll;
-  }
-
-  @Override
-  public void setCurrentItem(int item) {
-    setCurrentItem(item,false);
-  }
-
-  /**
-   * set real item
-   *
-   */
-  @Override
-  public void setCurrentItem(int item, boolean smoothScroll) {
-    if (getAdapter().getCount() == 0) {
-      super.setCurrentItem(item, smoothScroll);
-      return;
-    }
-    item = getOffsetAmount() + (item % getAdapter().getCount());
-    super.setCurrentItem(item, smoothScroll);
-  }
-
-
-  private int getOffsetAmount() {
-    if (getAdapter().getCount() == 0) {
-      return 0;
-    }
-    if (getAdapter() instanceof WXCirclePageAdapter) {
-      WXCirclePageAdapter infAdapter = (WXCirclePageAdapter) getAdapter();
-      // allow for 100 back cycles from the beginning
-      // should be enough to create an illusion of infinity
-      // warning: scrolling to very high values (1,000,000+) results in
-      // strange drawing behaviour
-      int realCount = infAdapter.getRealCount();
-      return realCount> 2 ? realCount * 50 : 0;
-    } else {
-      return 0;
-    }
-  }
-
-  /**
-   * @return the circlePageAdapter
-   */
-  public WXCirclePageAdapter getCirclePageAdapter() {
-    return (WXCirclePageAdapter) getAdapter();
-  }
-
-  /**
-   * @param circlePageAdapter the circlePageAdapter to set
-   */
-  public void setCirclePageAdapter(WXCirclePageAdapter circlePageAdapter) {
-    this.setAdapter(circlePageAdapter);
-  }
-
-  /**
-   * Get auto scroll interval. The time unit is micro second.
-   * The default time interval is 3000 micro second
-   * @return the intervalTime
-   */
-  public long getIntervalTime() {
-    return intervalTime;
-  }
-
-  /**
-   * Set auto scroll interval. The time unit is micro second.
-   * The default time interval is 3000 micro second
-   * @param intervalTime the intervalTime to set
-   */
-  public void setIntervalTime(long intervalTime) {
-    this.intervalTime = intervalTime;
-  }
-
-  @Override
-  public boolean dispatchTouchEvent(MotionEvent ev) {
-    // TODO Auto-generated method stub
-    if (ev.getAction() == MotionEvent.ACTION_DOWN) {// Stop auto scroll
-      isPause = true;
-      if (mCircleHandler != null) {
-        mCircleHandler.removeCallbacksAndMessages(null);
-      }
-    } else if (ev.getAction() == MotionEvent.ACTION_CANCEL) {// Restart auto scroll
-      isPause = false;
-      if (mCircleHandler != null) {
-        mCircleHandler.sendEmptyMessageDelayed(0, intervalTime);
-      }
-    } else if (ev.getAction() == MotionEvent.ACTION_UP) {
-      isPause = false;
-      if (mCircleHandler != null) {
-        mCircleHandler.sendEmptyMessageDelayed(0, intervalTime);
-      }
+    if (!CSSConstants.isUndefined((bottomPadding = padding.get(Spacing.BOTTOM)))) {
+      rawHeight -= bottomPadding;
     }
 
-    return super.dispatchTouchEvent(ev);
-  }
-
-  public void destory() {
-    if (mCircleHandler != null) {
-      mCircleHandler.removeCallbacksAndMessages(null);
+    if (!CSSConstants.isUndefined(topBorder = border.get(Spacing.TOP))) {
+      rawHeight -= topBorder;
     }
-  }
-
-  @Override
-  public void registerGestureListener(WXGesture wxGesture) {
-    this.wxGesture = wxGesture;
+    if (!CSSConstants.isUndefined(bottomBorder = border.get(Spacing.BOTTOM))) {
+      rawHeight -= bottomBorder;
+    }
+    return rawHeight;
   }
 }
