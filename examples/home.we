@@ -43,8 +43,12 @@
         },
         methods: {
             refresh: function (event) {
-                require("@weex-module/event").refresh('js_framework_reload');
-            }
+                var params={
+                    src:this.$getConfig().bundleUrl,
+                    embRef:this.$getConfig().embRef,
+                    type:this.$getConfig().type
+                }
+                require("@weex-module/event").refresh(params);            }
         }
     }
 </script>

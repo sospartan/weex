@@ -30,7 +30,10 @@
                 this.rightItemSrc = '';
             }
             this.$on('naviBar.rightItem.click', function (e) {
-                require("@weex-module/event").refresh(this.$getConfig().bundleUrl);
+                var params={
+                    src:this.$getConfig().bundleUrl,
+                }
+                require("@weex-module/event").refresh(params);
             });
             this.$on('naviBar.leftItem.click', function (e) {
                 var vm = this;

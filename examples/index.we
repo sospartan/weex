@@ -1,5 +1,5 @@
 <template>
-    <div style="flex-direction: column;">
+    <div style="flex-direction: column;" onrefresh="onrefresh">
         <wxc-tabbar tab-items={{tabItems}}></wxc-tabbar>
     </div>
 </template>
@@ -51,6 +51,10 @@
             ]
         },
         created: function () {
+            this.$on('emb.onrefresh',function(e){
+                console.log("into--[refreshEmb] src:"+ e.src);
+            });
+
             var bundleUrl = this.$getConfig().bundleUrl;
             console.log('hit', bundleUrl);
             var dirs = this.root.split('/');
@@ -95,6 +99,25 @@
                 }
                 console.log(tabItem.title + ":" + tabItem.src);
             }
-        }
+        },
+       methods:{
+           onrefresh:function(e){
+            for(var i=0;i<this.tabItems.length;i++){
+
+                var tabItem=this.tabItems[i];
+                console.log("item:"+tabItem.src);
+                console.log("src:"+ e.src);
+
+                console.log(e.src.indexOf(tabItem.src));
+
+                if(e.src.indexOf(tabItem.src)>=0){
+                    tabItem.src= "";
+                    tabItem.src=e.src;
+                    break
+                }
+
+            }
+           }
+    }
     }
 </script>

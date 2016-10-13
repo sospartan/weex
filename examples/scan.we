@@ -25,7 +25,13 @@
                 require('@weex-module/camara').openScan();
             },
             refresh: function (event) {
-                require("@weex-module/event").refresh('js_framework_reload');
+                console.log("into--[refresh] config:"+JSON.stringify(this.$getConfig()));
+                var params={
+                    src:this.$getConfig().bundleUrl,
+                    embRef:this.$getConfig().embRef,
+                    type:this.$getConfig().type
+                }
+                require("@weex-module/event").refresh(params);
             }
         }
     };
