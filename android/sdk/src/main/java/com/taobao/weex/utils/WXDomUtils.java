@@ -205,9 +205,9 @@
 
 package com.taobao.weex.utils;
 
+import com.facebook.csslayout.CSSConstants;
+import com.facebook.csslayout.Spacing;
 import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.CSSConstants;
-import com.taobao.weex.dom.flex.Spacing;
 
 public class WXDomUtils {
 
