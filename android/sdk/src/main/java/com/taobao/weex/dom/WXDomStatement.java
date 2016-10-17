@@ -211,7 +211,7 @@ import android.util.Pair;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.csslayout.CSSLayoutContext;
-import com.facebook.csslayout.CSSNode;
+import com.facebook.csslayout.CSSNodeAPI;
 import com.facebook.csslayout.Spacing;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
@@ -312,9 +312,9 @@ class WXDomStatement {
       for (int i = 0; i < size; i++) {
         String fixedRef = root.getFixedStyleRefs().get(i);
         WXDomObject wxDomObject = mRegistry.get(fixedRef);
-        if (wxDomObject!=null && wxDomObject.parent != null) {
-          wxDomObject.parent.remove(wxDomObject);
-          root.add(wxDomObject, -1);
+        if (wxDomObject!=null && wxDomObject.getParent() != null) {
+          wxDomObject.getParent().remove(wxDomObject);
+          root.addChildAt(wxDomObject, -1);
         }
       }
     }
@@ -325,7 +325,7 @@ class WXDomStatement {
    * Batch the execution of command objects and execute all the command objects created other
    * places, e.g. call {@link IWXRenderTask#execute()}.
    * First, it will rebuild the dom tree and do pre layout staff.
-   * Then call {@link com.facebook.csslayout.CSSNode#calculateLayout(CSSLayoutContext)} to
+   * Then call {@link com.facebook.csslayout.CSSNodeAPI#calculateLayout(CSSLayoutContext)} to
    * start calculate layout.
    * Next, call {@link ApplyUpdateConsumer} to get changed dom and creating
    * corresponding command object.
@@ -586,7 +586,7 @@ class WXDomStatement {
       return;
     } else {
       //non-root and parent exist
-      parent.add(domObject, index);
+      parent.addChildAt(domObject, index);
     }
 
     domObject.traverseTree(
@@ -665,7 +665,7 @@ class WXDomStatement {
    * <li> dom to be moved is null </li>
    * <li> dom's parent is null </li>
    * <li> new parent is null </li>
-   * <li> parent is under {@link CSSNode#hasNewLayout()} </li>
+   * <li> parent is under {@link CSSNodeAPI#hasNewLayout()} </li>
    * </ul>
    * this method will return. Otherwise, put the command object in the queue.
    * @param ref Reference of the dom to be moved.
@@ -679,18 +679,18 @@ class WXDomStatement {
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
     WXDomObject domObject = mRegistry.get(ref);
     WXDomObject parentObject = mRegistry.get(parentRef);
-    if (domObject == null || domObject.parent == null
+    if (domObject == null || domObject.getParent() == null
         || parentObject == null || parentObject.hasNewLayout()) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_MOVEELEMENT);
       }
       return;
     }
-    if (domObject.parent.equals(parentObject) && parentObject.index(domObject) == index) {
+    if (domObject.getParent().equals(parentObject) && parentObject.indexOf(domObject) == index) {
       return;
     }
-    domObject.parent.remove(domObject);
-    parentObject.add(domObject, index);
+    domObject.getParent().remove(domObject);
+    parentObject.addChildAt(domObject, index);
 
     mNormalTasks.add(new IWXRenderTask() {
 
@@ -729,7 +729,7 @@ class WXDomStatement {
       }
       return;
     }
-    WXDomObject parent = domObject.parent;
+    WXDomObject parent = domObject.getParent();
     if (parent == null) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_REMOVEELEMENT);

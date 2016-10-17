@@ -212,7 +212,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.csslayout.CompatCSSNode;
 import com.facebook.csslayout.Spacing;
-import com.facebook.csslayout.CSSNode;
 import com.facebook.csslayout.CSSLayoutContext;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.common.Constants;
@@ -233,7 +232,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Actually, {@link com.taobao.weex.ui.component.WXComponent} hold references to
  * {@link android.view.View} and {@link WXDomObject}.
  */
-public class WXDomObject extends CompatCSSNode implements Cloneable {
+public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable {
   public static final String CHILDREN = "children";
   public static final String TYPE = "type";
   public static final String TAG = WXDomObject.class.getSimpleName();
@@ -252,11 +251,11 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
 
   /** package **/ WXEvent mEvents;
 
-  private List<WXDomObject> mDomChildren;
+//  private List<WXDomObject> mDomChildren;
 
   /** Do not access this field directly. This field will be removed soon. **/
-  @Deprecated
-  public WXDomObject parent;
+//  @Deprecated
+//  public WXDomObject parent;
 
   private ArrayList<String> fixedStyleRefs;
 
@@ -274,10 +273,10 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
       consumer.accept(this);
     }
 
-    int count = childCount();
+    int count = getChildCount();
     WXDomObject child;
     for (int i = 0; i < count; ++i) {
-      child = getChild(i);
+      child = getChildAt(i);
       child.traverseTree(consumers);
     }
   }
@@ -423,7 +422,7 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
 
   /**
    * Tell whether this object need to be updated. This is usually called when
-   * {@link CSSNode#calculateLayout(CSSLayoutContext)} finishes and new layout has been
+   * {@link com.facebook.csslayout.CSSNodeAPI#calculateLayout(CSSLayoutContext)} finishes and new layout has been
    * calculated. This method is a simple wrapper method for {@link #hasNewLayout()} and
    * {@link #isDirty()}.
    * @return true for need update since last update.
@@ -473,38 +472,21 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
   }
 
   public void remove(WXDomObject child) {
-    if (child == null || mDomChildren == null || sDestroy.get()) {
+    if (child == null || sDestroy.get()) {
       return;
     }
 
-    int index = mDomChildren.indexOf(child);
-    removeFromDom(child);
-    if (index != -1) {
-      super.removeChildAt(index);
-    }
-  }
+    int index = indexOf(child);
 
-  public void removeFromDom(WXDomObject child) {
-    if (child == null || mDomChildren == null || sDestroy.get()) {
-      return;
-    }
-
-    int index = mDomChildren.indexOf(child);
     if (index == -1) {
       if (WXEnvironment.isApkDebugable()) {
         WXLogUtils.e("[WXDomObject] remove function error");
       }
       return;
     }
-    mDomChildren.remove(index).parent = null;
+    removeChildAt(index);
   }
 
-  public int index(WXDomObject child) {
-    if (child == null || mDomChildren == null || sDestroy.get()) {
-      return -1;
-    }
-    return mDomChildren.indexOf(child);
-  }
 
   /**
    * Add the given WXDomObject as this object's child at specified index.
@@ -512,47 +494,18 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
    * @param index the index of child to be added. If the index is -1, the child will be added
    *              as the last child of current dom object.
    */
-  public void add(WXDomObject child, int index) {
-    if (child == null || index < -1 || sDestroy.get()) {
-      return;
-    }
-    if (mDomChildren == null) {
-      mDomChildren = new ArrayList<>();
-    }
-
-    int count = mDomChildren.size();
-    index = index >= count ? -1 : index;
-    if (index == -1) {
-      mDomChildren.add(child);
-      super.addChildAt(child, super.getChildCount());
-    } else {
-      mDomChildren.add(index, child);
-      super.addChildAt(child, index);
-    }
-    child.parent = this;
-  }
-
-  @Deprecated
-  public void add2Dom(WXDomObject child, int index) {
+  public void addChildAt(WXDomObject child, int index) {
     if (child == null || index < -1 || sDestroy.get()) {
       return;
     }
 
-    int count = super.getChildCount();
+    int count = getChildCount();
     index = index >= count ? -1 : index;
     if (index == -1) {
       super.addChildAt(child, super.getChildCount());
     } else {
       super.addChildAt(child, index);
     }
-    child.parent = this;
-  }
-
-  public WXDomObject getChild(int index) {
-    if (mDomChildren == null || sDestroy.get()) {
-      return null;
-    }
-    return mDomChildren.get(index);
   }
 
   /**
@@ -597,7 +550,7 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
       mAttributes = new WXAttr();
     }
     mAttributes.putAll(attrs);
-    super.dirty();
+    dirty();
   }
 
   public void updateStyle(Map<String, Object> styles) {
@@ -608,7 +561,7 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
       mStyles = new WXStyle();
     }
     mStyles.putAll(styles);
-    super.dirty();
+    dirty();
   }
 
   /** package **/ void applyStyleToNode() {
@@ -717,10 +670,6 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
     }
   }
 
-  public int childCount() {
-    return mDomChildren == null ? 0 : mDomChildren.size();
-  }
-
   public void hide() {
     setVisible(false);
   }
@@ -766,12 +715,10 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
     if (mEvents != null) {
       mEvents.clear();
     }
-    if (mDomChildren != null) {
-      int count = mDomChildren.size();
-      for (int i = 0; i < count; ++i) {
-        mDomChildren.get(i).destroy();
-      }
-      mDomChildren.clear();
+    int count = getChildCount();
+    for (int i = 0; i < count; ++i) {
+      getChildAt(i).destroy();
+      removeChildAt(i);
     }
   }
 
@@ -821,7 +768,7 @@ public class WXDomObject extends CompatCSSNode implements Cloneable {
         JSONArray childrenArray = (JSONArray) children;
         int count = childrenArray.size();
         for (int i = 0; i < count; ++i) {
-          domObject.add(parse(childrenArray.getJSONObject(i)),-1);
+          domObject.addChildAt(parse(childrenArray.getJSONObject(i)),-1);
         }
       }
 

@@ -27,7 +27,6 @@ import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
 import com.facebook.csslayout.CSSConstants;
 import com.facebook.csslayout.CSSMeasureMode;
-import com.facebook.csslayout.CSSNode;
 import com.facebook.csslayout.CSSNodeAPI;
 import com.facebook.csslayout.MeasureOutput;
 import com.facebook.csslayout.FloatUtil;
@@ -76,7 +75,7 @@ public class WXTextDomObject extends WXDomObject {
    * Object for calculating text's width and height. This class is an anonymous class of
    * implementing {@link com.facebook.csslayout.CSSNode.MeasureFunction}
    */
-  /** package **/ static final CSSNode.MeasureFunction TEXT_MEASURE_FUNCTION = new CSSNode.MeasureFunction() {
+  /** package **/ static final CSSNodeAPI.MeasureFunction TEXT_MEASURE_FUNCTION = new CSSNodeAPI.MeasureFunction() {
     @Override
     public void measure(CSSNodeAPI node,
                         float width,
@@ -132,7 +131,7 @@ public class WXTextDomObject extends WXDomObject {
   /**
    * Create an instance of current class, and set {@link #TEXT_MEASURE_FUNCTION} as the
    * measureFunction
-   * @see CSSNode#setMeasureFunction(MeasureFunction)
+   * @see CSSNodeAPI#setMeasureFunction(MeasureFunction)
    */
   public WXTextDomObject() {
     super();

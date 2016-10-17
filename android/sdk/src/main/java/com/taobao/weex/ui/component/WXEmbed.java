@@ -448,8 +448,8 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
     ViewGroup.LayoutParams layoutParams = getHostView().getLayoutParams();
     sdkInstance.renderByUrl(WXPerformance.DEFAULT,
                             url,
-                            null, null, layoutParams.width,
-                            layoutParams.height,
+                            null, null, layoutParams==null?0:layoutParams.width,
+                            layoutParams==null?0:layoutParams.height,
                             WXRenderStrategy.APPEND_ASYNC);
     return sdkInstance;
   }

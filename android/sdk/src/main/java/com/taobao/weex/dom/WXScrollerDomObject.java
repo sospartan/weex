@@ -217,8 +217,8 @@ public class WXScrollerDomObject extends WXDomObject {
         Map<String, String> map = new ArrayMap<>();
 
         boolean isVertical = true;
-        if (parent != null) {
-            String direction = (String) parent.getAttrs().get(Constants.Name.SCROLL_DIRECTION);
+        if (getParent() != null) {
+            String direction = (String) getParent().getAttrs().get(Constants.Name.SCROLL_DIRECTION);
             if (direction != null && direction.equals("horizontal")) {
                 isVertical = false;
             }

@@ -262,11 +262,11 @@ public class WXDomStatementTest {
   @Test
   public void testCustomDomObject() throws Exception {
     WXDomObject root = new TestDomObject();
-    root.add(new WXListDomObject(),0);
-    root.add(new WXScrollerDomObject(),0);
-    root.add(new WXTextDomObject(),0);
-    root.add(new WXSwitchDomObject(),0);
-    root.add(new TextAreaEditTextDomObject(),0);
+    root.addChildAt(new WXListDomObject(),0);
+    root.addChildAt(new WXScrollerDomObject(),0);
+    root.addChildAt(new WXTextDomObject(),0);
+    root.addChildAt(new WXSwitchDomObject(),0);
+    root.addChildAt(new TextAreaEditTextDomObject(),0);
     stmt.layout(root);
     root.traverseTree(WXDomStatement.ApplyStyleConsumer.getInstance());
   }

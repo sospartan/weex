@@ -208,12 +208,12 @@ package com.facebook.csslayout;
 /**
  * Created by sospartan on 29/09/2016.
  */
-public class CompatCSSNode extends CSSNode {
+public class CompatCSSNode<T extends CompatCSSNode> extends CSSNodeDEPRECATED<T> {
   private boolean mShow = true;
 
-  public final void copyTo(CSSNode dest) {
-    CSSUtility.copy(layout, dest.layout);
-    CSSUtility.copy(style, dest.style);
+  public final void copyTo(CompatCSSNode dest) {
+    CSSUtility.copyLayout(this, dest);
+    CSSUtility.copyStyle(this, dest);
   }
 
   public boolean isShow() {
@@ -227,4 +227,5 @@ public class CompatCSSNode extends CSSNode {
     mShow = isShow;
     dirty();
   }
+
 }

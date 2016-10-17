@@ -214,7 +214,9 @@ import static com.facebook.csslayout.Spacing.*;
  */
 public class CSSUtility {
 
-  public static void copy(CSSLayout layout, CSSLayout dest) {
+  public static void copyLayout(CompatCSSNode fromNode,CompatCSSNode destNode) {
+    CSSLayout layout = fromNode.layout;
+    CSSLayout dest = destNode.layout;
     dest.position[POSITION_LEFT] = layout.position[POSITION_LEFT];
     dest.position[POSITION_TOP] = layout.position[POSITION_TOP];
     dest.position[POSITION_RIGHT] = layout.position[POSITION_RIGHT];
@@ -224,7 +226,9 @@ public class CSSUtility {
     dest.direction = layout.direction;
   }
 
-  public static void copy(CSSStyle cssStyle, CSSStyle dest) {
+  public static void copyStyle(CompatCSSNode fromNode,CompatCSSNode destNode) {
+    CSSStyle cssStyle = fromNode.style;
+    CSSStyle dest = destNode.style;
     dest.direction = cssStyle.direction;
     dest.flexDirection = cssStyle.flexDirection;
     dest.justifyContent = cssStyle.justifyContent;

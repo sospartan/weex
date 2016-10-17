@@ -259,16 +259,16 @@ public class WXDomObjectTest {
     WXDomObject childDom = new WXDomObject();
     childDom.parseFromJson(child);
 
-    dom.add(childDom,0);
+    dom.addChildAt(childDom,0);
     assertEquals(dom.getChildCount(),1);
-    assertEquals(dom.getChild(0),childDom);
+    assertEquals(dom.getChildAt(0),childDom);
 
     dom.removeChildAt(0);
     assertEquals(dom.getChildCount(),0);
 
-    dom.add(childDom,0);
+    dom.addChildAt(childDom,0);
     assertEquals(dom.getChildCount(),1);
-    assertEquals(dom.getChild(0),childDom);
+    assertEquals(dom.getChildAt(0),childDom);
 
     dom.remove(childDom);
 

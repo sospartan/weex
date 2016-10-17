@@ -531,10 +531,10 @@ class WXRenderStatement {
     mRegistry.put(dom.getRef(), component);
     if (component instanceof WXVContainer) {
       WXVContainer parentC = (WXVContainer) component;
-      int count = dom.childCount();
+      int count = dom.getChildCount();
       WXDomObject child = null;
       for (int i = 0; i < count; ++i) {
-        child = dom.getChild(i);
+        child = dom.getChildAt(i);
         if (child != null) {
           parentC.addChild(generateComponentTree(child, parentC));
         }

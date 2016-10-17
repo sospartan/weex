@@ -218,11 +218,9 @@ public class WXListDomObject extends WXDomObject {
         Map<String,String> map = new ArrayMap<>();
 
         boolean isVertical = true;
-        if (parent != null) {
-            if (parent.getType() != null) {
-                if (parent.getType().equals(WXBasicComponentType.HLIST)) {
-                    isVertical = false;
-                }
+        if (getParent() != null) {
+            if (WXBasicComponentType.HLIST.equals(getParent().getType())) {
+                isVertical = false;
             }
         }
 
