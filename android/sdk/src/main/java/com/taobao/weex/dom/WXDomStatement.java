@@ -232,8 +232,9 @@ import com.taobao.weex.utils.WXViewUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -260,7 +261,7 @@ class WXDomStatement {
   private String mInstanceId;
   private WXRenderManager mWXRenderManager;
   private ArrayList<IWXRenderTask> mNormalTasks;
-  private Map <String, Map<String, Object>> animations;
+  private Set <Pair<String, Map<String, Object>>> animations;
   private CSSLayoutContext mLayoutContext;
   private volatile boolean mDirty;
   private boolean mDestroy;
@@ -281,7 +282,7 @@ class WXDomStatement {
     mLayoutContext = new CSSLayoutContext();
     mRegistry = new ConcurrentHashMap<>();
     mNormalTasks = new ArrayList<>();
-    animations = new LinkedHashMap<>();
+    animations = new LinkedHashSet<>();
     mWXRenderManager = renderManager;
     mAddDOMConsumer = new AddDOMConsumer(mRegistry);
   }
@@ -449,14 +450,14 @@ class WXDomStatement {
   }
 
   private void parseAnimation() {
-    for(final Map.Entry<String, Map<String, Object>> entry:animations.entrySet()) {
-      if (!TextUtils.isEmpty(entry.getKey())) {
-        final WXAnimationBean animationBean = createAnimationBean(entry.getKey(), entry.getValue());
+    for(final Pair<String, Map<String, Object>> pair:animations) {
+      if (!TextUtils.isEmpty(pair.first)) {
+        final WXAnimationBean animationBean = createAnimationBean(pair.first, pair.second);
         if (animationBean != null) {
           mNormalTasks.add(new IWXRenderTask() {
             @Override
             public void execute() {
-              mWXRenderManager.startAnimation(mInstanceId, entry.getKey(), animationBean, null);
+              mWXRenderManager.startAnimation(mInstanceId, pair.first, animationBean, null);
             }
 
             @Override
@@ -579,8 +580,8 @@ class WXDomStatement {
     }
     if (isRoot) {
       WXDomObject.prepareRoot(domObject,
-          WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexHeight(mInstanceId)),
-          WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexWidth(mInstanceId)));
+                              WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexHeight(mInstanceId)),
+                              WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexWidth(mInstanceId)));
     } else if ((parent = mRegistry.get(parentRef)) == null) {
       instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, errCode);
       return;
@@ -592,12 +593,12 @@ class WXDomStatement {
     domObject.traverseTree(
         mAddDOMConsumer,
         ApplyStyleConsumer.getInstance()
-        );
+                          );
 
     //Create component in dom thread
     WXComponent component = isRoot ?
-        mWXRenderManager.createBodyOnDomThread(mInstanceId, domObject) :
-        mWXRenderManager.createComponentOnDomThread(mInstanceId, domObject, parentRef, index);
+                            mWXRenderManager.createBodyOnDomThread(mInstanceId, domObject) :
+                            mWXRenderManager.createComponentOnDomThread(mInstanceId, domObject, parentRef, index);
     if (component == null) {
       instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, errCode);
       //stop redner, some fatal happened.
@@ -609,7 +610,7 @@ class WXDomStatement {
 
     IWXRenderTask task = isRoot ? new CreateBodyTask(component) : new AddDOMTask(component, parentRef, index);
     mNormalTasks.add(task);
-    animations.put(domObject.getRef(), domObject.getStyles());
+    animations.add(new Pair<String, Map<String, Object>>(domObject.getRef(), domObject.getStyles()));
     mDirty = true;
 
     instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_SUCCESS);
@@ -830,7 +831,7 @@ class WXDomStatement {
     Map<String, Object> animationMap= WXDataStructureUtil.newHashMapWithExpectedSize(2);
     animationMap.put(WXDomObject.TRANSFORM, style.remove(WXDomObject.TRANSFORM));
     animationMap.put(WXDomObject.TRANSFORM_ORIGIN, style.remove(WXDomObject.TRANSFORM_ORIGIN));
-    animations.put(ref, animationMap);
+    animations.add(new Pair<>(ref, animationMap));
 
     if(!style.isEmpty()){
       domObject.updateStyle(style);
