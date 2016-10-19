@@ -221,6 +221,7 @@ public class ImageDrawable extends PaintDrawable {
 
   public static Drawable createImageDrawable(@Nullable Drawable original,
                                              @NonNull ImageView.ScaleType scaleType,
+                                             @Nullable float[] borderRadius,
                                              int vWidth,
                                              int vHeight,
                                              boolean gif) {
@@ -230,35 +231,41 @@ public class ImageDrawable extends PaintDrawable {
           (bm = ((BitmapDrawable) original).getBitmap()) != null) {
         ImageDrawable imageDrawable;
         imageDrawable = new ImageDrawable();
-        imageDrawable.setIntrinsicWidth(vWidth);
-        imageDrawable.setIntrinsicHeight(vHeight);
         imageDrawable.bitmapWidth = bm.getWidth();
         imageDrawable.bitmapHeight = bm.getHeight();
-
         BitmapShader bitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        Matrix matrix = createShaderMatrix(scaleType, vWidth, vHeight,
-                                           imageDrawable.bitmapWidth,
-                                           imageDrawable.bitmapHeight);
-        bitmapShader.setLocalMatrix(matrix);
+        updateShaderAndSize(scaleType, vWidth, vHeight, imageDrawable, bitmapShader);
         imageDrawable.getPaint().setShader(bitmapShader);
         return imageDrawable;
       } else if (original instanceof ImageDrawable) {
         ImageDrawable imageDrawable = (ImageDrawable) original;
-        imageDrawable.setIntrinsicWidth(vWidth);
-        imageDrawable.setIntrinsicHeight(vHeight);
         if (imageDrawable.getPaint() != null &&
             imageDrawable.getPaint().getShader() instanceof BitmapShader) {
           BitmapShader bitmapShader = (BitmapShader) imageDrawable.getPaint().getShader();
-          Matrix matrix = createShaderMatrix(scaleType, vWidth, vHeight,
-                                             imageDrawable.bitmapWidth,
-                                             imageDrawable.bitmapHeight);
-          bitmapShader.setLocalMatrix(matrix);
+          updateShaderAndSize(scaleType, vWidth, vHeight, imageDrawable, bitmapShader);
           return imageDrawable;
         }
       }
-
     }
     return original;
+  }
+
+  private static void updateShaderAndSize(@NonNull ImageView.ScaleType scaleType, int vWidth, int vHeight, ImageDrawable imageDrawable, BitmapShader bitmapShader) {
+    Matrix matrix = createShaderMatrix(scaleType, vWidth, vHeight,
+                                       imageDrawable.bitmapWidth,
+                                       imageDrawable.bitmapHeight);
+    int intrinsicWidth = vWidth, intrinsicHeight = vHeight;
+    if (scaleType == ImageView.ScaleType.FIT_CENTER) {
+      RectF bitmapRect = new RectF(0, 0, imageDrawable.bitmapWidth, imageDrawable.bitmapHeight), contentRect = new RectF();
+      matrix.mapRect(contentRect, bitmapRect);
+      intrinsicWidth = (int) contentRect.width();
+      intrinsicHeight = (int) contentRect.height();
+      matrix = createShaderMatrix(scaleType, intrinsicWidth, intrinsicHeight, imageDrawable
+          .bitmapWidth, imageDrawable.bitmapHeight);
+    }
+    imageDrawable.setIntrinsicWidth(intrinsicWidth);
+    imageDrawable.setIntrinsicHeight(intrinsicHeight);
+    bitmapShader.setLocalMatrix(matrix);
   }
 
   @NonNull

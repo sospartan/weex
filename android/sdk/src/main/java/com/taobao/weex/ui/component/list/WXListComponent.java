@@ -220,7 +220,7 @@ import android.widget.ImageView;
 
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.common.Component;
+import com.taobao.weex.annotation.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.OnWXScrollListener;
 import com.taobao.weex.common.WXRuntimeException;
@@ -331,7 +331,7 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
 
   @Override
   public ViewGroup.LayoutParams getChildLayoutParams(View hostView, int width, int height, int left, int right, int top, int bottom) {
-    RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) hostView.getLayoutParams();
+    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) hostView.getLayoutParams();
     if(params == null) {
       params = new RecyclerView.LayoutParams(width, height);
     }else {
@@ -764,6 +764,11 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
         WXLogUtils.d(TAG, "removeChild child at " + index);
       }
       super.remove(child, destroy);
+      if (child instanceof WXLoading) {
+        getHostView().removeFooterView(child);
+      } else if (child instanceof WXRefresh) {
+        getHostView().removeHeaderView(child);
+      }
     }
 
     @Override

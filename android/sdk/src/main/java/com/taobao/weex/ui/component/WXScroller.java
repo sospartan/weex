@@ -215,7 +215,7 @@ import android.widget.FrameLayout.LayoutParams;
 
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.common.Component;
+import com.taobao.weex.annotation.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.OnWXScrollListener;
 import com.taobao.weex.common.WXThread;
@@ -392,6 +392,16 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
       result = true;
     }
     return result;
+  }
+
+  @Override
+  public void remove(WXComponent child) {
+    super.remove(child);
+    if(child instanceof WXLoading){
+      ((BaseBounceView)getHostView()).removeFooterView(child);
+    }else if(child instanceof WXRefresh){
+      ((BaseBounceView)getHostView()).removeHeaderView(child);
+    }
   }
 
   @Override

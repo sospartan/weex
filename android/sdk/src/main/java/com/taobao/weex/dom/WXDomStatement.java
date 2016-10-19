@@ -230,8 +230,8 @@ import com.taobao.weex.utils.WXViewUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -281,7 +281,7 @@ class WXDomStatement {
     mLayoutContext = new CSSLayoutContext();
     mRegistry = new ConcurrentHashMap<>();
     mNormalTasks = new ArrayList<>();
-    animations = new HashSet<>();
+    animations = new LinkedHashSet<>();
     mWXRenderManager = renderManager;
     mAddDOMConsumer = new AddDOMConsumer(mRegistry);
   }
@@ -579,8 +579,8 @@ class WXDomStatement {
     }
     if (isRoot) {
       WXDomObject.prepareRoot(domObject,
-          WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexHeight(mInstanceId)),
-          WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexWidth(mInstanceId)));
+                              WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexHeight(mInstanceId)),
+                              WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexWidth(mInstanceId)));
     } else if ((parent = mRegistry.get(parentRef)) == null) {
       instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, errCode);
       return;
@@ -592,12 +592,12 @@ class WXDomStatement {
     domObject.traverseTree(
         mAddDOMConsumer,
         ApplyStyleConsumer.getInstance()
-        );
+                          );
 
     //Create component in dom thread
     WXComponent component = isRoot ?
-        mWXRenderManager.createBodyOnDomThread(mInstanceId, domObject) :
-        mWXRenderManager.createComponentOnDomThread(mInstanceId, domObject, parentRef, index);
+                            mWXRenderManager.createBodyOnDomThread(mInstanceId, domObject) :
+                            mWXRenderManager.createComponentOnDomThread(mInstanceId, domObject, parentRef, index);
     if (component == null) {
       instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, errCode);
       //stop redner, some fatal happened.
