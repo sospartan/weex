@@ -1,11 +1,17 @@
 package com.alibaba.weex.extend.module;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
+import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.annotation.JSMethod;
+import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXModule;
+
+import java.util.Map;
 
 
 public class WXEventModule extends WXModule {
@@ -31,6 +37,30 @@ public class WXEventModule extends WXModule {
     Uri uri = Uri.parse(builder.toString());
     Intent intent = new Intent(WEEX_ACTION, uri);
     intent.addCategory(WEEX_CATEGORY);
+    mWXSDKInstance.getContext().startActivity(intent);
+  }
+
+  @JSMethod
+  public void refresh(Map<String,Object> params) {
+    Object type=params.get("type");
+    if(type!=null && TextUtils.equals(type.toString(),"emb")){
+      WXSDKManager.getInstance().getSDKInstance(mWXSDKInstance.getParentId()).fireEvent("_root", Constants.Event.ONREFRESH, params);
+    }else{
+      LocalBroadcastManager.getInstance(mWXSDKInstance.getContext()).sendBroadcast(new Intent(params.get("src").toString()));
+    }
+  }
+
+  @JSMethod
+  public void back(){
+    ((Activity)mWXSDKInstance.getContext()).finish();
+  }
+
+  @JSMethod
+  public void openBrowser(String url) {
+    Intent intent= new Intent();
+    intent.setAction("android.intent.action.VIEW");
+    Uri content_url = Uri.parse(url);
+    intent.setData(content_url);
     mWXSDKInstance.getContext().startActivity(intent);
   }
 }
