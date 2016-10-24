@@ -229,7 +229,7 @@ public class WXAttr implements Map<String, Object>,Cloneable {
   }
 
   public WXAttr(@NonNull Map<String, Object> map) {
-    this.map=map;
+    this.map = new HashMap<>(map);
   }
   public static String getPrefix(Map<String, Object> attr) {
     if (attr == null) {
@@ -478,8 +478,4 @@ public class WXAttr implements Map<String, Object>,Cloneable {
     return map.values();
   }
 
-  @Override
-  protected WXAttr clone(){
-    return new WXAttr(new HashMap<>(map));
-  }
 }

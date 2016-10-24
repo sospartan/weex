@@ -206,6 +206,7 @@ package com.taobao.weex.dom;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Store value of component event
@@ -213,6 +214,18 @@ import java.util.ArrayList;
 public class WXEvent extends ArrayList<String> implements Serializable, Cloneable {
 
   private static final long serialVersionUID = -8186587029452440107L;
+
+  public WXEvent() {
+    super();
+  }
+
+  public WXEvent(int capacity) {
+    super(capacity);
+  }
+
+  public WXEvent(Collection<? extends String> collection) {
+    super(collection);
+  }
 
   @Override
   public WXEvent clone() {

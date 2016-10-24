@@ -216,6 +216,8 @@ public class WXTextDomObject extends WXDomObject {
     atomicReference = new AtomicReference<>();
   }
 
+
+
   @Override
   public WXTextDomObject clone() {
     WXTextDomObject dom = null;

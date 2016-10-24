@@ -249,6 +249,9 @@ public class WXDomObject extends CSSNode implements Cloneable {
 
   private WXSDKInstance mWXSDKInstance;
 
+  public WXDomObject(){}
+
+
   /** package **/ String mRef = ROOT;
 
   /** package **/ String mType = WXBasicComponentType.DIV;
@@ -366,14 +369,14 @@ public class WXDomObject extends CSSNode implements Cloneable {
   }
 
   protected final void copyFields(WXDomObject dest) {
-    dest.cssstyle.copy(this.cssstyle);
+    dest.cssstyle.copyFrom(this.cssstyle);
     dest.setModifyHeight(isModifyHeight);
     dest.setModifyWidth(isModifyWidth);
     dest.mRef = mRef;
     dest.mType = mType;
-    dest.mStyles = mStyles == null ? null : mStyles.clone();//mStyles == null ? null : mStyles.clone();
-    dest.mAttributes = mAttributes == null ? null : mAttributes.clone();//mAttrs == null ? null : mAttrs.clone();
-    dest.mEvents = mEvents == null ? null : mEvents.clone();
+    dest.mStyles = mStyles == null ? null : new WXStyle(mStyles);
+    dest.mAttributes = mAttributes == null ? null : new WXAttr(mAttributes);
+    dest.mEvents = mEvents == null ? null : new WXEvent(mEvents);
     dest.csslayout.copy(this.csslayout);
   }
 
@@ -756,10 +759,11 @@ public class WXDomObject extends CSSNode implements Cloneable {
     }
     WXDomObject dom = null;
     try {
-//      if((dom = WXDomObjectFactory.acquire(WXDomObject.class))==null) {
+      if((dom = WXDomObjectFactory.acquire(this.getClass()))==null) {
         dom = new WXDomObject();
-//      }
-      WXLogUtils.e("domobj number:"+dom.mNumber);
+        WXLogUtils.e("new domobj number:"+dom.mNumber);
+      }
+
       copyFields(dom);
     } catch (Exception e) {
       if (WXEnvironment.isApkDebugable()) {

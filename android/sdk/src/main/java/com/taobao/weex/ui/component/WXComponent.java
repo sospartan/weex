@@ -1106,6 +1106,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     removeStickyStyle();
     if (mDomObj != null) {
       mDomObj.destroy();
+      mDomObj.recycle();
       mDomObj = null;
     }
   }

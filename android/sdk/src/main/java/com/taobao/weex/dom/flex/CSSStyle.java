@@ -71,7 +71,7 @@ public class CSSStyle {
     maxHeight = CSSConstants.UNDEFINED;
   }
 
-  public void copy(CSSStyle cssStyle) {
+  public void copyFrom(CSSStyle cssStyle) {
     direction = cssStyle.direction;
     flexDirection = cssStyle.flexDirection;
     justifyContent = cssStyle.justifyContent;
@@ -81,9 +81,10 @@ public class CSSStyle {
     positionType = cssStyle.positionType;
     flexWrap = cssStyle.flexWrap;
     flex = cssStyle.flex;
-    margin = cssStyle.margin;
-    padding = cssStyle.padding;
-    border = cssStyle.border;
+
+    cssStyle.margin.copyTo(margin);
+    cssStyle.padding.copyTo(padding);
+    cssStyle.border.copyTo(border);
     position[POSITION_TOP] = cssStyle.position[POSITION_TOP];
     position[POSITION_BOTTOM] = cssStyle.position[POSITION_BOTTOM];
     position[POSITION_LEFT] = cssStyle.position[POSITION_LEFT];

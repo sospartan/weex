@@ -233,14 +233,14 @@ public class WXStyle implements Map<String, Object>,Cloneable {
   private static final long serialVersionUID = 611132641365274134L;
   public static final int UNSET = -1;
 
-  private @NonNull final Map<String,Object> map;
+  private @NonNull final HashMap<String,Object> map;
 
   public WXStyle(){
     map = new HashMap<>();
   }
 
   public WXStyle(@NonNull Map<String,Object> map){
-    this.map=map;
+    this.map = new HashMap<>(map);
   }
 
 
@@ -712,8 +712,4 @@ public class WXStyle implements Map<String, Object>,Cloneable {
     return map.values();
   }
 
-  @Override
-  protected WXStyle clone(){
-    return new WXStyle(new HashMap<>(map));
-  }
 }

@@ -223,6 +223,21 @@ public class Spacing /**implements Cloneable**/
            && FloatUtil.floatsEqual(get(BOTTOM), spacing.get(BOTTOM));
   }
 
+  public void copyTo(Spacing target){
+    System.arraycopy(mSpacing, 0, target.mSpacing, 0, mSpacing.length);
+
+    if(mDefaultSpacing == null){
+      target.mDefaultSpacing = null;
+    }else{
+      target.mDefaultSpacing = new float[mDefaultSpacing.length];
+      System.arraycopy(mDefaultSpacing, 0, target.mDefaultSpacing, 0, mDefaultSpacing.length);
+
+      target.mValueFlags = mValueFlags;
+      target.mHasAliasesSet = mHasAliasesSet;
+    }
+
+  }
+
   //	@Override
   //	public Spacing clone(){
   //
