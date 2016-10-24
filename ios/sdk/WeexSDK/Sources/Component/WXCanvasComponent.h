@@ -6,8 +6,12 @@
  * For the full copyright and license information,please view the LICENSE file in the root directory of this source tree.
  */
 
-#import "WXComponent.h"
+#import <WeexSDK/WeexSDK.h>
+#import "WXCanvasModule.h"
+#import <GLKit/GLKit.h>
 
-@interface WXTextAreaComponent : WXComponent<UITextViewDelegate>
+@interface WXCanvasComponent : WXComponent <GLKViewDelegate>
+
+- (void) addDrawActions:(NSArray *)actions canvasModule:(WXCanvasModule*)canvasModule;
 
 @end

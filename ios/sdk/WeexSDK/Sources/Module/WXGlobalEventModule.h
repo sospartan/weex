@@ -9,9 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "WXModuleProtocol.h"
 
-@interface WXStreamModule : NSObject <WXModuleProtocol>
-
-- (void)fetch:(NSDictionary *)options callback:(WXModuleCallback)callback progressCallback:(WXModuleKeepAliveCallback)progressCallback;
-- (void)sendHttp:(NSDictionary*)param callback:(WXModuleCallback)callback;
+@interface WXGlobalEventModule : NSObject <WXModuleProtocol>
 
 @end

@@ -7,11 +7,11 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "WXModuleProtocol.h"
+#import "WXThreadSafeMutableDictionary.h"
 
-@interface WXStreamModule : NSObject <WXModuleProtocol>
+@interface WXRuleManager : NSObject
 
-- (void)fetch:(NSDictionary *)options callback:(WXModuleCallback)callback progressCallback:(WXModuleKeepAliveCallback)progressCallback;
-- (void)sendHttp:(NSDictionary*)param callback:(WXModuleCallback)callback;
-
++ (WXRuleManager *)sharedInstance;
+- (void)addRule:(NSString *)type rule:(NSDictionary *)rule;
+- (WXThreadSafeMutableDictionary *)getRule:(NSString *)type;
 @end

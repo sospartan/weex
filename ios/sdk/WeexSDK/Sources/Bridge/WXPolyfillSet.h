@@ -7,11 +7,25 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "WXModuleProtocol.h"
+#import <JavaScriptCore/JavaScriptCore.h>
 
-@interface WXStreamModule : NSObject <WXModuleProtocol>
+@protocol WXPolyfillSetJSExports <JSExport>
 
-- (void)fetch:(NSDictionary *)options callback:(WXModuleCallback)callback progressCallback:(WXModuleKeepAliveCallback)progressCallback;
-- (void)sendHttp:(NSDictionary*)param callback:(WXModuleCallback)callback;
++ (instancetype)create;
+
+- (BOOL)has:(id)value;
+
+- (NSUInteger)size;
+
+- (void)add:(id)value;
+
+- (BOOL)delete:(id)value;
+
+- (void)clear;
 
 @end
+
+@interface WXPolyfillSet : NSObject <WXPolyfillSetJSExports>
+
+@end
+
