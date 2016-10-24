@@ -543,6 +543,7 @@ public class CSSNode {
 
     cssstyle.reset();
     csslayout.resetResult();
+    lastLayout.resetResult();
     lineIndex = 0;
     mLayoutState = LayoutState.DIRTY;
   }

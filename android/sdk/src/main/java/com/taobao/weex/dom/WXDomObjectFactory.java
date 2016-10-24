@@ -205,15 +205,40 @@
 package com.taobao.weex.dom;
 
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pools;
 import android.text.TextUtils;
 
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.utils.WXLogUtils;
 
+import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Factory class for creating {@link WXDomObject}
  */
 public class WXDomObjectFactory {
+
+
+  private static Map<Class,DomObjPool<WXDomObject>> sPools = new HashMap<>();
+
+  private static class DomObjPool <T extends WXDomObject> extends Pools.SynchronizedPool<T>{
+    /**
+     * Creates a new instance.
+     *
+     * @param maxPoolSize The max pool size.
+     * @throws IllegalArgumentException If the max pool size is less than zero.
+     */
+    public DomObjPool(int maxPoolSize) {
+      super(maxPoolSize);
+    }
+
+    @Override
+    public boolean release(T element) {
+      return super.release(element);
+    }
+  };
 
   public static @Nullable WXDomObject newInstance(String type) {
     if (TextUtils.isEmpty(type)) {
@@ -230,15 +255,41 @@ public class WXDomObjectFactory {
     }
 
     try {
-      if (WXDomObject.class.isAssignableFrom(clazz)) {
-        WXDomObject domObject = clazz.getConstructor()
-            .newInstance();
-        return domObject;
-      }
+        WXDomObject dom;
+        if((dom = acquire(clazz))==null && WXDomObject.class.isAssignableFrom(clazz)) {
+          dom = clazz.getConstructor()
+              .newInstance();
+        }else{
+          return dom;
+        }
+        return dom;
     } catch (Exception e) {
       WXLogUtils.e("WXDomObjectFactory Exception type:[" + type + "] ", e);
     }
 
     return null;
+  }
+
+  private static <T extends WXDomObject> DomObjPool<WXDomObject> getPool(Class<T> domClass){
+    DomObjPool<WXDomObject> pool = sPools.get(domClass);
+    if(pool == null){
+      pool = new DomObjPool<>(10000);
+      sPools.put(domClass,pool);
+    }
+    return pool;
+  }
+
+  public static void recycle(WXDomObject domObject) {
+    WXLogUtils.e("recycle "+domObject.mNumber);
+    getPool(domObject.getClass()).release(domObject);
+  }
+
+  public static<T extends WXDomObject> T acquire(Class<T> wxDomObjectClass) {
+    T obj = (T) getPool(wxDomObjectClass).acquire();
+    if(obj != null) {
+      obj.reset();
+      WXLogUtils.e("acquire " + obj.mNumber);
+    }
+    return obj;
   }
 }

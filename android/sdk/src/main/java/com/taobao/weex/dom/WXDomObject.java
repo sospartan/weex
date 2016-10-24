@@ -206,6 +206,7 @@ package com.taobao.weex.dom;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pools;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -225,6 +226,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * WXDomObject contains all the info about the given node, including style, attribute and event.
@@ -241,6 +243,9 @@ public class WXDomObject extends CSSNode implements Cloneable {
   public static final String TRANSFORM = "transform";
   public static final String TRANSFORM_ORIGIN = "transformOrigin";
   private AtomicBoolean sDestroy = new AtomicBoolean();
+
+  private static AtomicInteger sNumberGenerator = new AtomicInteger(0);
+  public final int mNumber = sNumberGenerator.incrementAndGet();
 
   private WXSDKInstance mWXSDKInstance;
 
@@ -751,7 +756,10 @@ public class WXDomObject extends CSSNode implements Cloneable {
     }
     WXDomObject dom = null;
     try {
-      dom = new WXDomObject();
+//      if((dom = WXDomObjectFactory.acquire(WXDomObject.class))==null) {
+        dom = new WXDomObject();
+//      }
+      WXLogUtils.e("domobj number:"+dom.mNumber);
       copyFields(dom);
     } catch (Exception e) {
       if (WXEnvironment.isApkDebugable()) {
@@ -760,6 +768,28 @@ public class WXDomObject extends CSSNode implements Cloneable {
     }
 
     return dom;
+  }
+
+  @Override
+  public void reset() {
+    super.reset();
+
+    sDestroy.set(false);
+    getStyles().clear();
+    getAttrs().clear();
+    getEvents().clear();
+    if(mDomChildren != null)
+      mDomChildren.clear();
+    parent = null;
+    mRef = "";
+    mType = "";
+    if(fixedStyleRefs != null){
+      fixedStyleRefs.clear();
+    }
+    mYoung = false;
+    isModifyHeight = false;
+    isModifyWidth = false;
+
   }
 
   public void destroy() {
@@ -834,6 +864,10 @@ public class WXDomObject extends CSSNode implements Cloneable {
       }
 
       return domObject;
+  }
+
+  public void recycle() {
+    WXDomObjectFactory.recycle(this);
   }
 
   interface Consumer{

@@ -381,7 +381,11 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     }
 
     boolean nullParent = mParent == null;//parent is nullable
+    WXDomObject temp = mDomObj;
     mDomObj = domObject;
+    if(temp != mDomObj){
+      temp.recycle();
+    }
 
     //offset by sibling
     int siblingOffset = nullParent?0:mParent.getChildrenLayoutTopOffset();
@@ -753,7 +757,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
         scroller = (Scrollable) container;
         return scroller;
       }
-      if (container.getRef().equals(WXDomObject.ROOT)) {
+      if (WXDomObject.ROOT.equals(container.getRef())) {
         return null;
       }
       component = container;
@@ -845,7 +849,11 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     if (dom == null) {
       return;
     }
+    WXDomObject temp = mDomObj;
     mDomObj = dom;
+    if(temp != dom) {
+      temp.recycle();
+    }
   }
 
   public final void removeEvent(String type) {
@@ -1098,6 +1106,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     removeStickyStyle();
     if (mDomObj != null) {
       mDomObj.destroy();
+      mDomObj = null;
     }
   }
 

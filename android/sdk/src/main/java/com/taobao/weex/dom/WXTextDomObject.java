@@ -32,6 +32,7 @@ import com.taobao.weex.dom.flex.CSSConstants;
 import com.taobao.weex.dom.flex.CSSNode;
 import com.taobao.weex.dom.flex.FloatUtil;
 import com.taobao.weex.dom.flex.MeasureOutput;
+import com.taobao.weex.ui.component.WXBasicComponentType;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.ui.component.WXTextDecoration;
 import com.taobao.weex.utils.WXDomUtils;
@@ -195,10 +196,31 @@ public class WXTextDomObject extends WXDomObject {
   }
 
   @Override
+  public void reset() {
+    super.reset();
+    mIsColorSet = false;
+    hasBeenMeasured = false;
+    mFontFamily = null;
+    mFontStyle = UNSET;
+    mFontWeight = UNSET;
+    mLineHeight = UNSET;
+    previousWidth = Float.NaN;
+    mText = null;
+    textOverflow = null;
+    mAlignment = null;
+    mTextDecoration = WXTextDecoration.NONE;
+    mTextPaint.reset();
+    mTextPaint.setFlags(TextPaint.ANTI_ALIAS_FLAG);
+    spanned = null;
+    layout = null;
+    atomicReference = new AtomicReference<>();
+  }
+
+  @Override
   public WXTextDomObject clone() {
     WXTextDomObject dom = null;
     try {
-      dom = new WXTextDomObject();
+      dom = (WXTextDomObject) WXDomObjectFactory.newInstance(WXBasicComponentType.TEXT);
       copyFields(dom);
       dom.hasBeenMeasured = hasBeenMeasured;
       dom.atomicReference = atomicReference;
