@@ -248,7 +248,7 @@ android.libraryVariants.all { variant ->
 
 bintray {
     user = "alibabaweex"
-    key = "171795c1feb7cff7766c06dafa7c7b4672653a50"
+    key = ""
     configurations = ['archives']
     pkg {
         repo = "maven"
