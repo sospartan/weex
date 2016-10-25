@@ -286,26 +286,6 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     return mRef;
   }
 
-  @Override
-  public float getLayoutLeft() {
-    return super.getPosition().get(Spacing.LEFT);
-  }
-
-  @Override
-  public float getLayoutRight() {
-    return super.getPosition().get(Spacing.RIGHT);
-  }
-
-  @Override
-  public float getLayoutTop() {
-    return super.getPosition().get(Spacing.TOP);
-  }
-
-  @Override
-  public float getLayoutBottom() {
-    return super.getPosition().get(Spacing.BOTTOM);
-  }
-
   public String getType(){
     return mType;
   }
