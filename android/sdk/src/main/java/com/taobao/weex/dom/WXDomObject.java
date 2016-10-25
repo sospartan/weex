@@ -245,11 +245,14 @@ public class WXDomObject extends CSSNode implements Cloneable {
   private AtomicBoolean sDestroy = new AtomicBoolean();
 
   private static AtomicInteger sNumberGenerator = new AtomicInteger(0);
-  public final int mNumber = sNumberGenerator.incrementAndGet();
+  final int mNumber = sNumberGenerator.incrementAndGet();
+  private boolean mIsRecycled = false;
 
   private WXSDKInstance mWXSDKInstance;
 
-  public WXDomObject(){}
+  public WXDomObject(){
+    WXLogUtils.e("new domobj number:"+mNumber);
+  }
 
 
   /** package **/ String mRef = ROOT;
@@ -312,7 +315,15 @@ public class WXDomObject extends CSSNode implements Cloneable {
     return mType;
   }
 
+
+  private void throwIfRecycled(){
+    if(mIsRecycled){
+      throw new IllegalAccessError("dom is recycled.");
+    }
+  }
+
   public @NonNull WXStyle getStyles(){
+    throwIfRecycled();
     if(mStyles == null ){
       mStyles = new WXStyle();
     }
@@ -320,6 +331,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
   }
 
   public @NonNull WXAttr getAttrs(){
+    throwIfRecycled();
     if(mAttributes == null){
       mAttributes = new WXAttr();
     }
@@ -327,6 +339,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
   }
 
   public @NonNull WXEvent getEvents(){
+    throwIfRecycled();
     if(mEvents == null){
       mEvents = new WXEvent();
     }
@@ -488,6 +501,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
   }
 
   public void remove(WXDomObject child) {
+    throwIfRecycled();
     if (child == null || mDomChildren == null || sDestroy.get()) {
       return;
     }
@@ -500,6 +514,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
   }
 
   public void removeFromDom(WXDomObject child) {
+    throwIfRecycled();
     if (child == null || mDomChildren == null || sDestroy.get()) {
       return;
     }
@@ -528,6 +543,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
    *              as the last child of current dom object.
    */
   public void add(WXDomObject child, int index) {
+    throwIfRecycled();
     if (child == null || index < -1 || sDestroy.get()) {
       return;
     }
@@ -605,6 +621,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
   }
 
   public void updateAttr(Map<String, Object> attrs) {
+    throwIfRecycled();
     if (attrs == null || attrs.isEmpty()) {
       return;
     }
@@ -616,6 +633,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
   }
 
   public void updateStyle(Map<String, Object> styles) {
+    throwIfRecycled();
     if (styles == null || styles.isEmpty()) {
       return;
     }
@@ -759,11 +777,7 @@ public class WXDomObject extends CSSNode implements Cloneable {
     }
     WXDomObject dom = null;
     try {
-      if((dom = WXDomObjectFactory.acquire(this.getClass()))==null) {
-        dom = new WXDomObject();
-        WXLogUtils.e("new domobj number:"+dom.mNumber);
-      }
-
+      dom = WXDomObjectFactory.newInstance(this.getType());
       copyFields(dom);
     } catch (Exception e) {
       if (WXEnvironment.isApkDebugable()) {
@@ -777,7 +791,6 @@ public class WXDomObject extends CSSNode implements Cloneable {
   @Override
   public void reset() {
     super.reset();
-
     sDestroy.set(false);
     getStyles().clear();
     getAttrs().clear();
@@ -872,6 +885,11 @@ public class WXDomObject extends CSSNode implements Cloneable {
 
   public void recycle() {
     WXDomObjectFactory.recycle(this);
+    mIsRecycled = true;
+  }
+
+  public void onAcquired(){
+    mIsRecycled = false;
   }
 
   interface Consumer{

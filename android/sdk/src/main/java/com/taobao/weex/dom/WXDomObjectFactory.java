@@ -273,13 +273,14 @@ public class WXDomObjectFactory {
   private static <T extends WXDomObject> DomObjPool<WXDomObject> getPool(Class<T> domClass){
     DomObjPool<WXDomObject> pool = sPools.get(domClass);
     if(pool == null){
-      pool = new DomObjPool<>(10000);
+      pool = new DomObjPool<>(1000);
       sPools.put(domClass,pool);
     }
     return pool;
   }
 
   public static void recycle(WXDomObject domObject) {
+    domObject.reset();
     WXLogUtils.e("recycle "+domObject.mNumber);
     getPool(domObject.getClass()).release(domObject);
   }
@@ -287,7 +288,7 @@ public class WXDomObjectFactory {
   public static<T extends WXDomObject> T acquire(Class<T> wxDomObjectClass) {
     T obj = (T) getPool(wxDomObjectClass).acquire();
     if(obj != null) {
-      obj.reset();
+      obj.onAcquired();
       WXLogUtils.e("acquire " + obj.mNumber);
     }
     return obj;
