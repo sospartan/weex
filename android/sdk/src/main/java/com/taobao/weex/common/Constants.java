@@ -211,6 +211,8 @@ public class Constants {
   }
 
   public interface Name {
+    String DEFAULT_WIDTH = "defaultWidth";
+    String DEFAULT_HEIGHT = "defaultHeight";
     String HREF = "href";
     String WIDTH = "width";
     String MIN_WIDTH = "minWidth";
@@ -318,6 +320,8 @@ public class Constants {
     String INTERVAL = "interval";
     String PLAY_STATUS = "playStatus";
     String FONT_FACE = "fontFace";
+    String MAX = "max";
+    String MIN = "min";
   }
 
   public interface Value {

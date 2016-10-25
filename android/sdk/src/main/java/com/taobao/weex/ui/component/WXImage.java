@@ -218,6 +218,7 @@ import com.taobao.weex.annotation.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXImageSharpen;
 import com.taobao.weex.common.WXImageStrategy;
+import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.ComponentCreator;
 import com.taobao.weex.ui.view.WXImageView;
@@ -346,7 +347,7 @@ public class WXImage extends WXComponent<ImageView> {
         if (!result && imageView != null) {
           imageView.setImageDrawable(null);
         }
-        if (getDomObject() != null && getDomObject().containsEvent(Constants.Event.ONLOAD)) {
+        if (getDomObject() != null && containsEvent(Constants.Event.ONLOAD)) {
           Map<String, Object> params = new HashMap<>();
           params.put("success", result);
           getInstance().fireEvent(getDomObject().getRef(), Constants.Event.ONLOAD, params);
@@ -369,7 +370,7 @@ public class WXImage extends WXComponent<ImageView> {
   public void updateProperties(Map<String, Object> props) {
     super.updateProperties(props);
     WXImageView imageView;
-    WXDomObject imageDom;
+    ImmutableDomObject imageDom;
     if ((imageDom = getDomObject()) != null &&
         getHostView() instanceof WXImageView) {
       imageView = (WXImageView) getHostView();

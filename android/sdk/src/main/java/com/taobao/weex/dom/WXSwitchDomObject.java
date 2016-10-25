@@ -204,46 +204,51 @@
  */
 package com.taobao.weex.dom;
 
-import com.taobao.weex.utils.WXViewUtils;
+import android.view.View;
 
-public class WXSwitchDomObject extends WXDomObject{
-    private static final float FIXED_WIDTH = 100;
-    private static final float FIXED_HEIGHT = 60;
+import com.facebook.csslayout.CSSMeasureMode;
+import com.facebook.csslayout.CSSNodeAPI;
+import com.facebook.csslayout.MeasureOutput;
+import com.taobao.weex.ui.view.WXSwitchView;
+import com.taobao.weex.utils.WXLogUtils;
 
-    @Override
-    public void layoutBefore() {
-        super.layoutBefore();
-        setStyleWidth(FIXED_WIDTH);
-        setStyleHeight(FIXED_HEIGHT);
-    }
+public class WXSwitchDomObject extends WXDomObject {
 
-    @Override
-    public void setStyleMaxWidth(float maxWidth) {
-        super.setStyleMaxWidth(WXViewUtils.getRealPxByWidth(FIXED_WIDTH));
-    }
 
-    @Override
-    public void setStyleMinWidth(float minWidth) {
-        super.setStyleMinWidth(WXViewUtils.getRealPxByWidth(FIXED_WIDTH));
-    }
+  private static final MeasureFunction SWITCH_MEASURE_FUNCTION = new MeasureFunction() {
+
+    private boolean measured;
+    private int mWidth;
+    private int mHeight;
 
     @Override
-    public void setStyleMaxHeight(float maxHeight) {
-        super.setStyleMaxHeight(WXViewUtils.getRealPxByWidth(FIXED_HEIGHT));
+    public void measure(CSSNodeAPI node,
+                        float width,
+                        CSSMeasureMode widthMode,
+                        float height,
+                        CSSMeasureMode heightMode,
+                        MeasureOutput measureOutput) {
+      try {
+        if (!measured) {
+          WXSwitchView wxSwitchView = new WXSwitchView(((WXDomObject) node).getWXSDKInstance().getContext());
+          int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+          int widthSpec = View.MeasureSpec.makeMeasureSpec((int) width, View.MeasureSpec.AT_MOST);
+          wxSwitchView.measure(widthSpec, heightSpec);
+          mWidth = wxSwitchView.getMeasuredWidth();
+          mHeight = wxSwitchView.getMeasuredHeight();
+          measured = true;
+        }
+        measureOutput.width = mWidth;
+        measureOutput.height = mHeight;
+      } catch (RuntimeException e) {
+        WXLogUtils.e(TAG, WXLogUtils.getStackTrace(e));
+      }
     }
+  };
 
-    @Override
-    public void setStyleMinHeight(float minHeight) {
-        super.setStyleMinHeight(WXViewUtils.getRealPxByWidth(FIXED_HEIGHT));
-    }
+  public WXSwitchDomObject() {
+    super();
+    setMeasureFunction(SWITCH_MEASURE_FUNCTION);
+  }
 
-    @Override
-    public void setStyleWidth(float width) {
-        super.setStyleWidth(WXViewUtils.getRealPxByWidth(FIXED_WIDTH));
-    }
-
-    @Override
-    public void setStyleHeight(float height) {
-        super.setStyleHeight(WXViewUtils.getRealPxByWidth(FIXED_HEIGHT));
-    }
 }

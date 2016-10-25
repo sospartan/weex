@@ -423,27 +423,16 @@ class WXDomStatement {
             @Override
             public void execute() {
               mWXRenderManager.setLayout(mInstanceId, copy.getRef(), copy);
+              if(copy.getExtra() != null) {
+                mWXRenderManager.setExtra(mInstanceId, copy.getRef(), copy.getExtra());
+              }
             }
 
             @Override
             public String toString() {
-              return "setLayout";
+              return "setLayout & setExtra";
             }
           });
-          if (dom.getExtra() != null) {
-            mNormalTasks.add(new IWXRenderTask() {
-
-              @Override
-              public void execute() {
-                mWXRenderManager.setExtra(mInstanceId, copy.getRef(), copy.getExtra());
-              }
-
-              @Override
-              public String toString() {
-                return "setExtra";
-              }
-            });
-          }
         }
       }
     }
@@ -536,7 +525,7 @@ class WXDomStatement {
       return;
     }
     domObject.old();
-    component.updateDom(domObject.clone());
+    component.updateDom(domObject);
     if (component instanceof WXVContainer) {
       WXVContainer container = (WXVContainer) component;
       int count = container.childCount();
@@ -569,7 +558,7 @@ class WXDomStatement {
 
     //only non-root has parent.
     WXDomObject parent;
-    WXDomObject domObject = WXDomObject.parse(dom);
+    WXDomObject domObject = WXDomObject.parse(dom,instance);
 
     if (domObject == null || mRegistry.containsKey(domObject.getRef())) {
       if (WXEnvironment.isApkDebugable()) {
@@ -912,6 +901,10 @@ class WXDomStatement {
       return;
     }
     domObject.addEvent(type);
+    //sync dom change to component
+    AddDomInfo info = mAddDom.get(ref);
+    WXComponent component = info.component;
+    component.updateDom(domObject);
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
@@ -952,6 +945,10 @@ class WXDomStatement {
       return;
     }
     domObject.removeEvent(type);
+    //sync dom change to component
+    AddDomInfo info = mAddDom.get(ref);
+    WXComponent component = info.component;
+    component.updateDom(domObject);
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override

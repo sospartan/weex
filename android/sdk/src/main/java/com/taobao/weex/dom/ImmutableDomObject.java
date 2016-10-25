@@ -202,85 +202,30 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.view;
+package com.taobao.weex.dom;
 
-import android.content.Context;
-import android.os.Build;
-import android.view.MotionEvent;
-import android.view.ViewParent;
-import android.widget.EditText;
 
-import com.taobao.weex.common.WXThread;
-import com.taobao.weex.ui.view.gesture.WXGesture;
-import com.taobao.weex.ui.view.gesture.WXGestureObservable;
+import com.facebook.csslayout.Spacing;
 
 /**
- * Wrapper class for editText
+ * Created by sospartan on 25/10/2016.
  */
-public class WXEditText extends EditText implements WXGestureObservable {
 
-  private WXGesture wxGesture;
-  private int mLines = 1;
-
-  public WXEditText(Context context) {
-    super(context);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      setBackground(null);
-    } else {
-      setBackgroundDrawable(null);
-    }
-  }
-
-  @Override
-  public void registerGestureListener(WXGesture wxGesture) {
-    this.wxGesture = wxGesture;
-  }
-
-  @Override
-  public void setLines(int lines) {
-    super.setLines(lines);
-    mLines = lines;
-  }
-
-  @Override
-  public boolean onTouchEvent(MotionEvent event) {
-    boolean result = super.onTouchEvent(event);
-    if (wxGesture != null) {
-      result |= wxGesture.onTouch(this, event);
-    }
-
-    ViewParent parent = getParent();
-    if(parent != null){
-      switch (event.getAction() & MotionEvent.ACTION_MASK){
-        case MotionEvent.ACTION_DOWN:
-          if(mLines < getLineCount()) {
-            //scrollable
-            parent.requestDisallowInterceptTouchEvent(true);
-          }
-          break;
-        case MotionEvent.ACTION_UP:
-        case MotionEvent.ACTION_CANCEL:
-          parent.requestDisallowInterceptTouchEvent(false);
-          break;
-      }
-    }
-    return result;
-  }
-
-  @Override
-  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-    super.onSizeChanged(w, h, oldw, oldh);
-    int contentH = getLayout().getHeight();
-    //TODO: known issue,set movement to null will make cursor disappear.
-    if(h < contentH){
-      setMovementMethod(null);
-    }else{
-      setMovementMethod(getDefaultMovementMethod());
-    }
-  }
-  
-  @Override
-  public boolean postDelayed(Runnable action, long delayMillis) {
-    return super.postDelayed(WXThread.secure(action), delayMillis);
-  }
+public interface ImmutableDomObject {
+  String getRef();
+  Spacing getMargin();
+  float getLayoutWidth();
+  float getLayoutHeight();
+  float getLayoutLeft();
+  float getLayoutRight();
+  float getLayoutTop();
+  float getLayoutBottom();
+  boolean isFixed();
+  WXStyle getStyles();
+  WXEvent getEvents();
+  WXAttr getAttrs();
+  Spacing getPadding();
+  Spacing getBorder();
+  Object getExtra();
+  String getType();
 }

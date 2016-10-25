@@ -223,6 +223,7 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.dom.WXStyle;
+import com.taobao.weex.ui.component.helper.WXTimeInputHelper;
 import com.taobao.weex.ui.view.WXEditText;
 import com.taobao.weex.utils.WXResourceUtils;
 import com.taobao.weex.utils.WXUtils;
@@ -239,6 +240,8 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
   private String mBeforeText = "";
   private boolean mAutoFocus;
   private String mType = "text";
+  private String mMax = null;
+  private String mMin = null;
 
   public AbstractEditComponent(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, boolean isLazy) {
     super(instance, dom, parent, isLazy);
@@ -247,9 +250,29 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
 
   @Override
   protected WXEditText initComponentHostView(@NonNull Context context) {
-    WXEditText inputView = new WXEditText(context);
+    final WXEditText inputView = new WXEditText(context);
     appleStyleAfterCreated(inputView);
     return inputView;
+  }
+
+  private void applyOnClickListener() {
+    addClickListener(new OnClickListener() {
+      @Override
+      public void onHostViewClick() {
+        switch (mType) {
+          case Constants.Value.DATE:
+            WXTimeInputHelper.pickDate(mMax, mMin, getHostView());
+            break;
+          case Constants.Value.TIME:
+            WXTimeInputHelper.pickTime(getHostView());
+            break;
+        }
+      }
+    });
+  }
+
+  protected int getVerticalGravity(){
+    return Gravity.CENTER_VERTICAL;
   }
 
   /**
@@ -263,7 +286,7 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
     if (textAlign <= 0) {
       textAlign = Gravity.LEFT;
     }
-    editText.setGravity(textAlign | Gravity.CENTER_VERTICAL);
+    editText.setGravity(textAlign | getVerticalGravity());
     int colorInt = WXResourceUtils.getColor("#999999");
     if (colorInt != Integer.MIN_VALUE) {
       editText.setHintTextColor(colorInt);
@@ -392,6 +415,17 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
         if (maxlength != null)
           setMaxLength(maxlength);
         return true;
+      case Constants.Name.MAXLENGTH:
+        Integer maxLength = WXUtils.getInteger(param, null);
+        if (maxLength != null)
+          setMaxLength(maxLength);
+          return true;
+      case Constants.Name.MAX:
+        setMax(String.valueOf(param));
+        return true;
+      case Constants.Name.MIN:
+        setMin(String.valueOf(param));
+        return true;
     }
     return super.setProperty(key, param);
   }
@@ -421,6 +455,12 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
     }
     mType = type;
     ((EditText) getHostView()).setRawInputType(getInputType(mType));
+    switch (mType) {
+      case Constants.Value.DATE:
+      case Constants.Value.TIME:
+        applyOnClickListener();
+        break;
+    }
   }
 
   @WXComponentProp(name = Constants.Name.AUTOFOCUS)
@@ -452,11 +492,13 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
 
   @WXComponentProp(name = Constants.Name.VALUE)
   public void setValue(String value){
-    if(getHostView() == null){
+    WXEditText view;
+    if((view = getHostView()) == null){
       return;
     }
 
-    getHostView().setText(value);
+    view.setText(value);
+    view.setSelection(value == null?0:value.length());
   }
 
   @WXComponentProp(name = Constants.Name.COLOR)
@@ -517,6 +559,7 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
    * @param maxLength
    */
   @WXComponentProp(name = Constants.Name.MAXLENGTH)
+  @Deprecated
   public void setMaxlength(int maxLength) {
     setMaxLength(maxLength);
   }
@@ -528,7 +571,8 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
         inputType = InputType.TYPE_CLASS_TEXT;
         break;
       case Constants.Value.DATE:
-        inputType = InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE;
+        inputType = InputType.TYPE_NULL;
+        getHostView().setFocusable(false);
         break;
       case Constants.Value.DATETIME:
         inputType = InputType.TYPE_CLASS_DATETIME;
@@ -544,7 +588,8 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
         inputType = InputType.TYPE_CLASS_PHONE;
         break;
       case Constants.Value.TIME:
-        inputType = InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME;
+        inputType = InputType.TYPE_NULL;
+        getHostView().setFocusable(false);
         break;
       case Constants.Value.URL:
         inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
@@ -553,6 +598,16 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
         inputType = InputType.TYPE_CLASS_TEXT;
     }
     return inputType;
+  }
+
+  @WXComponentProp(name = Constants.Name.MAX)
+  public void setMax(String max) {
+    mMax = max;
+  }
+
+  @WXComponentProp(name = Constants.Name.MIN)
+  public void setMin(String min) {
+    mMin = min;
   }
 
   private boolean showSoftKeyboard() {
