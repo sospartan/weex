@@ -535,6 +535,18 @@ class WXDomStatement {
     }
   }
 
+  void invokeMethod(String ref, String method, JSONArray args){
+    if(mDestroy){
+      return;
+    }
+    WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId, ref);
+    if(comp == null){
+      WXLogUtils.e("DomStatement","target component not found.");
+      return;
+    }
+    comp.invoke(method,args);
+  }
+
   /**
    * Add DOM node.
    * @param dom

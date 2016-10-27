@@ -1,4 +1,4 @@
-/**
+/*
  *
  *                                  Apache License
  *                            Version 2.0, January 2004
@@ -202,88 +202,69 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui;
 
-import android.util.Pair;
+package com.alibaba.weex.benchmark;
 
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.bridge.Invoker;
-import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.ui.component.WXComponent;
-import com.taobao.weex.ui.component.WXVContainer;
+import java.util.Collections;
+import java.util.List;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.Set;
+public class BoxPlot {
 
-/**
- * Created by sospartan on 8/26/16.
- */
-public class ExternalLoaderComponentHolder implements IFComponentHolder {
-  public static final String TAG = "SimpleComponentHolder";
-  private Map<String, Invoker> mPropertyInvokers;
-  private Map<String, Invoker> mMethodInvokers;
-  private final IExternalComponentGetter mClzGetter;
-  private final String mType;
-  private Class mClass;
+  private static final String LINE = "–";
 
+  private List<Long> array;
 
-  public ExternalLoaderComponentHolder(String type,IExternalComponentGetter clzGetter) {
-    this.mClzGetter = clzGetter;
-    mType = type;
+  private float average, max, min, median, q1, q3;
+
+  public BoxPlot(List<Long> array) {
+    this.array = array;
   }
 
-  @Override
-  public void loadIfNonLazy() {
-  }
-
-  private synchronized void generate(){
-    Class clz = mClzGetter.getExternalComponentClass(mType);
-    mClass = clz;
-
-
-    Pair<Map<String, Invoker>, Map<String, Invoker>> methodPair = SimpleComponentHolder.getMethods(clz);
-    mPropertyInvokers = methodPair.first;
-    mMethodInvokers = methodPair.second;
-  }
-
-
-
-  @Override
-  public synchronized WXComponent createInstance(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-    if(mClass == null){
-      mClass = mClzGetter.getExternalComponentClass(mType);
+  public void clear() {
+    if (array != null) {
+      array.clear();
     }
-    ComponentCreator creator = new SimpleComponentHolder.ClazzComponentCreator(mClass);
-    WXComponent component = creator.createInstance(instance,node,parent,lazy);
-
-    component.bindHolder(this);
-    return component;
   }
 
-  @Override
-  public synchronized Invoker getPropertyInvoker(String name){
-    if (mPropertyInvokers == null) {
-      generate();
-    }
-
-    return mPropertyInvokers.get(name);
+  public float getAverage(){
+    return average;
   }
 
-  @Override
-  public Invoker getMethodInvoker(String name) {
-    if(mMethodInvokers == null){
-      generate();
-    }
-    return mMethodInvokers.get(name);
+  public float getMedian(){
+    return median;
   }
 
-  @Override
-  public String[] getMethods() {
-    if(mMethodInvokers == null){
-      generate();
+  public String draw() {
+    StringBuilder stringBuilder = new StringBuilder();
+    if(array!=null) {
+      calcValues();
+      stringBuilder.append("Average: ");
+      stringBuilder.append(average);
+      stringBuilder.append(", min: ");
+      stringBuilder.append(min);
+      stringBuilder.append(", q1: ");
+      stringBuilder.append(q1);
+      stringBuilder.append(", median: ");
+      stringBuilder.append(median);
+      stringBuilder.append(", q3: ");
+      stringBuilder.append(q3);
+      stringBuilder.append(", max: ");
+      stringBuilder.append(max);
     }
-    Set<String> keys = mMethodInvokers.keySet();
-    return keys.toArray(new String[keys.size()]);
+    return stringBuilder.toString();
+  }
+
+  private void calcValues() {
+    long sum = 0;
+    Collections.sort(array);
+    max = Collections.max(array);
+    min = Collections.min(array);
+    median = array.get(array.size() / 2);
+    q1 = array.get(array.size() / 4);
+    q3 = array.get(array.size() / 4 * 3);
+    for (Long value : array) {
+      sum += value;
+    }
+    average = sum / (float)array.size();
   }
 }

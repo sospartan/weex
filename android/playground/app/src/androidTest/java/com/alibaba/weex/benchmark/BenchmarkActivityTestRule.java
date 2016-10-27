@@ -1,4 +1,4 @@
-/**
+/*
  *
  *                                  Apache License
  *                            Version 2.0, January 2004
@@ -202,88 +202,38 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui;
 
-import android.util.Pair;
+package com.alibaba.weex.benchmark;
 
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.bridge.Invoker;
-import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.ui.component.WXComponent;
-import com.taobao.weex.ui.component.WXVContainer;
+import android.support.test.espresso.Espresso;
+import android.support.test.espresso.idling.CountingIdlingResource;
+import android.support.test.rule.ActivityTestRule;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.Set;
+import com.alibaba.weex.BenchmarkActivity;
 
-/**
- * Created by sospartan on 8/26/16.
- */
-public class ExternalLoaderComponentHolder implements IFComponentHolder {
-  public static final String TAG = "SimpleComponentHolder";
-  private Map<String, Invoker> mPropertyInvokers;
-  private Map<String, Invoker> mMethodInvokers;
-  private final IExternalComponentGetter mClzGetter;
-  private final String mType;
-  private Class mClass;
+class BenchmarkActivityTestRule extends ActivityTestRule<BenchmarkActivity> {
 
+  BenchmarkActivityTestRule(Class<BenchmarkActivity> activityClass) {
+    this(activityClass,true);
+  }
 
-  public ExternalLoaderComponentHolder(String type,IExternalComponentGetter clzGetter) {
-    this.mClzGetter = clzGetter;
-    mType = type;
+  BenchmarkActivityTestRule(Class<BenchmarkActivity> activityClass,boolean launchActivity) {
+    super(activityClass,false,launchActivity);
   }
 
   @Override
-  public void loadIfNonLazy() {
-  }
-
-  private synchronized void generate(){
-    Class clz = mClzGetter.getExternalComponentClass(mType);
-    mClass = clz;
-
-
-    Pair<Map<String, Invoker>, Map<String, Invoker>> methodPair = SimpleComponentHolder.getMethods(clz);
-    mPropertyInvokers = methodPair.first;
-    mMethodInvokers = methodPair.second;
-  }
-
-
-
-  @Override
-  public synchronized WXComponent createInstance(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-    if(mClass == null){
-      mClass = mClzGetter.getExternalComponentClass(mType);
+  protected void beforeActivityLaunched() {
+    if(BenchmarkActivity.countingIdlingResource==null) {
+      BenchmarkActivity.countingIdlingResource = new CountingIdlingResource
+          ("TC_Monitor_List_With_Append_Tree");
     }
-    ComponentCreator creator = new SimpleComponentHolder.ClazzComponentCreator(mClass);
-    WXComponent component = creator.createInstance(instance,node,parent,lazy);
-
-    component.bindHolder(this);
-    return component;
+    Espresso.registerIdlingResources(BenchmarkActivity.countingIdlingResource);
   }
 
   @Override
-  public synchronized Invoker getPropertyInvoker(String name){
-    if (mPropertyInvokers == null) {
-      generate();
-    }
-
-    return mPropertyInvokers.get(name);
+  protected void afterActivityFinished() {
+    super.afterActivityLaunched();
+    Espresso.unregisterIdlingResources(BenchmarkActivity.countingIdlingResource);
   }
 
-  @Override
-  public Invoker getMethodInvoker(String name) {
-    if(mMethodInvokers == null){
-      generate();
-    }
-    return mMethodInvokers.get(name);
-  }
-
-  @Override
-  public String[] getMethods() {
-    if(mMethodInvokers == null){
-      generate();
-    }
-    Set<String> keys = mMethodInvokers.keySet();
-    return keys.toArray(new String[keys.size()]);
-  }
 }
