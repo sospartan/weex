@@ -242,7 +242,7 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
   public static final String TRANSFORM_ORIGIN = "transformOrigin";
   private AtomicBoolean sDestroy = new AtomicBoolean();
 
-  private WXSDKInstance mWXSDKInstance;
+  private DomContext mDomContext;
 
   /** package **/ String mRef = ROOT;
 
@@ -312,8 +312,8 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     return mEvents;
   }
 
-  public @Nullable WXSDKInstance getWXSDKInstance() {
-    return mWXSDKInstance;
+  public @NonNull DomContext getDomContext() {
+    return mDomContext;
   }
 
   public void clearEvents(){
@@ -703,6 +703,7 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
       getChildAt(i).destroy();
       removeChildAt(i);
     }
+    mDomContext = null;
   }
 
   /** package **/
@@ -745,7 +746,7 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
         return null;
       }
       domObject.parseFromJson(json);
-      domObject.mWXSDKInstance=wxsdkInstance;
+      domObject.mDomContext = wxsdkInstance;
 
       Object children = json.get(CHILDREN);
       if (children != null && children instanceof JSONArray) {
