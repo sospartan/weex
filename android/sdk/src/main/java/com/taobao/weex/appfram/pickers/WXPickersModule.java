@@ -202,112 +202,53 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.component;
+package com.taobao.weex.appfram.pickers;
 
-import com.taobao.weappplus_sdk.BuildConfig;
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.WXSDKInstanceTest;
-import com.taobao.weex.dom.TestDomObject;
-import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.WXEvent;
-import com.facebook.csslayout.Spacing;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import com.taobao.weex.bridge.JSCallback;
+import com.taobao.weex.common.WXModule;
+import com.taobao.weex.common.WXModuleAnno;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
 /**
- * Created by gulin on 16/2/24.
+ * Created by moxun on 16/10/27.
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 19)
-public class WXDivTest {
 
-    private WXDiv mWXDiv;
-    private WXText child2;
+public class WXPickersModule extends WXModule {
 
+    private int selected;
 
-    public static WXDiv create(){
-        return create(null);
+    @WXModuleAnno
+    public void pick(List<String> items, int checked, JSCallback callback) {
+        performSinglePick(items, checked, callback);
     }
 
-    public static WXDiv create(WXVContainer parent){
-        WXDiv div = new WXDiv(WXSDKInstanceTest.createInstance(),new TestDomObject(),parent);
-        return div;
-    }
-
-
-    @Before
-    public void setUp() throws Exception {
-        WXSDKInstance instance = Mockito.mock(WXSDKInstance.class);
-        Mockito.when(instance.getContext()).thenReturn(RuntimeEnvironment.application);
-
-        WXDomObject divDom = new WXDomObject();
-        WXDomObject spy = Mockito.spy(divDom);
-        Mockito.when(spy.getPadding()).thenReturn(new Spacing());
-        Mockito.when(spy.getEvents()).thenReturn(new WXEvent());
-        Mockito.when(spy.clone()).thenReturn(divDom);
-        TestDomObject.setRef(divDom,"1");
-        mWXDiv = new WXDiv(instance, divDom, null);
-        mWXDiv.initView();
-    }
-
-    @Test
-    public void testAddChild(){
-        WXSDKInstance instance = Mockito.mock(WXSDKInstance.class);
-        Mockito.when(instance.getContext()).thenReturn(RuntimeEnvironment.application);
-
-        WXDomObject testDom = Mockito.mock(WXDomObject.class);
-        Mockito.when(testDom.getPadding()).thenReturn(new Spacing());
-        Mockito.when(testDom.clone()).thenReturn(testDom);
-        TestDomObject.setRef(testDom,"2");
-        WXText child1 = new WXText(instance, testDom, mWXDiv);
-        child1.initView();
-
-        mWXDiv.addChild(child1, 0);
-
-        assertEquals(1, mWXDiv.childCount());
-
-        WXDomObject testDom2 = Mockito.spy(new WXDomObject());
-        Mockito.when(testDom2.getPadding()).thenReturn(new Spacing());
-        Mockito.when(testDom2.clone()).thenReturn(testDom2);
-        TestDomObject.setRef(testDom2,"3");
-        child2 = new WXText(instance, testDom2, mWXDiv);
-        child2.initView();
-
-        mWXDiv.addChild(child2, -1);
-
-        assertEquals(2, mWXDiv.childCount());
-        assertEquals(child2, mWXDiv.getChild(1));
-
-        WXDomObject testDom3 = Mockito.mock(WXDomObject.class);
-        Mockito.when(testDom3.getPadding()).thenReturn(new Spacing());
-        Mockito.when(testDom3.clone()).thenReturn(testDom3);
-        TestDomObject.setRef(testDom3,"4");
-        WXText child3 = new WXText(instance, testDom3, mWXDiv);
-        child3.initView();
-
-        mWXDiv.addChild(child3, 1);
-
-        assertEquals(3, mWXDiv.childCount());
-        assertEquals(child3, mWXDiv.getChild(1));
-    }
-
-    @Test
-    public void testRemove(){
-        testAddChild();
-        mWXDiv.remove(child2,true);
-
-        assertEquals(2, mWXDiv.childCount());
+    private void performSinglePick(List<String> items, int checked, final JSCallback callback) {
+        selected = checked;
+        new AlertDialog.Builder(mWXSDKInstance.getContext())
+                .setSingleChoiceItems(items.toArray(new String[items.size()]), checked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selected = which;
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //which == -1
+                        callback.invoke(selected);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //which == -2
+                        callback.invoke(-1);
+                    }
+                })
+                .show();
     }
 }
