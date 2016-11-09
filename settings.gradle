@@ -1,0 +1,2 @@
+include 'weex_sdk'
+project(':weex_sdk').projectDir = new File(settingsDir, 'android/sdk')

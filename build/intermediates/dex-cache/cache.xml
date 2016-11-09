@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/sospartan/git/weex/android/sdk/build/intermediates/jacoco/jacocoagent.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5a97a5859c8dd11822e84bb42db92715773fa35f">
+        <dex dex="/Users/sospartan/git/weex/android/sdk/build/intermediates/pre-dexed/androidTest/debug/jacocoagent_6be3b2015150bce15e95edc9e3be05e5f4561ada.jar" />
+    </item>
+    <item
+        jar="/Users/sospartan/git/weex/android/sdk/build/intermediates/bundles/debug/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="f2affa1f569324efe0904e5d4dc1fefdfbf748a5">
+        <dex dex="/Users/sospartan/git/weex/android/sdk/build/intermediates/pre-dexed/androidTest/debug/classes_c7cfb610f98eee2be2635a9f744b2ca74992abef.jar" />
+    </item>
+
+</items>

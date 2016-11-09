@@ -23,6 +23,9 @@ allprojects {
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.hierynomus.license'
 apply plugin: 'checkstyle'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.alibaba'
 
 ext.disableCov = project.hasProperty('disableCov') ? project.getProperty('disableCov') : 'false'
 if(!disableCov.toBoolean()){
