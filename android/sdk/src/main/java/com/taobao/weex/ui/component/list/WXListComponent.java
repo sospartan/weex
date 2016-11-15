@@ -204,9 +204,11 @@
  */
 package com.taobao.weex.ui.component.list;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
@@ -215,6 +217,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -277,8 +280,8 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
 
   private ArrayMap<String, Long> mRefToViewType;
   private SparseArray<ArrayList<WXComponent>> mViewTypes;
-
   protected BounceRecyclerView bounceRecyclerView;
+  private WXRecyclerViewOnScrollListener mViewOnScrollListener = new WXRecyclerViewOnScrollListener(this);
 
   private static final int MAX_VIEWTYPE_ALLOW_CACHE = 9;
   private static boolean mAllowCacheViewHolder = true;
@@ -409,7 +412,7 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
         bounceRecyclerView.setAdapter(recyclerViewBaseAdapter);
         bounceRecyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         bounceRecyclerView.getInnerView().clearOnScrollListeners();
-        bounceRecyclerView.getInnerView().addOnScrollListener(new WXRecyclerViewOnScrollListener(this));
+        bounceRecyclerView.getInnerView().addOnScrollListener(mViewOnScrollListener);
         bounceRecyclerView.getInnerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -430,7 +433,7 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
                 for (OnWXScrollListener listener : listeners) {
                   if (listener != null) {
                     View topView = recyclerView.getChildAt(0);
-                    if (topView != null && listener != null) {
+                    if (topView != null) {
                       int y = topView.getTop();
                       listener.onScrollStateChanged(recyclerView, 0, y, newState);
                     }
@@ -452,6 +455,21 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
                 }
             }
         });
+      bounceRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+        @Override
+        public void onGlobalLayout() {
+          mViewOnScrollListener.onScrolled(bounceRecyclerView.getInnerView(),0,0);
+          View view;
+          if((view = getHostView()) == null)
+            return;
+          if(Build.VERSION.SDK_INT >=  Build.VERSION_CODES.JELLY_BEAN) {
+            view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+          }else{
+            view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+          }
+        }
+      });
       return bounceRecyclerView;
     }
 
@@ -548,15 +566,16 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
       view.postDelayed(new Runnable() {
         @Override
         public void run() {
-        if (cellComp.getHostView() != null) {
-            View cellView = cellComp.getHostView();
-            if(getOrientation() == Constants.Orientation.VERTICAL){
-                int scrollY = cellView.getTop()+offset;
-                view.smoothScrollBy(0,scrollY );
-            }else{
-                int  scrollX = cellView.getLeft()+offset;
-                view.smoothScrollBy(scrollX,0);
-            }
+          if(cellComp.getHostView() == null){
+            return;
+          }
+          View cellView = cellComp.getHostView();
+          if(getOrientation() == Constants.Orientation.VERTICAL){
+            int scrollY = cellView.getTop()+offset;
+            view.smoothScrollBy(0,scrollY );
+          }else{
+            int  scrollX = cellView.getLeft()+offset;
+            view.smoothScrollBy(scrollX,0);
           }
         }
       },50);
@@ -805,9 +824,7 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
             return;
         }
 
-        if (component != null&& holder.getComponent() != null
-                && holder.getComponent() instanceof WXCell) {
-
+        if (holder.getComponent() != null && holder.getComponent() instanceof WXCell) {
                 holder.getComponent().bindData(component);
 //              holder.getComponent().refreshData(component);
         }
