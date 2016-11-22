@@ -1,4 +1,4 @@
-/**
+/*
  *
  *                                  Apache License
  *                            Version 2.0, January 2004
@@ -202,202 +202,135 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.component;
 
-import android.content.Context;
-import android.graphics.RectF;
-import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.NonNull;
+package com.alibaba.weex.benchmark;
+
+import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.action.ViewActions;
+import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiDevice;
 import android.text.TextUtils;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
+import android.util.Log;
+import android.widget.TextView;
 
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.adapter.IWXImgLoaderAdapter;
-import com.taobao.weex.adapter.URIAdapter;
-import com.taobao.weex.annotation.Component;
-import com.taobao.weex.common.Constants;
-import com.taobao.weex.common.WXImageSharpen;
-import com.taobao.weex.common.WXImageStrategy;
-import com.taobao.weex.dom.ImmutableDomObject;
-import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.ui.ComponentCreator;
-import com.taobao.weex.ui.view.WXImageView;
-import com.taobao.weex.ui.view.border.BorderDrawable;
-import com.taobao.weex.utils.ImageDrawable;
-import com.taobao.weex.utils.WXDomUtils;
-import com.taobao.weex.utils.WXUtils;
-import com.taobao.weex.utils.WXViewUtils;
+import com.alibaba.weex.BenchmarkActivity;
+import com.taobao.weex.ui.view.WXFrameLayout;
+import com.taobao.weex.utils.WXLogUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-/**
- * Image component
- */
-@Component(lazyload = false)
-public class WXImage extends WXComponent<ImageView> {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-  public static class Ceator implements ComponentCreator {
-    public WXComponent createInstance(WXSDKInstance instance, WXDomObject node, WXVContainer parent) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-        return new WXImage(instance,node,parent);
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
+
+@RunWith(AndroidJUnit4.class)
+public class WeexNativeCompareTest {
+  private static final String TAG = "benchmark";
+  private static final int TIMES = 40;
+  private static final int FRAMES = 120;
+  private static final float FIRST_SCREEN_RENDER_TIME = 600F;
+  private static final String DUMP_START = "Flags,IntendedVsync,Vsync,OldestInputEvent,NewestInputEvent,"
+                                           + "HandleInputStart,AnimationStart,PerformTraversalsStart,DrawStart,"
+                                           + "SyncQueued,SyncStart,IssueDrawCommandsStart,SwapBuffers,FrameCompleted,\n";
+  private static final String DUMP_END = "---PROFILEDATA---";
+  private static final String DUMP_COMMAND = "dumpsys gfxinfo com.alibaba.weex framestats reset";
+
+  @Rule
+  public BenchmarkActivityTestRule mActivityRule = new BenchmarkActivityTestRule(
+      BenchmarkActivity.class);
+  @Rule
+  public RepeatRule repeatRule = new RepeatRule();
+  private UiDevice mUiDevice;
+
+  @Before
+  public void init() {
+    mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+  }
+
+  @Test
+  public void testWeexPerformance() {
+    List<Long> localTotalTime = new ArrayList<>(TIMES);
+    for (int i = 0; i < TIMES; i++) {
+      long currentTime = calcTime(true);
+      localTotalTime.add(currentTime);
+      Log.d(TAG, "Weex render time: " + currentTime + "ms");
+    }
+    BoxPlot boxPlot = new BoxPlot(localTotalTime);
+    Log.i(TAG, "Average Weex render time: " + boxPlot.draw());
+  }
+
+  @Test
+  public void testNativePerformance(){
+    List<Long> localTotalTime = new ArrayList<>(TIMES);
+    for (int i = 0; i < TIMES; i++) {
+      long currentTime = calcTime(false);
+      localTotalTime.add(currentTime);
+      Log.d(TAG, "Native render time: " + currentTime + "ms");
+    }
+    BoxPlot boxPlot = new BoxPlot(localTotalTime);
+    Log.i(TAG, "Average native render time: " + boxPlot.draw());
+  }
+
+  private long calcTime(boolean weex) {
+    BenchmarkActivity benchmarkActivity = mActivityRule.getActivity();
+    benchmarkActivity.loadWeexPage(weex);
+    if(weex) {
+      onView(withClassName(Matchers.is(WXFrameLayout.class.getName()))).perform
+          (ViewActions.swipeDown());
+    }
+    else{
+      onView(withClassName(Matchers.is(TextView.class.getName()))).perform
+          (ViewActions.swipeDown());
+    }
+    return benchmarkActivity.getDuration();
+        //.getWXInstance().getWXPerformance().screenRenderTime;
+  }
+
+  private void processGfxInfo(List<Long> container) {
+    try {
+      String line;
+      String[] columns;
+      long timeStart, timeEnd, duration;
+      String result = mUiDevice.executeShellCommand(DUMP_COMMAND);
+      result = result.substring(result.indexOf(DUMP_START), result.lastIndexOf(DUMP_END));
+      result = result.substring(DUMP_START.length());
+      BufferedReader bufferedReader = new BufferedReader(new StringReader(result));
+      List<Long> list = createList(bufferedReader);
+      container.addAll(list);
+      BoxPlot boxPlot = new BoxPlot(list);
+      boxPlot.draw();
+      Log.d(TAG, "FPS : " + boxPlot.getMedian() + " ms");
+    } catch (IOException e) {
+      WXLogUtils.e(TAG, WXLogUtils.getStackTrace(e));
     }
   }
 
-
-  @Deprecated
-  public WXImage(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
-      this(instance,dom,parent);
-  }
-
-  public WXImage(WXSDKInstance instance, WXDomObject node,
-                  WXVContainer parent) {
-      super(instance, node, parent);
-  }
-
-  @Override
-  protected ImageView initComponentHostView(@NonNull Context context) {
-    WXImageView view = new WXImageView(context);
-    view.setScaleType(ScaleType.FIT_XY);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      view.setCropToPadding(true);
-    }
-    return view;
-  }
-
-  @Override
-  protected boolean setProperty(String key, Object param) {
-    switch (key) {
-      case Constants.Name.RESIZE_MODE:
-        String resize_mode = WXUtils.getString(param, null);
-        if (resize_mode != null) {
-          setResizeMode(resize_mode);
-        }
-        return true;
-      case Constants.Name.RESIZE:
-        String resize = WXUtils.getString(param, null);
-        if (resize != null) {
-          setResize(resize);
-        }
-        return true;
-      case Constants.Name.SRC:
-        String src = WXUtils.getString(param, null);
-        if (src != null) {
-          setSrc(src);
-        }
-        return true;
-      case Constants.Name.IMAGE_QUALITY:
-        return true;
-    }
-    return super.setProperty(key, param);
-  }
-
-  @Override
-  public void refreshData(WXComponent component) {
-    super.refreshData(component);
-    if (component instanceof WXImage) {
-      setSrc(component.getDomObject().getAttrs().getImageSrc());
-    }
-  }
-
-  @WXComponentProp(name = Constants.Name.RESIZE_MODE)
-  public void setResizeMode(String resizeMode) {
-    (getHostView()).setScaleType(getResizeMode(resizeMode));
-  }
-
-  private ScaleType getResizeMode(String resizeMode) {
-    ScaleType scaleType = ScaleType.FIT_XY;
-    if (TextUtils.isEmpty(resizeMode)) {
-      return scaleType;
-    }
-
-    switch (resizeMode) {
-      case "cover":
-        scaleType = ScaleType.CENTER_CROP;
-        break;
-      case "contain":
-        scaleType = ScaleType.FIT_CENTER;
-        break;
-      case "stretch":
-        scaleType = ScaleType.FIT_XY;
-        break;
-    }
-    return scaleType;
-  }
-
-  @WXComponentProp(name = Constants.Name.RESIZE)
-  public void setResize(String resize) {
-    (getHostView()).setScaleType(getResizeMode(resize));
-  }
-
-  @WXComponentProp(name = Constants.Name.SRC)
-  public void setSrc(String src) {
-
-    WXImageStrategy imageStrategy = new WXImageStrategy();
-    imageStrategy.isClipping = true;
-
-    WXImageSharpen imageSharpen = getDomObject().getAttrs().getImageSharpen();
-    imageStrategy.isSharpen = imageSharpen == WXImageSharpen.SHARPEN;
-
-    imageStrategy.setImageListener(new WXImageStrategy.ImageListener() {
-      @Override
-      public void onImageFinish(String url, ImageView imageView, boolean result, Map extra) {
-        if (!result && imageView != null) {
-          imageView.setImageDrawable(null);
-        }
-        if (getDomObject() != null && containsEvent(Constants.Event.ONLOAD)) {
-          Map<String, Object> params = new HashMap<>();
-          params.put("success", result);
-          fireEvent(Constants.Event.ONLOAD, params);
-        }
-      }
-    });
-
-    WXSDKInstance instance = getInstance();
-    if (getDomObject().getAttrs().containsKey(Constants.Name.PLACE_HOLDER)) {
-      String attr = (String) getDomObject().getAttrs().get(Constants.Name.PLACE_HOLDER);
-      if(TextUtils.isEmpty(attr)){
-        Uri rewrited = instance.rewriteUri(Uri.parse(attr),URIAdapter.IMAGE);
-        imageStrategy.placeHolder = rewrited.toString();
-      }
-    }
-
-    IWXImgLoaderAdapter imgLoaderAdapter = getInstance().getImgLoaderAdapter();
-    if (imgLoaderAdapter != null) {
-      Uri rewrited = instance.rewriteUri(Uri.parse(src), URIAdapter.IMAGE);
-      imgLoaderAdapter.setImage(rewrited.toString(), getHostView(),
-                                getDomObject().getAttrs().getImageQuality(), imageStrategy);
-    }
-  }
-
-  @Override
-  public void updateProperties(Map<String, Object> props) {
-    super.updateProperties(props);
-    WXImageView imageView;
-    ImmutableDomObject imageDom;
-    if ((imageDom = getDomObject()) != null &&
-        getHostView() instanceof WXImageView) {
-      imageView = (WXImageView) getHostView();
-      BorderDrawable borderDrawable = WXViewUtils.getBorderDrawable(getHostView());
-      float[] borderRadius;
-      if (borderDrawable != null) {
-        RectF borderBox = new RectF(0, 0, WXDomUtils.getContentWidth(imageDom), WXDomUtils.getContentHeight(imageDom));
-        borderRadius = borderDrawable.getBorderRadius(borderBox);
-      } else {
-        borderRadius = new float[]{0, 0, 0, 0, 0, 0, 0, 0};
-      }
-      imageView.setBorderRadius(borderRadius);
-
-      if (imageView.getDrawable() instanceof ImageDrawable) {
-        ImageDrawable imageDrawable = (ImageDrawable) imageView.getDrawable();
-        float[] previousRadius = imageDrawable.getCornerRadii();
-        if (!Arrays.equals(previousRadius, borderRadius)) {
-          imageDrawable.setCornerRadii(borderRadius);
+  private List<Long> createList(BufferedReader bufferedReader) throws IOException {
+    String line;
+    String[] columns;
+    long timeStart, timeEnd, duration;
+    List<Long> list = new ArrayList<>(FRAMES);
+    while (!TextUtils.isEmpty(line = bufferedReader.readLine())) {
+      columns = line.split(",");
+      if (Long.parseLong(columns[0]) == 0) {
+        timeStart = Long.parseLong(columns[1]);
+        timeEnd = Long.parseLong(columns[columns.length - 1]);
+        duration = timeEnd - timeStart;
+        if (duration > 0) {
+          list.add(TimeUnit.MILLISECONDS.convert(duration, TimeUnit.NANOSECONDS));
         }
       }
     }
+    return list;
   }
 }

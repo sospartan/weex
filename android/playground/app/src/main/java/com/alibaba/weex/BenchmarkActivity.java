@@ -208,8 +208,10 @@ package com.alibaba.weex;
 import android.os.Bundle;
 import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import com.alibaba.weex.commons.adapter.ImageAdapter;
@@ -219,6 +221,7 @@ import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.WXRenderStrategy;
+import com.taobao.weex.utils.WXFileUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -229,9 +232,15 @@ public class BenchmarkActivity extends AppCompatActivity implements IWXRenderLis
   private final static String TAG = "WEEX";
   private final static String URL =
       "http://h5.waptest.taobao.com/app/weextc031/build/TC_Monitor_List_WithAppendTree.js";
+  public static CountingIdlingResource countingIdlingResource;
   private WXSDKInstance mInstance;
   private LinearLayout root;
-  public static CountingIdlingResource countingIdlingResource;
+  private long startTime;
+  private long endTime;
+  private long duration;
+  private boolean perfStart;
+  private boolean perfEnd;
+  private boolean isWeex;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -242,6 +251,19 @@ public class BenchmarkActivity extends AppCompatActivity implements IWXRenderLis
     root.setOrientation(LinearLayout.VERTICAL);
     root.setContentDescription(ROOT);
     setContentView(root);
+    root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+      @Override
+      public void onGlobalLayout() {
+        endTime = System.currentTimeMillis();
+        Log.v(TAG, "End: " + endTime);
+        if (perfStart && (perfEnd||!isWeex)) {
+          perfStart = false;
+          perfEnd = false;
+          duration = (endTime - startTime);
+          Log.v(TAG, "OnGlobalLayoutListener: " + getDuration());
+        }
+      }
+    });
     WXEnvironment.isPerf = true;
     WXSDKEngine.addCustomOptions("appName", "WXSample");
     WXSDKEngine.addCustomOptions("appGroup", "WXApp");
@@ -302,6 +324,7 @@ public class BenchmarkActivity extends AppCompatActivity implements IWXRenderLis
     if (countingIdlingResource != null) {
       countingIdlingResource.decrement();
     }
+    perfEnd = true;
   }
 
   @Override
@@ -316,6 +339,42 @@ public class BenchmarkActivity extends AppCompatActivity implements IWXRenderLis
 
   public WXSDKInstance getWXInstance() {
     return mInstance;
+  }
+
+  public void loadWeexPage(final boolean weex) {
+    isWeex=weex;
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        if (weex) {
+          if (mInstance != null) {
+            mInstance.destroy();
+          }
+          mInstance = new WXSDKInstance(BenchmarkActivity.this);
+          Map<String, Object> options = new HashMap<>();
+          options.put(WXSDKInstance.BUNDLE_URL, "file://assets/hello_weex.js");
+          mInstance.registerRenderListener(BenchmarkActivity.this);
+          if (countingIdlingResource != null) {
+            countingIdlingResource.increment();
+          }
+          perfStart = true;
+          Log.v(TAG, "Start: " + startTime);
+          startTime = System.currentTimeMillis();
+          mInstance.render(TAG,
+                           WXFileUtils.loadAsset("hello.js", BenchmarkActivity.this),
+                           options,
+                           null,
+                           root.getWidth(),
+                           root.getHeight(),
+                           WXRenderStrategy.APPEND_ASYNC);
+        } else {
+          root.removeAllViews();
+          perfStart = true;
+          startTime = System.currentTimeMillis();
+          View.inflate(BenchmarkActivity.this, R.layout.hello_weex, root);
+        }
+      }
+    });
   }
 
   public void loadWeexPage() {
@@ -346,5 +405,9 @@ public class BenchmarkActivity extends AppCompatActivity implements IWXRenderLis
             WXRenderStrategy.APPEND_ASYNC);
       }
     });
+  }
+
+  public long getDuration() {
+    return duration;
   }
 }
