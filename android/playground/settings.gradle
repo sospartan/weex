@@ -8,3 +8,6 @@ project(":commons").projectDir=new File("../commons")
 
 include ":weex_debug"
 project(":weex_debug").projectDir=new File("../weex_debug")
+
+include ":richtext"
+project(":richtext").projectDir=new File("../richtext")
