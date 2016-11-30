@@ -202,167 +202,178 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.ui.view.refresh.wrapper;
+package com.alibaba.weex.commons;
 
 import android.content.Context;
-import android.support.v7.widget.OrientationHelper;
-import android.util.AttributeSet;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 
-import com.taobao.weex.common.WXThread;
-import com.taobao.weex.ui.component.WXComponent;
-import com.taobao.weex.ui.component.list.WXCell;
-import com.taobao.weex.ui.view.listview.WXRecyclerView;
-import com.taobao.weex.ui.view.listview.adapter.RecyclerViewBaseAdapter;
+import com.taobao.weex.WXSDKInstance;
 
-import java.util.Stack;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
-public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> {
+/**
+ * Description:
+ * <p>
+ * Created by rowandjj(chuyi)<br/>
+ * Date: 2016/10/27<br/>
+ * Time: 下午7:01<br/>
+ */
 
-  private RecyclerViewBaseAdapter adapter = null;
-  private Stack<View> headerViewStack = new Stack<>();
-  private Stack<WXCell> headComponentStack = new Stack<>();
+public final class WXAnalyzerDelegate {
+    private Object mWXAnalyzer;
 
-  @Override
-  public boolean postDelayed(Runnable action, long delayMillis) {
-    return super.postDelayed(WXThread.secure(action), delayMillis);
-  }
+    private static boolean ENABLE = false;
 
-  public BounceRecyclerView(Context context, int orientation) {
-    super(context, orientation);
-  }
-
-  public BounceRecyclerView(Context context, AttributeSet attrs) {
-    super(context, attrs, OrientationHelper.VERTICAL);
-  }
-
-  public void setAdapter(RecyclerViewBaseAdapter adapter) {
-    this.adapter = adapter;
-    if (getInnerView() != null) {
-      getInnerView().setAdapter(adapter);
-    }
-  }
-
-  public RecyclerViewBaseAdapter getAdapter() {
-    return adapter;
-  }
-
-  @Override
-  public WXRecyclerView setInnerView(Context context) {
-    WXRecyclerView wxRecyclerView = new WXRecyclerView(context);
-    wxRecyclerView.initView(context, WXRecyclerView.TYPE_LINEAR_LAYOUT, getOrientation());
-    return wxRecyclerView;
-  }
-
-  @Override
-  public void onRefreshingComplete() {
-    if (adapter != null) {
-      adapter.notifyDataSetChanged();
-    }
-  }
-
-  @Override
-  public void onLoadmoreComplete() {
-    if (adapter != null) {
-      adapter.notifyDataSetChanged();
-    }
-  }
-
-  /**
-   * @param component
-   */
-  public void notifyStickyShow(WXCell component) {
-    if (component == null)
-      return;
-    if (!headComponentStack.isEmpty()) {
-      WXCell oldCom = headComponentStack.pop();
-      if (!oldCom.getRef().equals(component.getRef())) {
-        headComponentStack.push(oldCom);
-        headComponentStack.push(component);
-        showSticky();
-      } else {
-        headComponentStack.push(oldCom);
-        return;
-      }
-    } else {
-      headComponentStack.push(component);
-      showSticky();
-    }
-  }
-
-  /**
-   * @param component
-   */
-  public void notifyStickyRemove(WXCell component) {
-    if (component == null)
-      return;
-    if (!headComponentStack.isEmpty() && !headerViewStack.isEmpty()) {
-      removeSticky(component);
-    }
-  }
-
-  /**
-   * Pop stickyView to stack
-   */
-  private void showSticky() {
-    WXCell headComponent = headComponentStack.pop();
-    headComponentStack.push(headComponent);
-    final View headerView = headComponent.getRealView();
-    if (headerView == null)
-      return;
-    headerViewStack.push(headerView);
-    headComponent.removeSticky();
-    final ViewGroup parent = (ViewGroup) getParent();
-    if(parent != null){
-      parent.post(WXThread.secure(new Runnable() {
-        @Override
-        public void run() {
-          ViewGroup existedParent;
-          if((existedParent = (ViewGroup)headerView.getParent())!= null){
-            existedParent.removeView(headerView);
-          }
-          parent.addView(headerView);
+    @SuppressWarnings("unchecked")
+    public WXAnalyzerDelegate(@Nullable Context context) {
+        if(!ENABLE){
+            return;
         }
-      }));
-    }
-  }
-
-  /**
-   * remove top stickyView
-   * @param component
-   */
-  private void removeSticky(WXComponent component) {
-    final WXCell headComponent = headComponentStack.pop();
-    if (!component.getRef().equals(headComponent.getRef())) {
-      headComponentStack.push(headComponent);
-      return;
-    }
-    final View headerView = headerViewStack.pop();
-    final ViewGroup parent = (ViewGroup) getParent();
-    if(parent != null){
-      parent.post(WXThread.secure(new Runnable() {
-        @Override
-        public void run() {
-          parent.removeView(headerView);
-          headComponent.recoverySticky();
+        if(context == null){
+            return;
         }
-      }));
+        try {
+            Class clazz = Class.forName("com.taobao.weex.analyzer.WeexDevOptions");
+            Constructor constructor = clazz.getDeclaredConstructor(Context.class);
+            mWXAnalyzer = constructor.newInstance(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-  }
-
-  /**
-   * Clear All Sticky of stack
-   */
-  public void clearSticky() {
-    int size = headComponentStack.size();
-    while (size > 0 && headerViewStack.size() == size) {
-      WXCell headComponent = headComponentStack.pop();
-      View headerView = headerViewStack.pop();
-      ((ViewGroup) getParent()).removeView(headerView);
-      headComponent.recoverySticky();
+    public void onCreate() {
+        if (mWXAnalyzer == null) {
+            return;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onCreate");
+            method.invoke(mWXAnalyzer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-  }
+
+
+    public void onStart() {
+        if (mWXAnalyzer == null) {
+            return;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onStart");
+            method.invoke(mWXAnalyzer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onResume() {
+        if (mWXAnalyzer == null) {
+            return;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onResume");
+            method.invoke(mWXAnalyzer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void onPause() {
+        if (mWXAnalyzer == null) {
+            return;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onPause");
+            method.invoke(mWXAnalyzer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onStop() {
+        if (mWXAnalyzer == null) {
+            return;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onStop");
+            method.invoke(mWXAnalyzer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onDestroy() {
+        if (mWXAnalyzer == null) {
+            return;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onDestroy");
+            method.invoke(mWXAnalyzer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void onWeexRenderSuccess(@Nullable WXSDKInstance instance) {
+        if (mWXAnalyzer == null || instance == null) {
+            return;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onWeexRenderSuccess", WXSDKInstance.class);
+            method.invoke(mWXAnalyzer, instance);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (mWXAnalyzer == null) {
+            return false;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onKeyUp", int.class, KeyEvent.class);
+            return (boolean) method.invoke(mWXAnalyzer, keyCode, event);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void onException(WXSDKInstance instance, String errCode, String msg) {
+        if (mWXAnalyzer == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(errCode) && TextUtils.isEmpty(msg)) {
+            return;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onException", WXSDKInstance.class, String.class, String.class);
+            method.invoke(mWXAnalyzer, instance, errCode, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public View onWeexViewCreated(WXSDKInstance instance, View view) {
+        if (mWXAnalyzer == null || instance == null || view == null) {
+            return null;
+        }
+        try {
+            Method method = mWXAnalyzer.getClass().getDeclaredMethod("onWeexViewCreated", WXSDKInstance.class, View.class);
+            View retView = (View) method.invoke(mWXAnalyzer, instance, view);
+            return retView;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return view;
+        }
+    }
+
 }
