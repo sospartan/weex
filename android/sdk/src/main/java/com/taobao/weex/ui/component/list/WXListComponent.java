@@ -232,6 +232,7 @@ import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.AppearanceHelper;
 import com.taobao.weex.ui.component.Scrollable;
+import com.taobao.weex.ui.component.WXBaseRefresh;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXLoading;
 import com.taobao.weex.ui.component.WXRefresh;
@@ -885,7 +886,9 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
                             component.applyLayoutAndEvent(component);
                             return new ListBaseViewHolder(component, viewType);
                         }
-                    } else {
+                    } else if (component instanceof WXBaseRefresh){
+                      return createVHForRefreshComponent(viewType);
+                    }else {
                         WXLogUtils.e(TAG, "List cannot include element except cell、header、fixed、refresh and loading");
                         return createVHForFakeComponent(viewType);
                     }
