@@ -206,16 +206,159 @@
 package com.alibaba.weex.richtext;
 
 import android.support.annotation.NonNull;
+import android.support.v4.util.ArrayMap;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.SpannedString;
 
-import com.taobao.weex.dom.WXTextDomObject;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
-public class WXRichTextDomObject extends WXTextDomObject {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+public abstract class RichTextNode {
+
+  public static final String TYPE = "type";
+  public static final String STYLE = "style";
+  public static final String ATTR = "attr";
+  public static final String CHILDREN = "children";
+
+  protected Map<String, Object> style=new ArrayMap<>();
+  protected Map<String, Object> attr=new ArrayMap<>();
+  protected List<RichTextNode> children = new ArrayList<>();
+
+  public static
   @NonNull
-  @Override
-  protected Spanned createSpanned(String text) {
-    return RichTextNode.parse(text);
+  Spanned parse(String json) {
+    JSONArray jsonArray = JSON.parseArray(json);
+    JSONObject jsonObject;
+    List<RichTextNode> nodes;
+    if (jsonArray != null && !jsonArray.isEmpty()) {
+      nodes = new ArrayList<>(jsonArray.size());
+      for (int i = 0; i < jsonArray.size(); i++) {
+        jsonObject = jsonArray.getJSONObject(i);
+        if (jsonObject != null) {
+          nodes.add(RichTextNodeCreator.createRichTextNode(jsonObject));
+        }
+      }
+      return parse(nodes);
+    }
+    return new SpannedString("");
   }
 
+  private static
+  @NonNull
+  Spanned parse(@NonNull List<RichTextNode> list) {
+    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+    for (RichTextNode richTextNode : list) {
+      spannableStringBuilder.append(richTextNode.toSpan());
+    }
+    return spannableStringBuilder;
+  }
+
+  public void parse(JSONObject jsonObject){
+    JSONObject jsonStyle, jsonAttr;
+    JSONArray jsonArray;
+    if((jsonStyle=jsonObject.getJSONObject(STYLE))!=null){
+      style.putAll(jsonStyle);
+    }
+    if((jsonAttr=jsonObject.getJSONObject(ATTR))!=null){
+      attr.putAll(jsonAttr);
+    }
+    if((jsonArray=jsonObject.getJSONArray(CHILDREN))!=null){
+      //TODO parseChildern
+//      JSON.parseObject()
+//      children.addAll(jsonArray);
+    }
+  }
+
+  //TODO parseSpan
+  public abstract Spanned toSpan();
+//  {
+//    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+//    if (!TextUtils.isEmpty(toString())) {
+//      spannableStringBuilder.append(toString());
+//    }
+//    if (children != null) {
+//      for (RichTextNode child : children) {
+//        spannableStringBuilder.append(child.toSpan());
+//      }
+//    }
+//    updateSpans(spannableStringBuilder);
+//    return new SpannedString(spannableStringBuilder);
+//  }
+
+//  @Override
+//  public String toString() {
+//    if (attr != null) {
+//      if (type != null && TextUtils.equals(type, ImgNode.NODE_TYPE)) {
+//        return type;
+//      } else {
+//        if (attr.containsKey(Constants.Name.VALUE)) {
+//          return attr.get(Constants.Name.VALUE);
+//        } else {
+//          return "";
+//        }
+//      }
+//    } else {
+//      return "";
+//    }
+//  }
+
+//  private void updateSpans(SpannableStringBuilder spannableStringBuilder) {
+//    if (style != null) {
+//      List<Object> spans = new LinkedList<>();
+//      WXCustomStyleSpan customStyleSpan = createCustomStyleSpan();
+//      if (customStyleSpan != null) {
+//        spans.add(customStyleSpan);
+//      }
+//      int lineHeight = WXStyle.getLineHeight(style);
+//      if (lineHeight != UNSET) {
+//        spans.add(new WXLineHeightSpan(lineHeight));
+//      }
+//      if (style.containsKey(Constants.Name.FONT_SIZE)) {
+//        spans.add(new AbsoluteSizeSpan(WXStyle.getFontSize(style)));
+//      }
+//      if (style.containsKey(Constants.Name.COLOR)) {
+//        spans.add(new ForegroundColorSpan(WXResourceUtils.getColor(WXStyle.getTextColor(style))));
+//      }
+//      if (style.containsKey(Constants.Name.TEXT_DECORATION)) {
+//        if (WXStyle.getTextDecoration(style) == WXTextDecoration.UNDERLINE) {
+//          spans.add(new UnderlineSpan());
+//        }
+//        if (WXStyle.getTextDecoration(style) == WXTextDecoration.LINETHROUGH) {
+//          spans.add(new StrikethroughSpan());
+//        }
+//      }
+//      for (Object span : spans) {
+//        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+//      }
+//    }
+//  }
+//
+//  private
+//  @Nullable
+//  WXCustomStyleSpan createCustomStyleSpan() {
+//    int fontWeight = UNSET, fontStyle = UNSET;
+//    String fontFamily = null;
+//    if (style.containsKey(Constants.Name.FONT_WEIGHT)) {
+//      fontWeight = WXStyle.getFontWeight(style);
+//    }
+//    if (style.containsKey(Constants.Name.FONT_STYLE)) {
+//      fontStyle = WXStyle.getFontStyle(style);
+//    }
+//    if (style.containsKey(Constants.Name.FONT_FAMILY)) {
+//      fontFamily = WXStyle.getFontFamily(style);
+//    }
+//    if (fontWeight != UNSET
+//        || fontStyle != UNSET
+//        || fontFamily != null) {
+//      return new WXCustomStyleSpan(fontStyle, fontWeight, fontFamily);
+//    } else {
+//      return null;
+//    }
+//  }
 }

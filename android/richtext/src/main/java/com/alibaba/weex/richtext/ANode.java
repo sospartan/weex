@@ -205,10 +205,14 @@
 
 package com.alibaba.weex.richtext;
 
-/**
- * Created by YorkShen on 2016/10/18.
- */
+import android.text.Spanned;
 
-public class HrefNode extends AbstractRichTextNode {
+public class ANode extends RichTextNode {
 
+  public static final String NODE_TYPE = "a";
+
+  @Override
+  public Spanned toSpan() {
+    return null;
+  }
 }
