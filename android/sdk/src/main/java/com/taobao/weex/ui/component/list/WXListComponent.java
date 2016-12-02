@@ -221,7 +221,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
@@ -1043,9 +1042,6 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
 
         if (offScreenY < Integer.parseInt(offset)) {
           String loadMoreRetry = getDomObject().getAttrs().getLoadMoreRetry();
-          if (loadMoreRetry == null) {
-             loadMoreRetry = mLoadMoreRetry;
-          }
 
           if (mListCellCount != mChildren.size()
               || mLoadMoreRetry == null || !mLoadMoreRetry.equals(loadMoreRetry)) {
@@ -1122,6 +1118,15 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
         view.setLayoutParams(new FrameLayout.LayoutParams(0, 0));
         return new ListBaseViewHolder(view, viewType);
     }
+
+
+  private ListBaseViewHolder createVHForRefreshComponent(int viewType) {
+    FrameLayout view = new FrameLayout(getContext());
+    view.setBackgroundColor(Color.WHITE);
+    view.setLayoutParams(new FrameLayout.LayoutParams(1, 1));
+    view.setVisibility(View.GONE);
+    return new ListBaseViewHolder(view, viewType);
+  }
 
     @JSMethod
     public void resetLoadmore() {
