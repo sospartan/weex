@@ -684,10 +684,7 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
       if (child == null || index < -1) {
           return;
       }
-      if (checkRefreshOrLoading(child)) {
-          return;
-      }
-
+      checkRefreshOrLoading(child);
       int count = mChildren.size();
       index = index >= count ? -1 : index;
       if (index == -1) {
