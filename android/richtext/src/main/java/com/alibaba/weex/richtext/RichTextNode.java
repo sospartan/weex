@@ -226,9 +226,9 @@ public abstract class RichTextNode {
   public static final String ATTR = "attr";
   public static final String CHILDREN = "children";
 
-  protected Map<String, Object> style=new ArrayMap<>();
-  protected Map<String, Object> attr=new ArrayMap<>();
-  protected List<RichTextNode> children = new ArrayList<>();
+  protected Map<String, Object> style;
+  protected Map<String, Object> attr;
+  protected List<RichTextNode> children;
 
   public static
   @NonNull
@@ -249,6 +249,34 @@ public abstract class RichTextNode {
     return new SpannedString("");
   }
 
+  protected void parse(JSONObject jsonObject) {
+    JSONObject jsonStyle, jsonAttr, child;
+    JSONArray jsonArray;
+    if ((jsonStyle = jsonObject.getJSONObject(STYLE)) != null) {
+      style = new ArrayMap<>();
+      style.putAll(jsonStyle);
+    } else {
+      style = new ArrayMap<>(0);
+    }
+
+    if ((jsonAttr = jsonObject.getJSONObject(ATTR)) != null) {
+      attr = new ArrayMap<>();
+      attr.putAll(jsonAttr);
+    } else {
+      attr = new ArrayMap<>(0);
+    }
+
+    if ((jsonArray = jsonObject.getJSONArray(CHILDREN)) != null) {
+      children = new ArrayList<>(jsonArray.size());
+      for (int i = 0; i < jsonArray.size(); i++) {
+        child = jsonArray.getJSONObject(i);
+        children.add(RichTextNodeCreator.createRichTextNode(child));
+      }
+    } else {
+      children = new ArrayList<>(0);
+    }
+  }
+
   private static
   @NonNull
   Spanned parse(@NonNull List<RichTextNode> list) {
@@ -259,106 +287,91 @@ public abstract class RichTextNode {
     return spannableStringBuilder;
   }
 
-  public void parse(JSONObject jsonObject){
-    JSONObject jsonStyle, jsonAttr;
-    JSONArray jsonArray;
-    if((jsonStyle=jsonObject.getJSONObject(STYLE))!=null){
-      style.putAll(jsonStyle);
-    }
-    if((jsonAttr=jsonObject.getJSONObject(ATTR))!=null){
-      attr.putAll(jsonAttr);
-    }
-    if((jsonArray=jsonObject.getJSONArray(CHILDREN))!=null){
-      //TODO parseChildern
-//      JSON.parseObject()
-//      children.addAll(jsonArray);
-    }
-  }
 
   //TODO parseSpan
   public abstract Spanned toSpan();
-//  {
-//    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-//    if (!TextUtils.isEmpty(toString())) {
-//      spannableStringBuilder.append(toString());
-//    }
-//    if (children != null) {
-//      for (RichTextNode child : children) {
-//        spannableStringBuilder.append(child.toSpan());
-//      }
-//    }
-//    updateSpans(spannableStringBuilder);
-//    return new SpannedString(spannableStringBuilder);
-//  }
+  //  {
+  //    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+  //    if (!TextUtils.isEmpty(toString())) {
+  //      spannableStringBuilder.append(toString());
+  //    }
+  //    if (children != null) {
+  //      for (RichTextNode child : children) {
+  //        spannableStringBuilder.append(child.toSpan());
+  //      }
+  //    }
+  //    updateSpans(spannableStringBuilder);
+  //    return new SpannedString(spannableStringBuilder);
+  //  }
 
-//  @Override
-//  public String toString() {
-//    if (attr != null) {
-//      if (type != null && TextUtils.equals(type, ImgNode.NODE_TYPE)) {
-//        return type;
-//      } else {
-//        if (attr.containsKey(Constants.Name.VALUE)) {
-//          return attr.get(Constants.Name.VALUE);
-//        } else {
-//          return "";
-//        }
-//      }
-//    } else {
-//      return "";
-//    }
-//  }
+  //  @Override
+  //  public String toString() {
+  //    if (attr != null) {
+  //      if (type != null && TextUtils.equals(type, ImgNode.NODE_TYPE)) {
+  //        return type;
+  //      } else {
+  //        if (attr.containsKey(Constants.Name.VALUE)) {
+  //          return attr.get(Constants.Name.VALUE);
+  //        } else {
+  //          return "";
+  //        }
+  //      }
+  //    } else {
+  //      return "";
+  //    }
+  //  }
 
-//  private void updateSpans(SpannableStringBuilder spannableStringBuilder) {
-//    if (style != null) {
-//      List<Object> spans = new LinkedList<>();
-//      WXCustomStyleSpan customStyleSpan = createCustomStyleSpan();
-//      if (customStyleSpan != null) {
-//        spans.add(customStyleSpan);
-//      }
-//      int lineHeight = WXStyle.getLineHeight(style);
-//      if (lineHeight != UNSET) {
-//        spans.add(new WXLineHeightSpan(lineHeight));
-//      }
-//      if (style.containsKey(Constants.Name.FONT_SIZE)) {
-//        spans.add(new AbsoluteSizeSpan(WXStyle.getFontSize(style)));
-//      }
-//      if (style.containsKey(Constants.Name.COLOR)) {
-//        spans.add(new ForegroundColorSpan(WXResourceUtils.getColor(WXStyle.getTextColor(style))));
-//      }
-//      if (style.containsKey(Constants.Name.TEXT_DECORATION)) {
-//        if (WXStyle.getTextDecoration(style) == WXTextDecoration.UNDERLINE) {
-//          spans.add(new UnderlineSpan());
-//        }
-//        if (WXStyle.getTextDecoration(style) == WXTextDecoration.LINETHROUGH) {
-//          spans.add(new StrikethroughSpan());
-//        }
-//      }
-//      for (Object span : spans) {
-//        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-//      }
-//    }
-//  }
-//
-//  private
-//  @Nullable
-//  WXCustomStyleSpan createCustomStyleSpan() {
-//    int fontWeight = UNSET, fontStyle = UNSET;
-//    String fontFamily = null;
-//    if (style.containsKey(Constants.Name.FONT_WEIGHT)) {
-//      fontWeight = WXStyle.getFontWeight(style);
-//    }
-//    if (style.containsKey(Constants.Name.FONT_STYLE)) {
-//      fontStyle = WXStyle.getFontStyle(style);
-//    }
-//    if (style.containsKey(Constants.Name.FONT_FAMILY)) {
-//      fontFamily = WXStyle.getFontFamily(style);
-//    }
-//    if (fontWeight != UNSET
-//        || fontStyle != UNSET
-//        || fontFamily != null) {
-//      return new WXCustomStyleSpan(fontStyle, fontWeight, fontFamily);
-//    } else {
-//      return null;
-//    }
-//  }
+  //  private void updateSpans(SpannableStringBuilder spannableStringBuilder) {
+  //    if (style != null) {
+  //      List<Object> spans = new LinkedList<>();
+  //      WXCustomStyleSpan customStyleSpan = createCustomStyleSpan();
+  //      if (customStyleSpan != null) {
+  //        spans.add(customStyleSpan);
+  //      }
+  //      int lineHeight = WXStyle.getLineHeight(style);
+  //      if (lineHeight != UNSET) {
+  //        spans.add(new WXLineHeightSpan(lineHeight));
+  //      }
+  //      if (style.containsKey(Constants.Name.FONT_SIZE)) {
+  //        spans.add(new AbsoluteSizeSpan(WXStyle.getFontSize(style)));
+  //      }
+  //      if (style.containsKey(Constants.Name.COLOR)) {
+  //        spans.add(new ForegroundColorSpan(WXResourceUtils.getColor(WXStyle.getTextColor(style))));
+  //      }
+  //      if (style.containsKey(Constants.Name.TEXT_DECORATION)) {
+  //        if (WXStyle.getTextDecoration(style) == WXTextDecoration.UNDERLINE) {
+  //          spans.add(new UnderlineSpan());
+  //        }
+  //        if (WXStyle.getTextDecoration(style) == WXTextDecoration.LINETHROUGH) {
+  //          spans.add(new StrikethroughSpan());
+  //        }
+  //      }
+  //      for (Object span : spans) {
+  //        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+  //      }
+  //    }
+  //  }
+  //
+  //  private
+  //  @Nullable
+  //  WXCustomStyleSpan createCustomStyleSpan() {
+  //    int fontWeight = UNSET, fontStyle = UNSET;
+  //    String fontFamily = null;
+  //    if (style.containsKey(Constants.Name.FONT_WEIGHT)) {
+  //      fontWeight = WXStyle.getFontWeight(style);
+  //    }
+  //    if (style.containsKey(Constants.Name.FONT_STYLE)) {
+  //      fontStyle = WXStyle.getFontStyle(style);
+  //    }
+  //    if (style.containsKey(Constants.Name.FONT_FAMILY)) {
+  //      fontFamily = WXStyle.getFontFamily(style);
+  //    }
+  //    if (fontWeight != UNSET
+  //        || fontStyle != UNSET
+  //        || fontFamily != null) {
+  //      return new WXCustomStyleSpan(fontStyle, fontWeight, fontFamily);
+  //    } else {
+  //      return null;
+  //    }
+  //  }
 }
