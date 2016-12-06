@@ -205,14 +205,19 @@
 
 package com.alibaba.weex.richtext;
 
-import android.text.Spanned;
+import android.text.SpannableStringBuilder;
 
 public class ImgNode extends RichTextNode {
 
   public static final String NODE_TYPE = "image";
 
   @Override
-  public Spanned toSpan() {
-    return null;
+  public String toString() {
+    return NODE_TYPE;
+  }
+
+  @Override
+  protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
+    //super.updateSpans(spannableStringBuilder);
   }
 }

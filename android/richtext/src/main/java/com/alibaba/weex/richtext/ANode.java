@@ -205,14 +205,15 @@
 
 package com.alibaba.weex.richtext;
 
-import android.text.Spanned;
+import com.taobao.weex.common.Constants;
 
 public class ANode extends RichTextNode {
 
   public static final String NODE_TYPE = "a";
 
   @Override
-  public Spanned toSpan() {
-    return null;
+  public String toString() {
+    return attr.get(Constants.Name.VALUE).toString();
   }
+
 }
