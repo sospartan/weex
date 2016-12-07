@@ -229,6 +229,7 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
   private long intervalTime = 3 * 1000;
   private WXSmoothScroller mScroller;
   private boolean needLoop = true;
+  private boolean scrollable = true;
 
   private Runnable scrollAction = new Runnable() {
     @Override
@@ -276,6 +277,11 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
     });
 
     postInitViewPager();
+  }
+
+  @Override
+  public boolean onInterceptTouchEvent(MotionEvent ev) {
+    return scrollable ? super.onInterceptTouchEvent(ev) : false;
   }
 
   /**

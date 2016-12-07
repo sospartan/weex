@@ -325,6 +325,7 @@ public class Constants {
     String MAX = "max";
     String MIN = "min";
     String NAV_BAR_VISIBILITY = "hidden";
+    String SCROLLABLE = "scrollable";
   }
 
   public interface Value {

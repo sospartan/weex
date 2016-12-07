@@ -237,6 +237,7 @@ import java.util.Map;
 public class WXSlider extends WXVContainer<FrameLayout> {
 
   public static final String INDEX = "index";
+
   Map<String, Object> params = new HashMap<>();
 
   public static class Creator implements ComponentCreator {
@@ -413,6 +414,12 @@ public class WXSlider extends WXVContainer<FrameLayout> {
           setIndex(index);
         }
         return true;
+      case Constants.Name.SCROLLABLE:
+        boolean scrollable = WXUtils.getBoolean(param, null);
+        if (index != null) {
+          setIndex(index);
+        }
+        return true;
     }
     return super.setProperty(key, param);
   }
@@ -472,6 +479,14 @@ public class WXSlider extends WXVContainer<FrameLayout> {
         return;
       }
       mViewPager.setCurrentItem(index);
+    }
+  }
+  @WXComponentProp(name = Constants.Name.SCROLLABLE)
+  public void setScrollable(boolean scrollable) {
+    if (mViewPager != null && mAdapter != null) {
+      if(mAdapter.getRealCount() > 0){
+        mViewPager.onInterceptTouchEvent()
+      }
     }
   }
 
