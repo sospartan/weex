@@ -415,10 +415,8 @@ public class WXSlider extends WXVContainer<FrameLayout> {
         }
         return true;
       case Constants.Name.SCROLLABLE:
-        boolean scrollable = WXUtils.getBoolean(param, null);
-        if (index != null) {
-          setIndex(index);
-        }
+        boolean scrollable = WXUtils.getBoolean(param, true);
+        setScrollable(scrollable);
         return true;
     }
     return super.setProperty(key, param);
@@ -485,7 +483,7 @@ public class WXSlider extends WXVContainer<FrameLayout> {
   public void setScrollable(boolean scrollable) {
     if (mViewPager != null && mAdapter != null) {
       if(mAdapter.getRealCount() > 0){
-        mViewPager.onInterceptTouchEvent()
+        mViewPager.setScrollable(scrollable);
       }
     }
   }

@@ -279,11 +279,6 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
     postInitViewPager();
   }
 
-  @Override
-  public boolean onInterceptTouchEvent(MotionEvent ev) {
-    return scrollable ? super.onInterceptTouchEvent(ev) : false;
-  }
-
   /**
    * Override the Scroller instance with our own class so we can change the
    * duration
@@ -320,6 +315,9 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
 
   @Override
   public boolean onTouchEvent(MotionEvent ev) {
+    if(!scrollable) {
+      return true; // when scrollable is set to false, then eat the touch event
+    }
     boolean result = super.onTouchEvent(ev);
     if (wxGesture != null) {
       result |= wxGesture.onTouch(this, ev);
@@ -430,5 +428,13 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
 
   public int getRealCount() {
     return ((WXCirclePageAdapter) getAdapter()).getRealCount();
+  }
+
+  public boolean isScrollable() {
+    return scrollable;
+  }
+
+  public void setScrollable(boolean scrollable) {
+    this.scrollable = scrollable;
   }
 }
