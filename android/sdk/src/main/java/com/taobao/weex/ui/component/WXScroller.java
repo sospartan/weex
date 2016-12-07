@@ -553,6 +553,10 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
         if (result != null)
           setShowScrollbar(result);
         return true;
+      case Constants.Name.SCROLLABLE:
+        boolean scrollable = WXUtils.getBoolean(param, true);
+        setScrollable(scrollable);
+        return true;
     }
     return super.setProperty(key, param);
   }
@@ -566,6 +570,16 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
       getInnerView().setVerticalScrollBarEnabled(show);
     } else {
       getInnerView().setHorizontalScrollBarEnabled(show);
+    }
+  }
+
+  @WXComponentProp(name = Constants.Name.SCROLLABLE)
+  public void setScrollable(boolean scrollable) {
+    View hostView = getInnerView();
+    if(hostView instanceof WXHorizontalScrollView) {
+      ((WXHorizontalScrollView)hostView).setScrollable(scrollable);
+    }else if(hostView instanceof WXScrollView) {
+      ((WXScrollView)hostView).setScrollable(scrollable);
     }
   }
 
