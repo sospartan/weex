@@ -231,6 +231,7 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
   private WXSmoothScroller mScroller;
   private boolean needLoop = true;
   private boolean scrollable = true;
+  private int mState = ViewPager.SCROLL_STATE_IDLE;
 
   private Runnable scrollAction = new Runnable() {
     @Override
@@ -265,6 +266,7 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
 
       @Override
       public void onPageScrollStateChanged(int state) {
+        mState = state;
         WXCirclePageAdapter adapter = getCirclePageAdapter();
         int currentItemInternal = WXCircleViewPager.super.getCurrentItem();
         if (needLoop && state == ViewPager.SCROLL_STATE_IDLE && adapter.getCount() > 1) {
@@ -316,11 +318,21 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
 
   @Override
   public boolean onTouchEvent(MotionEvent ev) {
+    if(!scrollable) {
+      return true;
+    }
     boolean result = super.onTouchEvent(ev);
     if (wxGesture != null) {
       result |= wxGesture.onTouch(this, ev);
     }
     return result;
+  }
+
+  @Override
+  public void scrollTo(int x, int y) {
+    if(scrollable || mState != ViewPager.SCROLL_STATE_DRAGGING) {
+      super.scrollTo(x, y);
+    }
   }
 
   /**
@@ -404,31 +416,6 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
         break;
     }
     return super.dispatchTouchEvent(ev);
-  }
-
-  @Override
-  public void scrollTo(int x, int y) {
-    if(scrollable) {
-      super.scrollTo(x, y);
-    }
-  }
-
-  @Override
-  protected void onPageScrolled(int position, float offset, int offsetPixels) {
-    Log.e("wispy", "post")
-    if(scrollable) {
-      super.onPageScrolled(position, offset, offsetPixels);
-    }else {
-      try {
-        Field f = this.getClass().getField("mCalledSuper");
-        f.setAccessible(true);
-        f.setBoolean(this, true);
-      } catch (NoSuchFieldException e) {
-        super.onPageScrolled(getCurrentItem(), offset, offsetPixels);
-      } catch (IllegalAccessException e) {
-        super.onPageScrolled(getCurrentItem(), offset, offsetPixels);
-      }
-    }
   }
 
   public void destory() {
