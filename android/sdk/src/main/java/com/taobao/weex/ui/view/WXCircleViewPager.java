@@ -209,6 +209,7 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -315,9 +316,6 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
 
   @Override
   public boolean onTouchEvent(MotionEvent ev) {
-    if(!scrollable) {
-      return true; // when scrollable is set to false, then eat the touch event
-    }
     boolean result = super.onTouchEvent(ev);
     if (wxGesture != null) {
       result |= wxGesture.onTouch(this, ev);
@@ -406,6 +404,31 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
         break;
     }
     return super.dispatchTouchEvent(ev);
+  }
+
+  @Override
+  public void scrollTo(int x, int y) {
+    if(scrollable) {
+      super.scrollTo(x, y);
+    }
+  }
+
+  @Override
+  protected void onPageScrolled(int position, float offset, int offsetPixels) {
+    Log.e("wispy", "post")
+    if(scrollable) {
+      super.onPageScrolled(position, offset, offsetPixels);
+    }else {
+      try {
+        Field f = this.getClass().getField("mCalledSuper");
+        f.setAccessible(true);
+        f.setBoolean(this, true);
+      } catch (NoSuchFieldException e) {
+        super.onPageScrolled(getCurrentItem(), offset, offsetPixels);
+      } catch (IllegalAccessException e) {
+        super.onPageScrolled(getCurrentItem(), offset, offsetPixels);
+      }
+    }
   }
 
   public void destory() {
