@@ -498,11 +498,13 @@ public class WXListComponent extends WXVContainer<BounceRecyclerView> implements
     return super.setProperty(key, param);
   }
 
-
-    @WXComponentProp(name = Constants.Name.SCROLLABLE)
-    public void setScrollable(boolean scrollable) {
-        //getHostView().getInnerView().setscrolla
-    }
+  @WXComponentProp(name = Constants.Name.SCROLLABLE)
+  public void setScrollable(boolean scrollable) {
+      View inner = getHostView().getInnerView();
+      if(inner instanceof WXRecyclerView) {
+          ((WXRecyclerView) inner).setScrollable(scrollable);
+      };
+  }
 
   private void setAppearanceWatch(WXComponent component, int event, boolean enable) {
     AppearanceHelper item = mAppearComponents.get(component.getRef());
