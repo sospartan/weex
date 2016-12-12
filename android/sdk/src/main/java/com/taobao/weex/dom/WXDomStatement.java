@@ -1130,8 +1130,8 @@ class WXDomStatement {
 
   private void addAnimationForDomTree(WXDomObject domObject){
     animations.add(new Pair<String, Map<String, Object>>(domObject.getRef(),domObject.getStyles()));
-    for(int i=0;i<domObject.childCount();i++){
-      addAnimationForDomTree(domObject.getChild(i));
+    for(int i=0;i<domObject.getChildCount();i++){
+      addAnimationForDomTree(domObject.getChildAt(i));
     }
   }
 
