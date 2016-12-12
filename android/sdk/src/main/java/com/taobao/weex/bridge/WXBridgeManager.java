@@ -1006,6 +1006,7 @@ public class WXBridgeManager implements Callback,BactchExecutor {
     }
 
     if(WXUtils.getAvailMemory(WXEnvironment.getApplication()) > LOW_MEM_VALUE) {
+      WXLogUtils.d("initFramework WXUtils.getAvailMemory");
       initFramework(framework);
     }
   }

@@ -42,7 +42,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    provided 'com.android.support:appcompat-v7:23.1.1'
+    provided 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.squareup.okhttp:okhttp-ws:2.3.0'
     provided 'com.alibaba:fastjson:1.1.45'
     //compile 'com.taobao.android:weex_sdk:0.4.+'

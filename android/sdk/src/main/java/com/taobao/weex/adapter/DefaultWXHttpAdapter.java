@@ -237,9 +237,11 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
       listener.onHttpStart();
     }
     execute(new Runnable() {
+
       @Override
       public void run() {
         WXResponse response = new WXResponse();
+
         try {
           HttpURLConnection connection = openConnection(request, listener);
           Map<String,List<String>> headers = connection.getHeaderFields();
