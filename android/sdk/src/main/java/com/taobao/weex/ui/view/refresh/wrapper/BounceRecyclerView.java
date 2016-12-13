@@ -213,13 +213,14 @@ import android.view.ViewParent;
 
 import com.taobao.weex.common.WXThread;
 import com.taobao.weex.ui.component.WXComponent;
+import com.taobao.weex.ui.component.list.ListComponentView;
 import com.taobao.weex.ui.component.list.WXCell;
 import com.taobao.weex.ui.view.listview.WXRecyclerView;
 import com.taobao.weex.ui.view.listview.adapter.RecyclerViewBaseAdapter;
 
 import java.util.Stack;
 
-public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> {
+public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implements ListComponentView {
 
   private RecyclerViewBaseAdapter adapter = null;
   private Stack<View> headerViewStack = new Stack<>();
@@ -238,14 +239,14 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> {
     super(context, attrs, OrientationHelper.VERTICAL);
   }
 
-  public void setAdapter(RecyclerViewBaseAdapter adapter) {
+  public void setRecyclerViewBaseAdapter(RecyclerViewBaseAdapter adapter) {
     this.adapter = adapter;
     if (getInnerView() != null) {
       getInnerView().setAdapter(adapter);
     }
   }
 
-  public RecyclerViewBaseAdapter getAdapter() {
+  public RecyclerViewBaseAdapter getRecyclerViewBaseAdapter() {
     return adapter;
   }
 
