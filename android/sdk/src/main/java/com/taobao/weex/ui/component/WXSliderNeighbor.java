@@ -316,6 +316,7 @@ public class WXSliderNeighbor extends WXSlider {
         wrapper.addView(view);
 
         mAdapter.addPageView(wrapper);
+        mViewPager.setCurrentItem(0);
         mAdapter.notifyDataSetChanged();
         if (mIndicator != null) {
             mIndicator.getHostView().forceLayout();
