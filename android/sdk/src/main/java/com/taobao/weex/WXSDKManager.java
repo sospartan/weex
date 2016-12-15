@@ -131,11 +131,13 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.taobao.weex.adapter.DefaultUriAdapter;
 import com.taobao.weex.adapter.DefaultWXHttpAdapter;
 import com.taobao.weex.adapter.IWXDebugAdapter;
 import com.taobao.weex.adapter.IWXHttpAdapter;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 import com.taobao.weex.adapter.IWXUserTrackAdapter;
+import com.taobao.weex.adapter.URIAdapter;
 import com.taobao.weex.appfram.navigator.IActivityNavBarSetter;
 import com.taobao.weex.appfram.storage.DefaultWXStorage;
 import com.taobao.weex.appfram.storage.IWXStorageAdapter;
@@ -172,6 +174,7 @@ public class WXSDKManager {
   private IActivityNavBarSetter mActivityNavBarSetter;
 
   private IWXStorageAdapter mIWXStorageAdapter;
+  private URIAdapter mURIAdapter;
 
   private WXSDKManager() {
     mWXRenderManager = new WXRenderManager();
@@ -188,6 +191,10 @@ public class WXSDKManager {
       }
     }
     return sManager;
+  }
+
+  static void setInstance(WXSDKManager manager){
+    sManager = manager;
   }
 
   public IActivityNavBarSetter getActivityNavBarSetter() {
@@ -235,14 +242,14 @@ public class WXSDKManager {
 
   @Deprecated
   public void callback(String instanceId, String funcId, Map<String, Object> data,boolean keepAlive) {
-    mBridgeManager.callback(instanceId, funcId, data,true);
+    mBridgeManager.callback(instanceId, funcId, data,keepAlive);
   }
 
   public void initScriptsFramework(String framework) {
     mBridgeManager.initScriptsFramework(framework);
   }
 
-  public void registerComponents(List<Map<String, String>> components) {
+  public void registerComponents(List<Map<String, Object>> components) {
     mBridgeManager.registerComponents(components);
   }
 
@@ -256,16 +263,22 @@ public class WXSDKManager {
 
   /**
    * FireEvent back to JS
+   * Do not direct invoke this method in Components, use {@link WXSDKInstance#fireEvent(String, String, Map, Map)} instead.
    */
+  @Deprecated
   public void fireEvent(final String instanceId, String ref, String type, Map<String, Object> params){
     fireEvent(instanceId,ref,type,params,null);
   }
 
+  /**
+   * Do not direct invoke this method in Components, use {@link WXSDKInstance#fireEvent(String, String, Map, Map)} instead.
+   **/
+  @Deprecated
   public void fireEvent(final String instanceId, String ref, String type, Map<String, Object> params,Map<String,Object> domChanges) {
     if (WXEnvironment.isApkDebugable() && Looper.getMainLooper().getThread().getId() != Thread.currentThread().getId()) {
       throw new WXRuntimeException("[WXSDKManager]  fireEvent error");
     }
-    mBridgeManager.fireEvent(instanceId, ref, type, params,domChanges);
+    mBridgeManager.fireEventOnNode(instanceId, ref, type, params,domChanges);
   }
 
   void createInstance(WXSDKInstance instance, String code, Map<String, Object> options, String jsonInitData) {
@@ -298,21 +311,9 @@ public class WXSDKManager {
     return mIWXUserTrackAdapter;
   }
 
-  void setIWXUserTrackAdapter(IWXUserTrackAdapter IWXUserTrackAdapter) {
-    mIWXUserTrackAdapter = IWXUserTrackAdapter;
-  }
-
   public IWXImgLoaderAdapter getIWXImgLoaderAdapter() {
     return mIWXImgLoaderAdapter;
   }
-
-  void setIWXImgLoaderAdapter(IWXImgLoaderAdapter IWXImgLoaderAdapter) {
-    if(IWXImgLoaderAdapter==null){
-      throw new NullPointerException("image adapter is null!");
-    }
-    mIWXImgLoaderAdapter = IWXImgLoaderAdapter;
-  }
-
 
   public @NonNull IWXHttpAdapter getIWXHttpAdapter() {
     if (mIWXHttpAdapter == null) {
@@ -321,19 +322,24 @@ public class WXSDKManager {
     return mIWXHttpAdapter;
   }
 
-  void setIWXHttpAdapter(IWXHttpAdapter IWXHttpAdapter) {
-    mIWXHttpAdapter = IWXHttpAdapter;
+  public @NonNull URIAdapter getURIAdapter() {
+    if(mURIAdapter == null){
+      mURIAdapter = new DefaultUriAdapter();
+    }
+    return mURIAdapter;
   }
+
+  void setInitConfig(InitConfig config){
+    this.mIWXDebugAdapter = config.getDebugAdapter();
+    this.mIWXHttpAdapter = config.getHttpAdapter();
+    this.mIWXImgLoaderAdapter = config.getImgAdapter();
+    this.mIWXStorageAdapter = config.getStorageAdapter();
+    this.mIWXUserTrackAdapter = config.getUtAdapter();
+    this.mURIAdapter = config.getURIAdapter();
+  }
+
   public IWXDebugAdapter getIWXDebugAdapter() {
     return mIWXDebugAdapter;
-  }
-
-  public void setIWXDebugAdapter(IWXDebugAdapter IWXDebugAdapter) {
-    mIWXDebugAdapter = IWXDebugAdapter;
-  }
-
-  void setIWXStorageAdapter(IWXStorageAdapter storageAdapter){
-    this.mIWXStorageAdapter = storageAdapter;
   }
 
   public IWXStorageAdapter getIWXStorageAdapter(){

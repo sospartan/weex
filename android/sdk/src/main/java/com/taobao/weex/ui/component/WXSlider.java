@@ -205,9 +205,9 @@
 package com.taobao.weex.ui.component;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -216,6 +216,7 @@ import android.widget.FrameLayout;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.common.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.dom.WXEvent;
@@ -231,13 +232,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component(lazyload = false)
+
 public class WXSlider extends WXVContainer<FrameLayout> {
 
+  public static final String INDEX = "index";
   Map<String, Object> params = new HashMap<>();
 
   public static class Creator implements ComponentCreator {
-    public WXComponent createInstance(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-      return new WXSlider(instance, node, parent, lazy);
+    public WXComponent createInstance(WXSDKInstance instance, WXDomObject node, WXVContainer parent) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+      return new WXSlider(instance, node, parent);
     }
   }
 
@@ -261,15 +265,15 @@ public class WXSlider extends WXVContainer<FrameLayout> {
 
   @Deprecated
   public WXSlider(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
-    this(instance, dom, parent, isLazy);
+    this(instance, dom, parent);
   }
 
-  public WXSlider(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) {
-    super(instance, node, parent, lazy);
+  public WXSlider(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
+    super(instance, node, parent);
   }
 
   @Override
-  protected FrameLayout initComponentHostView(Context context) {
+  protected FrameLayout initComponentHostView(@NonNull Context context) {
     FrameLayout view = new FrameLayout(context);
     // init view pager
     FrameLayout.LayoutParams pagerParams = new FrameLayout.LayoutParams(
@@ -314,7 +318,7 @@ public class WXSlider extends WXVContainer<FrameLayout> {
       return;
     }
     mAdapter.addPageView(view);
-    mAdapter.notifyDataSetChanged();
+    mViewPager.setCurrentItem(0);
     if (mIndicator != null) {
       mIndicator.getHostView().forceLayout();
       mIndicator.getHostView().requestLayout();
@@ -334,6 +338,7 @@ public class WXSlider extends WXVContainer<FrameLayout> {
 
     mAdapter.removePageView(child.getHostView());
     mAdapter.notifyDataSetChanged();
+    super.remove(child,destroy);
   }
 
   @Override
@@ -348,7 +353,7 @@ public class WXSlider extends WXVContainer<FrameLayout> {
 
   @Override
   public void onActivityResume() {
-    if (mViewPager != null) {
+    if (mViewPager != null && mViewPager.isAutoScroll()) {
       mViewPager.startAutoScroll();
     }
   }
@@ -356,7 +361,7 @@ public class WXSlider extends WXVContainer<FrameLayout> {
   @Override
   public void onActivityStop() {
     if (mViewPager != null) {
-      mViewPager.stopAutoScroll();
+      mViewPager.pauseAutoScroll();
     }
   }
 
@@ -426,7 +431,7 @@ public class WXSlider extends WXVContainer<FrameLayout> {
       return;
     }
 
-    mViewPager.setCurrentItem(i);
+    setIndex(i);
   }
 
   @WXComponentProp(name = Constants.Name.AUTO_PLAY)
@@ -466,12 +471,24 @@ public class WXSlider extends WXVContainer<FrameLayout> {
       if(index >= mAdapter.getRealCount() || index < 0){
         return;
       }
-      index = index % mAdapter.getRealCount();
       mViewPager.setCurrentItem(index);
+      if (mIndicator != null && mIndicator.getHostView() != null
+              && mIndicator.getHostView().getRealCurrentItem() != index) {
+        //OnPageChangeListener not triggered
+        WXLogUtils.d("setIndex >>>> correction indicator to " + index);
+        mIndicator.getHostView().setRealCurrentItem(index);
+        mIndicator.getHostView().invalidate();
+
+        if (mPageChangeListener != null && mAdapter != null) {
+          mPageChangeListener.onPageSelected(mAdapter.getFirst() + index);
+        }
+      }
     }
   }
 
   protected class SliderPageChangeListener implements OnPageChangeListener {
+
+    private int lastPos = -1;
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -480,29 +497,32 @@ public class WXSlider extends WXVContainer<FrameLayout> {
 
     @Override
     public void onPageSelected(int pos) {
+      if (mAdapter.getRealPosition(pos) == lastPos) {
+        return;
+      }
       if (WXEnvironment.isApkDebugable()) {
-        WXLogUtils.d("onPageSelected >>>>" + pos);
+        WXLogUtils.d("onPageSelected >>>>" + mAdapter.getRealPosition(pos) + " lastPos: " + lastPos);
       }
       if (mAdapter == null || mAdapter.getRealCount() == 0) {
         return;
       }
 
-      int realPosition = pos % mAdapter.getRealCount();
+      int realPosition = mAdapter.getRealPosition(pos);
       if (mChildren == null || realPosition >= mChildren.size()) {
         return;
       }
 
-      if (getDomObject().event == null || getDomObject().event.size() == 0) {
+      if (getDomObject().getEvents().size() == 0) {
         return;
       }
-      WXEvent event = getDomObject().event;
-      String ref = getDomObject().ref;
+      WXEvent event = getDomObject().getEvents();
+      String ref = getDomObject().getRef();
       if (event.contains(Constants.Event.CHANGE) && WXViewUtils.onScreenArea(getHostView())) {
-        params.put("index", realPosition);
+        params.put(INDEX, realPosition);
 
         Map<String, Object> domChanges = new HashMap<>();
         Map<String, Object> attrsChanges = new HashMap<>();
-        attrsChanges.put("value", realPosition);
+        attrsChanges.put(INDEX, realPosition);
         domChanges.put("attrs", attrsChanges);
         WXSDKManager.getInstance().fireEvent(mInstanceId, ref,
             Constants.Event.CHANGE, params, domChanges);
@@ -510,6 +530,7 @@ public class WXSlider extends WXVContainer<FrameLayout> {
 
       mViewPager.requestLayout();
       getHostView().invalidate();
+      lastPos = mAdapter.getRealPosition(pos);
     }
 
     @Override
@@ -519,6 +540,5 @@ public class WXSlider extends WXVContainer<FrameLayout> {
         root.invalidate();
       }
     }
-
   }
 }

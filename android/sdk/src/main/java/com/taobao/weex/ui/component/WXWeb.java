@@ -205,11 +205,14 @@
 package com.taobao.weex.ui.component;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
 import android.view.View;
+
 import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.URIAdapter;
+import com.taobao.weex.common.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.view.IWebView;
@@ -218,11 +221,11 @@ import com.taobao.weex.utils.WXUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+@Component(lazyload = false)
 
 public class WXWeb extends WXComponent {
 
     protected IWebView mWebView;
-    private String mUrl;
 
     @Deprecated
     public WXWeb(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
@@ -235,11 +238,11 @@ public class WXWeb extends WXComponent {
     }
 
     protected void  createView(){
-        mWebView = new WXWebView(mContext);
+        mWebView = new WXWebView(getContext());
     }
 
     @Override
-    protected View initComponentHostView(Context context) {
+    protected View initComponentHostView(@NonNull Context context) {
         mWebView.setOnErrorListener(new IWebView.OnErrorListener() {
             @Override
             public void onError(String type, Object message) {
@@ -249,30 +252,30 @@ public class WXWeb extends WXComponent {
         mWebView.setOnPageListener(new IWebView.OnPageListener() {
             @Override
             public void onReceivedTitle(String title) {
-                if (mDomObj.getEvents().contains(Constants.Event.RECEIVEDTITLE)) {
+                if (getDomObject().getEvents().contains(Constants.Event.RECEIVEDTITLE)) {
                     Map<String, Object> params = new HashMap<>();
                     params.put("title", title);
-                    WXSDKManager.getInstance().fireEvent(mInstanceId, getRef(), Constants.Event.RECEIVEDTITLE, params);
+                    getInstance().fireEvent(getRef(), Constants.Event.RECEIVEDTITLE, params);
                 }
             }
 
             @Override
             public void onPageStart(String url) {
-                if ( mDomObj.getEvents().contains(Constants.Event.PAGESTART)) {
+                if ( getDomObject().getEvents().contains(Constants.Event.PAGESTART)) {
                     Map<String, Object> params = new HashMap<>();
                     params.put("url", url);
-                    WXSDKManager.getInstance().fireEvent(mInstanceId, getRef(), Constants.Event.PAGESTART, params);
+                    getInstance().fireEvent(getRef(), Constants.Event.PAGESTART, params);
                 }
             }
 
             @Override
             public void onPageFinish(String url, boolean canGoBack, boolean canGoForward) {
-                if ( mDomObj.getEvents().contains(Constants.Event.PAGEFINISH)) {
+                if ( getDomObject().getEvents().contains(Constants.Event.PAGEFINISH)) {
                     Map<String, Object> params = new HashMap<>();
                     params.put("url", url);
                     params.put("canGoBack", canGoBack);
                     params.put("canGoForward", canGoForward);
-                    WXSDKManager.getInstance().fireEvent(mInstanceId, getRef(), Constants.Event.PAGEFINISH, params);
+                    getInstance().fireEvent(getRef(), Constants.Event.PAGEFINISH, params);
                 }
             }
         });
@@ -309,12 +312,11 @@ public class WXWeb extends WXComponent {
 
     @WXComponentProp(name = Constants.Name.SRC)
     public void setUrl(String url) {
-        if (TextUtils.isEmpty(url) || mHost == null) {
+        if (TextUtils.isEmpty(url) || getHostView() == null) {
             return;
         }
-        mUrl = url;
         if (!TextUtils.isEmpty(url)) {
-            loadUrl(url);
+            loadUrl(getInstance().rewriteUri(Uri.parse(url), URIAdapter.WEB).toString());
         }
     }
 
@@ -331,11 +333,11 @@ public class WXWeb extends WXComponent {
     }
 
     private void fireEvent(String type, Object message) {
-        if (mDomObj.getEvents().contains(Constants.Event.ERROR)) {
+        if (getDomObject().getEvents().contains(Constants.Event.ERROR)) {
             Map<String, Object> params = new HashMap<>();
             params.put("type", type);
             params.put("errorMsg", message);
-            WXSDKManager.getInstance().fireEvent(mInstanceId, getRef(), Constants.Event.ERROR, params);
+            getInstance().fireEvent(getRef(), Constants.Event.ERROR, params);
         }
     }
 

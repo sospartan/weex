@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -128,7 +129,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
     setContentView(R.layout.activity_wxpage);
     setCurrentWxPageActivity(this);
     WXSDKEngine.setActivityNavBarSetter(new NavigatorAdapter());
-
+    getWindow().setFormat(PixelFormat.TRANSLUCENT);
     mUri = getIntent().getData();
     Bundle bundle = getIntent().getExtras();
     if (mUri == null && bundle == null) {
@@ -230,6 +231,7 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
 
     mInstance = new WXSDKInstance(this);
     mInstance.registerRenderListener(this);
+    mInstance.setBundleUrl(url);
 
     WXHttpTask httpTask = new WXHttpTask();
     httpTask.url = url;
@@ -304,10 +306,10 @@ public class WXPageActivity extends WXBaseActivity implements IWXRenderListener,
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    Intent intent=new Intent("requestPermission");
-    intent.putExtra("REQUEST_PERMISSION_CODE",requestCode);
-    intent.putExtra("permissions",permissions);
-    intent.putExtra("grantResults",grantResults);
+    Intent intent = new Intent("actionRequestPermissionsResult");
+    intent.putExtra("requestCode", requestCode);
+    intent.putExtra("permissions", permissions);
+    intent.putExtra("grantResults", grantResults);
     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
   }
 

@@ -1,16 +1,16 @@
 machine:
   node:
     version: 5
+  environment:
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 test:
   override:
     #- npm run test
     - cd android/playground && ./gradlew assembleDebug
-    - cd android/sdk && ./gradlew testDebugUnitTest jacocoTestReportDebug
+    - cd android/sdk && ./gradlew clean testDebugUnitTest -PdisableCov=true
   post:
-    - cp -r android/playground/app/build/outputs $CIRCLE_ARTIFACTS # playground artifacts
-    - cp -r android/sdk/build/outputs/ $CIRCLE_ARTIFACTS # sdk artifacts
-    - cp -r android/sdk/build/reports $CIRCLE_ARTIFACTS/reports 
-    - cd android/sdk && bash <(curl -s https://codecov.io/bash)
+    - cp -r android/playground/app/build/outputs $CIRCLE_ARTIFACTS/playground # playground artifacts
+    - cp -r android/sdk/build/reports $CIRCLE_ARTIFACTS/sdk_reports
 
 dependencies:
   cache_directories:

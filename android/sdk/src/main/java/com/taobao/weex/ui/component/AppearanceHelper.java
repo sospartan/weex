@@ -226,9 +226,9 @@ public class AppearanceHelper {
   public static final int RESULT_DISAPPEAR = -1;
   public static final int RESULT_NO_CHANGE = 0;
 
-  Rect mVisibleRect = new Rect();
+  private Rect mVisibleRect = new Rect();
 
-  private final int mCellPositionInScrollable;
+  private int mCellPositionInScrollable;
 
   /**
    * @param awareChild child to notify when appearance changed.
@@ -240,6 +240,10 @@ public class AppearanceHelper {
   public AppearanceHelper(WXComponent awareChild, int cellPositionInScrollable) {
     mAwareChild = awareChild;
     mCellPositionInScrollable = cellPositionInScrollable;
+  }
+
+  public void setCellPosition(int pos){
+    mCellPositionInScrollable = pos;
   }
 
   public int getCellPositionINScollable() {
@@ -279,15 +283,9 @@ public class AppearanceHelper {
     return RESULT_NO_CHANGE;
   }
 
-  public boolean isViewVisible(Rect parentRect) {
+  public boolean isViewVisible() {
     View view = mAwareChild.getHostView();
-    if (view == null) {
-      return false;
-    }
+    return view != null && view.getLocalVisibleRect(mVisibleRect);
 
-    boolean result = view.getLocalVisibleRect(parentRect);
-
-    WXLogUtils.d("AppearanceHelper","result:"+result+" rect:"+parentRect);
-    return result;
   }
 }

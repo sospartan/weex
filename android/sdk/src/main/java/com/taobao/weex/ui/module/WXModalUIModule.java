@@ -206,6 +206,7 @@ package com.taobao.weex.ui.module;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.text.TextUtils;
@@ -213,8 +214,8 @@ import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.bridge.JSCallback;
-import com.taobao.weex.common.WXModule;
 import com.taobao.weex.common.WXModuleAnno;
 import com.taobao.weex.utils.WXLogUtils;
 
@@ -230,7 +231,7 @@ import java.util.Map;
  * for example(weex JS):
  * this.$call('modal','toast',{'message':'test toast','duration': 2.0});
  */
-public class WXModalUIModule extends WXModule {
+public class WXModalUIModule extends WXSDKEngine.DestroyableModule {
 
   public static final String OK = "OK";
   public static final String CANCEL = "Cancel";
@@ -241,6 +242,7 @@ public class WXModalUIModule extends WXModule {
   public static final String OK_TITLE = "okTitle";
   public static final String CANCEL_TITLE = "cancelTitle";
   private Toast toast;
+  private Dialog activeDialog;
   @WXModuleAnno
   public void toast(String param) {
 
@@ -303,12 +305,15 @@ public class WXModalUIModule extends WXModule {
       builder.setPositiveButton(okTitle_f, new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-          callback.invoke(okTitle_f);
+          if(callback !=null) {
+            callback.invoke(okTitle_f);
+          }
         }
       });
       AlertDialog alertDialog = builder.create();
       alertDialog.setCanceledOnTouchOutside(false);
       alertDialog.show();
+      tracking(alertDialog);
     } else {
       WXLogUtils.e("[WXModalUIModule] when call alert mWXSDKInstance.getContext() must instanceof Activity");
     }
@@ -345,19 +350,23 @@ public class WXModalUIModule extends WXModule {
       builder.setPositiveButton(okTitle_f, new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-          callback.invoke(okTitle_f);
+          if(callback != null){
+            callback.invoke(okTitle_f);
+          }
         }
       });
       builder.setNegativeButton(cancelTitle_f, new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-          callback.invoke(cancelTitle_f);
-
+          if(callback != null){
+            callback.invoke(cancelTitle_f);
+          }
         }
       });
       AlertDialog alertDialog = builder.create();
       alertDialog.setCanceledOnTouchOutside(false);
       alertDialog.show();
+      tracking(alertDialog);
     } else {
       WXLogUtils.e("[WXModalUIModule] when call confirm mWXSDKInstance.getContext() must instanceof Activity");
     }
@@ -398,28 +407,50 @@ public class WXModalUIModule extends WXModule {
       builder.setPositiveButton(okTitle_f, new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-          Map<String, Object> result = new HashMap<String, Object>();
-          result.put(RESULT, okTitle_f);
-          result.put(DATA, editText.getText().toString());
-          callback.invoke( result);
-
+          if(callback != null){
+            Map<String, Object> result = new HashMap<String, Object>();
+            result.put(RESULT, okTitle_f);
+            result.put(DATA, editText.getText().toString());
+            callback.invoke( result);
+          }
         }
       });
       builder.setNegativeButton(cancelTitle_f, new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-          Map<String, Object> result = new HashMap<String, Object>();
-          result.put(RESULT, cancelTitle_f);
-          result.put(DATA, editText.getText().toString());
-          callback.invoke( result);
+          if(callback !=null){
+            Map<String, Object> result = new HashMap<String, Object>();
+            result.put(RESULT, cancelTitle_f);
+            result.put(DATA, editText.getText().toString());
+            callback.invoke( result);
+          }
+
         }
       });
       AlertDialog alertDialog = builder.create();
       alertDialog.setCanceledOnTouchOutside(false);
       alertDialog.show();
+      tracking(alertDialog);
     } else {
       WXLogUtils.e("when call prompt mWXSDKInstance.getContext() must instanceof Activity");
     }
   }
 
+  private void tracking(Dialog dialog) {
+    activeDialog = dialog;
+    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+      @Override
+      public void onDismiss(DialogInterface dialog) {
+        activeDialog = null;
+      }
+    });
+  }
+
+  @Override
+  public void destroy() {
+    if (activeDialog != null && activeDialog.isShowing()) {
+      WXLogUtils.w("Dismiss the active dialog");
+      activeDialog.dismiss();
+    }
+  }
 }

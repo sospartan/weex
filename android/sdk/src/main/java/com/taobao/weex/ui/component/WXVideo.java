@@ -208,40 +208,36 @@ package com.taobao.weex.ui.component;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.MediaController;
-import android.widget.ProgressBar;
 
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.URIAdapter;
+import com.taobao.weex.common.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.view.WXVideoView;
 import com.taobao.weex.utils.WXLogUtils;
-import com.taobao.weex.utils.WXResourceUtils;
 import com.taobao.weex.utils.WXUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+@Component(lazyload = false)
 
 public class WXVideo extends WXComponent<FrameLayout> {
 
-  /**
-   * package
-   **/
-  WXVideoView mVideoView;
   private boolean mAutoPlay;
-  private String mSrc;
+  private WXVideoView.Wrapper mWrapper;
+
   /**
    * package
    **/
   boolean mPrepared;
   private boolean mError;
-  private ProgressBar mProgressBar;
 
   @Deprecated
   public WXVideo(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
@@ -253,91 +249,77 @@ public class WXVideo extends WXComponent<FrameLayout> {
   }
 
   @Override
-  protected FrameLayout initComponentHostView(Context context) {
-    FrameLayout videoRoot = new FrameLayout(mContext);
-    videoRoot.setBackgroundColor(WXResourceUtils.getColor("#ee000000"));
+  protected FrameLayout initComponentHostView(@NonNull Context context) {
+    final WXVideoView.Wrapper video = new WXVideoView.Wrapper(context);
 
-    mVideoView = new WXVideoView(mContext);
-    FrameLayout.LayoutParams videoLayoutParams =
-        new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT);
-    videoLayoutParams.gravity = Gravity.CENTER;
-    mVideoView.setLayoutParams(videoLayoutParams);
-    videoRoot.addView(mVideoView);
-
-    mProgressBar = new ProgressBar(mContext);
-    FrameLayout.LayoutParams pLayoutParams =
-        new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT);
-    mProgressBar.setLayoutParams(pLayoutParams);
-    pLayoutParams.gravity = Gravity.CENTER;
-    videoRoot.addView(mProgressBar);
-
-    final MediaController controller = new MediaController(mContext);
-
-    controller.setAnchorView(videoRoot);
-
-    mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+    video.setOnErrorListener(new MediaPlayer.OnErrorListener() {
 
       @Override
       public boolean onError(MediaPlayer mp, int what, int extra) {
         if (WXEnvironment.isApkDebugable()) {
           WXLogUtils.d("Video", "onError:" + what);
         }
-        mProgressBar.setVisibility(View.GONE);
+        video.getProgressBar().setVisibility(View.GONE);
         mPrepared = false;
         mError = true;
 
-        if ( mDomObj.getEvents().contains(Constants.Event.FAIL)) {
+        if ( getDomObject().getEvents().contains(Constants.Event.FAIL)) {
           WXVideo.this.notify(Constants.Event.FAIL, Constants.Value.STOP);
         }
         return true;
       }
     });
 
-    mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+    video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
       @Override
       public void onPrepared(MediaPlayer mediaPlayer) {
         if (WXEnvironment.isApkDebugable()) {
           WXLogUtils.d("Video", "onPrepared");
         }
-        mProgressBar.setVisibility(View.GONE);
+        video.getProgressBar().setVisibility(View.GONE);
         mPrepared = true;
         if (mAutoPlay) {
-          mVideoView.start();
+          video.start();
         }
-        mVideoView.seekTo(5);
-        if (!mStopped) {
-          controller.show(3);
-        } else {
-          controller.hide();
+
+        //callback from video view, so videoview should not null
+        WXVideoView videoView = video.getVideoView();
+        videoView.seekTo(5);
+
+        if (video.getMediaController() != null) {
+          if (!mStopped) {
+            video.getMediaController().show(3);
+          } else {
+            video.getMediaController().hide();
+          }
         }
+
         mStopped = false;
       }
     });
 
-    mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+    video.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
       @Override
       public void onCompletion(MediaPlayer mediaPlayer) {
         if (WXEnvironment.isApkDebugable()) {
           WXLogUtils.d("Video", "onCompletion");
         }
-        if ( mDomObj.getEvents().contains(Constants.Event.FINISH)) {
+        if ( getDomObject().getEvents().contains(Constants.Event.FINISH)) {
           WXVideo.this.notify(Constants.Event.FINISH, Constants.Value.STOP);
         }
       }
     });
 
-    mVideoView.setOnVideoPauseListener(new WXVideoView.VideoPlayListener() {
+    video.setOnVideoPauseListener(new WXVideoView.VideoPlayListener() {
 
       @Override
       public void onPause() {
         if (WXEnvironment.isApkDebugable()) {
           WXLogUtils.d("Video", "onPause");
         }
-        if ( mDomObj.getEvents().contains(Constants.Event.PAUSE)) {
+        if ( getDomObject().getEvents().contains(Constants.Event.PAUSE)) {
           WXVideo.this.notify(Constants.Event.PAUSE, Constants.Value.PAUSE);
         }
       }
@@ -348,16 +330,13 @@ public class WXVideo extends WXComponent<FrameLayout> {
           WXLogUtils.d("Video", "onStart");
         }
 
-        if ( mDomObj.getEvents().contains(Constants.Event.START)) {
+        if ( getDomObject().getEvents().contains(Constants.Event.START)) {
           WXVideo.this.notify(Constants.Event.START, Constants.Value.PLAY);
         }
       }
     });
-
-    mVideoView.setMediaController(controller);
-    controller.setMediaPlayer(mVideoView);
-
-    return videoRoot;
+    mWrapper = video;
+    return video;
   }
 
   private void notify(String event, String newStatus) {
@@ -370,7 +349,19 @@ public class WXVideo extends WXComponent<FrameLayout> {
     attrsChanges.put(Constants.Name.PLAY_STATUS, newStatus);
     domChanges.put("attrs", attrsChanges);
 
-    WXSDKManager.getInstance().fireEvent(mInstanceId, getRef(), event, params, domChanges);
+    WXSDKManager.getInstance().fireEvent(getInstanceId(), getRef(), event, params, domChanges);
+  }
+
+  @Override
+  public void bindData(WXComponent component) {
+    super.bindData(component);
+    addEvent(Constants.Event.APPEAR);
+  }
+
+  @Override
+  public void notifyAppearStateChange(String wxEventType, String direction) {
+    super.notifyAppearStateChange(wxEventType, direction);
+    mWrapper.createVideoViewIfVisible();
   }
 
   @Override
@@ -410,15 +401,19 @@ public class WXVideo extends WXComponent<FrameLayout> {
     }
 
     if (!TextUtils.isEmpty(src)) {
-      mVideoView.setVideoURI(Uri.parse(src));
-      mProgressBar.setVisibility(View.VISIBLE);
-      mSrc = src;
+      WXSDKInstance instance = getInstance();
+      mWrapper.setVideoURI(instance.rewriteUri(Uri.parse(src), URIAdapter.VIDEO));
+      mWrapper.getProgressBar().setVisibility(View.VISIBLE);
     }
   }
 
   @WXComponentProp(name = Constants.Name.AUTO_PLAY)
   public void setAutoPlay(boolean autoPlay) {
     mAutoPlay = autoPlay;
+    if(autoPlay){
+      mWrapper.createIfNotExist();
+      mWrapper.start();
+    }
   }
 
   private boolean mStopped;
@@ -428,17 +423,18 @@ public class WXVideo extends WXComponent<FrameLayout> {
 
     if (mPrepared && !mError && !mStopped) {
       if (playstatus.equals(Constants.Value.PLAY)) {
-        mVideoView.start();
+        mWrapper.start();
       } else if (playstatus.equals(Constants.Value.PAUSE)) {
-        mVideoView.pause();
+        mWrapper.pause();
       } else if (playstatus.equals(Constants.Value.STOP)) {
-        mVideoView.stopPlayback();
+        mWrapper.stopPlayback();
         mStopped = true;
       }
     } else if ((mError || mStopped) && playstatus.equals(Constants.Value.PLAY)) {
       mError = false;
-      mVideoView.resume();
-      mProgressBar.setVisibility(View.VISIBLE);
+      mWrapper.resume();
+
+      mWrapper.getProgressBar().setVisibility(View.VISIBLE);
     }
   }
 }

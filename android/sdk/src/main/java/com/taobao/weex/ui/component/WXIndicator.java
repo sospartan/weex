@@ -205,11 +205,13 @@
 package com.taobao.weex.ui.component;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.common.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.dom.WXDomObject;
@@ -226,6 +228,7 @@ import java.util.Map;
  *
  * Slider indicator
  */
+@Component(lazyload = false)
 public class WXIndicator extends WXComponent<WXCircleIndicator> {
 
   @Deprecated
@@ -238,9 +241,9 @@ public class WXIndicator extends WXComponent<WXCircleIndicator> {
   }
 
   @Override
-  protected WXCircleIndicator initComponentHostView(Context context) {
+  protected WXCircleIndicator initComponentHostView(@NonNull Context context) {
     WXCircleIndicator view = new WXCircleIndicator(context);
-    if (mParent instanceof WXSlider) {
+    if (getParent() instanceof WXSlider) {
       return view;
     } else {
       if (WXEnvironment.isApkDebugable()) {
@@ -253,8 +256,8 @@ public class WXIndicator extends WXComponent<WXCircleIndicator> {
   @Override
   protected void onHostViewInitialized(WXCircleIndicator host) {
     super.onHostViewInitialized(host);
-    if (mParent instanceof WXSlider) {
-      ((WXSlider) mParent).addIndicator(this);
+    if (getParent() instanceof WXSlider) {
+      ((WXSlider) getParent()).addIndicator(this);
     }
   }
 
@@ -316,13 +319,13 @@ public class WXIndicator extends WXComponent<WXCircleIndicator> {
   }
 
   public void setShowIndicators(boolean show) {
-    if (mHost == null) {
+    if (getHostView() == null) {
       return;
     }
     if (show) {
-      mHost.setVisibility(View.VISIBLE);
+      getHostView().setVisibility(View.VISIBLE);
     } else {
-      mHost.setVisibility(View.GONE);
+      getHostView().setVisibility(View.GONE);
     }
   }
 

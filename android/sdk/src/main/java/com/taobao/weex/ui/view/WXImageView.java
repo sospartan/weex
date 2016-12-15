@@ -244,37 +244,31 @@ public class WXImageView extends ImageView implements WXGestureObservable {
 
     @Override
     public void draw(Canvas canvas) {
-      if(mOriginal instanceof BitmapDrawable){
-        Bitmap bitmap = ((BitmapDrawable) mOriginal).getBitmap();
-        if(bitmap == null){
-          //TODO Not strictly clip according to background-clip:border-box
-          mOriginal.draw(canvas);
+      Bitmap bitmap;
+      if (mOriginal instanceof BitmapDrawable &&
+          (bitmap = ((BitmapDrawable) mOriginal).getBitmap()) != null) {
+        Path path;
+        RectF bounds = new RectF(getBounds());
+        BorderDrawable borderDrawable;
+        if ((borderDrawable = WXViewUtils.getBorderDrawable(WXImageView.this)) != null) {
+          path = borderDrawable.getContentPath(getPaddingTop(),
+                                               getPaddingRight(),
+                                               getPaddingBottom(),
+                                               getPaddingLeft(),
+                                               bounds);
+        } else {
+          path = new Path();
+          path.addRect(bounds, Path.Direction.CW);
         }
-        else {
-          Path path;
-          RectF bounds = new RectF(ImageClipDrawable.this.getBounds());
-          BorderDrawable borderDrawable;
-          if ((borderDrawable = WXViewUtils.getBorderDrawable(WXImageView.this)) != null) {
-            path = borderDrawable.getContentPath(getPaddingTop(),
-                                                 getPaddingRight(),
-                                                 getPaddingBottom(),
-                                                 getPaddingLeft());
-            path.offset(-getPaddingLeft(), -getPaddingTop());
-          } else {
-            path = new Path();
-            path.addRect(bounds, Path.Direction.CW);
-          }
-          Matrix matrix = new Matrix();
-          matrix.setScale(bounds.width() / bitmap.getWidth(),
-                          bounds.height() / bitmap.getHeight());
-          BitmapShader bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-          bitmapShader.setLocalMatrix(matrix);
-          mPaint.setStyle(Paint.Style.FILL);
-          mPaint.setShader(bitmapShader);
-          canvas.drawPath(path, mPaint);
-        }
-      }
-      else{
+        Matrix matrix = new Matrix();
+        matrix.setScale(bounds.width() / bitmap.getWidth(),
+                        bounds.height() / bitmap.getHeight());
+        BitmapShader bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        bitmapShader.setLocalMatrix(matrix);
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setShader(bitmapShader);
+        canvas.drawPath(path, mPaint);
+      } else {
         //TODO Not strictly clip according to background-clip:border-box
         mOriginal.draw(canvas);
       }
@@ -300,6 +294,16 @@ public class WXImageView extends ImageView implements WXGestureObservable {
       mOriginal.setBounds(bounds);
       ImageClipDrawable.this.invalidateSelf();
     }
+
+    @Override
+    public int getIntrinsicWidth() {
+      return mOriginal.getIntrinsicWidth();
+    }
+
+    @Override
+    public int getIntrinsicHeight() {
+      return mOriginal.getIntrinsicHeight();
+    }
   }
 
   private WXGesture wxGesture;
@@ -314,10 +318,13 @@ public class WXImageView extends ImageView implements WXGestureObservable {
     setImageDrawable(drawable);
   }
 
-  @Override
-  public void setImageDrawable(Drawable drawable) {
+  public void setImageDrawable(Drawable drawable,boolean isGif) {
     if (drawable != null) {
-      super.setImageDrawable(new ImageClipDrawable(drawable));
+      if(isGif){
+        super.setImageDrawable(drawable);
+      }else{
+        super.setImageDrawable(new ImageClipDrawable(drawable));
+      }
     } else {
       super.setImageDrawable(null);
     }
@@ -339,6 +346,11 @@ public class WXImageView extends ImageView implements WXGestureObservable {
       matrix.setScale(scale, scale);
       setImageMatrix(matrix);
     }
+  }
+
+  @Override
+  public void setImageDrawable(Drawable drawable) {
+    setImageDrawable(drawable,false);
   }
 
   @Override

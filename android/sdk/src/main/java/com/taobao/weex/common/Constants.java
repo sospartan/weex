@@ -205,13 +205,16 @@
 package com.taobao.weex.common;
 
 public class Constants {
-  public interface Orientation{
+
+  public interface Orientation {
+
     int HORIZONTAL = 0;
     int VERTICAL = 1;
   }
 
   public interface Name {
 
+    String HREF = "href";
     String WIDTH = "width";
     String MIN_WIDTH = "minWidth";
     String MAX_WIDTH = "maxWidth";
@@ -224,6 +227,24 @@ public class Constants {
     String FLEX_DIRECTION = "flexDirection";
     String JUSTIFY_CONTENT = "justifyContent";
     String FLEX_WRAP = "flexWrap";
+
+    String MARGIN = "margin";
+    String MARGIN_TOP = "marginTop";
+    String MARGIN_LEFT = "marginLeft";
+    String MARGIN_RIGHT = "marginRight";
+    String MARGIN_BOTTOM = "marginBottom";
+    String PADDING = "padding";
+    String PADDING_TOP = "paddingTop";
+    String PADDING_LEFT = "paddingLeft";
+    String PADDING_RIGHT = "paddingRight";
+    String PADDING_BOTTOM = "paddingBottom";
+
+    String LEFT = "left";
+    String TOP = "top";
+    String RIGHT = "right";
+    String BOTTOM = "bottom";
+
+
     String BACKGROUND_COLOR = "backgroundColor";
     String OPACITY = "opacity";
     String BORDER_RADIUS = "borderRadius";
@@ -246,21 +267,9 @@ public class Constants {
     String BORDER_BOTTOM_STYLE = "borderBottomStyle";
     String BORDER_LEFT_STYLE = "borderLeftStyle";
     String BORDER_TOP_STYLE = "borderTopStyle";
-    String MARGIN = "margin";
-    String MARGIN_TOP = "marginTop";
-    String MARGIN_LEFT = "marginLeft";
-    String MARGIN_RIGHT = "marginRight";
-    String MARGIN_BOTTOM = "marginBottom";
-    String PADDING = "padding";
-    String PADDING_TOP = "paddingTop";
-    String PADDING_LEFT = "paddingLeft";
-    String PADDING_RIGHT = "paddingRight";
-    String PADDING_BOTTOM = "paddingBottom";
+
     String POSITION = "position";
-    String LEFT = "left";
-    String TOP = "top";
-    String RIGHT = "right";
-    String BOTTOM = "bottom";
+
     String TEXT_DECORATION = "textDecoration";
     String TEXT_ALIGN = "textAlign";
     String FONT_WEIGHT = "fontWeight";
@@ -271,13 +280,14 @@ public class Constants {
     String FONT_FAMILY = "fontFamily";
     String TEXT_OVERFLOW = "textOverflow";
     String ELLIPSIS = "ellipsis";
-    String LINE_HEIGHT ="lineHeight";
+    String LINE_HEIGHT = "lineHeight";
     String DISABLED = "disabled";
     String VALUE = "value";
     String IMAGE_QUALITY = "imageQuality";
+    String FILTER = "filter";
     String QUALITY = "quality";
     String SRC = "src";
-    String PLACE_HOLDER ="placeHolder";
+    String PLACE_HOLDER = "placeHolder";
     String RESIZE_MODE = "resizeMode";
     String SHOW_INDICATORS = "showIndicators";
     String AUTO_PLAY = "autoPlay";
@@ -294,7 +304,7 @@ public class Constants {
     String AUTOFOCUS = "autofocus";
     String SINGLELINE = "singleline";
     String MAX_LENGTH = "maxLength";
-    String MAXLENGTH ="maxlength";
+    String MAXLENGTH = "maxlength";
     String ROWS = "rows";
     String CHECKED = "checked";
     String VISIBILITY = "visibility";
@@ -312,10 +322,15 @@ public class Constants {
     String INTERVAL = "interval";
     String PLAY_STATUS = "playStatus";
     String FONT_FACE = "fontFace";
+    String MAX = "max";
+    String MIN = "min";
+    String NAV_BAR_VISIBILITY = "hidden";
   }
 
   public interface Value {
 
+    int NAV_BAR_SHOWN = 0;
+    int NAV_BAR_HIDDEN = 1;
     String STICKY = "sticky";
     String FIXED = "fixed";
     String LEFT = "left";
@@ -368,7 +383,8 @@ public class Constants {
     String ONPULLING_DOWN = "pullingdown";
   }
 
-  public interface Scheme{
+  public interface Scheme {
+
     String FILE = "file";
     String HTTPS = "https";
     String HTTP = "http";
