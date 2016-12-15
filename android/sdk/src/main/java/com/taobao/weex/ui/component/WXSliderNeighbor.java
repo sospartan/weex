@@ -230,15 +230,17 @@ import java.util.List;
  * Created by xingjiu on 16/8/18.
  */
 public class WXSliderNeighbor extends WXSlider {
-    public static final String NEIGHBOR_SCALE = "neighborScale"; // the init scale of neighor page
-    public static final String NEIGHBOR_ALPHA = "neighborAlpha"; // the init alpha of neighor page
+    public static final String NEIGHBOR_SCALE = "neighborScale"; // the init scale of neighbor page
+    public static final String NEIGHBOR_ALPHA = "neighborAlpha"; // the init alpha of neighbor page
+    public static final String NEIGHBOR_SPACE = "neighborSpace"; // the init alpha of neighbor page
 
     private static final int DEFAULT_NEIGHBOR_SPACE = 25;
     private static final float DEFAULT_NEIGHBOR_SCALE = 0.8F;
     private static final float DEFAULT_NEIGHBOR_ALPHA = 0.6F;
 
-    private float mNerghborScale = DEFAULT_NEIGHBOR_SCALE;
-    private float mNerghborAlpha = DEFAULT_NEIGHBOR_ALPHA;
+    private float mNeighborScale = DEFAULT_NEIGHBOR_SCALE;
+    private float mNeighborAlpha = DEFAULT_NEIGHBOR_ALPHA;
+    private float mNeighborSpace = DEFAULT_NEIGHBOR_SPACE;
 
     private static final float WX_DEFAULT_MAIN_NEIGHBOR_SCALE = 0.9f;
 
@@ -298,7 +300,7 @@ public class WXSliderNeighbor extends WXSlider {
 
     @Override
     protected void addSubView(View view, int index) {
-        updateScaleAndAlpha(view, mNerghborAlpha, mNerghborScale); // we need to set neighbor view status when added.
+        updateScaleAndAlpha(view, mNeighborAlpha, mNeighborScale); // we need to set neighbor view status when added.
         if (view == null || mAdapter == null) {
             return;
         }
@@ -362,8 +364,8 @@ public class WXSliderNeighbor extends WXSlider {
         }
 
         // addSubView is called before setProperty, so we need to modify the neighbor view in mAdapter.
-        if(this.mNerghborScale != neighborScale) {
-            this.mNerghborScale = neighborScale;
+        if(this.mNeighborScale != neighborScale) {
+            this.mNeighborScale = neighborScale;
             updateAdpaterScaleAndAlpha(-1, neighborScale);
         }
     }
@@ -379,9 +381,26 @@ public class WXSliderNeighbor extends WXSlider {
         }
 
         // The same work as setNeighborScale()
-        if(this.mNerghborAlpha != neighborAlpha) {
-            this.mNerghborAlpha = neighborAlpha;
+        if(this.mNeighborAlpha != neighborAlpha) {
+            this.mNeighborAlpha = neighborAlpha;
             updateAdpaterScaleAndAlpha(neighborAlpha, -1);
+        }
+    }
+
+    @WXComponentProp(name = NEIGHBOR_SPACE)
+    @SuppressWarnings("unused")
+    public void setNeighborSpace(String input) {
+        float neighborSpace = DEFAULT_NEIGHBOR_SPACE;
+        if (!TextUtils.isEmpty(input)) {
+            try {
+                neighborSpace = Float.parseFloat(input);
+            } catch (NumberFormatException e) {
+            }
+        }
+
+        // The same work as setNeighborScale()
+        if(this.mNeighborSpace != neighborSpace) {
+            this.mNeighborSpace = neighborSpace;
         }
     }
 
@@ -399,6 +418,12 @@ public class WXSliderNeighbor extends WXSlider {
                 input = WXUtils.getString(param, null);
                 if (input != null) {
                     setNeighborAlpha(input);
+                }
+                return true;
+            case NEIGHBOR_SPACE:
+                input = WXUtils.getString(param, null);
+                if (input != null) {
+                    setNeighborSpace(input);
                 }
                 return true;
         }
@@ -424,18 +449,18 @@ public class WXSliderNeighbor extends WXSlider {
 
             if (position >= -1 && position <= 1) {
                 float factor = Math.abs(Math.abs(position) - 1);
-                scale = mNerghborScale + factor * (WX_DEFAULT_MAIN_NEIGHBOR_SCALE-mNerghborScale);
-                alpha = (1-mNerghborAlpha) * factor + mNerghborAlpha;
+                scale = mNeighborScale + factor * (WX_DEFAULT_MAIN_NEIGHBOR_SCALE- mNeighborScale);
+                alpha = (1- mNeighborAlpha) * factor + mNeighborAlpha;
                 int delta = page.getMeasuredWidth()-realView.getMeasuredWidth();
-                float translation = ((page.getMeasuredWidth()-realView.getMeasuredWidth()*WX_DEFAULT_MAIN_NEIGHBOR_SCALE)- WXViewUtils.getRealPxByWidth(DEFAULT_NEIGHBOR_SPACE)*2)/2;
+                float translation = ((page.getMeasuredWidth()-realView.getMeasuredWidth()*WX_DEFAULT_MAIN_NEIGHBOR_SCALE)- WXViewUtils.getRealPxByWidth(mNeighborSpace)*2)/2;
                 if(mViewPager.getCurrentItem() != mAdapter.getItemIndex(page)){
                     if(position > 0){
                         realView.setPivotX(0);
-                        realView.setTranslationX(-delta);
+                        realView.setTranslationX(-translation);
                         page.setTranslationX(-translation);
                     }else{
                         realView.setPivotX(realView.getMeasuredWidth());
-                        realView.setTranslationX(delta);
+                        realView.setTranslationX(translation);
                         page.setTranslationX(translation);
                     }
                 }else{
