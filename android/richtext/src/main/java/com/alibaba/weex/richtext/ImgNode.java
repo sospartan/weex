@@ -216,11 +216,11 @@ import static com.taobao.weex.utils.WXViewUtils.getRealPxByWidth;
 
 public class ImgNode extends RichTextNode {
 
-  public static final String NODE_TYPE = " ";
+  public static final String NODE_TYPE = "image";
 
   @Override
   public String toString() {
-    return NODE_TYPE;
+    return "";
   }
 
   @Override
