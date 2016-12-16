@@ -215,7 +215,7 @@ public class WXRichTextDomObject extends WXTextDomObject {
   @NonNull
   @Override
   protected Spanned createSpanned(String text) {
-    return RichTextNode.parse(text);
+    return RichTextNode.parse(text, getDomContext().getInstanceId());
   }
 
 }

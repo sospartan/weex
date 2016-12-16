@@ -205,15 +205,43 @@
 
 package com.alibaba.weex.richtext;
 
-import com.taobao.weex.common.Constants;
+import android.net.Uri;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ClickableSpan;
+import android.view.View;
+
+import com.alibaba.fastjson.JSONArray;
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.URIAdapter;
 
 public class ANode extends RichTextNode {
 
   public static final String NODE_TYPE = "a";
+  public static final String HREF = "href";
 
   @Override
   public String toString() {
-    return attr.get(Constants.Name.VALUE).toString();
+    return "";
   }
 
+  @Override
+  protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
+    super.updateSpans(spannableStringBuilder);
+    if (attr != null && attr.containsKey(HREF)) {
+      ClickableSpan clickableSpan = new ClickableSpan() {
+        @Override
+        public void onClick(View widget) {
+          String url = attr.get(HREF).toString();
+          url = WXSDKManager.getInstance().getSDKInstance(mInstanceId).
+              rewriteUri(Uri.parse(url), URIAdapter.LINK).toString();
+          JSONArray array = new JSONArray();
+          array.add(url);
+          WXSDKManager.getInstance().getWXBridgeManager().
+              callModuleMethod(mInstanceId, "event", "openURL", array);
+        }
+      };
+      spannableStringBuilder.setSpan(clickableSpan, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    }
+  }
 }

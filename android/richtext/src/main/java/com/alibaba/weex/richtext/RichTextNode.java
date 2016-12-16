@@ -234,15 +234,16 @@ public abstract class RichTextNode {
   public static final String TYPE = "type";
   public static final String STYLE = "style";
   public static final String ATTR = "attr";
-  public static final String CHILDREN = "children";
+  public static final String VALUE = Constants.Name.VALUE;
 
   protected Map<String, Object> style;
   protected Map<String, Object> attr;
   protected List<RichTextNode> children;
+  protected String mInstanceId;
 
   public static
   @NonNull
-  Spanned parse(String json) {
+  Spanned parse(String json, @NonNull String instanceId) {
     JSONArray jsonArray = JSON.parseArray(json);
     JSONObject jsonObject;
     List<RichTextNode> nodes;
@@ -252,7 +253,7 @@ public abstract class RichTextNode {
       for (int i = 0; i < jsonArray.size(); i++) {
         jsonObject = jsonArray.getJSONObject(i);
         if (jsonObject != null) {
-          node = RichTextNodeCreator.createRichTextNode(jsonObject);
+          node = RichTextNodeCreator.createRichTextNode(jsonObject, instanceId);
           if (node != null) {
             nodes.add(node);
           }
@@ -263,10 +264,12 @@ public abstract class RichTextNode {
     return new SpannedString("");
   }
 
-  void parse(JSONObject jsonObject) {
+  void parse(JSONObject jsonObject, @NonNull String instanceId) {
     JSONObject jsonStyle, jsonAttr, child;
-    JSONArray jsonArray;
+    JSONArray jsonArray, valueChildren;
     RichTextNode node;
+
+    mInstanceId = instanceId;
     if ((jsonStyle = jsonObject.getJSONObject(STYLE)) != null) {
       style = new ArrayMap<>();
       style.putAll(jsonStyle);
@@ -277,21 +280,23 @@ public abstract class RichTextNode {
     if ((jsonAttr = jsonObject.getJSONObject(ATTR)) != null) {
       attr = new ArrayMap<>();
       attr.putAll(jsonAttr);
-    } else {
-      attr = new ArrayMap<>(0);
-    }
-
-    if ((jsonArray = jsonObject.getJSONArray(CHILDREN)) != null) {
-      children = new ArrayList<>(jsonArray.size());
-      for (int i = 0; i < jsonArray.size(); i++) {
-        child = jsonArray.getJSONObject(i);
-        node = RichTextNodeCreator.createRichTextNode(child);
-        if (node != null) {
-          children.add(node);
+      if (jsonAttr.containsKey(VALUE) && (jsonAttr.get(VALUE) instanceof JSONArray)) {
+        valueChildren = jsonAttr.getJSONArray(VALUE);
+        attr.remove(VALUE);
+        children = new ArrayList<>(valueChildren.size());
+        for (int i = 0; i < valueChildren.size(); i++) {
+          child = valueChildren.getJSONObject(i);
+          node = RichTextNodeCreator.createRichTextNode(child, instanceId);
+          if (node != null) {
+            children.add(node);
+          }
         }
+      } else {
+        children = new ArrayList<>(0);
       }
     } else {
       children = new ArrayList<>(0);
+      attr = new ArrayMap<>(0);
     }
   }
 

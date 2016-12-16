@@ -220,7 +220,7 @@ public class ImgNode extends RichTextNode {
 
   @Override
   public String toString() {
-    return "";
+    return " ";
   }
 
   @Override

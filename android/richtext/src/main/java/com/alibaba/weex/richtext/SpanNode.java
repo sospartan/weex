@@ -209,7 +209,7 @@ import com.taobao.weex.common.Constants;
 
 public class SpanNode extends RichTextNode {
 
-  public static final String NODE_TYPE = "text";
+  public static final String NODE_TYPE = "span";
 
   @Override
   public String toString() {
