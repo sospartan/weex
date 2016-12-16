@@ -84,7 +84,10 @@
     _currentIndex = currentIndex;
     [self.indicator setCurrentPoint:_currentIndex];
     
-    [self _configSubViews];
+    [self _resortItemViews];
+    [self _resetItemFrames];
+    [self _scroll2Center];
+    [self setNeedsLayout];
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(sliderView:didScrollToItemAtIndex:)]) {
         [self.delegate sliderView:self didScrollToItemAtIndex:_currentIndex];
@@ -157,28 +160,22 @@
     self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     self.scrollView.contentSize = CGSizeMake(self.itemViews.count * self.frame.size.width, self.frame.size.height);
     
-    [self _configSubViews];
+    [self _resortItemViews];
+    [self _resetItemFrames];
+    [self _scroll2Center];
+    [self setNeedsLayout];
 }
 
 #pragma mark Private Methods
 
-- (void)_configSubViews {
-    [self _resortItemViews];
-    [self _resetItemFrames];
-    [self _scroll2Center];
-    [self _resetItemCountLessThanOrEqualToTwo];
-    [self setNeedsLayout];
-}
-
 - (void)_resortItemViews
 {
-    if (self.itemViews.count <= 2) return;
+    if (self.itemViews.count <= 1) return;
     
     NSInteger center = [self _centerItemIndex];
     NSInteger index = 0;
     
     if (self.currentIndex >= 0) {
-        [self _validateCurrentIndex];
         if (self.currentIndex > center) {
             index = self.currentIndex - center;
         } else {
@@ -214,11 +211,13 @@
         itemView.frame = frame;
         xOffset += frame.size.width;
     }
+    
+    
 }
 
 - (NSInteger)_centerItemIndex
 {
-    if (self.itemViews.count > 2) {
+    if (self.itemViews.count > 1) {
         return self.itemViews.count % 2 ? self.itemViews.count / 2 : self.itemViews.count / 2 - 1;
     }
     return 0;
@@ -226,30 +225,10 @@
 
 - (void)_scroll2Center
 {
-    if (self.itemViews.count > 2) {
+    if (self.itemViews.count > 1) {
         UIView *itemView = [self.itemViews objectAtIndex:[self _centerItemIndex]];
         [self.scrollView scrollRectToVisible:itemView.frame animated:NO];
     }
-}
-
-- (void)_resetItemCountLessThanOrEqualToTwo {
-    if (self.itemViews.count > 0 && self.itemViews.count <= 2) {
-        [self _validateCurrentIndex];
-        for (UIView *itemView in self.itemViews) {
-            if (itemView.tag == _currentIndex) {
-                [self.scrollView scrollRectToVisible:itemView.frame animated:NO];
-                break;
-            }
-        }
-    }
-}
-
-- (BOOL)_validateCurrentIndex {
-    if (_currentIndex > 0 && _currentIndex < self.itemViews.count) {
-        return YES;
-    }
-    _currentIndex = 0;
-    return NO;
 }
 
 - (BOOL)_isItemViewVisiable:(UIView *)itemView
@@ -423,6 +402,19 @@
         
         [sliderView loadData];
     }
+}
+
+- (void)willRemoveSubview:(WXComponent *)component
+{
+    UIView *view = component.view;
+    
+    if(self.childrenView && [self.childrenView containsObject:view]){
+        [self.childrenView removeObject:view];
+    }
+    
+    WXSliderView *sliderView = (WXSliderView *)_view;
+    [sliderView removeItemView:view];
+    [sliderView setCurrentIndex:0];
 }
 
 - (void)updateAttributes:(NSDictionary *)attributes

@@ -37,6 +37,7 @@
     self.window.rootViewController = [[WXRootViewController alloc] initWithRootViewController:[self demoController]];
     [self.window makeKeyAndVisible];
     
+    // Override point for customization after application launch.
     [self startSplashScreen];
     
     return YES;
@@ -70,7 +71,6 @@
 {
     [WXAppConfiguration setAppGroup:@"AliApp"];
     [WXAppConfiguration setAppName:@"WeexDemo"];
-    [WXAppConfiguration setAppVersion:@"1.8.3"];
     [WXAppConfiguration setExternalUserAgent:@"ExternalUA"];
     
     [WXSDKEngine initSDKEnviroment];
