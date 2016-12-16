@@ -209,6 +209,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.text.style.ReplacementSpan;
+import android.view.View;
 
 import com.taobao.weex.adapter.IDrawableLoader;
 
@@ -217,6 +218,7 @@ public class RemoteImgSpan extends ReplacementSpan implements IDrawableLoader.Dr
 
   private int width, height;
   private Drawable mDrawable;
+  private View mView;
 
   public RemoteImgSpan(int width, int height) {
     this.width = width;
@@ -261,6 +263,18 @@ public class RemoteImgSpan extends ReplacementSpan implements IDrawableLoader.Dr
   @Override
   public void setDrawable(Drawable drawable) {
     mDrawable = drawable;
+    setCallback();
     mDrawable.invalidateSelf();
+  }
+
+  public void setView(View view) {
+    mView = view;
+    setCallback();
+  }
+
+  private void setCallback() {
+    if (mDrawable != null && mView != null) {
+      mDrawable.setCallback(mView);
+    }
   }
 }

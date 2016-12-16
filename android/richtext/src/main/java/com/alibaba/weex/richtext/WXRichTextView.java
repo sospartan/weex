@@ -206,16 +206,28 @@
 package com.alibaba.weex.richtext;
 
 import android.content.Context;
+import android.text.Layout;
+import android.text.Spanned;
 
 import com.taobao.weex.ui.view.WXTextView;
-
-/**
- * Created by YorkShen on 2016/12/9.
- */
 
 public class WXRichTextView extends WXTextView {
 
   public WXRichTextView(Context context) {
     super(context);
+  }
+
+  @Override
+  public void setTextLayout(Layout layout) {
+    super.setTextLayout(layout);
+    if (layout.getText() instanceof Spanned) {
+      Spanned spanned = (Spanned) layout.getText();
+      RemoteImgSpan[] remoteImgSpans = spanned.getSpans(0, spanned.length(), RemoteImgSpan.class);
+      if (remoteImgSpans != null) {
+        for (RemoteImgSpan span : remoteImgSpans) {
+          span.setView(this);
+        }
+      }
+    }
   }
 }
