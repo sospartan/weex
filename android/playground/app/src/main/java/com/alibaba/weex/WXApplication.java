@@ -5,6 +5,7 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.alibaba.weex.commons.adapter.ImageAdapter;
+import com.alibaba.weex.commons.adapter.PicassoBasedDrawableLoader;
 import com.alibaba.weex.extend.PlayDebugAdapter;
 import com.alibaba.weex.extend.module.GeolocationModule;
 import com.alibaba.weex.extend.module.MyModule;
@@ -42,6 +43,7 @@ public class WXApplication extends Application {
                                //.setImgAdapter(new FrescoImageAdapter())// use fresco adapter
                                .setImgAdapter(new ImageAdapter())
                                .setDebugAdapter(new PlayDebugAdapter())
+                               .setDrawableLoader(new PicassoBasedDrawableLoader(this))
                                .build()
                           );
 

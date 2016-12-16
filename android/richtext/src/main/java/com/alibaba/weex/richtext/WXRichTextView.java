@@ -205,34 +205,17 @@
 
 package com.alibaba.weex.richtext;
 
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
+import android.content.Context;
 
-import com.taobao.weex.WXSDKEngine;
-import com.taobao.weex.common.Constants;
-import com.taobao.weex.utils.WXUtils;
+import com.taobao.weex.ui.view.WXTextView;
 
-import static com.taobao.weex.utils.WXViewUtils.getRealPxByWidth;
+/**
+ * Created by YorkShen on 2016/12/9.
+ */
 
-public class ImgNode extends RichTextNode {
+public class WXRichTextView extends WXTextView {
 
-  public static final String NODE_TYPE = " ";
-
-  @Override
-  public String toString() {
-    return NODE_TYPE;
-  }
-
-  @Override
-  protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
-    if (style.containsKey(Constants.Name.WIDTH) && style.containsKey(Constants.Name.HEIGHT) && attr.containsKey(Constants.Name.SRC)) {
-      int width = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.WIDTH)));
-      int height = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.HEIGHT)));
-      String url = attr.get(Constants.Name.SRC).toString();
-      RemoteImgSpan imageSpan = new RemoteImgSpan(width, height);
-      WXSDKEngine.getDrawableLoader().setDrawable(url, imageSpan);
-      spannableStringBuilder.setSpan(imageSpan, 0, spannableStringBuilder.length(),
-                                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-    }
+  public WXRichTextView(Context context) {
+    super(context);
   }
 }

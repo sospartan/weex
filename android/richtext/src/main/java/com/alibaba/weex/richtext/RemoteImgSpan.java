@@ -205,34 +205,62 @@
 
 package com.alibaba.weex.richtext;
 
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.text.style.ReplacementSpan;
 
-import com.taobao.weex.WXSDKEngine;
-import com.taobao.weex.common.Constants;
-import com.taobao.weex.utils.WXUtils;
+import com.taobao.weex.adapter.IDrawableLoader;
 
-import static com.taobao.weex.utils.WXViewUtils.getRealPxByWidth;
 
-public class ImgNode extends RichTextNode {
+public class RemoteImgSpan extends ReplacementSpan implements IDrawableLoader.DrawableTarget {
 
-  public static final String NODE_TYPE = " ";
+  private int width, height;
+  private Drawable mDrawable;
 
+  public RemoteImgSpan(int width, int height) {
+    this.width = width;
+    this.height = height;
+  }
+
+  /**
+   * Mostly copied from
+   *
+   * {@link android.text.style.DynamicDrawableSpan#getSize(Paint, CharSequence, int, int, Paint.FontMetricsInt)},
+   * but not use Drawable to calculate size;
+   */
   @Override
-  public String toString() {
-    return NODE_TYPE;
+  public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
+    if (fm != null) {
+      fm.ascent = -height;
+      fm.descent = 0;
+
+      fm.top = fm.ascent;
+      fm.bottom = 0;
+    }
+    return width;
+  }
+
+  /**
+   * Mostly copied from
+   * {@link android.text.style.DynamicDrawableSpan#draw(Canvas, CharSequence, int, int, float, int, int, int, Paint)},
+   * except for vertical alignment.
+   */
+  @Override
+  public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
+    if (mDrawable != null) {
+      canvas.save();
+      int transY = bottom - mDrawable.getBounds().bottom;
+      transY -= paint.getFontMetricsInt().descent;
+      canvas.translate(x, transY);
+      mDrawable.draw(canvas);
+      canvas.restore();
+    }
   }
 
   @Override
-  protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
-    if (style.containsKey(Constants.Name.WIDTH) && style.containsKey(Constants.Name.HEIGHT) && attr.containsKey(Constants.Name.SRC)) {
-      int width = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.WIDTH)));
-      int height = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.HEIGHT)));
-      String url = attr.get(Constants.Name.SRC).toString();
-      RemoteImgSpan imageSpan = new RemoteImgSpan(width, height);
-      WXSDKEngine.getDrawableLoader().setDrawable(url, imageSpan);
-      spannableStringBuilder.setSpan(imageSpan, 0, spannableStringBuilder.length(),
-                                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-    }
+  public void setDrawable(Drawable drawable) {
+    mDrawable = drawable;
+    mDrawable.invalidateSelf();
   }
 }

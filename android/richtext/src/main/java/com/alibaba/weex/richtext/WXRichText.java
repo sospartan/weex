@@ -206,12 +206,16 @@
 package com.alibaba.weex.richtext;
 
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.ComponentCreator;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.ui.component.WXVContainer;
+import com.taobao.weex.ui.view.WXTextView;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -227,5 +231,10 @@ public class WXRichText extends WXText {
   public WXRichText(WXSDKInstance instance, WXDomObject node,
                     WXVContainer parent) {
     super(instance, node, parent);
+  }
+
+  @Override
+  protected WXTextView initComponentHostView(@NonNull Context context) {
+    return new WXRichTextView(context);
   }
 }

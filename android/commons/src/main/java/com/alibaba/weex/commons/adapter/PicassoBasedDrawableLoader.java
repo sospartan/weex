@@ -203,36 +203,54 @@
  *    limitations under the License.
  */
 
-package com.alibaba.weex.richtext;
+package com.alibaba.weex.commons.adapter;
 
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
-import com.taobao.weex.WXSDKEngine;
-import com.taobao.weex.common.Constants;
-import com.taobao.weex.utils.WXUtils;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.IDrawableLoader;
 
-import static com.taobao.weex.utils.WXViewUtils.getRealPxByWidth;
 
-public class ImgNode extends RichTextNode {
+public class PicassoBasedDrawableLoader implements IDrawableLoader {
 
-  public static final String NODE_TYPE = " ";
+  private Context mContext;
 
-  @Override
-  public String toString() {
-    return NODE_TYPE;
+  public PicassoBasedDrawableLoader(Context context) {
+    mContext = context;
   }
 
   @Override
-  protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
-    if (style.containsKey(Constants.Name.WIDTH) && style.containsKey(Constants.Name.HEIGHT) && attr.containsKey(Constants.Name.SRC)) {
-      int width = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.WIDTH)));
-      int height = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.HEIGHT)));
-      String url = attr.get(Constants.Name.SRC).toString();
-      RemoteImgSpan imageSpan = new RemoteImgSpan(width, height);
-      WXSDKEngine.getDrawableLoader().setDrawable(url, imageSpan);
-      spannableStringBuilder.setSpan(imageSpan, 0, spannableStringBuilder.length(),
-                                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-    }
+  public void setDrawable(final String url, final DrawableTarget drawableTarget) {
+    WXSDKManager.getInstance().postOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        String temp = url;
+        if (url.startsWith("//")) {
+          temp = "http:" + url;
+        }
+        Picasso.with(mContext).load(temp).into(new Target() {
+          @Override
+          public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            drawableTarget.setDrawable(new BitmapDrawable(mContext.getResources(), bitmap));
+          }
+
+          @Override
+          public void onBitmapFailed(Drawable errorDrawable) {
+
+          }
+
+          @Override
+          public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+          }
+        });
+      }
+    }, 0);
+
   }
 }
