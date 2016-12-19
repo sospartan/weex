@@ -133,6 +133,7 @@ public class WXNavigatorModule extends WXModule {
 
     public static final String MSG_SUCCESS = "WX_SUCCESS";
     public static final String MSG_FAILED = "WX_FAILED";
+    public static final String MSG_PARAM_ERR = "WX_PARAM_ERR";
     private final static String INSTANCE_ID = "instanceId";
     private final static String TAG = "Navigator";
     private final static String WEEX = "com.taobao.android.intent.category.WEEX";
@@ -157,13 +158,14 @@ public class WXNavigatorModule extends WXModule {
                     e.printStackTrace();
                     JSONObject error = new JSONObject();
                     error.put("result", MSG_FAILED);
+                    error.put("message", "open page failed");
                     failure.invoke(error);
                 }
             }
         } else {
             JSONObject error = new JSONObject();
-            error.put("result", MSG_FAILED);
-            error.put("message", "param must have url");
+            error.put("result", MSG_PARAM_ERR);
+            error.put("message", "param error");
             failure.invoke(error);
         }
     }
