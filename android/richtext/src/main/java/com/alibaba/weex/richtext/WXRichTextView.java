@@ -207,7 +207,11 @@ package com.alibaba.weex.richtext;
 
 import android.content.Context;
 import android.text.Layout;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.Spanned;
+import android.text.style.ClickableSpan;
+import android.view.MotionEvent;
 
 import com.taobao.weex.ui.view.WXTextView;
 
@@ -215,6 +219,28 @@ public class WXRichTextView extends WXTextView {
 
   public WXRichTextView(Context context) {
     super(context);
+  }
+
+  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+    boolean superResult = super.onTouchEvent(event);
+    boolean handled = false;
+    boolean touchIsFinished = (event.getActionMasked() == MotionEvent.ACTION_UP) && isFocused();
+    if (isEnabled() && getTextLayout() != null && getText() instanceof Spannable) {
+      Spannable spannable = (Spannable) getText();
+      handled = updateSelection(event, spannable);
+      if (touchIsFinished) {
+        ClickableSpan[] links = spannable.getSpans(Selection.getSelectionStart(spannable),
+                                                   Selection.getSelectionEnd(spannable),
+                                                   ClickableSpan.class);
+
+        if (links.length > 0) {
+          links[0].onClick(this);
+          handled = true;
+        }
+      }
+    }
+    return handled || superResult;
   }
 
   @Override
@@ -230,4 +256,44 @@ public class WXRichTextView extends WXTextView {
       }
     }
   }
+
+  private boolean updateSelection(MotionEvent event, Spannable buffer) {
+    int action = event.getAction();
+
+    if (action == MotionEvent.ACTION_UP ||
+        action == MotionEvent.ACTION_DOWN) {
+      int x = (int) event.getX();
+      int y = (int) event.getY();
+
+      x -= getPaddingLeft();
+      y -= getPaddingTop();
+
+      x += getScrollX();
+      y += getScrollY();
+
+      Layout layout = getTextLayout();
+      int line = layout.getLineForVertical(y);
+      int off = layout.getOffsetForHorizontal(line, x);
+
+      ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
+
+      if (link.length != 0) {
+        if (action == MotionEvent.ACTION_UP) {
+          link[0].onClick(this);
+        } else {
+          Selection.setSelection(buffer,
+                                 buffer.getSpanStart(link[0]),
+                                 buffer.getSpanEnd(link[0]));
+        }
+
+        return true;
+      } else {
+        Selection.removeSelection(buffer);
+      }
+    }
+
+    return false;
+  }
+
+
 }

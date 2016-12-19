@@ -208,6 +208,7 @@ package com.alibaba.weex.richtext;
 import android.net.Uri;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
@@ -239,6 +240,11 @@ public class ANode extends RichTextNode {
           array.add(url);
           WXSDKManager.getInstance().getWXBridgeManager().
               callModuleMethod(mInstanceId, "event", "openURL", array);
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+          ds.setUnderlineText(true);
         }
       };
       spannableStringBuilder.setSpan(clickableSpan, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
