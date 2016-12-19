@@ -208,6 +208,7 @@ package com.alibaba.weex.richtext;
 import android.support.annotation.NonNull;
 import android.text.Spanned;
 
+import com.alibaba.weex.richtext.node.RichTextNode;
 import com.taobao.weex.dom.WXTextDomObject;
 
 public class WXRichTextDomObject extends WXTextDomObject {

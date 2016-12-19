@@ -203,164 +203,29 @@
  *    limitations under the License.
  */
 
-package com.alibaba.weex.richtext;
+package com.alibaba.weex.richtext.node;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.util.ArrayMap;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.SpannedString;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.WXCustomStyleSpan;
-import com.taobao.weex.dom.WXStyle;
-import com.taobao.weex.utils.WXResourceUtils;
+import com.alibaba.weex.richtext.span.ASpan;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+public class ANode extends RichTextNode {
 
-import static com.taobao.weex.dom.WXStyle.UNSET;
+  public static final String NODE_TYPE = "a";
+  public static final String HREF = "href";
 
-public abstract class RichTextNode {
-
-  public static final String TYPE = "type";
-  public static final String STYLE = "style";
-  public static final String ATTR = "attr";
-  public static final String VALUE = Constants.Name.VALUE;
-
-  protected Map<String, Object> style;
-  protected Map<String, Object> attr;
-  protected List<RichTextNode> children;
-  protected String mInstanceId;
-
-  public static
-  @NonNull
-  Spanned parse(String json, @NonNull String instanceId) {
-    JSONArray jsonArray = JSON.parseArray(json);
-    JSONObject jsonObject;
-    List<RichTextNode> nodes;
-    RichTextNode node;
-    if (jsonArray != null && !jsonArray.isEmpty()) {
-      nodes = new ArrayList<>(jsonArray.size());
-      for (int i = 0; i < jsonArray.size(); i++) {
-        jsonObject = jsonArray.getJSONObject(i);
-        if (jsonObject != null) {
-          node = RichTextNodeCreator.createRichTextNode(jsonObject, instanceId);
-          if (node != null) {
-            nodes.add(node);
-          }
-        }
-      }
-      return parse(nodes);
-    }
-    return new SpannedString("");
+  @Override
+  public String toString() {
+    return "";
   }
 
-  void parse(JSONObject jsonObject, @NonNull String instanceId) {
-    JSONObject jsonStyle, jsonAttr, child;
-    JSONArray jsonArray, valueChildren;
-    RichTextNode node;
-
-    mInstanceId = instanceId;
-    if ((jsonStyle = jsonObject.getJSONObject(STYLE)) != null) {
-      style = new ArrayMap<>();
-      style.putAll(jsonStyle);
-    } else {
-      style = new ArrayMap<>(0);
-    }
-
-    if ((jsonAttr = jsonObject.getJSONObject(ATTR)) != null) {
-      attr = new ArrayMap<>();
-      attr.putAll(jsonAttr);
-      if (jsonAttr.containsKey(VALUE) && (jsonAttr.get(VALUE) instanceof JSONArray)) {
-        valueChildren = jsonAttr.getJSONArray(VALUE);
-        attr.remove(VALUE);
-        children = new ArrayList<>(valueChildren.size());
-        for (int i = 0; i < valueChildren.size(); i++) {
-          child = valueChildren.getJSONObject(i);
-          node = RichTextNodeCreator.createRichTextNode(child, instanceId);
-          if (node != null) {
-            children.add(node);
-          }
-        }
-      } else {
-        children = new ArrayList<>(0);
-      }
-    } else {
-      children = new ArrayList<>(0);
-      attr = new ArrayMap<>(0);
-    }
-  }
-
-  protected Spanned toSpan() {
-    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-    spannableStringBuilder.append(toString());
-    if (children != null) {
-      for (RichTextNode child : children) {
-        spannableStringBuilder.append(child.toSpan());
-      }
-    }
-    updateSpans(spannableStringBuilder);
-    return spannableStringBuilder;
-  }
-
+  @Override
   protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
-    if (style != null) {
-      List<Object> spans = new LinkedList<>();
-      WXCustomStyleSpan customStyleSpan = createCustomStyleSpan();
-      if (customStyleSpan != null) {
-        spans.add(customStyleSpan);
-      }
-      if (style.containsKey(Constants.Name.FONT_SIZE)) {
-        spans.add(new AbsoluteSizeSpan(WXStyle.getFontSize(style)));
-      }
-      if (style.containsKey(Constants.Name.COLOR)) {
-        spans.add(new ForegroundColorSpan(WXResourceUtils.getColor(WXStyle.getTextColor(style))));
-      }
-      for (Object span : spans) {
-        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-      }
-    }
-  }
-
-  private static
-  @NonNull
-  Spanned parse(@NonNull List<RichTextNode> list) {
-    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-    for (RichTextNode richTextNode : list) {
-      spannableStringBuilder.append(richTextNode.toSpan());
-    }
-    return spannableStringBuilder;
-  }
-
-  private
-  @Nullable
-  WXCustomStyleSpan createCustomStyleSpan() {
-    int fontWeight = UNSET, fontStyle = UNSET;
-    String fontFamily = null;
-    if (style.containsKey(Constants.Name.FONT_WEIGHT)) {
-      fontWeight = WXStyle.getFontWeight(style);
-    }
-    if (style.containsKey(Constants.Name.FONT_STYLE)) {
-      fontStyle = WXStyle.getFontStyle(style);
-    }
-    if (style.containsKey(Constants.Name.FONT_FAMILY)) {
-      fontFamily = WXStyle.getFontFamily(style);
-    }
-    if (fontWeight != UNSET
-        || fontStyle != UNSET
-        || fontFamily != null) {
-      return new WXCustomStyleSpan(fontStyle, fontWeight, fontFamily);
-    } else {
-      return null;
+    super.updateSpans(spannableStringBuilder);
+    if (attr != null && attr.containsKey(HREF)) {
+      ASpan aSpan = new ASpan(mInstanceId, attr.get(HREF).toString());
+      spannableStringBuilder.setSpan(aSpan, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
   }
 }

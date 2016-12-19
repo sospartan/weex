@@ -203,99 +203,39 @@
  *    limitations under the License.
  */
 
-package com.alibaba.weex.richtext;
+package com.alibaba.weex.richtext.span;
 
-import android.content.Context;
-import android.text.Layout;
-import android.text.Selection;
-import android.text.Spannable;
-import android.text.Spanned;
+import android.net.Uri;
+import android.text.TextPaint;
 import android.text.style.ClickableSpan;
-import android.view.MotionEvent;
+import android.view.View;
 
-import com.alibaba.weex.richtext.span.ASpan;
-import com.alibaba.weex.richtext.span.RemoteImgSpan;
-import com.taobao.weex.ui.view.WXTextView;
+import com.alibaba.fastjson.JSONArray;
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.URIAdapter;
 
-public class WXRichTextView extends WXTextView {
+public class ASpan extends ClickableSpan {
 
-  public WXRichTextView(Context context) {
-    super(context);
+  private String mInstanceId, mURL;
+
+  public ASpan(String instanceId, String url) {
+    mInstanceId = instanceId;
+    mURL = url;
   }
 
   @Override
-  public boolean onTouchEvent(MotionEvent event) {
-    boolean superResult = super.onTouchEvent(event);
-    boolean handled = false;
-    boolean touchIsFinished = (event.getActionMasked() == MotionEvent.ACTION_UP) && isFocused();
-    if (isEnabled() && getTextLayout() != null && getText() instanceof Spannable) {
-      Spannable spannable = (Spannable) getText();
-      handled = updateSelection(event, spannable);
-      if (touchIsFinished) {
-        ASpan[] links = spannable.getSpans(Selection.getSelectionStart(spannable),
-                                           Selection.getSelectionEnd(spannable),
-                                           ASpan.class);
-
-        if (links.length > 0) {
-          links[0].onClick(this);
-          handled = true;
-        }
-      }
-    }
-    return handled || superResult;
+  public void onClick(View widget) {
+    String url = mURL;
+    url = WXSDKManager.getInstance().getSDKInstance(mInstanceId).
+        rewriteUri(Uri.parse(url), URIAdapter.LINK).toString();
+    JSONArray array = new JSONArray();
+    array.add(url);
+    WXSDKManager.getInstance().getWXBridgeManager().
+        callModuleMethod(mInstanceId, "event", "openURL", array);
   }
 
   @Override
-  public void setTextLayout(Layout layout) {
-    super.setTextLayout(layout);
-    if (layout.getText() instanceof Spanned) {
-      Spanned spanned = (Spanned) layout.getText();
-      RemoteImgSpan[] remoteImgSpans = spanned.getSpans(0, spanned.length(), RemoteImgSpan.class);
-      if (remoteImgSpans != null) {
-        for (RemoteImgSpan span : remoteImgSpans) {
-          span.setView(this);
-        }
-      }
-    }
+  public void updateDrawState(TextPaint ds) {
+    ds.setUnderlineText(true);
   }
-
-  private boolean updateSelection(MotionEvent event, Spannable buffer) {
-    int action = event.getAction();
-
-    if (action == MotionEvent.ACTION_UP ||
-        action == MotionEvent.ACTION_DOWN) {
-      int x = (int) event.getX();
-      int y = (int) event.getY();
-
-      x -= getPaddingLeft();
-      y -= getPaddingTop();
-
-      x += getScrollX();
-      y += getScrollY();
-
-      Layout layout = getTextLayout();
-      int line = layout.getLineForVertical(y);
-      int off = layout.getOffsetForHorizontal(line, x);
-
-      ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
-
-      if (link.length != 0) {
-        if (action == MotionEvent.ACTION_UP) {
-          link[0].onClick(this);
-        } else {
-          Selection.setSelection(buffer,
-                                 buffer.getSpanStart(link[0]),
-                                 buffer.getSpanEnd(link[0]));
-        }
-
-        return true;
-      } else {
-        Selection.removeSelection(buffer);
-      }
-    }
-
-    return false;
-  }
-
-
 }

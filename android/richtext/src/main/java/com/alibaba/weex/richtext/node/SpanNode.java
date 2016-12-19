@@ -203,78 +203,17 @@
  *    limitations under the License.
  */
 
-package com.alibaba.weex.richtext;
+package com.alibaba.weex.richtext.node;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.text.style.ReplacementSpan;
-import android.view.View;
+import com.taobao.weex.common.Constants;
 
-import com.taobao.weex.adapter.IDrawableLoader;
+public class SpanNode extends RichTextNode {
 
-
-public class RemoteImgSpan extends ReplacementSpan implements IDrawableLoader.DrawableTarget {
-
-  private int width, height;
-  private Drawable mDrawable;
-  private View mView;
-
-  public RemoteImgSpan(int width, int height) {
-    this.width = width;
-    this.height = height;
-  }
-
-  /**
-   * Mostly copied from
-   *
-   * {@link android.text.style.DynamicDrawableSpan#getSize(Paint, CharSequence, int, int, Paint.FontMetricsInt)},
-   * but not use Drawable to calculate size;
-   */
-  @Override
-  public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
-    if (fm != null) {
-      fm.ascent = -height;
-      fm.descent = 0;
-
-      fm.top = fm.ascent;
-      fm.bottom = 0;
-    }
-    return width;
-  }
-
-  /**
-   * Mostly copied from
-   * {@link android.text.style.DynamicDrawableSpan#draw(Canvas, CharSequence, int, int, float, int, int, int, Paint)},
-   * except for vertical alignment.
-   */
-  @Override
-  public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
-    if (mDrawable != null) {
-      canvas.save();
-      int transY = bottom - mDrawable.getBounds().bottom;
-      transY -= paint.getFontMetricsInt().descent;
-      canvas.translate(x, transY);
-      mDrawable.draw(canvas);
-      canvas.restore();
-    }
-  }
+  public static final String NODE_TYPE = "span";
 
   @Override
-  public void setDrawable(Drawable drawable) {
-    mDrawable = drawable;
-    setCallback();
-    mDrawable.invalidateSelf();
+  public String toString() {
+    return attr.get(Constants.Name.VALUE).toString();
   }
 
-  public void setView(View view) {
-    mView = view;
-    setCallback();
-  }
-
-  private void setCallback() {
-    if (mDrawable != null && mView != null) {
-      mDrawable.setCallback(mView);
-    }
-  }
 }

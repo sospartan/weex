@@ -210,6 +210,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.weex.richtext.node.ANode;
+import com.alibaba.weex.richtext.node.ImgNode;
+import com.alibaba.weex.richtext.node.RichTextNode;
+import com.alibaba.weex.richtext.node.SpanNode;
 import com.taobao.weex.utils.WXLogUtils;
 
 import java.util.Map;

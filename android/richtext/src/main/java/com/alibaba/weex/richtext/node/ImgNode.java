@@ -203,51 +203,37 @@
  *    limitations under the License.
  */
 
-package com.alibaba.weex.richtext;
+package com.alibaba.weex.richtext.node;
 
-import android.net.Uri;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
-import android.view.View;
 
-import com.alibaba.fastjson.JSONArray;
-import com.taobao.weex.WXSDKManager;
-import com.taobao.weex.adapter.URIAdapter;
+import com.alibaba.weex.richtext.span.RemoteImgSpan;
+import com.taobao.weex.WXSDKEngine;
+import com.taobao.weex.common.Constants;
+import com.taobao.weex.utils.WXUtils;
 
-public class ANode extends RichTextNode {
+import static com.taobao.weex.utils.WXViewUtils.getRealPxByWidth;
 
-  public static final String NODE_TYPE = "a";
-  public static final String HREF = "href";
+public class ImgNode extends RichTextNode {
+
+  public static final String NODE_TYPE = "image";
 
   @Override
   public String toString() {
-    return "";
+    return " ";
   }
 
   @Override
   protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
-    super.updateSpans(spannableStringBuilder);
-    if (attr != null && attr.containsKey(HREF)) {
-      ClickableSpan clickableSpan = new ClickableSpan() {
-        @Override
-        public void onClick(View widget) {
-          String url = attr.get(HREF).toString();
-          url = WXSDKManager.getInstance().getSDKInstance(mInstanceId).
-              rewriteUri(Uri.parse(url), URIAdapter.LINK).toString();
-          JSONArray array = new JSONArray();
-          array.add(url);
-          WXSDKManager.getInstance().getWXBridgeManager().
-              callModuleMethod(mInstanceId, "event", "openURL", array);
-        }
-
-        @Override
-        public void updateDrawState(TextPaint ds) {
-          ds.setUnderlineText(true);
-        }
-      };
-      spannableStringBuilder.setSpan(clickableSpan, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    if (style.containsKey(Constants.Name.WIDTH) && style.containsKey(Constants.Name.HEIGHT) && attr.containsKey(Constants.Name.SRC)) {
+      int width = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.WIDTH)));
+      int height = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.HEIGHT)));
+      String url = attr.get(Constants.Name.SRC).toString();
+      RemoteImgSpan imageSpan = new RemoteImgSpan(width, height);
+      WXSDKEngine.getDrawableLoader().setDrawable(url, imageSpan);
+      spannableStringBuilder.setSpan(imageSpan, 0, spannableStringBuilder.length(),
+                                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
   }
 }
