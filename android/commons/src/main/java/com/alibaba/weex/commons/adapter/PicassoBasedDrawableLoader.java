@@ -209,6 +209,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -236,7 +237,9 @@ public class PicassoBasedDrawableLoader implements IDrawableLoader {
         Picasso.with(mContext).load(temp).into(new Target() {
           @Override
           public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            drawableTarget.setDrawable(new BitmapDrawable(mContext.getResources(), bitmap));
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), bitmap);
+            bitmapDrawable.setGravity(Gravity.FILL);
+            drawableTarget.setDrawable(bitmapDrawable, true);
           }
 
           @Override

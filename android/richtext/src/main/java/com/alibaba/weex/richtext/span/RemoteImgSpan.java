@@ -261,8 +261,11 @@ public class RemoteImgSpan extends ReplacementSpan implements IDrawableLoader.Dr
   }
 
   @Override
-  public void setDrawable(Drawable drawable) {
+  public void setDrawable(Drawable drawable, boolean resetBounds) {
     mDrawable = drawable;
+    if(resetBounds) {
+      mDrawable.setBounds(0, 0, width, height);
+    }
     setCallback();
     mDrawable.invalidateSelf();
   }
