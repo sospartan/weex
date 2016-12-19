@@ -148,7 +148,7 @@ public class WXNavigatorModule extends WXModule {
                 this.push(options.toJSONString(), success, failure);
             } else {
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, rawUri);
                     mWXSDKInstance.getContext().startActivity(intent);
                     JSONObject succ = new JSONObject();
                     succ.put("result", MSG_SUCCESS);
