@@ -2254,16 +2254,19 @@
 	module.exports = {
 	    methods: {
 	        goback: function goback() {
+	            var $webview = __weex_require__('@weex-module/webview');
 	            var webElement = this.$el('webview');
-	            webElement.goBack();
+	            $webview.goBack(webElement.ref);
 	        },
 	        goforward: function goforward() {
+	            var $webview = __weex_require__('@weex-module/webview');
 	            var webElement = this.$el('webview');
-	            webElement.goForward();
+	            $webview.goForward(webElement.ref);
 	        },
 	        refresh: function refresh() {
+	            var $webview = __weex_require__('@weex-module/webview');
 	            var webElement = this.$el('webview');
-	            webElement.reload();
+	            $webview.reload(webElement.ref);
 	        },
 	        startload: function startload(e) {},
 	        finishload: function finishload(e) {},
