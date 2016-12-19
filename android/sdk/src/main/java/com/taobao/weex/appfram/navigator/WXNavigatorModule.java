@@ -144,7 +144,7 @@ public class WXNavigatorModule extends WXModule {
         if (!TextUtils.isEmpty(url)) {
             Uri rawUri = Uri.parse(url);
             String scheme = rawUri.getScheme();
-            if (TextUtils.isEmpty(scheme) || "http".equals(scheme) || "https".equals(scheme)) {
+            if (TextUtils.isEmpty(scheme) || "http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme)) {
                 this.push(options.toJSONString(), success, failure);
             } else {
                 try {
@@ -160,6 +160,11 @@ public class WXNavigatorModule extends WXModule {
                     failure.invoke(error);
                 }
             }
+        } else {
+            JSONObject error = new JSONObject();
+            error.put("result", MSG_FAILED);
+            error.put("message", "param must have url");
+            failure.invoke(error);
         }
     }
 
