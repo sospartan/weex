@@ -206,6 +206,7 @@
 package com.alibaba.weex.richtext;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -243,6 +244,12 @@ public class WXRichTextView extends WXTextView {
       }
     }
     return handled || superResult;
+  }
+
+  @Override
+  protected boolean verifyDrawable(Drawable who) {
+    super.verifyDrawable(who);
+    return true;
   }
 
   @Override

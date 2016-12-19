@@ -226,7 +226,10 @@ public class ImgNode extends RichTextNode {
 
   @Override
   protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
-    if (style.containsKey(Constants.Name.WIDTH) && style.containsKey(Constants.Name.HEIGHT) && attr.containsKey(Constants.Name.SRC)) {
+    if (WXSDKEngine.getDrawableLoader() != null &&
+        style.containsKey(Constants.Name.WIDTH) &&
+        style.containsKey(Constants.Name.HEIGHT) &&
+        attr.containsKey(Constants.Name.SRC)) {
       int width = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.WIDTH)));
       int height = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.HEIGHT)));
       String url = attr.get(Constants.Name.SRC).toString();

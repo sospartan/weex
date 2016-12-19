@@ -207,6 +207,9 @@ package com.alibaba.weex.commons.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
@@ -234,7 +237,12 @@ public class PicassoBasedDrawableLoader implements IDrawableLoader {
         if (url.startsWith("//")) {
           temp = "http:" + url;
         }
-        Picasso.with(mContext).load(temp).into(new Target() {
+
+        /** This is a hack for picasso, as Picasso hold weakReference to Target.
+         * http://stackoverflow.com/questions/24180805/onbitmaploaded-of-target-object-not-called-on-first-load
+         */
+        class PlaceHolderDrawableTarget extends Drawable implements Target {
+
           @Override
           public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             BitmapDrawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), bitmap);
@@ -249,9 +257,30 @@ public class PicassoBasedDrawableLoader implements IDrawableLoader {
 
           @Override
           public void onPrepareLoad(Drawable placeHolderDrawable) {
+            drawableTarget.setDrawable(this, true);
+          }
+
+          @Override
+          public void draw(Canvas canvas) {
 
           }
-        });
+
+          @Override
+          public void setAlpha(int alpha) {
+
+          }
+
+          @Override
+          public void setColorFilter(ColorFilter colorFilter) {
+
+          }
+
+          @Override
+          public int getOpacity() {
+            return PixelFormat.UNKNOWN;
+          }
+        }
+        Picasso.with(mContext).load(temp).into(new PlaceHolderDrawableTarget());
       }
     }, 0);
 
