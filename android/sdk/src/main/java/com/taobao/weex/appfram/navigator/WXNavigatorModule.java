@@ -121,10 +121,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKEngine;
-import com.taobao.weex.bridge.JSCallback;
-import com.taobao.weex.common.Constants;
 import com.taobao.weex.annotation.JSMethod;
+import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.bridge.WXBridgeManager;
+import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXModule;
 import com.taobao.weex.utils.WXLogUtils;
 
@@ -139,7 +139,32 @@ public class WXNavigatorModule extends WXModule {
     private final static String URL = "url";
 
     @JSMethod(uiThread = true)
-    public void push(String param, JSCallback callback) {
+    public void open(JSONObject options, JSCallback success, JSCallback failure) {
+        String url = options.getString("url");
+        if (!TextUtils.isEmpty(url)) {
+            Uri rawUri = Uri.parse(url);
+            String scheme = rawUri.getScheme();
+            if (TextUtils.isEmpty(scheme) || "http".equals(scheme) || "https".equals(scheme)) {
+                this.push(options.toJSONString(), success, failure);
+            } else {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    mWXSDKInstance.getContext().startActivity(intent);
+                    JSONObject succ = new JSONObject();
+                    succ.put("result", MSG_SUCCESS);
+                    success.invoke(succ);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    JSONObject error = new JSONObject();
+                    error.put("result", MSG_FAILED);
+                    failure.invoke(error);
+                }
+            }
+        }
+    }
+
+    @JSMethod(uiThread = true)
+    public void push(String param, JSCallback callback, JSCallback failure) {
 
         if (!TextUtils.isEmpty(param)) {
             if (WXSDKEngine.getActivityNavBarSetter() != null) {
