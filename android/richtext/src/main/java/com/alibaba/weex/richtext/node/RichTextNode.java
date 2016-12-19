@@ -217,7 +217,6 @@ import android.text.style.ForegroundColorSpan;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.weex.richtext.RichTextNodeCreator;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.dom.WXCustomStyleSpan;
 import com.taobao.weex.dom.WXStyle;
