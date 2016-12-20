@@ -205,6 +205,7 @@
 
 package com.alibaba.weex.richtext.node;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
@@ -213,6 +214,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 
 import com.alibaba.fastjson.JSON;
@@ -323,6 +325,13 @@ public abstract class RichTextNode {
       }
       if (style.containsKey(Constants.Name.FONT_SIZE)) {
         spans.add(new AbsoluteSizeSpan(WXStyle.getFontSize(style)));
+      }
+      if (style.containsKey(Constants.Name.BACKGROUND_COLOR)) {
+        int color = WXResourceUtils.getColor(style.get(Constants.Name.BACKGROUND_COLOR).toString(),
+                                             Color.TRANSPARENT);
+        if (color != Color.TRANSPARENT) {
+          spans.add(new BackgroundColorSpan(color));
+        }
       }
       if (style.containsKey(Constants.Name.COLOR)) {
         spans.add(new ForegroundColorSpan(WXResourceUtils.getColor(WXStyle.getTextColor(style))));
