@@ -206,6 +206,7 @@
 package com.alibaba.weex.richtext;
 
 import android.support.annotation.NonNull;
+import android.text.Spannable;
 import android.text.Spanned;
 
 import com.alibaba.weex.richtext.node.RichTextNode;
@@ -216,7 +217,9 @@ public class WXRichTextDomObject extends WXTextDomObject {
   @NonNull
   @Override
   protected Spanned createSpanned(String text) {
-    return RichTextNode.parse(text, getDomContext().getInstanceId());
+    Spannable spannable = RichTextNode.parse(text, getDomContext().getInstanceId());
+    updateSpannable(spannable, RichTextNode.createSpanFlag(0));
+    return spannable;
   }
 
 }

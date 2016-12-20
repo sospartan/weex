@@ -334,14 +334,8 @@ public abstract class RichTextNode {
     }
   }
 
-  private static
-  @NonNull
-  Spannable parse(@NonNull List<RichTextNode> list) {
-    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-    for (RichTextNode richTextNode : list) {
-      spannableStringBuilder.append(richTextNode.toSpan(1));
-    }
-    return spannableStringBuilder;
+  public static int createSpanFlag(int level) {
+    return createPriorityFlag(level) | Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
   }
 
   private static int createPriorityFlag(int level) {
@@ -350,8 +344,14 @@ public abstract class RichTextNode {
            MAX_LEVEL << Spanned.SPAN_PRIORITY_SHIFT;
   }
 
-  protected static int createSpanFlag(int level) {
-    return createPriorityFlag(level) | Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
+  private static
+  @NonNull
+  Spannable parse(@NonNull List<RichTextNode> list) {
+    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+    for (RichTextNode richTextNode : list) {
+      spannableStringBuilder.append(richTextNode.toSpan(1));
+    }
+    return spannableStringBuilder;
   }
 
   private
