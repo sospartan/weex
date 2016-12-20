@@ -206,41 +206,7 @@
 package com.alibaba.weex.richtext.node;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.util.ArrayMap;
 
-import com.alibaba.fastjson.JSONObject;
-import com.taobao.weex.utils.WXLogUtils;
-
-import java.util.Map;
-
-public class RichTextNodeCreator {
-
-  private final static Map<String, Class<? extends RichTextNode>>
-      registeredTextNodes = new ArrayMap<>();
-
-  static {
-    registeredTextNodes.put(SpanNode.NODE_TYPE, SpanNode.class);
-    registeredTextNodes.put(ImgNode.NODE_TYPE, ImgNode.class);
-    registeredTextNodes.put(ANode.NODE_TYPE, ANode.class);
-  }
-
-  public static void registerTextNode(String text, Class<? extends RichTextNode> type) {
-    registeredTextNodes.put(text, type);
-  }
-
-  @Nullable
-  public static RichTextNode createRichTextNode(@NonNull Context context, @NonNull String instanceId, @Nullable JSONObject jsonObject) {
-    try {
-      Class<? extends RichTextNode> node =
-          registeredTextNodes.get(jsonObject.getString(RichTextNode.TYPE));
-      RichTextNode instance = node.newInstance();
-      instance.parse(context, instanceId, jsonObject);
-      return instance;
-    } catch (Exception e) {
-      WXLogUtils.e("Richtext", WXLogUtils.getStackTrace(e));
-      return null;
-    }
-  }
+public interface RichTextNodeCreator<T extends RichTextNode> {
+  T createRichTextNode(Context context, String instanceId);
 }

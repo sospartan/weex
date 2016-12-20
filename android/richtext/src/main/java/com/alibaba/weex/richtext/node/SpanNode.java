@@ -205,11 +205,25 @@
 
 package com.alibaba.weex.richtext.node;
 
+import android.content.Context;
+
 import com.taobao.weex.common.Constants;
 
-public class SpanNode extends RichTextNode {
+class SpanNode extends RichTextNode {
+
+  static class SpanNodeCreator implements RichTextNodeCreator<SpanNode> {
+
+    @Override
+    public SpanNode createRichTextNode(Context context, String instanceId) {
+      return new SpanNode(context, instanceId);
+    }
+  }
 
   public static final String NODE_TYPE = "span";
+
+  private SpanNode(Context context, String instanceId) {
+    super(context, instanceId);
+  }
 
   @Override
   public String toString() {

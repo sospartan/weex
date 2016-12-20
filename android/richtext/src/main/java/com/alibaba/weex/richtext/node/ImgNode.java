@@ -205,6 +205,7 @@
 
 package com.alibaba.weex.richtext.node;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.SpannableStringBuilder;
@@ -219,9 +220,21 @@ import com.taobao.weex.utils.WXUtils;
 
 import static com.taobao.weex.utils.WXViewUtils.getRealPxByWidth;
 
-public class ImgNode extends RichTextNode {
+class ImgNode extends RichTextNode {
+
+  static class ImgNodeCreator implements RichTextNodeCreator<ImgNode> {
+
+    @Override
+    public ImgNode createRichTextNode(Context context, String instanceId) {
+      return new ImgNode(context, instanceId);
+    }
+  }
 
   public static final String NODE_TYPE = "image";
+
+  private ImgNode(Context context, String instanceId) {
+    super(context, instanceId);
+  }
 
   @Override
   public String toString() {

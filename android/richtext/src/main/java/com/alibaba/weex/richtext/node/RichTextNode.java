@@ -239,13 +239,18 @@ public abstract class RichTextNode {
   public static final String STYLE = "style";
   public static final String ATTR = "attr";
   public static final String VALUE = Constants.Name.VALUE;
-  private static final int MAX_LEVEL = 0xFF;
+  private static final int MAX_LEVEL = Spanned.SPAN_PRIORITY >> Spanned.SPAN_PRIORITY_SHIFT;
 
+  protected final Context mContext;
+  protected final String mInstanceId;
   protected Map<String, Object> style;
   protected Map<String, Object> attr;
   protected List<RichTextNode> children;
-  protected String mInstanceId;
-  protected Context mContext;
+
+  protected RichTextNode(Context context, String instanceId) {
+    mContext = context;
+    mInstanceId = instanceId;
+  }
 
   public static
   @NonNull
@@ -259,7 +264,7 @@ public abstract class RichTextNode {
       for (int i = 0; i < jsonArray.size(); i++) {
         jsonObject = jsonArray.getJSONObject(i);
         if (jsonObject != null) {
-          node = RichTextNodeCreator.createRichTextNode(context, instanceId, jsonObject);
+          node = RichTextNodeManager.createRichTextNode(context, instanceId, jsonObject);
           if (node != null) {
             nodes.add(node);
           }
@@ -270,13 +275,10 @@ public abstract class RichTextNode {
     return new SpannableString("");
   }
 
-  public void parse(@NonNull Context context, @NonNull String instanceId, JSONObject jsonObject) {
+  void parse(@NonNull Context context, @NonNull String instanceId, JSONObject jsonObject) {
     JSONObject jsonStyle, jsonAttr, child;
     JSONArray jsonArray, valueChildren;
     RichTextNode node;
-
-    mInstanceId = instanceId;
-    mContext = context;
     if ((jsonStyle = jsonObject.getJSONObject(STYLE)) != null) {
       style = new ArrayMap<>();
       style.putAll(jsonStyle);
@@ -293,7 +295,7 @@ public abstract class RichTextNode {
         children = new ArrayList<>(valueChildren.size());
         for (int i = 0; i < valueChildren.size(); i++) {
           child = valueChildren.getJSONObject(i);
-          node = RichTextNodeCreator.createRichTextNode(context, instanceId, child);
+          node = RichTextNodeManager.createRichTextNode(context, instanceId, child);
           if (node != null) {
             children.add(node);
           }

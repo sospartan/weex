@@ -206,39 +206,39 @@
 package com.alibaba.weex.richtext.node;
 
 import android.content.Context;
-import android.text.SpannableStringBuilder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
 
-import com.alibaba.weex.richtext.span.ASpan;
+import com.alibaba.fastjson.JSONObject;
+import com.taobao.weex.utils.WXLogUtils;
 
-class ANode extends RichTextNode {
+import java.util.Map;
 
-  static class ANodeCreator implements RichTextNodeCreator<ANode> {
+public class RichTextNodeManager {
 
-    @Override
-    public ANode createRichTextNode(Context context, String instanceId) {
-      return new ANode(context, instanceId);
-    }
+  private final static Map<String, RichTextNodeCreator>
+      registeredTextNodes = new ArrayMap<>();
+
+  static {
+    registeredTextNodes.put(SpanNode.NODE_TYPE, new SpanNode.SpanNodeCreator());
+    registeredTextNodes.put(ImgNode.NODE_TYPE, new ImgNode.ImgNodeCreator());
+    registeredTextNodes.put(ANode.NODE_TYPE, new ANode.ANodeCreator());
   }
 
-  public static final String NODE_TYPE = "a";
-  public static final String HREF = "href";
-
-  private ANode(Context context, String instanceId) {
-    super(context, instanceId);
+  public static void registerTextNode(String text, RichTextNodeCreator type) {
+    registeredTextNodes.put(text, type);
   }
 
-  @Override
-  public String toString() {
-    return "";
-  }
-
-  @Override
-  protected void updateSpans(SpannableStringBuilder spannableStringBuilder, int level) {
-    super.updateSpans(spannableStringBuilder, level);
-    if (attr != null && attr.containsKey(HREF)) {
-      ASpan aSpan = new ASpan(mInstanceId, attr.get(HREF).toString());
-      spannableStringBuilder.setSpan(aSpan, 0, spannableStringBuilder.length(),
-                                     createSpanFlag(level));
+  @Nullable
+  static RichTextNode createRichTextNode(@NonNull Context context, @NonNull String instanceId, @Nullable JSONObject jsonObject) {
+    try {
+      RichTextNode instance = registeredTextNodes.get(jsonObject.getString(RichTextNode.TYPE)).createRichTextNode(context, instanceId);
+      instance.parse(context, instanceId, jsonObject);
+      return instance;
+    } catch (Exception e) {
+      WXLogUtils.e("Richtext", WXLogUtils.getStackTrace(e));
+      return null;
     }
   }
 }
