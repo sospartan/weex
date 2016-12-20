@@ -205,6 +205,7 @@
 
 package com.alibaba.weex.richtext.node;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -244,10 +245,11 @@ public abstract class RichTextNode {
   protected Map<String, Object> attr;
   protected List<RichTextNode> children;
   protected String mInstanceId;
+  protected Context mContext;
 
   public static
   @NonNull
-  Spannable parse(String json, @NonNull String instanceId) {
+  Spannable parse(@NonNull Context context, @NonNull String instanceId, String json) {
     JSONArray jsonArray = JSON.parseArray(json);
     JSONObject jsonObject;
     List<RichTextNode> nodes;
@@ -257,7 +259,7 @@ public abstract class RichTextNode {
       for (int i = 0; i < jsonArray.size(); i++) {
         jsonObject = jsonArray.getJSONObject(i);
         if (jsonObject != null) {
-          node = RichTextNodeCreator.createRichTextNode(jsonObject, instanceId);
+          node = RichTextNodeCreator.createRichTextNode(context, instanceId, jsonObject);
           if (node != null) {
             nodes.add(node);
           }
@@ -268,12 +270,13 @@ public abstract class RichTextNode {
     return new SpannableString("");
   }
 
-  public void parse(JSONObject jsonObject, @NonNull String instanceId) {
+  public void parse(@NonNull Context context, @NonNull String instanceId, JSONObject jsonObject) {
     JSONObject jsonStyle, jsonAttr, child;
     JSONArray jsonArray, valueChildren;
     RichTextNode node;
 
     mInstanceId = instanceId;
+    mContext = context;
     if ((jsonStyle = jsonObject.getJSONObject(STYLE)) != null) {
       style = new ArrayMap<>();
       style.putAll(jsonStyle);
@@ -290,7 +293,7 @@ public abstract class RichTextNode {
         children = new ArrayList<>(valueChildren.size());
         for (int i = 0; i < valueChildren.size(); i++) {
           child = valueChildren.getJSONObject(i);
-          node = RichTextNodeCreator.createRichTextNode(child, instanceId);
+          node = RichTextNodeCreator.createRichTextNode(context, instanceId, child);
           if (node != null) {
             children.add(node);
           }

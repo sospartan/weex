@@ -205,6 +205,7 @@
 
 package com.alibaba.weex.richtext.node;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
@@ -230,13 +231,12 @@ public class RichTextNodeCreator {
   }
 
   @Nullable
-  public static RichTextNode createRichTextNode(@Nullable JSONObject jsonObject,
-                                                @NonNull String instanceId) {
+  public static RichTextNode createRichTextNode(@NonNull Context context, @NonNull String instanceId, @Nullable JSONObject jsonObject) {
     try {
       Class<? extends RichTextNode> node =
           registeredTextNodes.get(jsonObject.getString(RichTextNode.TYPE));
       RichTextNode instance = node.newInstance();
-      instance.parse(jsonObject, instanceId);
+      instance.parse(context, instanceId, jsonObject);
       return instance;
     } catch (Exception e) {
       WXLogUtils.e("Richtext", WXLogUtils.getStackTrace(e));

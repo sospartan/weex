@@ -214,7 +214,6 @@ import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 
-import com.alibaba.weex.richtext.span.ASpan;
 import com.alibaba.weex.richtext.span.RemoteImgSpan;
 import com.taobao.weex.ui.view.WXTextView;
 
@@ -233,9 +232,9 @@ public class WXRichTextView extends WXTextView {
       Spannable spannable = (Spannable) getText();
       handled = updateSelection(event, spannable);
       if (touchIsFinished) {
-        ASpan[] links = spannable.getSpans(Selection.getSelectionStart(spannable),
-                                           Selection.getSelectionEnd(spannable),
-                                           ASpan.class);
+        ClickableSpan[] links = spannable.getSpans(Selection.getSelectionStart(spannable),
+                                                   Selection.getSelectionEnd(spannable),
+                                                   ClickableSpan.class);
 
         if (links.length > 0) {
           links[0].onClick(this);

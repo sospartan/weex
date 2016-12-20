@@ -205,11 +205,16 @@
 
 package com.alibaba.weex.richtext.node;
 
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.SpannableStringBuilder;
 
 import com.alibaba.weex.richtext.span.RemoteImgSpan;
 import com.taobao.weex.WXSDKEngine;
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.URIAdapter;
 import com.taobao.weex.common.Constants;
+import com.taobao.weex.utils.ImgURIUtil;
 import com.taobao.weex.utils.WXUtils;
 
 import static com.taobao.weex.utils.WXViewUtils.getRealPxByWidth;
@@ -231,11 +236,18 @@ public class ImgNode extends RichTextNode {
         attr.containsKey(Constants.Name.SRC)) {
       int width = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.WIDTH)));
       int height = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.HEIGHT)));
-      String url = attr.get(Constants.Name.SRC).toString();
       RemoteImgSpan imageSpan = new RemoteImgSpan(width, height);
-      WXSDKEngine.getDrawableLoader().setDrawable(url, imageSpan);
-      spannableStringBuilder.setSpan(imageSpan, 0, spannableStringBuilder.length(),
-                                     createSpanFlag(level));
+
+      String url = attr.get(Constants.Name.SRC).toString();
+      Uri rewrited = WXSDKManager.getInstance().getSDKInstance(mInstanceId).rewriteUri(
+          Uri.parse(url), URIAdapter.IMAGE);
+      if (Constants.Scheme.LOCAL.equals(rewrited.getScheme())) {
+        Drawable localDrawable = ImgURIUtil.getDrawableFromLoaclSrc(mContext, rewrited);
+        imageSpan.setDrawable(localDrawable, false);
+      } else {
+        WXSDKEngine.getDrawableLoader().setDrawable(rewrited.toString(), imageSpan);
+      }
+      spannableStringBuilder.setSpan(imageSpan, 0, spannableStringBuilder.length(), createSpanFlag(level));
     }
   }
 }
