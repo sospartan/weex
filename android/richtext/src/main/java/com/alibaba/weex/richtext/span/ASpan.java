@@ -205,14 +205,11 @@
 
 package com.alibaba.weex.richtext.span;
 
-import android.net.Uri;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
-import com.alibaba.fastjson.JSONArray;
-import com.taobao.weex.WXSDKManager;
-import com.taobao.weex.adapter.URIAdapter;
+import com.taobao.weex.utils.ATagUtil;
 
 public class ASpan extends ClickableSpan {
 
@@ -225,13 +222,7 @@ public class ASpan extends ClickableSpan {
 
   @Override
   public void onClick(View widget) {
-    String url = mURL;
-    url = WXSDKManager.getInstance().getSDKInstance(mInstanceId).
-        rewriteUri(Uri.parse(url), URIAdapter.LINK).toString();
-    JSONArray array = new JSONArray();
-    array.add(url);
-    WXSDKManager.getInstance().getWXBridgeManager().
-        callModuleMethod(mInstanceId, "event", "openURL", array);
+    ATagUtil.onClick(widget, mInstanceId, mURL);
   }
 
   @Override
