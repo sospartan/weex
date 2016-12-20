@@ -209,7 +209,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.SpannableStringBuilder;
 
-import com.alibaba.weex.richtext.span.RemoteImgSpan;
+import com.alibaba.weex.richtext.span.ImgSpan;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.adapter.URIAdapter;
@@ -236,7 +236,7 @@ public class ImgNode extends RichTextNode {
         attr.containsKey(Constants.Name.SRC)) {
       int width = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.WIDTH)));
       int height = (int) getRealPxByWidth(WXUtils.getFloat(style.get(Constants.Name.HEIGHT)));
-      RemoteImgSpan imageSpan = new RemoteImgSpan(width, height);
+      ImgSpan imageSpan = new ImgSpan(width, height);
 
       String url = attr.get(Constants.Name.SRC).toString();
       Uri rewrited = WXSDKManager.getInstance().getSDKInstance(mInstanceId).rewriteUri(

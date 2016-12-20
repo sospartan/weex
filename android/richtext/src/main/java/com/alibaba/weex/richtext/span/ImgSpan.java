@@ -214,13 +214,13 @@ import android.view.View;
 import com.taobao.weex.adapter.IDrawableLoader;
 
 
-public class RemoteImgSpan extends ReplacementSpan implements IDrawableLoader.DrawableTarget {
+public class ImgSpan extends ReplacementSpan implements IDrawableLoader.DrawableTarget {
 
   private int width, height;
   private Drawable mDrawable;
   private View mView;
 
-  public RemoteImgSpan(int width, int height) {
+  public ImgSpan(int width, int height) {
     this.width = width;
     this.height = height;
   }

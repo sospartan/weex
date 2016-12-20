@@ -213,8 +213,9 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
+import android.widget.TextView;
 
-import com.alibaba.weex.richtext.span.RemoteImgSpan;
+import com.alibaba.weex.richtext.span.ImgSpan;
 import com.taobao.weex.ui.view.WXTextView;
 
 public class WXRichTextView extends WXTextView {
@@ -256,15 +257,19 @@ public class WXRichTextView extends WXTextView {
     super.setTextLayout(layout);
     if (layout.getText() instanceof Spanned) {
       Spanned spanned = (Spanned) layout.getText();
-      RemoteImgSpan[] remoteImgSpans = spanned.getSpans(0, spanned.length(), RemoteImgSpan.class);
-      if (remoteImgSpans != null) {
-        for (RemoteImgSpan span : remoteImgSpans) {
+      ImgSpan[] imgSpen = spanned.getSpans(0, spanned.length(), ImgSpan.class);
+      if (imgSpen != null) {
+        for (ImgSpan span : imgSpen) {
           span.setView(this);
         }
       }
     }
   }
 
+  /**
+   * Mostly copied from
+   * {@link android.text.method.LinkMovementMethod#onTouchEvent(TextView, Spannable, MotionEvent)}.
+   */
   private boolean updateSelection(MotionEvent event, Spannable buffer) {
     int action = event.getAction();
 
