@@ -215,7 +215,6 @@ import com.taobao.weex.ui.ComponentCreator;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.ui.component.WXVContainer;
-import com.taobao.weex.ui.view.WXTextView;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -234,7 +233,7 @@ public class WXRichText extends WXText {
   }
 
   @Override
-  protected WXTextView initComponentHostView(@NonNull Context context) {
+  protected WXRichTextView initComponentHostView(@NonNull Context context) {
     return new WXRichTextView(context);
   }
 }
