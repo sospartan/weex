@@ -206,7 +206,6 @@
 package com.alibaba.weex.richtext.node;
 
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 
 import com.alibaba.weex.richtext.span.RemoteImgSpan;
 import com.taobao.weex.WXSDKEngine;
@@ -225,7 +224,7 @@ public class ImgNode extends RichTextNode {
   }
 
   @Override
-  protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
+  protected void updateSpans(SpannableStringBuilder spannableStringBuilder, int level) {
     if (WXSDKEngine.getDrawableLoader() != null &&
         style.containsKey(Constants.Name.WIDTH) &&
         style.containsKey(Constants.Name.HEIGHT) &&
@@ -236,7 +235,7 @@ public class ImgNode extends RichTextNode {
       RemoteImgSpan imageSpan = new RemoteImgSpan(width, height);
       WXSDKEngine.getDrawableLoader().setDrawable(url, imageSpan);
       spannableStringBuilder.setSpan(imageSpan, 0, spannableStringBuilder.length(),
-                                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                                     createSpanFlag(level));
     }
   }
 }

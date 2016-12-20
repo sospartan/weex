@@ -206,7 +206,6 @@
 package com.alibaba.weex.richtext.node;
 
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 
 import com.alibaba.weex.richtext.span.ASpan;
 
@@ -221,11 +220,12 @@ public class ANode extends RichTextNode {
   }
 
   @Override
-  protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
-    super.updateSpans(spannableStringBuilder);
+  protected void updateSpans(SpannableStringBuilder spannableStringBuilder, int level) {
+    super.updateSpans(spannableStringBuilder, level);
     if (attr != null && attr.containsKey(HREF)) {
       ASpan aSpan = new ASpan(mInstanceId, attr.get(HREF).toString());
-      spannableStringBuilder.setSpan(aSpan, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+      spannableStringBuilder.setSpan(aSpan, 0, spannableStringBuilder.length(),
+                                     createSpanFlag(level));
     }
   }
 }

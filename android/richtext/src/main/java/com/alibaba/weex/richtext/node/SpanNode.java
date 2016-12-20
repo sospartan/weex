@@ -213,7 +213,11 @@ public class SpanNode extends RichTextNode {
 
   @Override
   public String toString() {
-    return attr.get(Constants.Name.VALUE).toString();
+    if (attr == null || !attr.containsKey(Constants.Name.VALUE)) {
+      return "";
+    } else {
+      return attr.get(Constants.Name.VALUE).toString();
+    }
   }
 
 }

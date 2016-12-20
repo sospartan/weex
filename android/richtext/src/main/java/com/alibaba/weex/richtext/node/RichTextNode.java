@@ -208,9 +208,10 @@ package com.alibaba.weex.richtext.node;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.SpannedString;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 
@@ -235,6 +236,7 @@ public abstract class RichTextNode {
   public static final String STYLE = "style";
   public static final String ATTR = "attr";
   public static final String VALUE = Constants.Name.VALUE;
+  private static final int MAX_LEVEL = 0xFF;
 
   protected Map<String, Object> style;
   protected Map<String, Object> attr;
@@ -243,7 +245,7 @@ public abstract class RichTextNode {
 
   public static
   @NonNull
-  Spanned parse(String json, @NonNull String instanceId) {
+  Spannable parse(String json, @NonNull String instanceId) {
     JSONArray jsonArray = JSON.parseArray(json);
     JSONObject jsonObject;
     List<RichTextNode> nodes;
@@ -261,7 +263,7 @@ public abstract class RichTextNode {
       }
       return parse(nodes);
     }
-    return new SpannedString("");
+    return new SpannableString("");
   }
 
   public void parse(JSONObject jsonObject, @NonNull String instanceId) {
@@ -300,19 +302,19 @@ public abstract class RichTextNode {
     }
   }
 
-  protected Spanned toSpan() {
+  protected Spannable toSpan(int level) {
     SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
     spannableStringBuilder.append(toString());
     if (children != null) {
       for (RichTextNode child : children) {
-        spannableStringBuilder.append(child.toSpan());
+        spannableStringBuilder.append(child.toSpan(level + 1));
       }
     }
-    updateSpans(spannableStringBuilder);
+    updateSpans(spannableStringBuilder, level);
     return spannableStringBuilder;
   }
 
-  protected void updateSpans(SpannableStringBuilder spannableStringBuilder) {
+  protected void updateSpans(SpannableStringBuilder spannableStringBuilder, int level) {
     if (style != null) {
       List<Object> spans = new LinkedList<>();
       WXCustomStyleSpan customStyleSpan = createCustomStyleSpan();
@@ -326,19 +328,30 @@ public abstract class RichTextNode {
         spans.add(new ForegroundColorSpan(WXResourceUtils.getColor(WXStyle.getTextColor(style))));
       }
       for (Object span : spans) {
-        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length(),
+                                       createSpanFlag(level));
       }
     }
   }
 
   private static
   @NonNull
-  Spanned parse(@NonNull List<RichTextNode> list) {
+  Spannable parse(@NonNull List<RichTextNode> list) {
     SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
     for (RichTextNode richTextNode : list) {
-      spannableStringBuilder.append(richTextNode.toSpan());
+      spannableStringBuilder.append(richTextNode.toSpan(1));
     }
     return spannableStringBuilder;
+  }
+
+  private static int createPriorityFlag(int level) {
+    return level <= MAX_LEVEL ?
+           (MAX_LEVEL - level) << Spanned.SPAN_PRIORITY_SHIFT :
+           MAX_LEVEL << Spanned.SPAN_PRIORITY_SHIFT;
+  }
+
+  protected static int createSpanFlag(int level) {
+    return createPriorityFlag(level) | Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
   }
 
   private
