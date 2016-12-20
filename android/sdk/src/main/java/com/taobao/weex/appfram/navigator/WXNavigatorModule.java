@@ -141,37 +141,43 @@ public class WXNavigatorModule extends WXModule {
 
     @JSMethod(uiThread = true)
     public void open(JSONObject options, JSCallback success, JSCallback failure) {
-        String url = options.getString("url");
-        if (!TextUtils.isEmpty(url)) {
-            Uri rawUri = Uri.parse(url);
-            String scheme = rawUri.getScheme();
-            if (TextUtils.isEmpty(scheme) || "http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme)) {
-                this.push(options.toJSONString(), success, failure);
+        if (options != null) {
+            String url = options.getString("url");
+            if (!TextUtils.isEmpty(url)) {
+                Uri rawUri = Uri.parse(url);
+                String scheme = rawUri.getScheme();
+                if (TextUtils.isEmpty(scheme) || "http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme)) {
+                    this.push(options.toJSONString(), success);
+                } else {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, rawUri);
+                        mWXSDKInstance.getContext().startActivity(intent);
+                        JSONObject succ = new JSONObject();
+                        succ.put("result", MSG_SUCCESS);
+                        success.invoke(succ);
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                        if (failure != null) {
+                            JSONObject error = new JSONObject();
+                            error.put("result", MSG_FAILED);
+                            error.put("message", "open page failed");
+                            failure.invoke(error);
+                        }
+                    }
+                }
             } else {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, rawUri);
-                    mWXSDKInstance.getContext().startActivity(intent);
-                    JSONObject succ = new JSONObject();
-                    succ.put("result", MSG_SUCCESS);
-                    success.invoke(succ);
-                } catch (Throwable e) {
-                    e.printStackTrace();
+                if (failure != null) {
                     JSONObject error = new JSONObject();
-                    error.put("result", MSG_FAILED);
-                    error.put("message", "open page failed");
+                    error.put("result", MSG_PARAM_ERR);
+                    error.put("message", "param error");
                     failure.invoke(error);
                 }
             }
-        } else {
-            JSONObject error = new JSONObject();
-            error.put("result", MSG_PARAM_ERR);
-            error.put("message", "param error");
-            failure.invoke(error);
         }
     }
 
     @JSMethod(uiThread = true)
-    public void push(String param, JSCallback callback, JSCallback failure) {
+    public void push(String param, JSCallback callback) {
 
         if (!TextUtils.isEmpty(param)) {
             if (WXSDKEngine.getActivityNavBarSetter() != null) {
