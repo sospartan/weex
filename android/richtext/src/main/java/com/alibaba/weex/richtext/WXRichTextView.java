@@ -246,9 +246,9 @@ public class WXRichTextView extends WXTextView {
     super.setTextLayout(layout);
     if (layout.getText() instanceof Spanned) {
       Spanned spanned = (Spanned) layout.getText();
-      ImgSpan[] imgSpen = spanned.getSpans(0, spanned.length(), ImgSpan.class);
-      if (imgSpen != null) {
-        for (ImgSpan span : imgSpen) {
+      ImgSpan[] imgSpan = spanned.getSpans(0, spanned.length(), ImgSpan.class);
+      if (imgSpan != null) {
+        for (ImgSpan span : imgSpan) {
           span.setView(this);
         }
       }
