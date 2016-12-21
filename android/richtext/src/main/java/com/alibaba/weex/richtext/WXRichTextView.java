@@ -228,20 +228,9 @@ public class WXRichTextView extends WXTextView {
   public boolean onTouchEvent(MotionEvent event) {
     boolean superResult = super.onTouchEvent(event);
     boolean handled = false;
-    boolean touchIsFinished = (event.getActionMasked() == MotionEvent.ACTION_UP) && isFocused();
     if (isEnabled() && getTextLayout() != null && getText() instanceof Spannable) {
       Spannable spannable = (Spannable) getText();
       handled = updateSelection(event, spannable);
-      if (touchIsFinished) {
-        ClickableSpan[] links = spannable.getSpans(Selection.getSelectionStart(spannable),
-                                                   Selection.getSelectionEnd(spannable),
-                                                   ClickableSpan.class);
-
-        if (links.length > 0) {
-          links[0].onClick(this);
-          handled = true;
-        }
-      }
     }
     return handled || superResult;
   }
@@ -271,7 +260,7 @@ public class WXRichTextView extends WXTextView {
    * {@link android.text.method.LinkMovementMethod#onTouchEvent(TextView, Spannable, MotionEvent)}.
    */
   private boolean updateSelection(MotionEvent event, Spannable buffer) {
-    int action = event.getAction();
+    int action = event.getActionMasked();
 
     if (action == MotionEvent.ACTION_UP ||
         action == MotionEvent.ACTION_DOWN) {
