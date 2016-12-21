@@ -169,7 +169,11 @@ license{
                "**/CSSTransformFromStyle.java",
                "**/CSSWrapConvert.java",
                "**/WXTextDomObject.java",
-               "**/WXCustomStyleSpan.java"])
+               "**/WXCustomStyleSpan.java",
+               "**/DefaultResponseHandler.java",
+               "**/NetworkEventReporter.java",
+               "**/RequestBodyHelper.java",
+               "**/ResponseHandler.java"])
 }
 preBuild.dependsOn licenseFormat
 

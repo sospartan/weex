@@ -246,6 +246,10 @@ public class NetworkEventReporterManager {
         return sReporter;
     }
 
+    public static NetworkEventReporter newEmptyReporter() {
+        return new NetworkEventReporterAdapter();
+    }
+
     public static class NetworkEventReporterAdapter implements NetworkEventReporter {
 
         @Override
