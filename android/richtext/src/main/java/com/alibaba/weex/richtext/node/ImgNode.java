@@ -242,6 +242,11 @@ class ImgNode extends RichTextNode {
   }
 
   @Override
+  protected boolean isInternalNode() {
+    return false;
+  }
+
+  @Override
   protected void updateSpans(SpannableStringBuilder spannableStringBuilder, int level) {
     if (WXSDKEngine.getDrawableLoader() != null &&
         style.containsKey(Constants.Name.WIDTH) &&

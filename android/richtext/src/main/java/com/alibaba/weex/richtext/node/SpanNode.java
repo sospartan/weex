@@ -234,4 +234,8 @@ class SpanNode extends RichTextNode {
     }
   }
 
+  @Override
+  protected boolean isInternalNode() {
+    return true;
+  }
 }

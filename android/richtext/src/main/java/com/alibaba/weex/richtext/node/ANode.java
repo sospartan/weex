@@ -233,6 +233,11 @@ class ANode extends RichTextNode {
   }
 
   @Override
+  protected boolean isInternalNode() {
+    return true;
+  }
+
+  @Override
   protected void updateSpans(SpannableStringBuilder spannableStringBuilder, int level) {
     super.updateSpans(spannableStringBuilder, level);
     if (attr != null && attr.containsKey(HREF)) {

@@ -275,7 +275,16 @@ public abstract class RichTextNode {
     return new SpannableString("");
   }
 
-  void parse(@NonNull Context context, @NonNull String instanceId, JSONObject jsonObject) {
+  public static int createSpanFlag(int level) {
+    return createPriorityFlag(level) | Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
+  }
+
+  @Override
+  public abstract String toString();
+
+  protected abstract boolean isInternalNode();
+
+  final void parse(@NonNull Context context, @NonNull String instanceId, JSONObject jsonObject) {
     JSONObject jsonStyle, jsonAttr, child;
     JSONArray jsonArray, valueChildren;
     RichTextNode node;
@@ -309,18 +318,6 @@ public abstract class RichTextNode {
     }
   }
 
-  protected Spannable toSpan(int level) {
-    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-    spannableStringBuilder.append(toString());
-    if (children != null) {
-      for (RichTextNode child : children) {
-        spannableStringBuilder.append(child.toSpan(level + 1));
-      }
-    }
-    updateSpans(spannableStringBuilder, level);
-    return spannableStringBuilder;
-  }
-
   protected void updateSpans(SpannableStringBuilder spannableStringBuilder, int level) {
     if (style != null) {
       List<Object> spans = new LinkedList<>();
@@ -348,10 +345,6 @@ public abstract class RichTextNode {
     }
   }
 
-  public static int createSpanFlag(int level) {
-    return createPriorityFlag(level) | Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
-  }
-
   private static int createPriorityFlag(int level) {
     return level <= MAX_LEVEL ?
            (MAX_LEVEL - level) << Spanned.SPAN_PRIORITY_SHIFT :
@@ -365,6 +358,18 @@ public abstract class RichTextNode {
     for (RichTextNode richTextNode : list) {
       spannableStringBuilder.append(richTextNode.toSpan(1));
     }
+    return spannableStringBuilder;
+  }
+
+  private Spannable toSpan(int level) {
+    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+    spannableStringBuilder.append(toString());
+    if (isInternalNode() && children != null) {
+      for (RichTextNode child : children) {
+        spannableStringBuilder.append(child.toSpan(level + 1));
+      }
+    }
+    updateSpans(spannableStringBuilder, level);
     return spannableStringBuilder;
   }
 
