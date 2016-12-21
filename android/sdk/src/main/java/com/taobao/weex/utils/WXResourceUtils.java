@@ -205,6 +205,8 @@
 package com.taobao.weex.utils;
 
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -434,6 +436,39 @@ public class WXResourceUtils {
       WXLogUtils.e("WXResourceUtils getColor failed: " + color);
     }
     return resultColor;
+  }
+
+  public static Shader getShader(String image, float width, float height) {
+    Shader shader=null;
+    if(image.startsWith("linear-gradient")){
+      String temp=image.substring(image.indexOf("(")+1,image.lastIndexOf(")"));
+      String[] temps=temp.split(",");
+      if(temps.length==3){
+        switch (temps[0]){
+          case "to right":
+            shader=new LinearGradient(0, 0, width, 0, Color.parseColor(temps[1]), Color.parseColor(temps[2]), Shader.TileMode.REPEAT);
+            break;
+          case "to bottom":
+            shader=new LinearGradient(0, 0, 0, height, Color.parseColor(temps[1]), Color.parseColor(temps[2]), Shader.TileMode.REPEAT);
+            break;
+          case "to left":
+            shader=new LinearGradient(width, 0, 0, 0, Color.parseColor(temps[1]), Color.parseColor(temps[2]), Shader.TileMode.REPEAT);
+            break;
+          case "to top":
+            shader=new LinearGradient(0, height, 0, 0, Color.parseColor(temps[1]), Color.parseColor(temps[2]), Shader.TileMode.REPEAT);
+            break;
+          case "to bottom right":
+            shader=new LinearGradient(width, height, 0, 0, Color.parseColor(temps[1]), Color.parseColor(temps[2]), Shader.TileMode.CLAMP);
+            break;
+          case "to top right":
+            shader=new LinearGradient(0, 0, width, height, Color.parseColor(temps[1]), Color.parseColor(temps[2]), Shader.TileMode.CLAMP);
+            break;
+          default:
+            shader=new LinearGradient(0, 0, width, height, Color.GREEN, Color.BLUE, Shader.TileMode.REPEAT);
+        }
+      }
+    }
+    return shader;
   }
 
   enum ColorConvertHandler {

@@ -210,6 +210,7 @@ import android.graphics.ColorFilter;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -275,6 +276,7 @@ public class BorderDrawable extends Drawable {
   Path mPathForBorderOutline;
   private boolean mNeedUpdatePath = false;
   private int mColor = Color.TRANSPARENT;
+  private Shader mShader=null;
   private int mAlpha = 255;
 
   public BorderDrawable() {
@@ -286,11 +288,15 @@ public class BorderDrawable extends Drawable {
     updateBorderOutline();
     if (mPathForBorderOutline != null) {
       int useColor = WXViewUtils.multiplyColorAlpha(mColor, mAlpha);
-      if ((useColor >>> 24) != 0) {
+      if ((useColor >>> 24) != 0 || mShader!=null) {
+        if(mShader!=null) {
+          mPaint.setShader(mShader);
+        } else {
+          mPaint.setColor(useColor);
+        }
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(useColor);
-        mPaint.setShader(null);
         canvas.drawPath(mPathForBorderOutline, mPaint);
+        mPaint.setShader(null);
       }
     }
     mPaint.setStyle(Paint.Style.STROKE);
@@ -330,7 +336,8 @@ public class BorderDrawable extends Drawable {
   @SuppressWarnings("WrongConstant")
   @Override
   public int getOpacity() {
-    return WXViewUtils.getOpacityFromColor(WXViewUtils.multiplyColorAlpha(mColor, mAlpha));
+    return mShader!=null?PixelFormat.OPAQUE:
+          WXViewUtils.getOpacityFromColor(WXViewUtils.multiplyColorAlpha(mColor, mAlpha));
   }
 
   /* Android's elevation implementation requires this to be implemented to know where to draw the
@@ -442,6 +449,11 @@ public class BorderDrawable extends Drawable {
 
   public void setColor(int color) {
     mColor = color;
+    invalidateSelf();
+  }
+
+  public void setImage(Shader shader){
+    mShader=shader;
     invalidateSelf();
   }
 

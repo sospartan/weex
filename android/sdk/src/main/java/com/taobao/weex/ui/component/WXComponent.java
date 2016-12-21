@@ -132,6 +132,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.CheckResult;
@@ -173,8 +174,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.taobao.weex.utils.WXViewUtils.getWebPxByWidth;
 
 /**
  * abstract component
@@ -646,6 +645,12 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
         if (bgColor != null)
           setBackgroundColor(bgColor);
         return true;
+      case Constants.Name.BACKGROUND_IMAGE:
+        String bgImage = WXUtils.getString(param,null);
+        if(bgImage!=null){
+          setBackgroundImage(bgImage);
+        }
+        return true;
       case Constants.Name.OPACITY:
         Float opacity = WXUtils.getFloat(param,null);
         if (opacity != null)
@@ -1015,6 +1020,13 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
       if (!(colorInt == Color.TRANSPARENT && mBackgroundDrawable == null)){
           getOrCreateBorder().setColor(colorInt);
       }
+    }
+  }
+
+  public void setBackgroundImage(String bgImage){
+    if(!TextUtils.isEmpty(bgImage) && mHost!=null){
+      Shader shader=WXResourceUtils.getShader(bgImage,mDomObj.getLayoutWidth(),mDomObj.getLayoutHeight());
+      getOrCreateBorder().setImage(shader);
     }
   }
 
