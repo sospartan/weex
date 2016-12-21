@@ -202,347 +202,36 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.utils;
+package com.taobao.weex;
 
-import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.Path;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
+import android.content.Intent;
 
-import com.taobao.weex.WXEnvironment;
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.WXSDKManager;
-import com.taobao.weex.common.WXRuntimeException;
-import com.taobao.weex.ui.view.border.BorderDrawable;
+import com.alibaba.fastjson.JSON;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
 
-/**
- * Utility class for views
- */
-public class WXViewUtils {
+public class WXGlobalEventReceiver extends BroadcastReceiver {
 
-  /**
-   * System chooses a format that supports translucency (many alpha bits)
-   */
-  public static final int TRANSLUCENT = -3;
+  public static final String EVENT_NAME = "eventName";
+  public static final String EVENT_PARAMS = "eventParams";
+  public static final String EVENT_ACTION = "wx_global_action";
 
-  /**
-   * System chooses a format that supports transparency (at least 1 alpha bit)
-   */
-  public static final int TRANSPARENT = -2;
-  /**
-   * System chooses an opaque format (no alpha bits required)
-   */
-  public static final int OPAQUE = -1;
-  public static final int DIMENSION_UNSET = -1;
-  private static final boolean mUseWebPx = false;
-  private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
+  private WXSDKInstance mWXSDKInstance;
 
-  @SuppressLint("NewApi")
-  public static int generateViewId() {
-
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-      for (;;) {
-        final int result = sNextGeneratedId.get();
-        // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
-        int newValue = result + 1;
-        if (newValue > 0x00FFFFFF)
-          newValue = 1; // Roll over to 1, not 0.
-        if (sNextGeneratedId.compareAndSet(result, newValue)) {
-          return result;
-        }
-      }
-    } else {
-      return View.generateViewId();
-    }
-
+  public WXGlobalEventReceiver() {
   }
 
-
-  public static int getWeexHeight(String instanceId){
-    WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(instanceId);
-    if (instance != null) {
-      int weexHeight = instance.getWeexHeight();
-      if (weexHeight >= 0 || weexHeight == -2) {
-        return weexHeight;
-      }
-      else {
-        return getScreenHeight(WXEnvironment.sApplication);
-      }
-    }
-    return -3;
+  public WXGlobalEventReceiver(WXSDKInstance instance) {
+    mWXSDKInstance = instance;
   }
 
-  @Deprecated
-  public static int getScreenHeight() {
-    if(WXEnvironment.sApplication!=null){
-      return WXEnvironment.sApplication.getResources()
-              .getDisplayMetrics()
-              .heightPixels;
-    }
-    if(WXEnvironment.isApkDebugable()){
-      throw new WXRuntimeException("Error Context is null When getScreenHeight");
-    }
-    return 0;
-  }
-
-  public static int getScreenHeight(Context cxt) {
-    if(cxt!=null){
-      return cxt.getResources().getDisplayMetrics().heightPixels;
-    }
-    if(WXEnvironment.isApkDebugable()){
-      throw new WXRuntimeException("Error Context is null When getScreenHeight");
-    }
-    return 0;
-
-  }
-
-  public static int getWeexWidth(String instanceId){
-    WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(instanceId);
-    if (instance != null) {
-      int weexWidth = instance.getWeexWidth();
-      if (weexWidth >= 0 || weexWidth == -2) {
-        return weexWidth;
-      }
-      else {
-        return getScreenWidth(WXEnvironment.sApplication);
-      }
-    }
-    return -3;
-  }
-
-  @Deprecated
-  public static int getScreenWidth( ) {
-    if(WXEnvironment.sApplication!=null) {
-      int width = WXEnvironment.sApplication.getResources().getDisplayMetrics().widthPixels;
-
-      if(WXEnvironment.SETTING_FORCE_VERTICAL_SCREEN){
-        int height = WXEnvironment.sApplication.getResources()
-                .getDisplayMetrics()
-                .heightPixels;
-        width = height > width ?width:height;
-      }
-      return width;
-    }
-    if(WXEnvironment.isApkDebugable()){
-      throw new WXRuntimeException("Error Context is null When getScreenHeight");
-    }
-    return 0;
-  }
-
-  public static int getScreenWidth(Context ctx) {
-    if(ctx!=null){
-      Resources res = ctx.getResources();
-      int width = res.getDisplayMetrics().widthPixels;
-
-      if(WXEnvironment.SETTING_FORCE_VERTICAL_SCREEN){
-        int height = res
-                .getDisplayMetrics()
-                .heightPixels;
-        width = height > width ?width:height;
-      }
-      return width;
-    }
-    if(WXEnvironment.isApkDebugable()){
-      throw new WXRuntimeException("Error Context is null When getScreenHeight");
-    }
-    return 0;
-  }
-
-  /**
-   * Convert distance from JS,CSS to native. As the JS considers the width of the screen is 750px.
-   * There must be a transform when accessing distance from JS,CSS and use it.
-   * Basically, this method calculates a scale factor(ScreenWidth/750) and use apply this scale
-   * factor to JS,CSS distance.
-   * @param pxValue the raw distance from JS or CSS. The result will be rounded to a closet int.
-   * @return the actual distance in the screen.
-   */
-  public static float getRealPxByWidth(float pxValue,int customViewport) {
-    if (Float.isNaN(pxValue)) {
-      return pxValue;
-    }
-    if (mUseWebPx) {
-      return (float) Math.rint(pxValue);
-    } else {
-      float realPx = (pxValue * getScreenWidth() / customViewport);
-      return realPx > 0.005 && realPx < 1 ? 1 : (float) Math.rint(realPx);
-    }
-  }
-
-  public static float getRealSubPxByWidth(float pxValue,int customViewport) {
-    if (Float.isNaN(pxValue)) {
-      return pxValue;
-    }
-    if (mUseWebPx) {
-      return (float) Math.rint(pxValue);
-    } else {
-      float realPx = (pxValue * getScreenWidth() / customViewport);
-      return realPx > 0.005 && realPx < 1 ? 1 : realPx;
-    }
-  }
-
-  /**
-   *  Internal interface that just for debug, you should never call this method because of accuracy loss obviously
-   */
-  public static float getWeexPxByReal(float pxValue,int customViewport) {
-    if (Float.isNaN(pxValue)) {
-      return pxValue;
-    }
-    if (mUseWebPx) {
-      return (float) Math.rint(pxValue);
-    } else {
-      return pxValue * customViewport / getScreenWidth();
-    }
-  }
-
-  public static int getRealPxByWidth2(float pxValue,int customViewport) {
-    if (mUseWebPx) {
-      return (int) pxValue;
-    } else {
-      float realPx = (pxValue * getScreenWidth() / customViewport);
-      return realPx > 0.005 && realPx < 1 ? 1 : (int) realPx - 1;
-    }
-  }
-
-  /**
-   * Convert distance from native to JS,CSS. As the JS considers the width of the screen is 750px.
-   * There must be a transform when return distance to JS,CSS.
-   * Basically, this method calculates a scale factor(ScreenWidth/750) and use apply this scale
-   * factor to native distance.
-   * @param pxValue the raw distance of native. The result will be rounded to a closet int.
-   * @return the distance in JS,CSS where the screenWidth is 750 px.
-   */
-  public static float getWebPxByWidth(float pxValue,int customViewport) {
-    if (pxValue < -1.9999 && pxValue > -2.005) {
-      return Float.NaN;
-    }
-    if (mUseWebPx) {
-      return pxValue;
-    } else {
-      float realPx = (pxValue * customViewport / getScreenWidth());
-      return realPx > 0.005 && realPx < 1 ? 1 : realPx;
-    }
-  }
-
-
-  /**
-   * Convert dp to px
-   * @param dpValue the dp value to be converted
-   * @return the px value
-   */
-  public static int dip2px(float dpValue) {
-    float scale = 2;
-    try {
-      scale = WXEnvironment.getApplication().getResources()
-          .getDisplayMetrics().density;
-    } catch (Exception e) {
-      WXLogUtils.e("[WXViewUtils] dip2px:", e);
-    }
-    float finalPx = (dpValue * scale + 0.5f);
-    return finalPx > 0 && finalPx < 1 ? 1 : (int) finalPx;
-  }
-
-  public static boolean onScreenArea(View view) {
-    if (view == null || view.getVisibility() != View.VISIBLE) {
-      return false;
-    }
-
-    int[] p = new int[2];
-    view.getLocationOnScreen(p);
-    LayoutParams lp = view.getLayoutParams();
-    int viewH = 0;
-    if (lp != null) {
-      viewH = lp.height;
-    } else {
-      viewH = view.getHeight();
-    }
-
-    return (p[1] > 0 && (p[1] - WXViewUtils.getScreenHeight(WXEnvironment.sApplication) < 0))
-           || (viewH + p[1] > 0 && p[1] <= 0);
-  }
-
-  /**
-   * Multiplies the color with the given alpha.
-   *
-   * @param color color to be multiplied
-   * @param alpha value between 0 and 255
-   * @return multiplied color
-   */
-  public static int multiplyColorAlpha(int color, int alpha) {
-    if (alpha == 255) {
-      return color;
-    }
-    if (alpha == 0) {
-      return color & 0x00FFFFFF;
-    }
-    alpha = alpha + (alpha >> 7); // make it 0..256
-    int colorAlpha = color >>> 24;
-    int multipliedAlpha = colorAlpha * alpha >> 8;
-    return (multipliedAlpha << 24) | (color & 0x00FFFFFF);
-  }
-
-  public static int getOpacityFromColor(int color) {
-    int colorAlpha = color >>> 24;
-    if (colorAlpha == 255) {
-      return OPAQUE;
-    } else if (colorAlpha == 0) {
-      return TRANSPARENT;
-    } else {
-      return TRANSLUCENT;
-    }
-  }
-
-  @SuppressWarnings("deprecation")
-  public static void setBackGround(View view, Drawable drawable){
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
-      view.setBackgroundDrawable(drawable);
-    }
-    else{
-      view.setBackground(drawable);
-    }
-  }
-
-  public static @Nullable
-  BorderDrawable getBorderDrawable(@NonNull View view){
-    Drawable drawable=view.getBackground();
-    if(drawable instanceof BorderDrawable){
-      return (BorderDrawable) drawable;
-    }
-    else if(drawable instanceof LayerDrawable){
-      if(((LayerDrawable) drawable).getNumberOfLayers()>1) {
-        Drawable innerDrawable=((LayerDrawable) drawable).getDrawable(0);
-        if(innerDrawable instanceof BorderDrawable){
-          return (BorderDrawable) innerDrawable;
-        }
-      }
-    }
-    return null;
-  }
-
-  public static void clipCanvasWithinBorderBox(View targetView, Canvas canvas) {
-    Drawable drawable;
-    /* According to https://developer.android.com/guide/topics/graphics/hardware-accel.html#unsupported
-      API 18 or higher supports clipPath to canvas based on hardware acceleration.
-     */
-    if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 ||
-         !canvas.isHardwareAccelerated()) &&
-        ((drawable = targetView.getBackground()) instanceof BorderDrawable)) {
-      BorderDrawable borderDrawable = (BorderDrawable) drawable;
-      if(borderDrawable.isRounded()) {
-        Path path = borderDrawable.getContentPath(
-            new RectF(0, 0, targetView.getWidth(), targetView.getHeight()));
-        canvas.clipPath(path);
-      }
-    }
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    String eventName = intent.getStringExtra(EVENT_NAME);
+    String params = intent.getStringExtra(EVENT_PARAMS);
+    HashMap<String, Object> maps = JSON.parseObject(params, HashMap.class);
+    mWXSDKInstance.fireGlobalEventCallback(eventName, maps);
   }
 }
