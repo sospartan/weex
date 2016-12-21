@@ -242,6 +242,8 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
   public static final String TRANSFORM_ORIGIN = "transformOrigin";
   private AtomicBoolean sDestroy = new AtomicBoolean();
 
+  protected int mViewPortWidth =750;
+
   private DomContext mDomContext;
 
   /** package **/ String mRef = ROOT;
@@ -616,84 +618,84 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
             setWrap(stylesMap.getCSSWrap());
             break;
           case Constants.Name.MIN_WIDTH:
-            setMinWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMinWidth()));
+            setMinWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMinWidth(),mViewPortWidth));
             break;
           case Constants.Name.MIN_HEIGHT:
-            setMinHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMinHeight()));
+            setMinHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMinHeight(),mViewPortWidth));
             break;
           case Constants.Name.MAX_WIDTH:
-            setMaxWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMaxWidth()));
+            setMaxWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMaxWidth(),mViewPortWidth));
             break;
           case Constants.Name.MAX_HEIGHT:
-            setMaxHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMaxHeight()));
+            setMaxHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMaxHeight(),mViewPortWidth));
             break;
           case Constants.Name.DEFAULT_HEIGHT:
           case Constants.Name.HEIGHT:
-            setStyleHeight(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.HEIGHT)?stylesMap.getHeight():stylesMap.getDefaultHeight()));
+            setStyleHeight(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.HEIGHT)?stylesMap.getHeight():stylesMap.getDefaultHeight(),mViewPortWidth));
             break;
           case Constants.Name.WIDTH:
           case Constants.Name.DEFAULT_WIDTH:
-            setStyleWidth(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.WIDTH)?stylesMap.getWidth():stylesMap.getDefaultWidth()));
+            setStyleWidth(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.WIDTH)?stylesMap.getWidth():stylesMap.getDefaultWidth(),mViewPortWidth));
             break;
           case Constants.Name.POSITION:
             setPositionType(stylesMap.getPosition());
             break;
           case Constants.Name.LEFT:
-            setPositionLeft(WXViewUtils.getRealPxByWidth(stylesMap.getLeft()));
+            setPositionLeft(WXViewUtils.getRealPxByWidth(stylesMap.getLeft(),mViewPortWidth));
             break;
           case Constants.Name.TOP:
-            setPositionTop(WXViewUtils.getRealPxByWidth(stylesMap.getTop()));
+            setPositionTop(WXViewUtils.getRealPxByWidth(stylesMap.getTop(),mViewPortWidth));
             break;
           case Constants.Name.RIGHT:
-            setPositionRight(WXViewUtils.getRealPxByWidth(stylesMap.getRight()));
+            setPositionRight(WXViewUtils.getRealPxByWidth(stylesMap.getRight(),mViewPortWidth));
             break;
           case Constants.Name.BOTTOM:
-            setPositionBottom(WXViewUtils.getRealPxByWidth(stylesMap.getBottom()));
+            setPositionBottom(WXViewUtils.getRealPxByWidth(stylesMap.getBottom(),mViewPortWidth));
             break;
           case Constants.Name.MARGIN:
-            setMargin(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getMargin()));
+            setMargin(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getMargin(),mViewPortWidth));
             break;
           case Constants.Name.MARGIN_LEFT:
-            setMargin(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginLeft()));
+            setMargin(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginLeft(),mViewPortWidth));
             break;
           case Constants.Name.MARGIN_TOP:
-            setMargin(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getMarginTop()));
+            setMargin(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getMarginTop(),mViewPortWidth));
             break;
           case Constants.Name.MARGIN_RIGHT:
-            setMargin(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginRight()));
+            setMargin(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginRight(),mViewPortWidth));
             break;
           case Constants.Name.MARGIN_BOTTOM:
-            setMargin(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getMarginBottom()));
+            setMargin(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getMarginBottom(),mViewPortWidth));
             break;
           case Constants.Name.BORDER_WIDTH:
-            setBorder(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getBorderWidth()));
+            setBorder(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getBorderWidth(),mViewPortWidth));
             break;
           case Constants.Name.BORDER_TOP_WIDTH:
-            setBorder(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getBorderTopWidth()));
+            setBorder(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getBorderTopWidth(),mViewPortWidth));
             break;
           case Constants.Name.BORDER_RIGHT_WIDTH:
-            setBorder(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderRightWidth()));
+            setBorder(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderRightWidth(),mViewPortWidth));
             break;
           case Constants.Name.BORDER_BOTTOM_WIDTH:
-            setBorder(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getBorderBottomWidth()));
+            setBorder(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getBorderBottomWidth(),mViewPortWidth));
             break;
           case Constants.Name.BORDER_LEFT_WIDTH:
-            setBorder(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderLeftWidth()));
+            setBorder(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderLeftWidth(),mViewPortWidth));
             break;
           case Constants.Name.PADDING:
-            setPadding(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getPadding()));
+            setPadding(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getPadding(),mViewPortWidth));
             break;
           case Constants.Name.PADDING_LEFT:
-            setPadding(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingLeft()));
+            setPadding(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingLeft(),mViewPortWidth));
             break;
           case Constants.Name.PADDING_TOP:
-            setPadding(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingTop()));
+            setPadding(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingTop(),mViewPortWidth));
             break;
           case Constants.Name.PADDING_RIGHT:
-            setPadding(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingRight()));
+            setPadding(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingRight(),mViewPortWidth));
             break;
           case Constants.Name.PADDING_BOTTOM:
-            setPadding(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingBottom()));
+            setPadding(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingBottom(),mViewPortWidth));
             break;
         }
       }
@@ -788,13 +790,16 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
    * @param json the original JSONObject
    * @return Dom Object corresponding to the JSONObject.
    */
-  public static @Nullable WXDomObject parse(JSONObject json, WXSDKInstance wxsdkInstance){
+  public static  @Nullable WXDomObject parse(JSONObject json, WXSDKInstance wxsdkInstance){
       if (json == null || json.size() <= 0) {
         return null;
       }
 
       String type = (String) json.get(TYPE);
       WXDomObject domObject = WXDomObjectFactory.newInstance(type);
+
+      domObject.mViewPortWidth = wxsdkInstance.getViewPortWidth();
+
       if(domObject == null){
         return null;
       }

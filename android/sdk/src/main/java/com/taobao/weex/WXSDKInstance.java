@@ -285,6 +285,19 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
   private NativeInvokeHelper mNativeInvokeHelper;
   private boolean isCommit=false;
 
+  /*
+   *  store custom ViewPort Width
+   */
+  public void setViewPortWidth(int mViewPortWidth) {
+    this.mViewPortWidth = mViewPortWidth;
+  }
+
+  public int getViewPortWidth() {
+    return mViewPortWidth;
+  }
+
+  private int mViewPortWidth = 750;
+
   /**
    * Render strategy.
    */
@@ -1227,8 +1240,8 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
     if (width < 0 || height < 0 || isDestroy || !mRendered) {
       return;
     }
-    float realWidth = WXViewUtils.getWebPxByWidth(width);
-    float realHeight = WXViewUtils.getWebPxByWidth(height);
+    float realWidth = WXViewUtils.getWebPxByWidth(width,getViewPortWidth());
+    float realHeight = WXViewUtils.getWebPxByWidth(height,getViewPortWidth());
 
     View godView = mRenderContainer;
     if (godView != null) {
