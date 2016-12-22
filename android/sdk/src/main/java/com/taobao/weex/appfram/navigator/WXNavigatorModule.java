@@ -339,7 +339,15 @@ public class WXNavigatorModule extends WXModule {
 
     private boolean changeVisibilityOfActionBar(Context context, int visibility) {
         boolean result = false;
-        if (mWXSDKInstance.getContext() instanceof AppCompatActivity) {
+        boolean hasAppCompatActivity = false;
+        try {
+            Class.forName("android.support.v7.app.AppCompatActivity");
+            hasAppCompatActivity = true;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            hasAppCompatActivity = false;
+        }
+        if (hasAppCompatActivity && mWXSDKInstance.getContext() instanceof AppCompatActivity) {
             android.support.v7.app.ActionBar actionbar = ((AppCompatActivity) mWXSDKInstance.getContext()).getSupportActionBar();
             if (actionbar != null) {
                 switch (visibility) {
