@@ -141,6 +141,8 @@ dependencies {
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile "org.robolectric:shadows-httpclient:3.0"
     testCompile 'org.json:json:20160212'
+
+    compile project(path: ':urlconnection_interceptor')
 }
 
 license{

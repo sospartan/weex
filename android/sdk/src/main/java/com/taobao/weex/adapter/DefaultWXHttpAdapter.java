@@ -208,9 +208,16 @@ import android.text.TextUtils;
 
 import com.taobao.weex.common.WXRequest;
 import com.taobao.weex.common.WXResponse;
-import com.taobao.weex.utils.WXLogUtils;
+import com.taobao.weex.urlconnection.ByteArrayRequestEntity;
+import com.taobao.weex.urlconnection.SimpleRequestEntity;
+import com.taobao.weex.urlconnection.WeexURLConnectionManager;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -240,17 +247,26 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
       @Override
       public void run() {
         WXResponse response = new WXResponse();
+        WeexURLConnectionManager reporter = new WeexURLConnectionManager(null);
         try {
+          SimpleRequestEntity requestEntity = null;
+          if (request.body != null) {
+            requestEntity = new ByteArrayRequestEntity(request.body.getBytes());
+          }
           HttpURLConnection connection = openConnection(request, listener);
+          reporter.preConnect(connection, requestEntity);
           Map<String,List<String>> headers = connection.getHeaderFields();
           int responseCode = connection.getResponseCode();
           if(listener != null){
             listener.onHeadersReceived(responseCode,headers);
           }
+          reporter.postConnect();
 
           response.statusCode = String.valueOf(responseCode);
           if (responseCode >= 200 && responseCode<=299) {
-            response.originalData = readInputStreamAsBytes(connection.getInputStream(), listener);
+            InputStream rawStream = connection.getInputStream();
+            rawStream = reporter.interpretResponseStream(rawStream);
+            response.originalData = readInputStreamAsBytes(rawStream, listener);
           } else {
             response.errorMsg = readInputStream(connection.getErrorStream(), listener);
           }
@@ -264,6 +280,9 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
           response.errorMsg=e.getMessage();
           if(listener!=null){
             listener.onHttpFinish(response);
+          }
+          if (e instanceof IOException) {
+            reporter.httpExchangeFailed((IOException) e);
           }
         }
       }
