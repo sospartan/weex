@@ -583,8 +583,8 @@ class WXDomStatement {
     }
     if (isRoot) {
       WXDomObject.prepareRoot(domObject,
-                              WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexHeight(mInstanceId),WXSDKManager.getInstance().getSDKInstance(mInstanceId).getViewPortWidth()),
-                              WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexWidth(mInstanceId),WXSDKManager.getInstance().getSDKInstance(mInstanceId).getViewPortWidth()));
+                              WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexHeight(mInstanceId),WXSDKManager.getInstanceViewPortWidth(mInstanceId)),
+                              WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexWidth(mInstanceId),WXSDKManager.getInstanceViewPortWidth(mInstanceId)));
     } else if ((parent = mRegistry.get(parentRef)) == null) {
       instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, errCode);
       return;
