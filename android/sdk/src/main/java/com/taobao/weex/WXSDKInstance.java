@@ -1189,8 +1189,10 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
   }
 
   /**
-   * module event
-   * @return
+   * fire module Event
+   * @param callback callback
+   * @param params params
+   * @param isOnce isOnce
    */
   public void fireModuleEvent(String callback,Map<String,Object> params,boolean isOnce){
     WXSDKManager.getInstance().callback(getInstanceId(),callback,params,isOnce);
