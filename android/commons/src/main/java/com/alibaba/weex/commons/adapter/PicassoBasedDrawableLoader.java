@@ -217,6 +217,7 @@ import android.view.Gravity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.DrawableStrategy;
 import com.taobao.weex.adapter.IDrawableLoader;
 
 
@@ -229,7 +230,9 @@ public class PicassoBasedDrawableLoader implements IDrawableLoader {
   }
 
   @Override
-  public void setDrawable(final String url, final DrawableTarget drawableTarget) {
+  public void setDrawable(final String url,
+                          final DrawableTarget drawableTarget,
+                          final DrawableStrategy drawableStrategy) {
     WXSDKManager.getInstance().postOnUiThread(new Runnable() {
       @Override
       public void run() {
@@ -280,7 +283,12 @@ public class PicassoBasedDrawableLoader implements IDrawableLoader {
             return PixelFormat.UNKNOWN;
           }
         }
-        Picasso.with(mContext).load(temp).into(new PlaceHolderDrawableTarget());
+        Picasso.
+            with(mContext).
+            load(temp).
+            resize(drawableStrategy.width, drawableStrategy.height).
+            onlyScaleDown().
+            into(new PlaceHolderDrawableTarget());
       }
     }, 0);
 

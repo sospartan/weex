@@ -213,6 +213,7 @@ import android.text.SpannableStringBuilder;
 import com.alibaba.weex.richtext.span.ImgSpan;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.adapter.DrawableStrategy;
 import com.taobao.weex.adapter.URIAdapter;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.utils.ImgURIUtil;
@@ -263,7 +264,10 @@ class ImgNode extends RichTextNode {
         Drawable localDrawable = ImgURIUtil.getDrawableFromLoaclSrc(mContext, rewrited);
         imageSpan.setDrawable(localDrawable, false);
       } else {
-        WXSDKEngine.getDrawableLoader().setDrawable(rewrited.toString(), imageSpan);
+        DrawableStrategy drawableStrategy = new DrawableStrategy();
+        drawableStrategy.width = width;
+        drawableStrategy.height = height;
+        WXSDKEngine.getDrawableLoader().setDrawable(rewrited.toString(), imageSpan, drawableStrategy);
       }
       spannableStringBuilder.setSpan(imageSpan, 0, spannableStringBuilder.length(), createSpanFlag(level));
     }
