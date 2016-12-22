@@ -246,7 +246,7 @@ public class WXTextDomObject extends WXDomObject {
         }
       }
       if (style.containsKey(Constants.Name.FONT_SIZE)) {
-        mFontSize = WXStyle.getFontSize(style,mViewPortWidth);
+        mFontSize = WXStyle.getFontSize(style,getViewPortWidth());
       }
       if (style.containsKey(Constants.Name.FONT_WEIGHT)) {
         mFontWeight = WXStyle.getFontWeight(style);
@@ -266,7 +266,7 @@ public class WXTextDomObject extends WXDomObject {
       }
       mAlignment = WXStyle.getTextAlignment(style);
       textOverflow = WXStyle.getTextOverflow(style);
-      int lineHeight = WXStyle.getLineHeight(style,mViewPortWidth);
+      int lineHeight = WXStyle.getLineHeight(style,getViewPortWidth());
       if (lineHeight != UNSET) {
         mLineHeight = lineHeight;
       }
