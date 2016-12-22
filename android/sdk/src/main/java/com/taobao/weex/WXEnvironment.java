@@ -238,7 +238,7 @@ public class WXEnvironment {
   public static Application sApplication;
   public static final String DEV_Id = getDevId();
   @Deprecated
-//  public static int sDefaultWidth = 750;
+  public static int sDefaultWidth = 750;
   public volatile static boolean JsFrameworkInit = false;
 
   public static final String SETTING_EXCLUDE_X86SUPPORT = "env_exclude_x86";
