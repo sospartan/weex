@@ -241,6 +241,8 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
   public static final String TRANSFORM = "transform";
   public static final String TRANSFORM_ORIGIN = "transformOrigin";
   private AtomicBoolean sDestroy = new AtomicBoolean();
+  
+  private int mViewPortWidth =750;
 
   public int getViewPortWidth() {
     return mViewPortWidth;
@@ -250,7 +252,6 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
     this.mViewPortWidth = mViewPortWidth;
   }
 
-  private int mViewPortWidth =750;
 
   private DomContext mDomContext;
 
