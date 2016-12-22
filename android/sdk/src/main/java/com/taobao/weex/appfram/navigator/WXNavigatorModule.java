@@ -143,6 +143,8 @@ public class WXNavigatorModule extends WXModule {
     public void open(JSONObject options, JSCallback success, JSCallback failure) {
         if (options != null) {
             String url = options.getString("url");
+            JSCallback callback = success;
+            JSONObject result = new JSONObject();
             if (!TextUtils.isEmpty(url)) {
                 Uri rawUri = Uri.parse(url);
                 String scheme = rawUri.getScheme();
@@ -152,26 +154,22 @@ public class WXNavigatorModule extends WXModule {
                     try {
                         Intent intent = new Intent(Intent.ACTION_VIEW, rawUri);
                         mWXSDKInstance.getContext().startActivity(intent);
-                        JSONObject succ = new JSONObject();
-                        succ.put("result", MSG_SUCCESS);
-                        success.invoke(succ);
+                        result.put("result", MSG_SUCCESS);
                     } catch (Throwable e) {
                         e.printStackTrace();
-                        if (failure != null) {
-                            JSONObject error = new JSONObject();
-                            error.put("result", MSG_FAILED);
-                            error.put("message", "open page failed");
-                            failure.invoke(error);
-                        }
+                        result.put("result", MSG_FAILED);
+                        result.put("message", "open page failed");
+                        callback = failure;
                     }
                 }
             } else {
-                if (failure != null) {
-                    JSONObject error = new JSONObject();
-                    error.put("result", MSG_PARAM_ERR);
-                    error.put("message", "param error");
-                    failure.invoke(error);
-                }
+                result.put("result", MSG_PARAM_ERR);
+                result.put("message", "param error");
+                callback = failure;
+            }
+
+            if(callback != null){
+                callback.invoke(result);
             }
         }
     }
@@ -345,7 +343,6 @@ public class WXNavigatorModule extends WXModule {
             hasAppCompatActivity = true;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            hasAppCompatActivity = false;
         }
         if (hasAppCompatActivity && mWXSDKInstance.getContext() instanceof AppCompatActivity) {
             android.support.v7.app.ActionBar actionbar = ((AppCompatActivity) mWXSDKInstance.getContext()).getSupportActionBar();
