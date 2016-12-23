@@ -10,6 +10,7 @@ function buildAndroid {
     pwd
 }
 function runAndroid {
+    echo 'Run in Android....'
     buildAndroid
     platform=android macaca run -d $1
 }
@@ -30,6 +31,7 @@ function buildIOS {
     cd $current_dir;
 }
 function runIOS {
+    echo 'Run in iOS....'
     echo $1
     buildIOS
 
@@ -40,13 +42,17 @@ function runIOS {
 
 
 #get platform
+platform_android='android'
+platform=${1:-$platform_android}
 
 #get test folder
 
 #setup devices
 
 #run tests
-# runAndroid ./test/scripts/
-
-runIOS ./test/scripts/
+if [ $platform = $platform_android ]; then
+    runAndroid ./test/scripts/
+else
+    runIOS ./test/scripts/
+fi
 
