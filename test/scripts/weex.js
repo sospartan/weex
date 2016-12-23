@@ -16,7 +16,7 @@ var iOSOpts = {
   deviceName: 'iPhone 6s Plus',
   platformName: 'iOS',
   reuse:2,
-  app: path.join(__dirname, '..', 'app', `${platform}-app-WeexDemo.zip`)
+  app: path.join(__dirname, '..', `../ios/playground/build/Debug-iphonesimulator/WeexDemo.app`)
 };
 
 var androidOpts = {
@@ -30,6 +30,7 @@ function createDriver(scheme){
     let host = scheme+"://"+getIpAddress()+":12581";
     //TODO: IOS
     let xPathPrefix = "//android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.view.View[1]/android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.FrameLayout[1]";
+    let xPathPrefixIOS = "//XCUIElementTypeApplication[1]/XCUIElementTypeWindow[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]"
 
     var wd = require('webdriver-client')(_.merge({},  isIOS? iOSOpts : androidOpts));
 
@@ -44,27 +45,37 @@ function createDriver(scheme){
 
     //Open weex page by scheme URL
     wd.addPromiseChainMethod('wGet',function(path){
+        console.log("host+path" + host+"/"+path);
         return this.get(host+"/"+path)
     })
 
     //Find element by weex dom xpath
     wd.addPromiseChainMethod('wElements',function(xpath){
+        if (platform === 'ios') {
+            return this.elementsByXPath(mapXPath(xPathPrefixIOS, xpath))
+        }
         return this.elementsByXPath(mapXPath(xPathPrefix,xpath))
     })
 
     wd.addPromiseChainMethod('wElement',function(xpath){
+        if (platform === 'ios') {
+            return this.elementsByXPath(mapXPath(xPathPrefixIOS, xpath))
+                .then((elems)=>{
+                    return elems[0]
+                })
+        }
         return this
-        .elementsByXPath(mapXPath(xPathPrefix,xpath))
-        .then((elems)=>{
-            return elems[0]
-        })
+            .elementsByXPath(mapXPath(xPathPrefix,xpath))
+            .then((elems)=>{
+                return elems[0]
+            })
     })
 
     //Get element text locate by weex dom xpath
     wd.addPromiseChainMethod('textOfXPath', function(xpath) {
         if(isIOS){
             return this
-            .elementsByXPath(mapXPath(xPathPrefix,xpath))
+            .elementsByXPath(mapXPath(xPathPrefixIOS,xpath))
             .then((elems)=>{
                 return elems[0]
             })

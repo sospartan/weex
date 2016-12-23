@@ -14,4 +14,13 @@ module.exports = (process.env.platform ==='android')?function (node){
     }
 }:function(node){
     //iOS
+    switch(node) {
+        case "input":
+            return "XCUIElementTypeTextField";
+        case "text":
+            return "XCUIElementTypeStaticText";
+        case "div":
+        default:
+            return "XCUIElementTypeOther"
+    }
 }

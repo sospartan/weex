@@ -19,7 +19,7 @@ describe('weex mobile index', function () {
     return driver
       .initDriver()
       .wGet("index.js")
-      .sleep(1000);
+      .sleep(2000);
   });
 
 
