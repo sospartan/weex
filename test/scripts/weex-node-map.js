@@ -1,9 +1,9 @@
 'use strict';
 
 
-module.exports = (process.env.platform ==='android')?function (node){
+module.exports = (process.env.platform === 'android') ? function (node) {
     //Android 
-    switch(node){
+    switch (node) {
         case "text":
             return "android.view.View";
         case "input":
@@ -12,9 +12,9 @@ module.exports = (process.env.platform ==='android')?function (node){
         default:
             return "android.widget.FrameLayout";
     }
-}:function(node){
+} : function (node) {
     //iOS
-    switch(node) {
+    switch (node) {
         case "input":
             return "XCUIElementTypeTextField";
         case "text":

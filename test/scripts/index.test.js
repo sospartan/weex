@@ -32,15 +32,7 @@ describe('weex mobile index', function () {
   it('#1 Index', () => {
     return driver
     .textOfXPath("//div[1]/text[1]")
-    // .wElement("//div[1]/text[1]")
-    // .elementsByXPath("//XCUIElementTypeApplication[1]/XCUIElementTypeWindow[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeStaticText[1]")
-    // .then((elems)=>{
-    //   console.log("elements" + JSON.stringify(elems))
-    //   return elems[0]
-    // })
-    // .text()
     .then((text)=>{
-      console.log(text)
       assert.equal(text,"hello world.")
     })
   })
