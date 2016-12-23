@@ -208,6 +208,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -290,6 +291,8 @@ public class WXSliderNeighbor extends WXSlider {
         mViewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
         registerActivityStateListener();
 
+        Log.e("www", "init");
+
         return view;
     }
 
@@ -309,7 +312,6 @@ public class WXSliderNeighbor extends WXSlider {
         if (view instanceof WXCircleIndicator) {
             return;
         }
-        mViewPager.setPageTransformer(false, null);
 
         FrameLayout wrapper = new FrameLayout(getContext());
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -319,7 +321,20 @@ public class WXSliderNeighbor extends WXSlider {
         super.addSubView(wrapper,index);
         updateAdapterScaleAndAlpha(mNeighborAlpha, mNeighborScale); // we need to set neighbor view status when added.
 
-        mViewPager.setPageTransformer(false, createTransformer());
+        Log.e("www", "addSubView now count is " + mAdapter.getRealCount());
+
+        if(mAdapter.getRealCount() == 6) {
+            Log.e("www", "setPageTransformer in addSubView when subview is six");
+            getHostView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    mViewPager.setPageTransformer(false, createTransformer());
+                }
+            }, 50);
+        }
+        mViewPager.requestLayout();
+        getHostView().invalidate();
 
     }
 
@@ -340,14 +355,6 @@ public class WXSliderNeighbor extends WXSlider {
         final List<View> pageViews = mAdapter.getViews();
         final int curPos = mViewPager.getCurrentItem();
 
-        //test
-        for(View v : pageViews) {
-            ((ViewGroup)v).getChildAt(0).setAlpha(0);
-            v.setTranslationX(0);
-            ((ViewGroup)v).getChildAt(0).setTranslationX(0);
-
-        }
-
         if(pageViews.size() > 0) {
             final View currentPage = pageViews.get(curPos);
             updateScaleAndAlpha(((ViewGroup)currentPage).getChildAt(0),1.0F,WX_DEFAULT_MAIN_NEIGHBOR_SCALE);
@@ -360,22 +367,29 @@ public class WXSliderNeighbor extends WXSlider {
                 @Override
                 public void run() {
                     //change left and right page's translation
-                    float translation = calculateTranslation(currentPage);
-                    int left = (curPos == 0) ? pageViews.size()-1 : curPos-1;
-                    View leftPage = pageViews.get(left);
-                    updateScaleAndAlpha(((ViewGroup)leftPage).getChildAt(0), alpha, scale);
-                    leftPage.setTranslationX(translation);
-                    ((ViewGroup)leftPage).getChildAt(0).setTranslationX(translation);
-
-                    int right = (curPos == pageViews.size()-1) ? 0 : curPos+1;
-                    View rightPage = pageViews.get(right);
-                    updateScaleAndAlpha(((ViewGroup)rightPage).getChildAt(0), alpha, scale);
-                    rightPage.setTranslationX(-translation);
-                    ((ViewGroup)rightPage).getChildAt(0).setTranslationX(-translation);
+                    updateNeighbor(currentPage, alpha, scale);
 
                 }
             });
         }
+    }
+
+    private void updateNeighbor(View currentPage, final float alpha, final float scale) {
+        final List<View> pageViews = mAdapter.getViews();
+        final int curPos = mViewPager.getCurrentItem();
+
+        float translation = calculateTranslation(currentPage);
+        int left = (curPos == 0) ? pageViews.size()-1 : curPos-1;
+        View leftPage = pageViews.get(left);
+        updateScaleAndAlpha(((ViewGroup)leftPage).getChildAt(0), alpha, scale);
+        leftPage.setTranslationX(translation);
+        ((ViewGroup)leftPage).getChildAt(0).setTranslationX(translation);
+
+        int right = (curPos == pageViews.size()-1) ? 0 : curPos+1;
+        View rightPage = pageViews.get(right);
+        updateScaleAndAlpha(((ViewGroup)rightPage).getChildAt(0), alpha, scale);
+        rightPage.setTranslationX(-translation);
+        ((ViewGroup)rightPage).getChildAt(0).setTranslationX(-translation);
     }
 
     @WXComponentProp(name = NEIGHBOR_SCALE)
@@ -423,7 +437,6 @@ public class WXSliderNeighbor extends WXSlider {
             }
         }
 
-        // The same work as setNeighborScale()
         if(this.mNeighborSpace != neighborSpace) {
             this.mNeighborSpace = neighborSpace;
         }
@@ -472,6 +485,24 @@ public class WXSliderNeighbor extends WXSlider {
     private class ZoomTransformer implements ViewPager.PageTransformer {
         @Override
         public void transformPage(View page, float position) {
+            int pagePostition = mAdapter.getPagePostion(page);
+            int currentPostion = mViewPager.getCurrentItem();
+            boolean ignore = false;
+            if(currentPostion != 0 && currentPostion != mAdapter.getRealCount() - 1 && Math.abs(pagePostition - currentPostion) > 1)  {
+                ignore = true;
+            }
+            if(currentPostion == 0 && pagePostition < mAdapter.getRealCount() - 1 && pagePostition > 1) {
+                ignore = true;
+            }
+            if(currentPostion == mAdapter.getRealCount() - 1 && pagePostition < mAdapter.getRealCount() - 2 && pagePostition > 0) {
+                ignore = true;
+            }
+            // just transfer the neighbor(left & right) page.
+            if(ignore) {
+                return;
+            }
+            Log.e("www", "tranform " + pagePostition + " to " + currentPostion + " @count:" + mAdapter.getRealCount());
+
             View realView = ((ViewGroup)page).getChildAt(0);
             if(realView == null){
                 return;
@@ -498,7 +529,8 @@ public class WXSliderNeighbor extends WXSlider {
                 }else if(position == 0){
                     page.setTranslationX(0);
                     realView.setTranslationX(0);
-//                    updateAdapterScaleAndAlpha(mNeighborAlpha,mN);
+                    updateAdapterScaleAndAlpha(mNeighborAlpha, mNeighborScale);
+//                    updateNeighbor()
                 }else{
                     translation = (-position*translation);
                     realView.setTranslationX(translation);

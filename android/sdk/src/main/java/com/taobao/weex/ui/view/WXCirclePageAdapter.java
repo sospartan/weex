@@ -275,7 +275,7 @@ public class WXCirclePageAdapter extends PagerAdapter {
   }
 
   @Override
-  public synchronized Object instantiateItem(ViewGroup container, int position) {
+  public Object instantiateItem(ViewGroup container, int position) {
     View pageView = null;
     try {
       pageView = shadow.get(position);
@@ -312,6 +312,10 @@ public class WXCirclePageAdapter extends PagerAdapter {
     return POSITION_NONE;
   }
 
+  public int getPagePostion(View page) {
+    return views.indexOf(page);
+  }
+
   public int getItemIndex(Object object) {
     if (object instanceof View) {
       return views.indexOf(object);
@@ -336,6 +340,7 @@ public class WXCirclePageAdapter extends PagerAdapter {
       temp.addAll(views);
     }
     shadow.clear();
+    notifyDataSetChanged();
     shadow.addAll(temp);
     notifyDataSetChanged();
   }
