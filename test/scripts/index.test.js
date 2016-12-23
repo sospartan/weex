@@ -16,42 +16,57 @@ describe('weex mobile index', function () {
   });
 
   before(function () {
-    return driver
+    try {
+      return driver
       .initDriver()
       .wGet("index.js")
+      .catch()
+      .then()
       .sleep(2000);
+    } catch (error) {
+    }
+    
   });
 
 
   it('#1 Index', () => {
     return driver
-    .textOfXPath("//div/text[1]")
+    .textOfXPath("//div[1]/text[1]")
+    // .wElement("//div[1]/text[1]")
+    // .elementsByXPath("//XCUIElementTypeApplication[1]/XCUIElementTypeWindow[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeStaticText[1]")
+    // .then((elems)=>{
+    //   console.log("elements" + JSON.stringify(elems))
+    //   return elems[0]
+    // })
+    // .text()
     .then((text)=>{
-      assert.equal(text.description,"hello world.")
+      console.log(text)
+      assert.equal(text,"hello world.")
     })
   })
 
+
   it('#2 Click Button', () => {
     return driver
-    .wElement("//div/text[3]")
+    .wElement("//div[1]/text[3]")
     .click()
-    .textOfXPath("//div/text[2]")
+    .textOfXPath("//div[1]/text[2]")
     .then((text)=>{
-      assert.equal(text.description,"btn click.")
+      assert.equal(text,"btn click.")
     })
   })
 
   it('#2 Input Blur', () => {
     return driver
-    .wElement("//div/input")
+    .wElement("//div[1]/input")
     .click()
-    .wElement("//div/text[4]")
+    .wElement("//div[1]/text[4]")
     .click()
-    .textOfXPath("//div/text[2]")
+    .textOfXPath("//div[1]/text[2]")
     .then((text)=>{
-      assert.equal(text.description,"input blur.")
+      assert.equal(text,"input blur.")
     })
   })
-
+ 
   
 });

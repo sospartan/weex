@@ -45,8 +45,14 @@ function createDriver(scheme){
 
     //Open weex page by scheme URL
     wd.addPromiseChainMethod('wGet',function(path){
-        console.log("host+path" + host+"/"+path);
-        return this.get(host+"/"+path)
+        
+        return this
+        .get(host+"/"+path)
+        .catch(function(e){
+            console.log("catch in get")
+        })
+        .then()
+        
     })
 
     //Find element by weex dom xpath
@@ -77,9 +83,11 @@ function createDriver(scheme){
             return this
             .elementsByXPath(mapXPath(xPathPrefixIOS,xpath))
             .then((elems)=>{
+                console.log("elements in textOfXPath")
+                console.log(elems)
                 return elems[0]
             })
-            .text();
+            .getProperty('value');
         } else {
             return this
             .elementsByXPath(mapXPath(xPathPrefix,xpath))
@@ -109,7 +117,9 @@ function mapXPath(xPathPrefix,xpath){
         console.log("pos:"+pos);
         results.push(mapFunc(nodeParts[1])+pos);
     });
-    return results.join('/')
+    let result = results.join('/')
+    console.log(result)
+    return result
 }
 
 function getIpAddress(){
