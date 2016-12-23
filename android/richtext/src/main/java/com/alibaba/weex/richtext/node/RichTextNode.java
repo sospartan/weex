@@ -221,6 +221,8 @@ import android.text.style.ForegroundColorSpan;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.dom.WXCustomStyleSpan;
 import com.taobao.weex.dom.WXStyle;
@@ -321,12 +323,13 @@ public abstract class RichTextNode {
   protected void updateSpans(SpannableStringBuilder spannableStringBuilder, int level) {
     if (style != null) {
       List<Object> spans = new LinkedList<>();
+      WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
       WXCustomStyleSpan customStyleSpan = createCustomStyleSpan();
       if (customStyleSpan != null) {
         spans.add(customStyleSpan);
       }
       if (style.containsKey(Constants.Name.FONT_SIZE)) {
-        spans.add(new AbsoluteSizeSpan(WXStyle.getFontSize(style)));
+        spans.add(new AbsoluteSizeSpan(WXStyle.getFontSize(style, instance.getViewPortWidth())));
       }
       if (style.containsKey(Constants.Name.BACKGROUND_COLOR)) {
         int color = WXResourceUtils.getColor(style.get(Constants.Name.BACKGROUND_COLOR).toString(),
