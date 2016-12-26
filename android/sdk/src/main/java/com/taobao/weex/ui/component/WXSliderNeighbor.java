@@ -215,6 +215,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.taobao.weex.WXSDKInstance;
+import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.common.WXThread;
+import com.taobao.weex.dom.WXDomManager;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.ComponentCreator;
 import com.taobao.weex.ui.view.WXCircleIndicator;
@@ -223,8 +226,10 @@ import com.taobao.weex.ui.view.WXCircleViewPager;
 import com.taobao.weex.utils.WXUtils;
 import com.taobao.weex.utils.WXViewUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Known Issus: In auto play mode, neighbor view not scaled or aplhaed rarely.
@@ -266,7 +271,6 @@ public class WXSliderNeighbor extends WXSlider {
         }else if(mAdapter.getRealCount() == 3){
             mViewPager.setOffscreenPageLimit(1);
         }
-
     }
 
     @Override
@@ -291,9 +295,37 @@ public class WXSliderNeighbor extends WXSlider {
         mViewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
         registerActivityStateListener();
 
-        Log.e("www", "init");
-
         return view;
+    }
+
+    /**
+     * we do it in a hack way.
+     * travel the dom tree, to get how many children does this silder-neighbor have.
+     *
+     * @return
+     */
+    private int getNeighborChildrenCount() {
+
+        try {
+            WXDomManager domManager = WXSDKManager.getInstance().getWXDomManager();
+            Field domRegistriesField = domManager.getClass().getDeclaredField("mDomRegistries");
+            domRegistriesField.setAccessible(true);
+            ConcurrentHashMap<String, Object> domRegistriesMap = (ConcurrentHashMap<String, Object>) domRegistriesField.get(domManager);
+            Object domStatement = domRegistriesMap.get(getInstanceId()); // WXDomStatement
+            Field mRegistryField = domStatement.getClass().getDeclaredField("mRegistry");
+            mRegistryField.setAccessible(true);
+            ConcurrentHashMap<String, WXDomObject> mRegistryMap = (ConcurrentHashMap<String, WXDomObject>) mRegistryField.get(domStatement);
+            for(WXDomObject domObject : mRegistryMap.values()) {
+                if(domObject.getType().equalsIgnoreCase(WXBasicComponentType.SLIDER_NEIGHBOR)) {
+                    return domObject.getChildCount();
+                }
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+
+        return -1;
+
     }
 
     ZoomTransformer createTransformer() {
@@ -321,20 +353,15 @@ public class WXSliderNeighbor extends WXSlider {
         super.addSubView(wrapper,index);
         updateAdapterScaleAndAlpha(mNeighborAlpha, mNeighborScale); // we need to set neighbor view status when added.
 
-        Log.e("www", "addSubView now count is " + mAdapter.getRealCount());
-
-        if(mAdapter.getRealCount() == 6) {
-            Log.e("www", "setPageTransformer in addSubView when subview is six");
-            getHostView().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
+        view.postDelayed(WXThread.secure(new Runnable() {
+            @Override
+            public void run() {
+                int childCountByDomTree = getNeighborChildrenCount();
+                if(mAdapter.getRealCount() == childCountByDomTree || childCountByDomTree == -1) { // -1 mean failed at get child count by travel the dom tree.
                     mViewPager.setPageTransformer(false, createTransformer());
                 }
-            }, 50);
-        }
-        mViewPager.requestLayout();
-        getHostView().invalidate();
+            }
+        }), 100); // we need to set the PageTransformer when all children has been rendered.
 
     }
 
@@ -371,6 +398,15 @@ public class WXSliderNeighbor extends WXSlider {
 
                 }
             });
+
+            // make sure only display view current, left, right.
+            int left = (curPos == 0) ? pageViews.size()-1 : curPos-1;
+            int right = (curPos == pageViews.size()-1) ? 0 : curPos+1;
+            for(int i =0; i<mAdapter.getRealCount(); i++) {
+                if(i != left && i != curPos && i != right) {
+                    ((ViewGroup)pageViews.get(i)).getChildAt(0).setAlpha(0F);
+                }
+            }
         }
     }
 
@@ -501,7 +537,6 @@ public class WXSliderNeighbor extends WXSlider {
             if(ignore) {
                 return;
             }
-            Log.e("www", "tranform " + pagePostition + " to " + currentPostion + " @count:" + mAdapter.getRealCount());
 
             View realView = ((ViewGroup)page).getChildAt(0);
             if(realView == null){
@@ -530,7 +565,6 @@ public class WXSliderNeighbor extends WXSlider {
                     page.setTranslationX(0);
                     realView.setTranslationX(0);
                     updateAdapterScaleAndAlpha(mNeighborAlpha, mNeighborScale);
-//                    updateNeighbor()
                 }else{
                     translation = (-position*translation);
                     realView.setTranslationX(translation);
