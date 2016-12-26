@@ -386,7 +386,7 @@ public class WXSliderNeighbor extends WXSlider {
             final View currentPage = pageViews.get(curPos);
             updateScaleAndAlpha(((ViewGroup)currentPage).getChildAt(0),1.0F,WX_DEFAULT_MAIN_NEIGHBOR_SCALE);
 
-            if(pageViews.size() < 3) {
+            if(pageViews.size() < 2) {
                 return;
             }
             //make sure View's width & height are measured.
@@ -417,15 +417,28 @@ public class WXSliderNeighbor extends WXSlider {
         float translation = calculateTranslation(currentPage);
         int left = (curPos == 0) ? pageViews.size()-1 : curPos-1;
         View leftPage = pageViews.get(left);
-        updateScaleAndAlpha(((ViewGroup)leftPage).getChildAt(0), alpha, scale);
-        leftPage.setTranslationX(translation);
-        ((ViewGroup)leftPage).getChildAt(0).setTranslationX(translation);
-
         int right = (curPos == pageViews.size()-1) ? 0 : curPos+1;
         View rightPage = pageViews.get(right);
-        updateScaleAndAlpha(((ViewGroup)rightPage).getChildAt(0), alpha, scale);
-        rightPage.setTranslationX(-translation);
-        ((ViewGroup)rightPage).getChildAt(0).setTranslationX(-translation);
+
+        if(pageViews.size() == 2) {
+            if(curPos == 0) {
+                moveRight(rightPage, translation, alpha, scale);
+            }else if(curPos == 1) {
+                moveLeft(leftPage, translation, alpha, scale);
+            }
+        } else {
+            moveLeft(leftPage, translation, alpha, scale);
+            moveRight(rightPage, translation, alpha, scale);
+        }
+    }
+
+    private void moveLeft(View page, float translation, float alpha, float scale) {
+        updateScaleAndAlpha(((ViewGroup)page).getChildAt(0), alpha, scale);
+        page.setTranslationX(translation);
+        ((ViewGroup)page).getChildAt(0).setTranslationX(translation);
+    }
+    private void moveRight(View page, float translation, float alpha, float scale) {
+        moveLeft(page, -translation, alpha, scale);
     }
 
     @WXComponentProp(name = NEIGHBOR_SCALE)
@@ -566,6 +579,9 @@ public class WXSliderNeighbor extends WXSlider {
                     realView.setTranslationX(0);
                     updateAdapterScaleAndAlpha(mNeighborAlpha, mNeighborScale);
                 }else{
+                    if(mAdapter.getRealCount() == 2 && Math.abs(position) == 1) {
+                        return;
+                    }
                     translation = (-position*translation);
                     realView.setTranslationX(translation);
                     page.setTranslationX(translation);
