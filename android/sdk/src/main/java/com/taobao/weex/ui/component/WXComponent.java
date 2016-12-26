@@ -1274,6 +1274,16 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     public int height;
   }
 
+  /**
+   * Determine whether the current component needs to be placed in the real View tree
+   * @return false component add subview
+   */
+  public boolean isVirtualComponent(){
+    return false;
+  }
+  public void removeVirtualComponent() {
+  }
+
   public boolean hasScrollParent(WXComponent component) {
     if (component.getParent() == null) {
       return true;
