@@ -142,7 +142,7 @@ dependencies {
     testCompile "org.robolectric:shadows-httpclient:3.0"
     testCompile 'org.json:json:20160212'
 
-    compile project(path: ':urlconnection_interceptor')
+    compile 'com.taobao.android.weex_inspection:urlconnection_interceptor:1.0.0'
 }
 
 license{
