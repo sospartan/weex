@@ -452,7 +452,7 @@ public class WXResourceUtils {
         float[] points = parseGradientDirection(values[0], width, height);
         Shader shader = new LinearGradient(points[0], points[1],
                                            points[2], points[3],
-                                           getColor(values[1]), getColor(values[2]),
+                                           getColor(values[1],Color.WHITE), getColor(values[2],Color.WHITE),
                                            Shader.TileMode.REPEAT);
         return shader;
       }
