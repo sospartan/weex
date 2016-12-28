@@ -213,7 +213,8 @@ public class Constants {
   }
 
   public interface Name {
-
+    String DEFAULT_WIDTH = "defaultWidth";
+    String DEFAULT_HEIGHT = "defaultHeight";
     String HREF = "href";
     String WIDTH = "width";
     String MIN_WIDTH = "minWidth";
@@ -326,6 +327,9 @@ public class Constants {
     String MIN = "min";
     String NAV_BAR_VISIBILITY = "hidden";
     String SCROLLABLE = "scrollable";
+    String OFFSET_X_ACCURACY = "offsetXAccuracy";
+    String OFFSET_X_RATIO = "offsetXRatio";
+    String ELEVATION = "elevation";
   }
 
   public interface Value {
@@ -382,6 +386,7 @@ public class Constants {
     String ONLOAD = "load";
     String CHANGE = "change";
     String ONPULLING_DOWN = "pullingdown";
+    String SCROLL = "scroll";
   }
 
   public interface Scheme {

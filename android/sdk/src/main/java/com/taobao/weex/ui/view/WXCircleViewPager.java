@@ -316,6 +316,10 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
     return getRealCurrentItem();
   }
 
+  public int superGetCurrentItem() {
+    return super.getCurrentItem();
+  }
+
   @Override
   public boolean onTouchEvent(MotionEvent ev) {
     if(!scrollable) {

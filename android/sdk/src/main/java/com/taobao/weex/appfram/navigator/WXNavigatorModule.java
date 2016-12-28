@@ -117,196 +117,214 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKEngine;
+import com.taobao.weex.annotation.JSMethod;
+import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.bridge.WXBridgeManager;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXModule;
-import com.taobao.weex.common.WXModuleAnno;
 import com.taobao.weex.utils.WXLogUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class WXNavigatorModule extends WXModule {
 
     public static final String MSG_SUCCESS = "WX_SUCCESS";
     public static final String MSG_FAILED = "WX_FAILED";
+    public static final String MSG_PARAM_ERR = "WX_PARAM_ERR";
     private final static String INSTANCE_ID = "instanceId";
     private final static String TAG = "Navigator";
     private final static String WEEX = "com.taobao.android.intent.category.WEEX";
     private final static String URL = "url";
 
-    @WXModuleAnno
-    public void push(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void open(JSONObject options, JSCallback success, JSCallback failure) {
+        if (options != null) {
+            String url = options.getString("url");
+            JSCallback callback = success;
+            JSONObject result = new JSONObject();
+            if (!TextUtils.isEmpty(url)) {
+                Uri rawUri = Uri.parse(url);
+                String scheme = rawUri.getScheme();
+                if (TextUtils.isEmpty(scheme) || "http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme)) {
+                    this.push(options.toJSONString(), success);
+                } else {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, rawUri);
+                        mWXSDKInstance.getContext().startActivity(intent);
+                        result.put("result", MSG_SUCCESS);
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                        result.put("result", MSG_FAILED);
+                        result.put("message", "open page failed");
+                        callback = failure;
+                    }
+                }
+            } else {
+                result.put("result", MSG_PARAM_ERR);
+                result.put("message", "param error");
+                callback = failure;
+            }
+
+            if(callback != null){
+                callback.invoke(result);
+            }
+        }
+    }
+
+    @JSMethod(uiThread = true)
+    public void push(String param, JSCallback callback) {
 
         if (!TextUtils.isEmpty(param)) {
             if (WXSDKEngine.getActivityNavBarSetter() != null) {
                 if (WXSDKEngine.getActivityNavBarSetter().push(param)) {
-                    WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                            MSG_SUCCESS);
+                    callback.invoke(MSG_SUCCESS);
                     return;
                 }
             }
 
             try {
-                JSONObject jsonObject = new JSONObject(param);
-                String url = jsonObject.optString(URL, "");
+                JSONObject jsonObject = JSON.parseObject(param);
+                String url = jsonObject.getString(URL);
                 if (!TextUtils.isEmpty(url)) {
                     Uri rawUri = Uri.parse(url);
                     String scheme = rawUri.getScheme();
                     Uri.Builder builder = rawUri.buildUpon();
                     if (TextUtils.isEmpty(scheme)) {
-                        builder.scheme("http");
+                        builder.scheme(Constants.Scheme.HTTP);
                     }
                     Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
                     intent.addCategory(WEEX);
                     intent.putExtra(INSTANCE_ID, mWXSDKInstance.getInstanceId());
                     mWXSDKInstance.getContext().startActivity(intent);
-                    WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                            MSG_SUCCESS);
+                    callback.invoke(MSG_SUCCESS);
                 }
             } catch (Exception e) {
                 WXLogUtils.eTag(TAG, e);
-                WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                        MSG_FAILED);
+                callback.invoke(MSG_FAILED);
             }
         }
 
-        WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                MSG_FAILED);
+        callback.invoke(MSG_FAILED);
     }
 
-    @WXModuleAnno
-    public void pop(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void pop(String param, JSCallback callback) {
 
         if (WXSDKEngine.getActivityNavBarSetter() != null) {
             if (WXSDKEngine.getActivityNavBarSetter().pop(param)) {
-                WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                        MSG_SUCCESS);
+                callback.invoke(MSG_SUCCESS);
                 return;
             }
         }
 
         if (mWXSDKInstance.getContext() instanceof Activity) {
-            WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                                                   MSG_SUCCESS);
+            callback.invoke(MSG_SUCCESS);
             ((Activity) mWXSDKInstance.getContext()).finish();
         }
     }
 
-    @WXModuleAnno
-    public void setNavBarRightItem(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void setNavBarRightItem(String param, JSCallback callback) {
         if (!TextUtils.isEmpty(param)) {
             if (WXSDKEngine.getActivityNavBarSetter() != null) {
                 if (WXSDKEngine.getActivityNavBarSetter().setNavBarRightItem(param)) {
-                    WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                            MSG_SUCCESS);
+                    callback.invoke(MSG_SUCCESS);
                     return;
                 }
             }
         }
 
-        WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                MSG_FAILED);
+        callback.invoke(MSG_FAILED);
     }
 
-    @WXModuleAnno
-    public void clearNavBarRightItem(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void clearNavBarRightItem(String param, JSCallback callback) {
         if (WXSDKEngine.getActivityNavBarSetter() != null) {
             if (WXSDKEngine.getActivityNavBarSetter().clearNavBarRightItem(param)) {
-                WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                        MSG_SUCCESS);
+                callback.invoke(MSG_SUCCESS);
                 return;
             }
         }
 
-        WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                MSG_FAILED);
+        callback.invoke(MSG_FAILED);
     }
 
-    @WXModuleAnno
-    public void setNavBarLeftItem(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void setNavBarLeftItem(String param, JSCallback callback) {
         if (!TextUtils.isEmpty(param)) {
             if (WXSDKEngine.getActivityNavBarSetter() != null) {
                 if (WXSDKEngine.getActivityNavBarSetter().setNavBarLeftItem(param)) {
-                    WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                            MSG_SUCCESS);
+                    callback.invoke(MSG_SUCCESS);
                     return;
                 }
             }
         }
 
-        WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                MSG_FAILED);
+        callback.invoke(MSG_FAILED);
 
     }
 
-    @WXModuleAnno
-    public void clearNavBarLeftItem(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void clearNavBarLeftItem(String param, JSCallback callback) {
         if (WXSDKEngine.getActivityNavBarSetter() != null) {
             if (WXSDKEngine.getActivityNavBarSetter().clearNavBarLeftItem(param)) {
-                WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                        MSG_SUCCESS);
+                callback.invoke(MSG_SUCCESS);
                 return;
             }
         }
 
-        WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                MSG_FAILED);
+        callback.invoke(MSG_FAILED);
     }
 
-    @WXModuleAnno
-    public void setNavBarMoreItem(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void setNavBarMoreItem(String param, JSCallback callback) {
         if (!TextUtils.isEmpty(param)) {
             if (WXSDKEngine.getActivityNavBarSetter() != null) {
                 if (WXSDKEngine.getActivityNavBarSetter().setNavBarMoreItem(param)) {
-                    WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                            MSG_SUCCESS);
+                    callback.invoke(MSG_SUCCESS);
                     return;
                 }
             }
         }
 
-        WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                MSG_FAILED);
+        callback.invoke(MSG_FAILED);
     }
 
-    @WXModuleAnno
-    public void clearNavBarMoreItem(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void clearNavBarMoreItem(String param, JSCallback callback) {
         if (WXSDKEngine.getActivityNavBarSetter() != null) {
             if (WXSDKEngine.getActivityNavBarSetter().clearNavBarMoreItem(param)) {
-                WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                        MSG_SUCCESS);
+                callback.invoke(MSG_SUCCESS);
                 return;
             }
         }
 
-        WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                MSG_FAILED);
+        callback.invoke(MSG_FAILED);
     }
 
-    @WXModuleAnno
-    public void setNavBarTitle(String param, final String callbackId) {
+    @JSMethod(uiThread = true)
+    public void setNavBarTitle(String param, JSCallback callback) {
         if (!TextUtils.isEmpty(param)) {
             if (WXSDKEngine.getActivityNavBarSetter() != null) {
                 if (WXSDKEngine.getActivityNavBarSetter().setNavBarTitle(param)) {
-                    WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                            MSG_SUCCESS);
+                    callback.invoke(MSG_SUCCESS);
                     return;
                 }
             }
         }
 
-        WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callbackId,
-                MSG_FAILED);
+        callback.invoke(MSG_FAILED);
     }
 
-    @WXModuleAnno
+    @JSMethod
     public void setNavBarHidden(String param, final String callback) {
         String message = MSG_FAILED;
         try {
-            JSONObject jsObj = new JSONObject(param);
-            int visibility = jsObj.getInt(Constants.Name.NAV_BAR_VISIBILITY);
+            JSONObject jsObj = JSON.parseObject(param);
+            int visibility = jsObj.getInteger(Constants.Name.NAV_BAR_VISIBILITY);
             boolean success = changeVisibilityOfActionBar(mWXSDKInstance.getContext(), visibility);
             if (success) {
                 message = MSG_SUCCESS;
@@ -319,7 +337,14 @@ public class WXNavigatorModule extends WXModule {
 
     private boolean changeVisibilityOfActionBar(Context context, int visibility) {
         boolean result = false;
-        if (mWXSDKInstance.getContext() instanceof AppCompatActivity) {
+        boolean hasAppCompatActivity = false;
+        try {
+            Class.forName("android.support.v7.app.AppCompatActivity");
+            hasAppCompatActivity = true;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (hasAppCompatActivity && mWXSDKInstance.getContext() instanceof AppCompatActivity) {
             android.support.v7.app.ActionBar actionbar = ((AppCompatActivity) mWXSDKInstance.getContext()).getSupportActionBar();
             if (actionbar != null) {
                 switch (visibility) {

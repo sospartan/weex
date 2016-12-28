@@ -133,6 +133,7 @@ import android.text.TextUtils;
 
 import com.taobao.weex.adapter.DefaultUriAdapter;
 import com.taobao.weex.adapter.DefaultWXHttpAdapter;
+import com.taobao.weex.adapter.IDrawableLoader;
 import com.taobao.weex.adapter.IWXDebugAdapter;
 import com.taobao.weex.adapter.IWXHttpAdapter;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
@@ -161,7 +162,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class WXSDKManager {
 
-  private static WXSDKManager sManager;
+  private static volatile WXSDKManager sManager;
   private static AtomicInteger sInstanceId = new AtomicInteger(0);
   private final WXDomManager mWXDomManager;
   private WXBridgeManager mBridgeManager;
@@ -169,6 +170,7 @@ public class WXSDKManager {
 
   private IWXUserTrackAdapter mIWXUserTrackAdapter;
   private IWXImgLoaderAdapter mIWXImgLoaderAdapter;
+  private IDrawableLoader mDrawableLoader;
   private IWXHttpAdapter mIWXHttpAdapter;
   private IWXDebugAdapter mIWXDebugAdapter;
   private IActivityNavBarSetter mActivityNavBarSetter;
@@ -191,6 +193,10 @@ public class WXSDKManager {
       }
     }
     return sManager;
+  }
+
+  public static int getInstanceViewPortWidth(String instanceId){
+    return getInstance().getSDKInstance(instanceId).getViewPortWidth();
   }
 
   static void setInstance(WXSDKManager manager){
@@ -222,7 +228,7 @@ public class WXSDKManager {
   }
 
   public WXSDKInstance getSDKInstance(String instanceId) {
-    return mWXRenderManager.getWXSDKInstance(instanceId);
+    return instanceId == null? null : mWXRenderManager.getWXSDKInstance(instanceId);
   }
 
   public void postOnUiThread(Runnable runnable, long delayMillis) {
@@ -257,6 +263,10 @@ public class WXSDKManager {
     mBridgeManager.registerModules(modules);
   }
 
+  /**
+   * Do not direct invoke this method in Components, use {@link WXSDKInstance#fireEvent(String, String, Map, Map)} instead.
+   */
+  @Deprecated
   public void fireEvent(final String instanceId, String ref, String type) {
     fireEvent(instanceId, ref, type, new HashMap<String, Object>());
   }
@@ -315,6 +325,10 @@ public class WXSDKManager {
     return mIWXImgLoaderAdapter;
   }
 
+  public IDrawableLoader getDrawableLoader() {
+    return mDrawableLoader;
+  }
+
   public @NonNull IWXHttpAdapter getIWXHttpAdapter() {
     if (mIWXHttpAdapter == null) {
       mIWXHttpAdapter = new DefaultWXHttpAdapter();
@@ -333,6 +347,7 @@ public class WXSDKManager {
     this.mIWXDebugAdapter = config.getDebugAdapter();
     this.mIWXHttpAdapter = config.getHttpAdapter();
     this.mIWXImgLoaderAdapter = config.getImgAdapter();
+    this.mDrawableLoader = config.getDrawableLoader();
     this.mIWXStorageAdapter = config.getStorageAdapter();
     this.mIWXUserTrackAdapter = config.getUtAdapter();
     this.mURIAdapter = config.getURIAdapter();
@@ -353,5 +368,22 @@ public class WXSDKManager {
     return mIWXStorageAdapter;
   }
 
+  /**
+   * Weex embedders can use <code>notifyTrimMemory</code> to reduce
+   * memory at a proper time.
+   *
+   * It's not a good idea to reduce memory at any time, because
+   * memory trimming is a expense operation, and V8 needs to do
+   * a full GC and all the inline caches get to be cleared.
+   *
+   * The embedder needs to make some scheduling strategies to
+   * ensure that the embedded application is just on an idle time.
+   * If the application use the same js bundle to render pages,
+   * it's not a good idea to trim memory every time of exiting
+   * pages.
+   */
+  public void notifyTrimMemory() {
+    mBridgeManager.notifyTrimMemory();
+  }
 
 }
