@@ -396,14 +396,14 @@ public class WXSliderNeighbor extends WXSlider {
                 return;
             }
             //make sure View's width & height are measured.
-            currentPage.post(new Runnable() {
+            currentPage.post(WXThread.secure(new Runnable() {
                 @Override
                 public void run() {
                     //change left and right page's translation
                     updateNeighbor(currentPage, alpha, scale);
 
                 }
-            });
+            }));
 
             // make sure only display view current, left, right.
             int left = (curPos == 0) ? pageViews.size()-1 : curPos-1;
@@ -540,7 +540,7 @@ public class WXSliderNeighbor extends WXSlider {
     private class ZoomTransformer implements ViewPager.PageTransformer {
         @Override
         public void transformPage(View page, float position) {
-            int pagePosition = mAdapter.getPagePostion(page);
+            int pagePosition = mAdapter.getPagePosition(page);
             int curPosition = mViewPager.getCurrentItem();
             boolean ignore = false;
             if(curPosition != 0 && curPosition != mAdapter.getRealCount() - 1 && Math.abs(pagePosition - curPosition) > 1)  {
