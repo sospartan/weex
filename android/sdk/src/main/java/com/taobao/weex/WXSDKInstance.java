@@ -205,6 +205,8 @@
 package com.taobao.weex;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Message;
 import android.text.TextUtils;
@@ -219,6 +221,7 @@ import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 import com.taobao.weex.adapter.IWXUserTrackAdapter;
 import com.taobao.weex.adapter.URIAdapter;
 import com.taobao.weex.bridge.WXBridgeManager;
+import com.taobao.weex.bridge.WXModuleManager;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.Destroyable;
 import com.taobao.weex.common.OnWXScrollListener;
@@ -233,7 +236,9 @@ import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.dom.WXDomTask;
 import com.taobao.weex.http.WXHttpUtil;
 import com.taobao.weex.ui.component.NestedContainer;
+import com.taobao.weex.ui.component.WXBasicComponentType;
 import com.taobao.weex.ui.component.WXComponent;
+import com.taobao.weex.ui.component.WXComponentFactory;
 import com.taobao.weex.ui.component.WXVContainer;
 import com.taobao.weex.ui.view.WXScrollView;
 import com.taobao.weex.ui.view.WXScrollView.WXScrollViewListener;
@@ -248,6 +253,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -276,6 +282,8 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
   private String mBundleUrl = "";
   private boolean isDestroy=false;
   private Map<String,Serializable> mUserTrackParams;
+  private boolean isCommit=false;
+  private WXGlobalEventReceiver mGlobalEventReceiver=null;
 
   /**
    * Render strategy.
@@ -305,6 +313,8 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
   private List<OnWXScrollListener> mWXScrollListeners;
 
   private ViewGroup rootView;
+
+  private int mMaxDeepLayer;
 
   public interface OnInstanceVisibleListener{
     void onAppear();
@@ -659,6 +669,9 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
     for (IWXActivityStateListener listener : mActivityStateListeners) {
       listener.onActivityCreate();
     }
+
+    mGlobalEventReceiver=new WXGlobalEventReceiver(this);
+    getContext().registerReceiver(mGlobalEventReceiver,new IntentFilter(WXGlobalEventReceiver.EVENT_ACTION));
   }
 
   @Override
@@ -674,6 +687,17 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
       listener.onActivityPause();
     }
     onViewDisappear();
+    if(!isCommit){
+      Set<String> componentTypes= WXComponentFactory.getComponentTypesByInstanceId(getInstanceId());
+      if(componentTypes!=null && componentTypes.contains(WXBasicComponentType.SCROLLER)){
+        mWXPerformance.useScroller=1;
+      }
+      mWXPerformance.maxDeepViewLayer=getMaxDeepLayer();
+      if (mUserTrackAdapter != null) {
+        mUserTrackAdapter.commit(mContext, null, IWXUserTrackAdapter.LOAD, mWXPerformance, getUserTrackParams());
+      }
+      isCommit=true;
+    }
   }
 
   public void onViewDisappear(){
@@ -729,6 +753,13 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
       }
     }
     return false;
+  }
+
+  /**
+   * Bridge the  onActivityResult callback of Activity to Instance;
+   * */
+  public void onActivityResult(int requestCode, int resultCode, Intent data){
+    WXModuleManager.onActivityResult(getInstanceId(),requestCode,resultCode,data);
   }
 
   public void onViewCreated(final WXComponent component) {
@@ -793,13 +824,14 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
         public void run() {
           if (mRenderListener != null && mContext != null) {
             mRenderListener.onRenderSuccess(WXSDKInstance.this, width, height);
-
+            if (mUserTrackAdapter != null) {
+              WXPerformance performance=new WXPerformance();
+              performance.errCode=WXErrorCode.WX_SUCCESS.getErrorCode();
+              performance.args=getBundleUrl();
+              mUserTrackAdapter.commit(mContext,null,IWXUserTrackAdapter.JS_BRIDGE,performance,getUserTrackParams());
+            }
             if (WXEnvironment.isApkDebugable()) {
               WXLogUtils.d(WXLogUtils.WEEX_PERF_TAG, mWXPerformance.toString());
-            }
-            if (mUserTrackAdapter != null) {
-              mUserTrackAdapter.commit(mContext, null, IWXUserTrackAdapter.LOAD, mWXPerformance, getUserTrackParams());
-              commitUTStab(IWXUserTrackAdapter.JS_BRIDGE,WXErrorCode.WX_SUCCESS);
             }
           }
         }
@@ -938,12 +970,11 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        WXPerformance performance = null;
+        WXPerformance performance = new WXPerformance();
+        performance.errCode = errorCode.getErrorCode();
+        performance.args = errorCode.getArgs();
         if (errorCode != WXErrorCode.WX_SUCCESS) {
-          performance = new WXPerformance();
-          performance.errCode = errorCode.getErrorCode();
           performance.errMsg = errorCode.getErrorMsg();
-          performance.args = errorCode.getArgs();
           if (WXEnvironment.isApkDebugable()) {
             WXLogUtils.d(performance.toString());
           }
@@ -978,6 +1009,12 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
 
   public synchronized void destroy() {
     WXSDKManager.getInstance().destroyInstance(mInstanceId);
+    WXComponentFactory.removeComponentTypesByInstanceId(getInstanceId());
+
+    if(mGlobalEventReceiver!=null){
+      getContext().unregisterReceiver(mGlobalEventReceiver);
+      mGlobalEventReceiver=null;
+    }
 
     if (mGodCom != null && mGodCom.getHostView() != null) {
       mGodCom.getRealView().removeOnLayoutChangeListener(this);
@@ -994,6 +1031,7 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
     if(mGlobalEvents!=null){
       mGlobalEvents.clear();
     }
+
 
     mNestedInstanceInterceptor = null;
     mUserTrackAdapter = null;
@@ -1150,6 +1188,15 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
     mGlobalEvents.remove(eventName);
   }
 
+  /**
+   * module event
+   * @return
+   */
+  public void fireModuleEvent(String callback,Map<String,Object> params,boolean isOnce){
+    WXSDKManager.getInstance().callback(getInstanceId(),callback,params,isOnce);
+  }
+
+
   public Map<String, Serializable> getUserTrackParams() {
     return mUserTrackParams;
   }
@@ -1171,6 +1218,14 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
     if(this.mUserTrackParams != null){
       this.mUserTrackParams.remove(key);
     }
+  }
+
+  public int getMaxDeepLayer() {
+    return mMaxDeepLayer;
+  }
+
+  public void setMaxDeepLayer(int maxDeepLayer) {
+    mMaxDeepLayer = maxDeepLayer;
   }
 
   /**
@@ -1241,6 +1296,30 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
 
         Object requestType=response.extendParams.get("requestType");
         mWXPerformance.requestType=requestType instanceof String?(String)requestType:"";
+
+        if("network".equals(requestType) && mUserTrackAdapter!=null){
+          WXPerformance performance=new WXPerformance();
+          if(!TextUtils.isEmpty(mBundleUrl)){
+            try {
+              performance.args= Uri.parse(mBundleUrl).buildUpon().clearQuery().toString();
+            } catch (Exception e) {
+              performance.args=pageName;
+            }
+          }
+          if(!"200".equals(response.statusCode)){
+            performance.errCode=WXErrorCode.WX_ERR_JSBUNDLE_DOWNLOAD.getErrorCode();
+            performance.appendErrMsg(response.errorCode);
+            performance.appendErrMsg("|");
+            performance.appendErrMsg(response.errorMsg);
+          }else if("200".equals(response.statusCode) && (response.originalData==null || response.originalData.length<=0)){
+            performance.errCode=WXErrorCode.WX_ERR_JSBUNDLE_DOWNLOAD.getErrorCode();
+            performance.appendErrMsg(response.statusCode);
+            performance.appendErrMsg("|template is null!");
+          }else {
+            performance.errCode=WXErrorCode.WX_SUCCESS.getErrorCode();
+          }
+          mUserTrackAdapter.commit(getContext(),null,IWXUserTrackAdapter.JS_DOWNLOAD,performance,null);
+        }
       }
       WXLogUtils.renderPerformanceLog("networkTime", mWXPerformance.networkTime);
       if (response!=null && response.originalData!=null && TextUtils.equals("200", response.statusCode)) {
@@ -1252,7 +1331,6 @@ public class WXSDKInstance implements IWXActivityStateListener, View.OnLayoutCha
       } else {
         onRenderError(WXRenderErrorCode.WX_NETWORK_ERROR, response.errorMsg);
       }
-
     }
   }
 

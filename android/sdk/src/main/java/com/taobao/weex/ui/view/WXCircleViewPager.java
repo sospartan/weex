@@ -237,7 +237,10 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
     @Override
     public void run() {
       //don't override ViewPager#setCurrentItem(int item, bool smoothScroll)
-      setCurrentItem(WXCircleViewPager.super.getCurrentItem()+1, true);
+      WXLogUtils.d("[CircleViewPager] trigger auto play action");
+      superSetCurrentItem(WXCircleViewPager.super.getCurrentItem()+1, true);
+      removeCallbacks(this);
+      postDelayed(this, intervalTime);
     }
   };
 
@@ -258,10 +261,7 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
 
       @Override
       public void onPageSelected(int position) {
-        if (isAutoScroll()) {
-          removeCallbacks(scrollAction);
-          postDelayed(scrollAction, intervalTime);
-        }
+
       }
 
       @Override
@@ -271,9 +271,9 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
         int currentItemInternal = WXCircleViewPager.super.getCurrentItem();
         if (needLoop && state == ViewPager.SCROLL_STATE_IDLE && adapter.getCount() > 1) {
           if (currentItemInternal == adapter.getCount() - 1) {
-            WXCircleViewPager.super.setCurrentItem(1, false);
+            superSetCurrentItem(1, false);
           } else if (currentItemInternal == 0) {
-            WXCircleViewPager.super.setCurrentItem(adapter.getCount() - 2, false);
+            superSetCurrentItem(adapter.getCount() - 2, false);
           }
         }
       }
@@ -433,7 +433,19 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
   }
 
   private void setRealCurrentItem(int item) {
-    super.setCurrentItem(((WXCirclePageAdapter) getAdapter()).getFirst() + item);
+    superSetCurrentItem(((WXCirclePageAdapter) getAdapter()).getFirst() + item, false);
+  }
+
+  private void superSetCurrentItem(int item, boolean smooth) {
+    try {
+      super.setCurrentItem(item, smooth);
+    } catch (IllegalStateException e) {
+      WXLogUtils.e(e.toString());
+      if (getAdapter() != null) {
+        getAdapter().notifyDataSetChanged();
+        super.setCurrentItem(item, smooth);
+      }
+    }
   }
 
   public int getRealCount() {
@@ -446,5 +458,18 @@ public class WXCircleViewPager extends ViewPager implements WXGestureObservable 
 
   public void setScrollable(boolean scrollable) {
     this.scrollable = scrollable;
+  }
+  
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    try {
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    } catch (IllegalStateException e) {
+      WXLogUtils.e(e.toString());
+      if (getAdapter() != null) {
+        getAdapter().notifyDataSetChanged();
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+      }
+    }
   }
 }
