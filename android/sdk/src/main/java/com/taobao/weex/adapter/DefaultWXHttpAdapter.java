@@ -247,14 +247,10 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
       @Override
       public void run() {
         WXResponse response = new WXResponse();
-        WeexURLConnectionManager reporter = new WeexURLConnectionManager(null);
+        EventReporterDelegate reporter = new EventReporterDelegate();
         try {
-          SimpleRequestEntity requestEntity = null;
-          if (request.body != null) {
-            requestEntity = new ByteArrayRequestEntity(request.body.getBytes());
-          }
           HttpURLConnection connection = openConnection(request, listener);
-          reporter.preConnect(connection, requestEntity);
+          reporter.preConnect(connection, request.body);
           Map<String,List<String>> headers = connection.getHeaderFields();
           int responseCode = connection.getResponseCode();
           if(listener != null){
@@ -385,5 +381,54 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
     return (HttpURLConnection) url.openConnection();
   }
 
+  private static class EventReporterDelegate {
 
+    private boolean isEnabled = false;
+    private WeexURLConnectionManager manager;
+
+    EventReporterDelegate() {
+      try {
+        manager = (WeexURLConnectionManager) Class.forName("com.taobao.weex.urlconnection.WeexURLConnectionManager")
+                .getConstructor(String.class)
+                .newInstance("");
+        isEnabled = true;
+      } catch (Exception e) {
+        isEnabled = false;
+      }
+    }
+
+    void preConnect(HttpURLConnection connection, String body) {
+      if (isEnabled && manager != null) {
+        SimpleRequestEntity requestEntity = null;
+        if (body != null) {
+          requestEntity = new ByteArrayRequestEntity(body.getBytes());
+        }
+
+        manager.preConnect(connection, requestEntity);
+      }
+    }
+
+    void postConnect() {
+      if (isEnabled && manager != null) {
+        try {
+          manager.postConnect();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    InputStream interpretResponseStream(InputStream inputStream) {
+      if (isEnabled && manager != null) {
+        return manager.interpretResponseStream(inputStream);
+      }
+      return inputStream;
+    }
+
+    void httpExchangeFailed(IOException e) {
+      if (isEnabled && manager != null) {
+        manager.httpExchangeFailed(e);
+      }
+    }
+  }
 }
