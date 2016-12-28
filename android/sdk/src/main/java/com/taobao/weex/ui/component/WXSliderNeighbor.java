@@ -208,7 +208,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -300,7 +299,7 @@ public class WXSliderNeighbor extends WXSlider {
 
     /**
      * we do it in a hack way.
-     * travel the dom tree, to get how many children does this silder-neighbor have.
+     * travel the dom tree, to get how many children does this slider-neighbor have.
      *
      * @return
      */
@@ -317,7 +316,14 @@ public class WXSliderNeighbor extends WXSlider {
             ConcurrentHashMap<String, WXDomObject> mRegistryMap = (ConcurrentHashMap<String, WXDomObject>) mRegistryField.get(domStatement);
             for(WXDomObject domObject : mRegistryMap.values()) {
                 if(domObject.getType().equalsIgnoreCase(WXBasicComponentType.SLIDER_NEIGHBOR)) {
-                    return domObject.getChildCount();
+                    int sum = 0;
+                    for (int i = 0,count = domObject.getChildCount(); i < count; i++) {
+                        if(domObject.getChild(i) instanceof WXIndicator.IndicatorDomNode) {
+                            continue;
+                        }
+                        sum++;
+                    }
+                    return sum;
                 }
             }
         } catch (Exception e) {
@@ -534,16 +540,16 @@ public class WXSliderNeighbor extends WXSlider {
     private class ZoomTransformer implements ViewPager.PageTransformer {
         @Override
         public void transformPage(View page, float position) {
-            int pagePostition = mAdapter.getPagePostion(page);
-            int currentPostion = mViewPager.getCurrentItem();
+            int pagePosition = mAdapter.getPagePostion(page);
+            int curPosition = mViewPager.getCurrentItem();
             boolean ignore = false;
-            if(currentPostion != 0 && currentPostion != mAdapter.getRealCount() - 1 && Math.abs(pagePostition - currentPostion) > 1)  {
+            if(curPosition != 0 && curPosition != mAdapter.getRealCount() - 1 && Math.abs(pagePosition - curPosition) > 1)  {
                 ignore = true;
             }
-            if(currentPostion == 0 && pagePostition < mAdapter.getRealCount() - 1 && pagePostition > 1) {
+            if(curPosition == 0 && pagePosition < mAdapter.getRealCount() - 1 && pagePosition > 1) {
                 ignore = true;
             }
-            if(currentPostion == mAdapter.getRealCount() - 1 && pagePostition < mAdapter.getRealCount() - 2 && pagePostition > 0) {
+            if(curPosition == mAdapter.getRealCount() - 1 && pagePosition < mAdapter.getRealCount() - 2 && pagePosition > 0) {
                 ignore = true;
             }
             // just transfer the neighbor(left & right) page.
