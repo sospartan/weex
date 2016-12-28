@@ -397,7 +397,7 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
       }
     }
 
-    void preConnect(HttpURLConnection connection, String body) {
+    private void preConnect(HttpURLConnection connection, String body) {
       if (isEnabled && manager != null) {
         SimpleRequestEntity requestEntity = null;
         if (body != null) {
@@ -408,7 +408,7 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
       }
     }
 
-    void postConnect() {
+    private void postConnect() {
       if (isEnabled && manager != null) {
         try {
           manager.postConnect();
@@ -418,14 +418,14 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
       }
     }
 
-    InputStream interpretResponseStream(InputStream inputStream) {
+    private InputStream interpretResponseStream(InputStream inputStream) {
       if (isEnabled && manager != null) {
         return manager.interpretResponseStream(inputStream);
       }
       return inputStream;
     }
 
-    void httpExchangeFailed(IOException e) {
+    private void httpExchangeFailed(IOException e) {
       if (isEnabled && manager != null) {
         manager.httpExchangeFailed(e);
       }
