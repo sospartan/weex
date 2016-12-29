@@ -204,13 +204,12 @@
  */
 package com.taobao.weex.adapter;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.taobao.weex.common.WXRequest;
 import com.taobao.weex.common.WXResponse;
-import com.taobao.weex.urlconnection.ByteArrayRequestEntity;
-import com.taobao.weex.urlconnection.SimpleRequestEntity;
-import com.taobao.weex.urlconnection.WeexURLConnectionManager;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -247,7 +246,7 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
       @Override
       public void run() {
         WXResponse response = new WXResponse();
-        EventReporterDelegate reporter = new EventReporterDelegate();
+        IEventReporterDelegate reporter = getEventReporterDelegate();
         try {
           HttpURLConnection connection = openConnection(request, listener);
           reporter.preConnect(connection, request.body);
@@ -381,54 +380,34 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
     return (HttpURLConnection) url.openConnection();
   }
 
-  private static class EventReporterDelegate {
+  public @NonNull IEventReporterDelegate getEventReporterDelegate() {
+    return new IEventReporterDelegate() {
+      @Override
+      public void preConnect(HttpURLConnection connection, @Nullable String body) {
 
-    private boolean isEnabled = false;
-    private WeexURLConnectionManager manager;
-
-    EventReporterDelegate() {
-      try {
-        manager = (WeexURLConnectionManager) Class.forName("com.taobao.weex.urlconnection.WeexURLConnectionManager")
-                .getConstructor(String.class)
-                .newInstance("");
-        isEnabled = true;
-      } catch (Exception e) {
-        isEnabled = false;
       }
-    }
 
-    private void preConnect(HttpURLConnection connection, String body) {
-      if (isEnabled && manager != null) {
-        SimpleRequestEntity requestEntity = null;
-        if (body != null) {
-          requestEntity = new ByteArrayRequestEntity(body.getBytes());
-        }
+      @Override
+      public void postConnect() {
 
-        manager.preConnect(connection, requestEntity);
       }
-    }
 
-    private void postConnect() {
-      if (isEnabled && manager != null) {
-        try {
-          manager.postConnect();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+      @Override
+      public InputStream interpretResponseStream(@Nullable InputStream inputStream) {
+        return inputStream;
       }
-    }
 
-    private InputStream interpretResponseStream(InputStream inputStream) {
-      if (isEnabled && manager != null) {
-        return manager.interpretResponseStream(inputStream);
-      }
-      return inputStream;
-    }
+      @Override
+      public void httpExchangeFailed(IOException e) {
 
-    private void httpExchangeFailed(IOException e) {
-      if (isEnabled && manager != null) {
-        manager.httpExchangeFailed(e);
       }
-    }
+    };
+  }
+
+  public interface IEventReporterDelegate {
+    void preConnect(HttpURLConnection connection, @Nullable String body);
+    void postConnect();
+    InputStream interpretResponseStream(@Nullable InputStream inputStream);
+    void httpExchangeFailed(IOException e);
   }
 }
