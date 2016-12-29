@@ -228,6 +228,7 @@ import java.util.concurrent.Executors;
 
 public class DefaultWXHttpAdapter implements IWXHttpAdapter {
 
+  private static final IEventReporterDelegate DEFAULT_DELEGATE = new NOPEventReportDelegate();
   private ExecutorService mExecutorService;
 
   private void execute(Runnable runnable){
@@ -381,27 +382,7 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
   }
 
   public @NonNull IEventReporterDelegate getEventReporterDelegate() {
-    return new IEventReporterDelegate() {
-      @Override
-      public void preConnect(HttpURLConnection connection, @Nullable String body) {
-        //do nothing
-      }
-
-      @Override
-      public void postConnect() {
-        //do nothing
-      }
-
-      @Override
-      public InputStream interpretResponseStream(@Nullable InputStream inputStream) {
-        return inputStream;
-      }
-
-      @Override
-      public void httpExchangeFailed(IOException e) {
-        //do nothing
-      }
-    };
+    return DEFAULT_DELEGATE;
   }
 
   public interface IEventReporterDelegate {
@@ -409,5 +390,27 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
     void postConnect();
     InputStream interpretResponseStream(@Nullable InputStream inputStream);
     void httpExchangeFailed(IOException e);
+  }
+
+  private static class NOPEventReportDelegate implements IEventReporterDelegate {
+    @Override
+    public void preConnect(HttpURLConnection connection, @Nullable String body) {
+      //do nothing
+    }
+
+    @Override
+    public void postConnect() {
+      //do nothing
+    }
+
+    @Override
+    public InputStream interpretResponseStream(@Nullable InputStream inputStream) {
+      return inputStream;
+    }
+
+    @Override
+    public void httpExchangeFailed(IOException e) {
+      //do nothing
+    }
   }
 }
