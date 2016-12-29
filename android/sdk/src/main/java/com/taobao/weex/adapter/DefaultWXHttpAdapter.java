@@ -384,12 +384,12 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
     return new IEventReporterDelegate() {
       @Override
       public void preConnect(HttpURLConnection connection, @Nullable String body) {
-
+        //do nothing
       }
 
       @Override
       public void postConnect() {
-
+        //do nothing
       }
 
       @Override
@@ -399,7 +399,7 @@ public class DefaultWXHttpAdapter implements IWXHttpAdapter {
 
       @Override
       public void httpExchangeFailed(IOException e) {
-
+        //do nothing
       }
     };
   }
