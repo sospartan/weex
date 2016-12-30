@@ -120,6 +120,7 @@ import android.util.Log;
 import com.taobao.weex.adapter.IWXHttpAdapter;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 import com.taobao.weex.adapter.IWXUserTrackAdapter;
+import com.taobao.weex.appfram.audio.WXAudioModule;
 import com.taobao.weex.appfram.clipboard.WXClipboardModule;
 import com.taobao.weex.appfram.navigator.IActivityNavBarSetter;
 import com.taobao.weex.appfram.navigator.WXNavigatorModule;
@@ -338,6 +339,7 @@ public class WXSDKEngine {
       registerModule("clipboard", WXClipboardModule.class, true);
       registerModule("globalEvent",WXGlobalEventModule.class);
       registerModule("picker", WXPickersModule.class);
+      registerModule("audio", WXAudioModule.class);
 
       registerDomObject(WXBasicComponentType.INDICATOR, WXIndicator.IndicatorDomNode.class);
       registerDomObject(WXBasicComponentType.TEXT, WXTextDomObject.class);

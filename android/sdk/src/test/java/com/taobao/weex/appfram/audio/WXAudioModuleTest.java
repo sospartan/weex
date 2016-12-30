@@ -202,57 +202,67 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package com.taobao.weex.appfram.audio;
 
-import android.support.annotation.Nullable;
-
+import com.taobao.weappplus_sdk.BuildConfig;
+import com.taobao.weex.WXSDKInstanceTest;
+import com.taobao.weex.appfram.storage.IWXStorageAdapter;
+import com.taobao.weex.appfram.storage.StorageResultHandler;
+import com.taobao.weex.appfram.storage.WXStorageModule;
 import com.taobao.weex.bridge.JSCallback;
+import com.taobao.weex.bridge.WXBridgeManager;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
+
+import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 /**
- * Created by yiyuan.zhangyy(xingjiu) <br/>
+ * Created by sospartan on 7/28/16.
  */
-interface IWXAudio {
-    // constants about canPlayType()
-    String CAN_PLAY_TYPE_PROBABLY = "probably";
-    String CAN_PLAY_TYPE_MAYBE = "maybe";
-    String CAN_PLAY_TYPE_NONE = "";
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 19)
+@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*" })
+@PrepareForTest(WXBridgeManager.class)
+public class WXAudioModuleTest {
 
-    // constants of param key in load() option and statusCallback
-    String KEY_ID = "id";
-    String KEY_SRC = "src";
-    String KEY_STATUS = "status";
-    String KEY_VALUE = "value";
-    String KEY_AUTOPLAY = "autoplay";
-    String KEY_LOOP = "loop";
-    String KEY_VOLUME = "volume";
+  WXAudioModule module;
+  JSCallback callback;
 
-    String KEY_DURATION = "duration";            // readonly
-    String KEY_PAUSED = "paused";                // readonly
-    String KEY_ENDED = "ended";                  // readonly
-    // String KEY_NETWORKSTATE = "networkState"; // readonly
-    // String KEY_ERROR = "error";               // readonly
+  @Before
+  public void setUp() throws Exception {
+    module = new WXAudioModule();
+    module.mWXSDKInstance = WXSDKInstanceTest.createInstance();
 
-    // constants of audio source network state
-//    String NETWORK_IDLE = "NETWORK_IDLE";
-//    String NETWORK_LOADING = "NETWORK_LOADING";
-//    String NETWORK_EMPTY = "NETWORK_EMPTY";
-//    String NETWORK_NO_SOURCE = "NETWORK_NO_SOURCE";
+    callback = Mockito.mock(JSCallback.class);
+  }
 
-    // constants of status in load() statusCallback
-    int MEDIA_STATUS_INIT = 4; // android only
-    int MEDIA_STATUS_READY = 1;
-    int MEDIA_STATUS_PLAYING = 5;// android only
-    int MEDIA_STATUS_PAUSE = 6;// android only
-    int MEDIA_STATUS_ENDED = 2;
-    int MEDIA_STATUS_ERROR = 3;
+  @Test
+  public void testLoad() throws Exception {
+    Map<String, String> options = new HashMap<>();
+    options.put(IWXAudio.KEY_AUTOPLAY, String.valueOf(false));
+    options.put(IWXAudio.KEY_LOOP, String.valueOf(false));
+    options.put(IWXAudio.KEY_VOLUME, String.valueOf(1.0F));
+    options.put(IWXAudio.KEY_SRC, "http://5.1015600.com/download/ring/000/102/1af738222015328fa77be6a6018760f8.mp3");
 
-    String canPlayType(String mediaType);
-    void load(Map<String, String> options, @Nullable JSCallback statusCallback);
-    void play(Long id);
-    void pause(Long id);
-    void stop(Long id);
-    void setVolume(float volume);
+    options.put(IWXAudio.KEY_DURATION, String.valueOf(0));
+    options.put(IWXAudio.KEY_PAUSED, String.valueOf(false));
+    options.put(IWXAudio.KEY_ENDED, String.valueOf(false));
+
+    module.load(options, callback);
+    verify(callback, times(1)).invoke(any());
+  }
+
 }
