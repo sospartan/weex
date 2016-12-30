@@ -1,0 +1,229 @@
+<template>
+    <div>
+   <scroller>
+    <div>
+    <!-- partA -->
+  	<text class='title' style="color:blue;height:90;font-size:80;text-align: left;">Simple Audio</text>
+    
+    <div style="flex-direction:row; flex-wrap: wrap;">
+  		<text class='title'>Action:</text>
+  		<text onclick="doLoad" class='button'>load</text>
+  		<text onclick="doPlay" class='button'>play</text>
+  		<text onclick="doPause" class='button'>pause</text>
+  		<text onclick="doStop" class='button'>stop</text>
+	  </div>
+	  
+    <div style="flex-direction:row; flex-wrap: wrap;">
+  		<text class='title'>Volume:</text>
+  		<text onclick="doVolumeAdd" class='button'>V+</text>
+  		<text onclick="doVolumeMinus" class='button'>V-</text>
+  		<text style="width:750;height:50;font-size:40;color:#696969;">Now volume is {{nowVolume}}</text>
+	  </div>
+	  
+    <div style="flex-direction:row; flex-wrap: wrap;">
+  		<text class='title'>Option:</text>
+	    <switch onchange="switchAutoPlay" checked='{{theAutoPlay}}'></switch><text>autoPlay</text>
+	    <switch onchange="switchLoop" checked='{{theLoop}}'></switch><text>Loop</text>
+	  </div>
+	  
+    <!-- partB -->
+  	<text class='title' style="color:blue;height:90;font-size:80;text-align: left;">Multi Audio</text>
+    
+    <div>
+    <div style="flex-direction:row; flex-wrap: wrap;">
+  		<text class='title'>1. autoPlay = false & loop = false</text>
+  		<text onclick="doplay1Load" class='button'>load</text>
+  		<text onclick="doplay1Play" class='button'>play</text>
+	  </div>
+    <div style="flex-direction:row; flex-wrap: wrap;">
+  		<text class='title'>2. autoPlay = true & loop = false</text>
+  		<text onclick="doplay2LoadPlay" class='button'>load</text>
+	  </div>
+    <div style="flex-direction:row; flex-wrap: wrap;">
+  		<text class='title'>3. autoPlay = true & loop = true</text>
+  		<text onclick="doplay3LoadPlay" class='button'>load</text>
+	  </div>
+	  </div>
+		
+		</div>
+	</scroller>	
+	<div style="width:750;height:300;border-width:2;border-color: #000000; border-style:solid; margin: 3;padding:3">
+	  <scroller>
+  		<text class='title'>Callback Message:</text>
+  		<text style="width:750;height:800;font-size:40;color:#696969;">{{message}}</text>
+		</scroller>
+	</div>
+	</div>
+</template>
+
+
+<style>
+  .button {
+    width:300; 
+    height:100;
+    text-align: center;
+	  align-items: center;
+  	font-size:60;
+  	border-width: 1;
+  	border-color: #696969;
+  	border-style:solid;
+  	border-radius:5;
+  	margin:10; 
+  }
+  .title {
+    width:750;
+    height:50;
+    font-size:40;
+    color:#FF0000;
+	  align-items: center;
+	  margin-top:10;
+	  margin-bottom:10;
+  }
+</style>
+
+
+<script>
+  var modal = require('@weex-module/modal');
+  var audio = require('@weex-module/audio');
+  
+	var playerId = -1;
+	
+	var player1Id = -1;
+	var player2Id = -1;
+	var player3Id = -1;
+	
+	
+	module.exports = {
+	  
+		data : {
+		  message : 'init message. (meanless)',
+			nowVolume: 1.0,
+			theAutoPlay: false,
+			theLoop : true
+		},
+		
+		methods : {
+		  doTest : function() {
+		    modal.toast({
+	          'message': 'aaa',
+	          'duration': 100
+          });
+        message = 'aaa'
+		  },
+		  
+		  
+		  // partA
+		  doLoad : function() {
+        var option = {
+          "autoPlay": "false",
+          "src": "http://5.1015600.com/download/ring/000/102/1af738222015328fa77be6a6018760f8.mp3",
+          "id": "1001",
+          "autoplay" : this.theAutoPlay,
+          "loop" : this.theLoop
+        }
+        var me = this;
+        audio.load(option, function(param) {
+          //console.log(JSON.stringify(param));
+          //modal.toast({
+	        //  'message': JSON.stringify(param),
+	        //  'duration': 100
+          //});
+          playerId = param.id;
+          me.message = JSON.stringify(param) + " @ " + Date.now();
+        })
+		  },
+		  
+		  doPlay : function() {
+        audio.play(playerId);
+		  },
+		  
+		  doPause : function() {
+        audio.pause(playerId);
+		  },
+		  
+		  doStop : function() {
+        audio.stop(playerId);
+		  },
+		  
+		  doVolumeAdd : function() {
+		    if(this.nowVolume <= 1) {
+		      this.nowVolume = Number(Number(this.nowVolume)+Number(0.2)).toFixed(1);
+		    }
+		    
+		    if(this.nowVolume > 1) {
+		      this.nowVolume = 1;
+		    }
+        audio.setVolume(this.nowVolume);
+		  },
+		  
+		  doVolumeMinus : function() {
+		    if(this.nowVolume > 0) {
+		      this.nowVolume = Number(Number(this.nowVolume)-Number(0.2)).toFixed(1);
+		    }
+		    
+		    if(this.nowVolume < 0) {
+		      this.nowVolume = 0;
+		    }
+        audio.setVolume(this.nowVolume);
+		  }, 
+		  
+		  switchAutoPlay : function() {
+		    this.theAutoPlay = !this.theAutoPlay
+		  },
+		  
+		  switchLoop : function() {
+		    this.theLoop = !this.theLoop
+		  },
+		  
+		  
+		  
+		  // partB
+		  doplay1Load : function() {
+        var option = {
+          "autoPlay": "false",
+          "src": "http://5.1015600.com/download/ring/000/102/1af738222015328fa77be6a6018760f8.mp3",
+          "autoplay" : false,
+          "loop" : false
+        }
+        var me = this;
+        audio.load(option, function(param) {
+          player1Id = param.id;
+          me.message = JSON.stringify(param) + " @ " + Date.now();
+        })
+		  },
+		  
+		  doplay1Play : function() {
+        audio.play(player1Id);
+		  },
+		  
+		  doplay2LoadPlay : function() {
+        var option = {
+          "autoPlay": "false",
+          "src": "http://download.alicdn.com/sns/yujian.mp3",
+          "autoplay" : true,
+          "loop" : false
+        }
+        var me = this;
+        audio.load(option, function(param) {
+          player2Id = param.id;
+          me.message = JSON.stringify(param) + " @ " + Date.now();
+        })
+		  },
+		  
+		  doplay3LoadPlay : function() {
+        var option = {
+          "autoPlay": "false",
+          "src": "http://download.alicdn.com/sns/ring1.mp3",
+          "autoplay" : true,
+          "loop" : true
+        }
+        var me = this;
+        audio.load(option, function(param) {
+          player3Id = param.id;
+          me.message = JSON.stringify(param) + " @ " + Date.now();
+        })
+		  }
+		  
+		}
+	}
+</script>

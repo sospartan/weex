@@ -42,6 +42,7 @@
         {name: 'module/picker-demo',title:'Picker'},
         {name: 'module/componentRect',title:'componentRect'},
         {name: 'module/clipboard', title: 'Clipboard'},
+        {name: 'module/audio', title: 'Audio'},
 
         // showcase
         {name: 'showcase/new-fashion/index', title: 'Activity'},
