@@ -225,7 +225,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Created by xj on 16/12/27.
  *
- * http://weex.alibaba-inc.com/playground/ff297ea294e4df038ad62c0919204d15   @161229
+ * http://weex.alibaba-inc.com/playground/8c1701ffae5a9615eca0c58b96e8979c
  *
  */
 
@@ -492,6 +492,9 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         }
 
         MediaPlayer player = getPlayer(id);
+        if(!player.isPlaying()) {
+            return; // no actual action when audio is not start playing, so just return.
+        }
         player.pause();
         changeStatus(id, IWXAudio.MEDIA_STATUS_PAUSE);
     }
@@ -507,6 +510,9 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         }
 
         MediaPlayer player = getPlayer(id);
+        if(!player.isPlaying()) {
+            return;
+        }
         player.pause();
         player.seekTo(0);
         changeStatus(id, IWXAudio.MEDIA_STATUS_ENDED);
