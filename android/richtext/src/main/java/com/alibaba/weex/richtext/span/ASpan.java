@@ -205,7 +205,6 @@
 
 package com.alibaba.weex.richtext.span;
 
-import android.graphics.Color;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
@@ -228,6 +227,5 @@ public class ASpan extends ClickableSpan {
 
   @Override
   public void updateDrawState(TextPaint ds) {
-    ds.setColor(Color.BLUE);
   }
 }
