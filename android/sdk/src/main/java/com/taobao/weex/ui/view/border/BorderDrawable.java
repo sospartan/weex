@@ -276,6 +276,9 @@ public class BorderDrawable extends Drawable {
   Path mPathForBorderOutline;
   private boolean mNeedUpdatePath = false;
   private int mColor = Color.TRANSPARENT;
+  /**
+   * set background-image linear-gradient
+   */
   private Shader mShader=null;
   private int mAlpha = 255;
 
@@ -288,12 +291,13 @@ public class BorderDrawable extends Drawable {
     updateBorderOutline();
     if (mPathForBorderOutline != null) {
       int useColor = WXViewUtils.multiplyColorAlpha(mColor, mAlpha);
-      if ((useColor >>> 24) != 0 || mShader!=null) {
-        if(mShader!=null) {
-          mPaint.setShader(mShader);
-        } else {
-          mPaint.setColor(useColor);
-        }
+      if (mShader != null) {
+        mPaint.setShader(mShader);
+        mPaint.setStyle(Paint.Style.FILL);
+        canvas.drawPath(mPathForBorderOutline, mPaint);
+        mPaint.setShader(null);
+      } else if ((useColor >>> 24) != 0) {
+        mPaint.setColor(useColor);
         mPaint.setStyle(Paint.Style.FILL);
         canvas.drawPath(mPathForBorderOutline, mPaint);
         mPaint.setShader(null);
