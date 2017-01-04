@@ -733,19 +733,17 @@ public abstract class AbstractEditComponent extends WXComponent<WXEditText> {
   }
 
   private void decideSoftKeyboard() {
-    if (getHostView() != null) {
-      final Context context = getContext();
-      if (context != null && context instanceof Activity) {
-        getHostView().postDelayed(new Runnable() {
-          @Override
-          public void run() {
-            View currentFocus = ((Activity) context).getCurrentFocus();
-            if (!(currentFocus instanceof EditText)) {
-              mInputMethodManager.hideSoftInputFromWindow(getHostView().getWindowToken(), 0);
-            }
+    if (getHostView() != null && getContext() != null && getContext() instanceof Activity) {
+      final Activity hostActivity = (Activity) getContext();
+      getHostView().postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          View currentFocus = hostActivity.getCurrentFocus();
+          if (!(currentFocus instanceof EditText)) {
+            mInputMethodManager.hideSoftInputFromWindow(getHostView().getWindowToken(), 0);
           }
-        }, 16);
-      }
+        }
+      }, 16);
     }
   }
 }
