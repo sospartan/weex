@@ -235,7 +235,7 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
     // a map to track the player with instance. so destoy the player when page closed
     private Map<String, List<Long>> instancePlayerIdMap = new HashMap<>(); // save the instanceId vs player mapping
 
-    private Map<Long, MediaPlayer> playerMap = new WeakHashMap<>();
+    private Map<Long, MediaPlayer> playerMap = new HashMap<>();
     private Map<Long, Integer> statusMap = new ConcurrentHashMap<>();
     private Map<Long, Map<String, String>> optionsMap = new HashMap<>();
     private Map<Long, JSCallback> callbackMap = new HashMap<>();
@@ -329,6 +329,7 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
             player.setOnCompletionListener(mCompletionListener);
             player.setOnErrorListener(mErrorListener);
             player.setOnPreparedListener(mPreparedListener);
+            invokeCallbackAndKeepAlive(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_INIT, ""));
 
             // prepare
             player.prepareAsync();
@@ -380,10 +381,10 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
             long id = getIdByPlayer(mp);
             changeStatus(id, IWXAudio.MEDIA_STATUS_ENDED);
 
-            invokeCallbackAndKeepAlive(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ENDED, ""));
-
             if(loopWhenPlayEnded.contains(id)) {
                 play(id);
+            }else {
+                invokeCallbackAndKeepAlive(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ENDED, ""));
             }
         }
     }
@@ -479,12 +480,14 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
                 || IWXAudio.MEDIA_STATUS_PAUSE == statusMap.get(id)) {
             player.start();
             changeStatus(id, IWXAudio.MEDIA_STATUS_PLAYING);
+            invokeCallbackAndKeepAlive(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_PLAYING, ""));
         }else if(IWXAudio.MEDIA_STATUS_PLAYING == statusMap.get(id)
                 || IWXAudio.MEDIA_STATUS_ENDED == statusMap.get(id)) {
             player.pause();
             player.seekTo(0);
             player.start();
             changeStatus(id, IWXAudio.MEDIA_STATUS_PLAYING);
+            invokeCallbackAndKeepAlive(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_PLAYING, ""));
         }else if(IWXAudio.MEDIA_STATUS_INIT == statusMap.get(id)) {
             autoStartPlayWhenReady.add(id);
         }
@@ -506,6 +509,7 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         }
         player.pause();
         changeStatus(id, IWXAudio.MEDIA_STATUS_PAUSE);
+        invokeCallbackAndKeepAlive(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_PAUSE, ""));
     }
 
     @Override
@@ -525,6 +529,7 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         player.pause();
         player.seekTo(0);
         changeStatus(id, IWXAudio.MEDIA_STATUS_ENDED);
+        invokeCallbackAndKeepAlive(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ENDED, ""));
     }
 
     @Override

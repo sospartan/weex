@@ -1,10 +1,16 @@
 <template>
     <div>
-   <scroller>
+   <scroller style="width:750;height:780">
     <div>
     <!-- partA -->
   	<text class='title' style="color:blue;height:90;font-size:80;text-align: left;">Simple Audio</text>
     
+    <div style="flex-direction:row; flex-wrap: wrap;">
+  		<text class='title'>Load Option:</text>
+	    <switch onchange="switchAutoPlay" checked='{{theAutoPlay}}'></switch><text>autoPlay</text>
+	    <switch onchange="switchLoop" checked='{{theLoop}}'></switch><text>Loop</text>
+	  </div>
+
     <div style="flex-direction:row; flex-wrap: wrap;">
   		<text class='title'>Action:</text>
   		<text onclick="doLoad" class='button'>load</text>
@@ -20,11 +26,6 @@
   		<text style="width:750;height:50;font-size:40;color:#696969;">Now volume is {{nowVolume}}</text>
 	  </div>
 	  
-    <div style="flex-direction:row; flex-wrap: wrap;">
-  		<text class='title'>Option:</text>
-	    <switch onchange="switchAutoPlay" checked='{{theAutoPlay}}'></switch><text>autoPlay</text>
-	    <switch onchange="switchLoop" checked='{{theLoop}}'></switch><text>Loop</text>
-	  </div>
 	  
     <!-- partB -->
   	<text class='title' style="color:blue;height:90;font-size:80;text-align: left;">Multi Audio</text>
@@ -99,7 +100,7 @@
 		  message : 'init message. (meanless)',
 			nowVolume: 1.0,
 			theAutoPlay: false,
-			theLoop : true
+			theLoop : false
 		},
 		
 		methods : {
@@ -129,6 +130,7 @@
 	        //  'duration': 100
           //});
           playerId = param.id;
+					console.log(JSON.stringify(param));
           me.message = JSON.stringify(param) + " @ " + Date.now();
         })
 		  },
