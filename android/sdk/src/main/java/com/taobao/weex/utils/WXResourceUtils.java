@@ -440,6 +440,13 @@ public class WXResourceUtils {
     return resultColor;
   }
 
+  /**
+   * Assembly gradients
+   * @param image gradient values contains direction、colors
+   * @param width component width
+   * @param height component height
+   * @return gradient shader
+   */
   public static Shader getShader(String image, float width, float height) {
     List<String> valueList = parseGradientValues(image);
     if (valueList != null && valueList.size() == 3) {
@@ -453,6 +460,11 @@ public class WXResourceUtils {
     return null;
   }
 
+  /**
+   * parse gradient values contains direction、colors
+   * @param image gradient values
+   * @return split values by comma
+   */
   @NonNull
   private static List<String> parseGradientValues(String image) {
     if (TextUtils.isEmpty(image)) {
@@ -487,27 +499,45 @@ public class WXResourceUtils {
     return null;
   }
 
+  /**
+   * parse gradient direction
+   * @param direction gradient direction
+   * @param width component width
+   * @param height component height
+   * @return gradient points
+   */
   private static float[] parseGradientDirection(String direction, float width, float height) {
     int x1 = 0, y1 = 1, x2 = 2, y2 = 3;
     float[] points = {0, 0, 0, 0};
+
+    if (!TextUtils.isEmpty(direction)) {
+      direction = direction.replaceAll("\\s*", "");
+    }
+
     switch (direction) {
-      case "to right":
+      //to right
+      case "toright":
         points[x2] = width;
         break;
-      case "to left":
+      //to left
+      case "toleft":
         points[x1] = width;
         break;
-      case "to bottom":
+      //to bottom
+      case "tobottom":
         points[y2] = height;
         break;
-      case "to top":
+      //to top
+      case "totop":
         points[y1] = height;
         break;
-      case "to bottom right":
+      //to bottom right
+      case "tobottomright":
         points[x2] = width;
         points[y2] = height;
         break;
-      case "to top left":
+      //to top left
+      case "totopleft":
         points[x1] = width;
         points[y1] = height;
         break;
