@@ -1,11 +1,12 @@
 /* global audio */
 'use strict'
 
-const MEDIA_STATUS_READY = 1;
-const MEDIA_STATUS_PLAYING= 4;
-const MEDIA_STATUS_ENDED = 2;
-const MEDIA_STATUS_ERROR = 3;
-
+const MEDIA_STATUS_INIT = 1;
+const MEDIA_STATUS_READY = 2;
+const MEDIA_STATUS_PLAYING= 3;
+const MEDIA_STATUS_PAUSE = 4;
+const MEDIA_STATUS_ENDED = 5;
+const MEDIA_STATUS_ERROR = 6;
 
 const MEDIA_ERR_ABORTED = "1";
 const MEDIA_ERR_NETWORK = "2";
@@ -15,6 +16,7 @@ const MEDIA_ERR_OTHER = "5";
 
 const playerHolder = {}
 var increaseId = 1;
+var cb;
 
 const audio = {
 
@@ -32,7 +34,7 @@ const audio = {
              code: MEDIA_ERR_OTHER,
              message: 'not support audio in this browser'
           }
-        });
+        }, false);
       return
     }
     if (!option) {
@@ -43,7 +45,7 @@ const audio = {
              code: MEDIA_ERR_SRC_NOT_SUPPORTED,
              message: 'empty option'
           }
-        });
+        }, false);
       return
     }
     if (!option.src) {
@@ -52,14 +54,18 @@ const audio = {
           status: MEDIA_STATUS_ERROR,
           value: {
              code: MEDIA_ERR_SRC_NOT_SUPPORTED,
-             message: 'empty option'
+             message: 'empty option src'
           }
-        });
+        }, false);
       return
     }
     if(!option.id) {
       option.id = increaseId;
       increaseId++;
+    }
+
+    if(playerHolder[option.id]) {
+      playerHolder[option.id].pause(); // one id means one active audio
     }
 
     var player = new Audio();
@@ -69,8 +75,14 @@ const audio = {
     player.src = option.src;
 
     playerHolder[option.id] = player;
+    cb = callback;
 
     const sender = this.sender
+    sender.performCallback(callback, {
+          id: option.id,
+          status: MEDIA_STATUS_INIT
+        }, true)
+
     player.addEventListener("loadeddata", function()
       {
         sender.performCallback(callback, {
@@ -79,7 +91,7 @@ const audio = {
           value : {
             duration: player.duration
           }
-        })
+        }, true)
       }
     );
     player.addEventListener("play", function()
@@ -87,15 +99,23 @@ const audio = {
         sender.performCallback(callback, {
           id: option.id,
           status: MEDIA_STATUS_PLAYING
-        })
+        }, true)
       }
     );
+    // player.addEventListener("pause", function()
+    //   {
+    //     sender.performCallback(callback, {
+    //       id: option.id,
+    //       status: MEDIA_STATUS_PAUSE
+    //     }, true)
+    //   }
+    // );
     player.addEventListener("ended", function()
       {
         sender.performCallback(callback, {
           id: option.id,
           status: MEDIA_STATUS_ENDED
-        })
+        }, true)
       }
     );
 
@@ -126,6 +146,13 @@ const audio = {
     }
     var player = playerHolder[id];
     player.pause();
+
+    if(cb) {
+      this.sender.performCallback(cb, {
+            id: id,
+            status: MEDIA_STATUS_PAUSE
+          }, true);
+    }
   },
 
   /**
@@ -140,6 +167,13 @@ const audio = {
     var player = playerHolder[id];
     player.pause();
     player.currentTime = 0;
+
+    if(cb) {
+      this.sender.performCallback(cb, {
+            id: id,
+            status: MEDIA_STATUS_ENDED
+          }, true);
+    }
   },
 
   /**
@@ -177,7 +211,7 @@ const audio = {
              code: MEDIA_ERR_OTHER,
              message: 'empty option'
           }
-        });
+        }, false);
       return
     }
     return new Audio().canPlayType(mediaType);
