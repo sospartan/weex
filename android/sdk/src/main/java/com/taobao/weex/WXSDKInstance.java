@@ -210,6 +210,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -222,6 +223,7 @@ import com.taobao.weex.adapter.IWXHttpAdapter;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
 import com.taobao.weex.adapter.IWXUserTrackAdapter;
 import com.taobao.weex.adapter.URIAdapter;
+import com.taobao.weex.appfram.websocket.IWebSocketAdapter;
 import com.taobao.weex.bridge.NativeInvokeHelper;
 import com.taobao.weex.bridge.WXBridgeManager;
 import com.taobao.weex.bridge.WXModuleManager;
@@ -729,6 +731,11 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
     return WXSDKManager.getInstance().getIWXHttpAdapter();
   }
 
+  public @Nullable
+  IWebSocketAdapter getWXWebSocketAdapter() {
+    return WXSDKManager.getInstance().getIWXWebSocketAdapter();
+  }
+
   @Deprecated
   public void reloadImages() {
     if (mScrollView == null) {
@@ -807,6 +814,10 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
     }else{
       WXLogUtils.w("Warning :Component tree has not build completely,onActivityPause can not be call!");
     }
+
+    Intent intent=new Intent(WXGlobalEventReceiver.EVENT_ACTION);
+    intent.putExtra(WXGlobalEventReceiver.EVENT_NAME,Constants.Event.PAUSE_EVENT);
+    mContext.sendBroadcast(intent);
   }
 
 
@@ -821,6 +832,10 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
     }else{
       WXLogUtils.w("Warning :Component tree has not build completely, onActivityResume can not be call!");
     }
+
+    Intent intent=new Intent(WXGlobalEventReceiver.EVENT_ACTION);
+    intent.putExtra(WXGlobalEventReceiver.EVENT_NAME,Constants.Event.RESUME_EVENT);
+    mContext.sendBroadcast(intent);
 
     onViewAppear();
   }
