@@ -230,7 +230,7 @@ public class BasicEditTextDomObject extends WXDomObject {
 
   public BasicEditTextDomObject() {
     super();
-    mPaint.setTextSize(WXViewUtils.getRealPxByWidth(WXText.sDEFAULT_SIZE));
+    mPaint.setTextSize(WXViewUtils.getRealPxByWidth(WXText.sDEFAULT_SIZE,getViewPortWidth()));
     setMeasureFunction(new MeasureFunction() {
       @Override
       public void measure(CSSNodeAPI node,
@@ -267,7 +267,7 @@ public class BasicEditTextDomObject extends WXDomObject {
       int fontSize = UNSET, fontStyle = UNSET, fontWeight = UNSET;
       String fontFamily = null;
       if (getStyles().containsKey(Constants.Name.FONT_SIZE)) {
-        fontSize = WXStyle.getFontSize(getStyles());
+        fontSize = WXStyle.getFontSize(getStyles(),getViewPortWidth());
       }
 
       if (getStyles().containsKey(Constants.Name.FONT_FAMILY)) {
@@ -282,7 +282,7 @@ public class BasicEditTextDomObject extends WXDomObject {
         fontWeight = WXStyle.getFontWeight(getStyles());
       }
 
-      int lineHeight = WXStyle.getLineHeight(getStyles());
+      int lineHeight = WXStyle.getLineHeight(getStyles(),getViewPortWidth());
       if (lineHeight != UNSET)
         mLineHeight = lineHeight;
 

@@ -328,15 +328,15 @@ public class WXStyle implements Map<String, Object>,Cloneable {
     return typeface;
   }
 
-  public static int getFontSize(Map<String, Object> style) {
+  public static int getFontSize(Map<String, Object> style,int viewPortW) {
     if (style == null) {
-      return (int) WXViewUtils.getRealPxByWidth(WXText.sDEFAULT_SIZE);
+      return (int) WXViewUtils.getRealPxByWidth(WXText.sDEFAULT_SIZE,viewPortW);
     }
     int fontSize = WXUtils.getInt(style.get(Constants.Name.FONT_SIZE));
     if (fontSize <= 0) {
       fontSize = WXText.sDEFAULT_SIZE;
     }
-    return (int) WXViewUtils.getRealPxByWidth(fontSize);
+    return (int) WXViewUtils.getRealPxByWidth(fontSize,viewPortW);
   }
 
   public static String getFontFamily(Map<String, Object> style) {
@@ -379,7 +379,7 @@ public class WXStyle implements Map<String, Object>,Cloneable {
     return WXUtils.getInt(style.get(Constants.Name.LINES));
   }
 
-  public static int getLineHeight(Map<String, Object> style){
+  public static int getLineHeight(Map<String, Object> style,int viewPortW){
     if (style == null) {
       return UNSET;
     }
@@ -388,7 +388,7 @@ public class WXStyle implements Map<String, Object>,Cloneable {
       lineHeight = UNSET;
       return lineHeight;
     }
-    return (int) WXViewUtils.getRealPxByWidth(lineHeight);
+    return (int) WXViewUtils.getRealPxByWidth(lineHeight,viewPortW);
   }
   /*
    * flexbox
