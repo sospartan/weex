@@ -223,10 +223,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * Audio. Support play the audio source.
+ *
  * Created by xj on 16/12/27.
- *
- * http://weex.alibaba-inc.com/playground/8c1701ffae5a9615eca0c58b96e8979c
- *
  */
 
 public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
@@ -476,13 +475,14 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         }
 
         MediaPlayer player = getPlayer(id);
-        if(IWXAudio.MEDIA_STATUS_READY == statusMap.get(id)
+        if(IWXAudio.MEDIA_STATUS_PLAYING == statusMap.get(id)) {
+            // playing, do nothing
+        }else if(IWXAudio.MEDIA_STATUS_READY == statusMap.get(id)
                 || IWXAudio.MEDIA_STATUS_PAUSE == statusMap.get(id)) {
             player.start();
             changeStatus(id, IWXAudio.MEDIA_STATUS_PLAYING);
             invokeCallbackAndKeepAlive(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_PLAYING, ""));
-        }else if(IWXAudio.MEDIA_STATUS_PLAYING == statusMap.get(id)
-                || IWXAudio.MEDIA_STATUS_ENDED == statusMap.get(id)) {
+        }else if(IWXAudio.MEDIA_STATUS_ENDED == statusMap.get(id)) {
             player.pause();
             player.seekTo(0);
             player.start();
