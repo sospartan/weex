@@ -146,12 +146,12 @@
 		  },
 		  
 		  doVolumeAdd : function() {
-		    if(this.nowVolume <= 1) {
+		    if(this.nowVolume < 1) {
 		      this.nowVolume = Number(Number(this.nowVolume)+Number(0.2)).toFixed(1);
 		    }
 		    
-		    if(this.nowVolume > 1) {
-		      this.nowVolume = 1;
+		    if(this.nowVolume >= 1) {
+		      this.nowVolume = 1.0;
 		    }
         audio.setVolume(this.nowVolume);
 		  },
@@ -161,8 +161,8 @@
 		      this.nowVolume = Number(Number(this.nowVolume)-Number(0.2)).toFixed(1);
 		    }
 		    
-		    if(this.nowVolume < 0) {
-		      this.nowVolume = 0;
+		    if(this.nowVolume <= 0) {
+		      this.nowVolume = 0.0;
 		    }
         audio.setVolume(this.nowVolume);
 		  }, 
@@ -174,7 +174,6 @@
 		  switchLoop : function() {
 		    this.theLoop = !this.theLoop
 		  },
-		  
 		  
 		  
 		  // partB

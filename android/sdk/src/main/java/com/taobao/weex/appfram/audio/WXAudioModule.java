@@ -277,7 +277,7 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         map.put(IWXAudio.KEY_ID, String.valueOf(id));
 
         if(null == options.get(IWXAudio.KEY_SRC)) {
-            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, "empty option url"));
+            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, "empty option src"));
             return;
         }
         Uri uri = Uri.parse(options.get(IWXAudio.KEY_SRC));
