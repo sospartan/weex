@@ -6,6 +6,13 @@ const MEDIA_STATUS_PLAYING= 4;
 const MEDIA_STATUS_ENDED = 2;
 const MEDIA_STATUS_ERROR = 3;
 
+
+const MEDIA_ERR_ABORTED = "1";
+const MEDIA_ERR_NETWORK = "2";
+const MEDIA_ERR_DECODE = "3";
+const MEDIA_ERR_SRC_NOT_SUPPORTED = "4";
+const MEDIA_ERR_OTHER = "5";
+
 const playerHolder = {}
 var increaseId = 1;
 
@@ -21,7 +28,10 @@ const audio = {
       sender.performCallback(callback, {
           id: option.id,
           status: MEDIA_STATUS_ERROR,
-          value: 'not support audio in this browser'
+          value: {
+             code: MEDIA_ERR_OTHER,
+             message: 'not support audio in this browser'
+          }
         });
       return
     }
@@ -29,7 +39,10 @@ const audio = {
       sender.performCallback(callback, {
           id: option.id,
           status: MEDIA_STATUS_ERROR,
-          value: 'empty option'
+          value: {
+             code: MEDIA_ERR_SRC_NOT_SUPPORTED,
+             message: 'empty option'
+          }
         });
       return
     }
@@ -37,7 +50,10 @@ const audio = {
       sender.performCallback(callback, {
           id: option.id,
           status: MEDIA_STATUS_ERROR,
-          value: 'empty option src'
+          value: {
+             code: MEDIA_ERR_SRC_NOT_SUPPORTED,
+             message: 'empty option'
+          }
         });
       return
     }
@@ -60,7 +76,9 @@ const audio = {
         sender.performCallback(callback, {
           id: option.id,
           status: MEDIA_STATUS_READY,
-          duration: player.duration
+          value : {
+            duration: player.duration
+          }
         })
       }
     );
@@ -68,8 +86,7 @@ const audio = {
       {
         sender.performCallback(callback, {
           id: option.id,
-          status: MEDIA_STATUS_PLAYING,
-          duration: player.duration
+          status: MEDIA_STATUS_PLAYING
         })
       }
     );
@@ -156,7 +173,10 @@ const audio = {
       sender.performCallback(callback, {
           id: option.id,
           status: MEDIA_STATUS_ERROR,
-          value: 'not support audio in this browser'
+          value: {
+             code: MEDIA_ERR_OTHER,
+             message: 'empty option'
+          }
         });
       return
     }
@@ -182,7 +202,7 @@ const meta = {
     args: ['string']
   }, {
     name: 'canPlayType',
-    args: ['funcstringtion']
+    args: ['string']
   }]
 }
 

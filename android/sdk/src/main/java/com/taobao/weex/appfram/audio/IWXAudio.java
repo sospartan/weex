@@ -235,19 +235,23 @@ interface IWXAudio {
     // String KEY_NETWORKSTATE = "networkState"; // readonly
     // String KEY_ERROR = "error";               // readonly
 
+    String KEY_ERR_CODE = "code";
+    String KEY_ERR_MESSAGE = "message";
+
     // constants of audio source network state
-//    String NETWORK_IDLE = "NETWORK_IDLE";
-//    String NETWORK_LOADING = "NETWORK_LOADING";
-//    String NETWORK_EMPTY = "NETWORK_EMPTY";
-//    String NETWORK_NO_SOURCE = "NETWORK_NO_SOURCE";
+    String MEDIA_ERR_ABORTED = "1";
+    String MEDIA_ERR_NETWORK = "2";
+    String MEDIA_ERR_DECODE = "3";
+    String MEDIA_ERR_SRC_NOT_SUPPORTED = "4";
+    String MEDIA_ERR_OTHER = "5";
 
     // constants of status in load() statusCallback
-    int MEDIA_STATUS_INIT = 4; // android only
-    int MEDIA_STATUS_READY = 1;
-    int MEDIA_STATUS_PLAYING = 5;// android only
-    int MEDIA_STATUS_PAUSE = 6;// android only
-    int MEDIA_STATUS_ENDED = 2;
-    int MEDIA_STATUS_ERROR = 3;
+    int MEDIA_STATUS_INIT = 1;
+    int MEDIA_STATUS_READY = 2;
+    int MEDIA_STATUS_PLAYING = 3;
+    int MEDIA_STATUS_PAUSE = 4;
+    int MEDIA_STATUS_ENDED = 5;
+    int MEDIA_STATUS_ERROR = 6;
 
     String canPlayType(String mediaType);
     void load(Map<String, String> options, @Nullable JSCallback statusCallback);

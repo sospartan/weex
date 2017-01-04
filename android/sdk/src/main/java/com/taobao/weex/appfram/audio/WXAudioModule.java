@@ -253,6 +253,10 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
             return IWXAudio.CAN_PLAY_TYPE_PROBABLY; // .mp3 .mpg .mpeg
         }else if("audio/aac".equalsIgnoreCase(mediaType) || "audio/mp4".equalsIgnoreCase(mediaType)) {
             return IWXAudio.CAN_PLAY_TYPE_PROBABLY; // .aac .m4a .mp4
+        }else if("audio/amr".equalsIgnoreCase(mediaType)) {
+            return IWXAudio.CAN_PLAY_TYPE_PROBABLY; // .aac .m4a .mp4
+        }else if("application/octet-stream".equalsIgnoreCase(mediaType)) {
+            return IWXAudio.CAN_PLAY_TYPE_NONE; //
         }
 
         return IWXAudio.CAN_PLAY_TYPE_MAYBE;
@@ -265,24 +269,24 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         long id = -1L;
         Map<String, Object> map = new HashMap<>(3);
         if(null == options) {
-            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, "empty option"));
+            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, IWXAudio.MEDIA_ERR_OTHER, "empty option"));
             return;
         }
 
         if(null == options.get(IWXAudio.KEY_ID)) {
             id = generateId.getAndIncrement();
-        }else {
+        } else {
             id = Long.parseLong(options.get(IWXAudio.KEY_ID));
         }
         map.put(IWXAudio.KEY_ID, String.valueOf(id));
 
         if(null == options.get(IWXAudio.KEY_SRC)) {
-            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, "empty option src"));
+            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, IWXAudio.MEDIA_ERR_SRC_NOT_SUPPORTED, "empty option src"));
             return;
         }
         Uri uri = Uri.parse(options.get(IWXAudio.KEY_SRC));
         if(!uri.isHierarchical()) {
-            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, "not a vaild url"));
+            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, IWXAudio.MEDIA_ERR_SRC_NOT_SUPPORTED, "not a vaild url"));
             return;
         }
 
@@ -332,7 +336,7 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         } catch (Exception e) {
             e.printStackTrace();
             changeStatus(id, IWXAudio.MEDIA_STATUS_ERROR);
-            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, ""));
+            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, IWXAudio.MEDIA_ERR_OTHER, e.getMessage()));
         }
     }
 
@@ -348,9 +352,9 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
                 play(id);
                 autoStartPlayWhenReady.remove(id);
             }
-
-            Map<String, Object> callback = generateCallbackValue(id, IWXAudio.MEDIA_STATUS_READY, "");
-            callback.put(IWXAudio.KEY_DURATION, mp.getDuration());
+            Map<String, String> inner = new HashMap<>(1);
+            inner.put(IWXAudio.KEY_DURATION, String.valueOf(mp.getDuration()));
+            Map<String, Object> callback = generateCallbackValue(id, IWXAudio.MEDIA_STATUS_READY, inner);
             invokeCallbackAndKeepAlive(callback);
         }
     }
@@ -363,7 +367,7 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
             long id = getIdByPlayer(mp);
             changeStatus(id, IWXAudio.MEDIA_STATUS_ERROR);
 
-            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, "error in loading audio. what:" + what + " extra:" + extra));
+            invokeCallback(generateCallbackValue(id, IWXAudio.MEDIA_STATUS_ERROR, IWXAudio.MEDIA_ERR_NETWORK, "error in loading audio. what:" + what + " extra:" + extra));
             return true;
         }
     }
@@ -384,14 +388,19 @@ public class WXAudioModule extends WXModule implements IWXAudio, Destroyable {
         }
     }
 
+    private Map<String, Object> generateCallbackValue(Long id, Integer status, String errCode, String errMessage) {
+        Map<String, String> err = new HashMap<>(2);
+        err.put(IWXAudio.KEY_ERR_CODE, errCode);
+        err.put(IWXAudio.KEY_ERR_MESSAGE, errMessage);
+
+        return generateCallbackValue(id, status, err);
+    }
+
     private Map<String, Object> generateCallbackValue(Long id, Integer status, Object value) {
         Map<String, Object> map = new HashMap<>(3);
         map.put(IWXAudio.KEY_ID, id);
         map.put(IWXAudio.KEY_STATUS, status);
         map.put(IWXAudio.KEY_VALUE, value);
-
-//        map.put(IWXAudio.KEY_PAUSED, statusMap.get(id) == IWXAudio.MEDIA_STATUS_PAUSE ? "true" : "false");
-//        map.put(IWXAudio.KEY_ENDED, statusMap.get(id) == IWXAudio.MEDIA_STATUS_ENDED ? "true" : "false");
         return map;
     }
 
