@@ -391,6 +391,7 @@ public class Constants {
     String ONLOAD = "load";
     String CHANGE = "change";
     String ONPULLING_DOWN = "pullingdown";
+    String ONPULLING_UP = "pullingup";
     String SCROLL = "scroll";
     String BACKPRESSED = "backpressed";
     String RESUME_EVENT = "WXApplicationWillResignActiveEvent";
