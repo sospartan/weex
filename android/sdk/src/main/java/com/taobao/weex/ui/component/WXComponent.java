@@ -1023,9 +1023,9 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     }
   }
 
-  public void setBackgroundImage(String bgImage){
-    if(!TextUtils.isEmpty(bgImage) && mHost!=null){
-      Shader shader=WXResourceUtils.getShader(bgImage,mDomObj.getLayoutWidth(),mDomObj.getLayoutHeight());
+  public void setBackgroundImage(String bgImage) {
+    if (!TextUtils.isEmpty(bgImage) && mHost != null) {
+      Shader shader = WXResourceUtils.getShader(bgImage, mDomObj.getLayoutWidth(), mDomObj.getLayoutHeight());
       getOrCreateBorder().setImage(shader);
     }
   }
