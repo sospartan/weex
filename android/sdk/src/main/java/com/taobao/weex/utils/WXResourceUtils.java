@@ -511,7 +511,7 @@ public class WXResourceUtils {
     float[] points = {0, 0, 0, 0};
 
     if (!TextUtils.isEmpty(direction)) {
-      direction = direction.replaceAll("\\s*", "");
+      direction = direction.replaceAll("\\s*", "").toLowerCase();
     }
 
     switch (direction) {
