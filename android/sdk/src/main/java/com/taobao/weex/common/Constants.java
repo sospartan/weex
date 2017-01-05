@@ -330,6 +330,7 @@ public class Constants {
     String OFFSET_X_ACCURACY = "offsetXAccuracy";
     String OFFSET_X_RATIO = "offsetXRatio";
     String ELEVATION = "elevation";
+    String SCROLLABLE = "scrollable";
   }
 
   public interface Value {
@@ -360,6 +361,10 @@ public class Constants {
     String PLAY = "play";
     String PAUSE = "pause";
     String STOP = "stop";
+    String DIRECTION_LEFT = "left";
+    String DIRECTION_RIGHT = "right";
+    String DIRECTION_UP = "up";
+    String DIRECTION_DOWN = "down";
   }
 
   public interface Event {
