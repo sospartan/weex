@@ -235,7 +235,7 @@ public class WXSwipeLayout extends FrameLayout implements NestedScrollingParent 
 
     void onRefresh();
 
-    void onPullingDown(float dy, int headerHeight, float maxHeight);
+    void onPullingDown(float dy, int pullOutDistance, float viewHeight);
   }
 
   /**
@@ -244,7 +244,7 @@ public class WXSwipeLayout extends FrameLayout implements NestedScrollingParent 
   public interface WXOnLoadingListener {
 
     void onLoading();
-    void onPullingUp(float dy, int footerHeight, float maxHeight);
+    void onPullingUp(float dy, int pullOutDistance, float viewHeight);
   }
 
   static class WXRefreshAnimatorListener implements Animator.AnimatorListener {
@@ -458,6 +458,7 @@ public class WXSwipeLayout extends FrameLayout implements NestedScrollingParent 
     int viewHeight = target.getMeasuredHeight();
     double ratio = (viewHeight - Math.abs(target.getY())) / 1.0d / viewHeight * DAMPING;
     if (ratio <= 0.01d) {
+      //Filter tiny scrolling action
       ratio = 0.01d;
     }
     return ratio * dy;

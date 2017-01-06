@@ -247,12 +247,12 @@ public class WXLoading extends WXBaseRefresh implements WXSwipeLayout.WXOnLoadin
   }
 
   @Override
-  public void onPullingUp(float dy, int footerHeight, float maxHeight) {
+  public void onPullingUp(float dy, int pullOutDistance, float viewHeight) {
     if (getDomObject().getEvents() != null && getDomObject().getEvents().contains(Constants.Event.ONPULLING_UP)) {
       Map<String, Object> data = new HashMap<>();
-      data.put("dy", dy);
-      data.put("footerHeight", footerHeight);
-      data.put("maxHeight", maxHeight);
+      data.put(Constants.Name.DISTANCE_Y, dy);
+      data.put(Constants.Name.PULLING_DISTANCE, pullOutDistance);
+      data.put(Constants.Name.VIEW_HEIGHT, viewHeight);
       fireEvent(Constants.Event.ONPULLING_UP, data);
     }
   }
