@@ -175,6 +175,23 @@ public class WXNavigatorModule extends WXModule {
     }
 
     @JSMethod(uiThread = true)
+    public void close(JSONObject options, JSCallback success, JSCallback failure) {
+        JSONObject result = new JSONObject();
+        JSCallback callback = null;
+        if (mWXSDKInstance.getContext() instanceof Activity) {
+            callback = success;
+            ((Activity) mWXSDKInstance.getContext()).finish();
+        } else {
+            result.put("result", MSG_FAILED);
+            result.put("message", "close page failed");
+            callback = failure;
+        }
+        if (callback != null) {
+            callback.invoke(result);
+        }
+    }
+
+    @JSMethod(uiThread = true)
     public void push(String param, JSCallback callback) {
 
         if (!TextUtils.isEmpty(param)) {
