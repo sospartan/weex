@@ -486,8 +486,6 @@ public class WXBridgeManager implements Callback,BactchExecutor {
               return WXModuleManager.callModuleMethod(instanceId, module,
                       method, arguments);
             }
-
-
         } catch (Exception e) {
             WXLogUtils.e("[WXBridgeManager] callNative exception: ", e);
             commitJSBridgeAlarmMonitor(instanceId, WXErrorCode.WX_ERR_INVOKE_NATIVE, "[WXBridgeManager] callNativeModule exception " + e.getCause());
