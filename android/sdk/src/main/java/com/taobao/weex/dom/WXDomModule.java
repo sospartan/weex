@@ -271,22 +271,18 @@ public final class WXDomModule extends WXModule {
   }
 
   public void callDomMethod(JSONObject task) {
-
     if (task == null) {
       return;
     }
     String method = (String) task.get(WXBridgeManager.METHOD);
     JSONArray args = (JSONArray) task.get(WXBridgeManager.ARGS);
-
     callDomMethod(method,args);
-
   }
   public Object callDomMethod(String method, JSONArray args) {
 
     if (method == null) {
       return null;
     }
-
     try {
       switch (method) {
         case CREATE_BODY:
