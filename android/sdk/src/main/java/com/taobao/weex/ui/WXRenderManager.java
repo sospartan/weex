@@ -393,20 +393,20 @@ public class WXRenderManager {
     statement.updateStyle(ref, style);
   }
 
-  public WXComponent addEvent(String instanceId, String ref, String type) {
+  public void addEvent(String instanceId, String ref, String type) {
     WXRenderStatement statement = mRegistries.get(instanceId);
     if (statement == null) {
-      return null;
+      return ;
     }
-    return statement.addEvent(ref, type);
+    statement.addEvent(ref, type);
   }
 
-  public WXComponent removeEvent(String instanceId, String ref, String type) {
+  public void removeEvent(String instanceId, String ref, String type) {
     WXRenderStatement statement = mRegistries.get(instanceId);
     if (statement == null) {
-      return null;
+      return ;
     }
-    return statement.removeEvent(ref, type);
+    statement.removeEvent(ref, type);
   }
 
   public void scrollToComponent(String instanceId, String ref, Map<String, Object> options) {

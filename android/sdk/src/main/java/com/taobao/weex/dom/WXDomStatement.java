@@ -926,10 +926,11 @@ class WXDomStatement {
 
       @Override
       public void execute() {
-        WXComponent comp = mWXRenderManager.addEvent(mInstanceId, ref, type);
+        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,ref);
         if(comp != null){
           //sync dom change to component
           comp.updateDom(domObject);
+          mWXRenderManager.addEvent(mInstanceId, ref, type);
         }
       }
 
@@ -971,10 +972,11 @@ class WXDomStatement {
 
       @Override
       public void execute() {
-        WXComponent comp = mWXRenderManager.removeEvent(mInstanceId, ref, type);
+        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,ref);
         if(comp != null){
           //sync dom change to component
           comp.updateDom(domObject);
+          mWXRenderManager.removeEvent(mInstanceId, ref, type);
         }
 
       }
