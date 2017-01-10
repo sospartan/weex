@@ -420,23 +420,25 @@ class WXRenderStatement {
   /**
    * @see com.taobao.weex.dom.WXDomStatement#addEvent(String, String)
    */
-  void addEvent(String ref, String type) {
+  WXComponent addEvent(String ref, String type) {
     WXComponent component = mRegistry.get(ref);
     if (component == null) {
-      return;
+      return null;
     }
     component.addEvent(type);
+    return component;
   }
 
   /**
    * @see WXDomObject#removeEvent(String)
    */
-  void removeEvent(String ref, String type) {
+  WXComponent removeEvent(String ref, String type) {
     WXComponent component = mRegistry.get(ref);
     if (component == null) {
-      return;
+      return null;
     }
     component.removeEvent(type);
+    return component;
   }
 
   /**

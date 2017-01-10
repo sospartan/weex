@@ -914,7 +914,7 @@ class WXDomStatement {
       return;
     }
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
-    WXDomObject domObject = mRegistry.get(ref);
+    final WXDomObject domObject = mRegistry.get(ref);
     if (domObject == null) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_ADDEVENT);
@@ -922,15 +922,15 @@ class WXDomStatement {
       return;
     }
     domObject.addEvent(type);
-    //sync dom change to component
-    AddDomInfo info = mAddDom.get(ref);
-    WXComponent component = info.component;
-    component.updateDom(domObject);
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
       public void execute() {
-        mWXRenderManager.addEvent(mInstanceId, ref, type);
+        WXComponent comp = mWXRenderManager.addEvent(mInstanceId, ref, type);
+        if(comp != null){
+          //sync dom change to component
+          comp.updateDom(domObject);
+        }
       }
 
       @Override
@@ -958,7 +958,7 @@ class WXDomStatement {
       return;
     }
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
-    WXDomObject domObject = mRegistry.get(ref);
+    final WXDomObject domObject = mRegistry.get(ref);
     if (domObject == null) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_REMOVEEVENT);
@@ -966,15 +966,17 @@ class WXDomStatement {
       return;
     }
     domObject.removeEvent(type);
-    //sync dom change to component
-    AddDomInfo info = mAddDom.get(ref);
-    WXComponent component = info.component;
-    component.updateDom(domObject);
+
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
       public void execute() {
-        mWXRenderManager.removeEvent(mInstanceId, ref, type);
+        WXComponent comp = mWXRenderManager.removeEvent(mInstanceId, ref, type);
+        if(comp != null){
+          //sync dom change to component
+          comp.updateDom(domObject);
+        }
+
       }
 
       @Override
