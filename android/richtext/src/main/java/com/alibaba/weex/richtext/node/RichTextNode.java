@@ -240,6 +240,7 @@ public abstract class RichTextNode {
   public static final String TYPE = "type";
   public static final String STYLE = "style";
   public static final String ATTR = "attr";
+  public static final String CHILDREN = "children";
   public static final String VALUE = Constants.Name.VALUE;
   private static final int MAX_LEVEL = Spanned.SPAN_PRIORITY >> Spanned.SPAN_PRIORITY_SHIFT;
 
@@ -288,7 +289,7 @@ public abstract class RichTextNode {
 
   final void parse(@NonNull Context context, @NonNull String instanceId, JSONObject jsonObject) {
     JSONObject jsonStyle, jsonAttr, child;
-    JSONArray jsonArray, valueChildren;
+    JSONArray jsonChildren;
     RichTextNode node;
     if ((jsonStyle = jsonObject.getJSONObject(STYLE)) != null) {
       style = new ArrayMap<>();
@@ -298,25 +299,23 @@ public abstract class RichTextNode {
     }
 
     if ((jsonAttr = jsonObject.getJSONObject(ATTR)) != null) {
-      attr = new ArrayMap<>();
+      attr = new ArrayMap<>(jsonAttr.size());
       attr.putAll(jsonAttr);
-      if (jsonAttr.containsKey(VALUE) && (jsonAttr.get(VALUE) instanceof JSONArray)) {
-        valueChildren = jsonAttr.getJSONArray(VALUE);
-        attr.remove(VALUE);
-        children = new ArrayList<>(valueChildren.size());
-        for (int i = 0; i < valueChildren.size(); i++) {
-          child = valueChildren.getJSONObject(i);
-          node = RichTextNodeManager.createRichTextNode(context, instanceId, child);
-          if (node != null) {
-            children.add(node);
-          }
+    } else {
+      attr = new ArrayMap<>(0);
+    }
+
+    if ((jsonChildren=jsonObject.getJSONArray(CHILDREN))!=null) {
+      children = new ArrayList<>(jsonChildren.size());
+      for (int i = 0; i < jsonChildren.size(); i++) {
+        child = jsonChildren.getJSONObject(i);
+        node = RichTextNodeManager.createRichTextNode(context, instanceId, child);
+        if (node != null) {
+          children.add(node);
         }
-      } else {
-        children = new ArrayList<>(0);
       }
     } else {
       children = new ArrayList<>(0);
-      attr = new ArrayMap<>(0);
     }
   }
 
