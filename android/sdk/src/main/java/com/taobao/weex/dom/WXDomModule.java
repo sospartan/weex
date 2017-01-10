@@ -278,6 +278,7 @@ public final class WXDomModule extends WXModule {
     JSONArray args = (JSONArray) task.get(WXBridgeManager.ARGS);
     callDomMethod(method,args);
   }
+  
   public Object callDomMethod(String method, JSONArray args) {
 
     if (method == null) {
