@@ -793,9 +793,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     Message message = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = getInstanceId();
-    if (task.args == null) {
-      task.args = new ArrayList<>();
-    }
+    task.args = new ArrayList<>();
     task.args.add(getRef());
     task.args.add(type);
     message.obj = task;
@@ -1424,9 +1422,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     Message message = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = getInstanceId();
-    if (task.args == null) {
-      task.args = new ArrayList<>();
-    }
+    task.args = new ArrayList<>();
 
     JSONObject styleJson = new JSONObject(styles);
     task.args.add(getRef());
