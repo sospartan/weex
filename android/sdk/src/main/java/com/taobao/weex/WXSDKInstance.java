@@ -213,6 +213,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
@@ -290,7 +291,7 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
   private NativeInvokeHelper mNativeInvokeHelper;
   private boolean isCommit=false;
   private WXGlobalEventReceiver mGlobalEventReceiver=null;
-
+  private boolean trackComponent;
   /*
    *  store custom ViewPort Width
    */
@@ -338,6 +339,14 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
 
 
   private int mMaxDeepLayer;
+
+  public boolean isTrackComponent() {
+    return trackComponent;
+  }
+
+  public void setTrackComponent(boolean trackComponent) {
+    this.trackComponent = trackComponent;
+  }
 
   public interface OnInstanceVisibleListener{
     void onAppear();
@@ -791,6 +800,17 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
       WXLogUtils.w("Warning :Component tree has not build completely,onActivityStart can not be call!");
     }
 
+  }
+
+  public boolean onCreateOptionsMenu(Menu menu) {
+
+    WXModuleManager.onCreateOptionsMenu(getInstanceId(),menu);
+    if(mRootComp != null) {
+      mRootComp.onCreateOptionsMenu(menu);
+    }else{
+      WXLogUtils.w("Warning :Component tree has not build completely,onActivityStart can not be call!");
+    }
+    return true;
   }
 
   @Override
