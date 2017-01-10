@@ -140,7 +140,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -252,9 +251,17 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   }
 
   public Rect getComponentSize() {
-     Rect size=new Rect();
-    if(mHost!=null){
-      mHost.getGlobalVisibleRect(size);
+    Rect size = new Rect();
+    if (mHost != null) {
+      int[] location = new int[2];
+      int[] anchor = new int[2];
+      mHost.getLocationOnScreen(location);
+      mInstance.getContainerView().getLocationOnScreen(anchor);
+      int left = location[0] - anchor[0];
+      int top = location[1] - anchor[1];
+      int width = (int) mDomObj.getLayoutWidth();
+      int height = (int) mDomObj.getLayoutHeight();
+      size.set(left, top, left + width, top + height);
     }
     return size;
   }
@@ -785,6 +792,26 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     }
   }
 
+  /**
+   * Add new event to component,this will post a task to DOM thread to add event.
+   * @param type
+   */
+  protected void appendEventToDOM(String type){
+    Message message = Message.obtain();
+    WXDomTask task = new WXDomTask();
+    task.instanceId = getInstanceId();
+    task.args = new ArrayList<>();
+    task.args.add(getRef());
+    task.args.add(type);
+    message.obj = task;
+    message.what = WXDomHandler.MsgType.WX_DOM_ADD_EVENT;
+    WXSDKManager.getInstance().getWXDomManager().sendMessage(message);
+  }
+
+  /**
+   * Do not use this method to add event, this only apply event already add to DomObject.
+   * @param type
+   */
   public void addEvent(String type) {
     if (TextUtils.isEmpty(type)) {
       return;
@@ -1402,9 +1429,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     Message message = Message.obtain();
     WXDomTask task = new WXDomTask();
     task.instanceId = getInstanceId();
-    if (task.args == null) {
-      task.args = new ArrayList<>();
-    }
+    task.args = new ArrayList<>();
 
     JSONObject styleJson = new JSONObject(styles);
     task.args.add(getRef());
