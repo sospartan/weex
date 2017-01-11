@@ -318,7 +318,7 @@ public class WXSliderNeighbor extends WXSlider {
                 if(domObject.getType().equalsIgnoreCase(WXBasicComponentType.SLIDER_NEIGHBOR)) {
                     int sum = 0;
                     for (int i = 0,count = domObject.getChildCount(); i < count; i++) {
-                        if(domObject.getChild(i) instanceof WXIndicator.IndicatorDomNode) {
+                        if(domObject.getChildAt(i) instanceof WXIndicator.IndicatorDomNode) {
                             continue;
                         }
                         sum++;
@@ -537,7 +537,7 @@ public class WXSliderNeighbor extends WXSlider {
     }
 
     // Here is the trick.
-    class ZoomTransformer implements ViewPager.PageTransformer {
+     class ZoomTransformer implements ViewPager.PageTransformer {
         @Override
         public void transformPage(View page, float position) {
             int pagePosition = mAdapter.getPagePosition(page);
