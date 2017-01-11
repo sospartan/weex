@@ -592,7 +592,6 @@ public class WXGesture extends GestureDetector.SimpleOnGestureListener implement
   }
 
   /**
-   * Gesture priority：horizontalPan & verticalPan > pan > swipe
    */
   @Override
   public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
