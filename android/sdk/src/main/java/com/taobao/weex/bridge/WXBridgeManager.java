@@ -295,7 +295,9 @@ public class WXBridgeManager implements Callback,BactchExecutor {
   public static final String MODULE = "module";
   public static final String METHOD = "method";
   public static final String ARGS = "args";
-  private static final String UNDEFINED = "-1";
+  private static final String NON_CALLBACK = "-1";
+  private static final String UNDEFINED = "undefined";
+
   private static final int INIT_FRAMEWORK_OK = 1;
 
   private static long LOW_MEM_VALUE = 80;
@@ -479,9 +481,13 @@ public class WXBridgeManager implements Callback,BactchExecutor {
         }
 
         try {
-            return WXModuleManager.callModuleMethod(instanceId, module,
-                    method, arguments);
-
+            if(WXDomModule.WXDOM.equals(module)){
+              WXDomModule dom = getDomModule(instanceId);
+              return dom.callDomMethod(method,arguments);
+            }else {
+              return WXModuleManager.callModuleMethod(instanceId, module,
+                      method, arguments);
+            }
         } catch (Exception e) {
             WXLogUtils.e("[WXBridgeManager] callNative exception: ", e);
             commitJSBridgeAlarmMonitor(instanceId, WXErrorCode.WX_ERR_INVOKE_NATIVE, "[WXBridgeManager] callNativeModule exception " + e.getCause());
@@ -575,7 +581,7 @@ public class WXBridgeManager implements Callback,BactchExecutor {
       }
     }
 
-    if (UNDEFINED.equals(callback)) {
+    if (UNDEFINED.equals(callback) || NON_CALLBACK.equals(callback)) {
       return IWXBridge.INSTANCE_RENDERING_ERROR;
     }
     // get next tick
@@ -608,7 +614,7 @@ public class WXBridgeManager implements Callback,BactchExecutor {
       domModule.addElement(ref, domObject, Integer.parseInt(index));
     }
 
-    if (UNDEFINED.equals(callback)) {
+    if (UNDEFINED.equals(callback) || NON_CALLBACK.equals(callback)) {
       return IWXBridge.INSTANCE_RENDERING_ERROR;
     }
     // get next tick
