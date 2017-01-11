@@ -571,7 +571,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     }
     if (cell != null) {
       int pos = mChildren.indexOf(cell);
-      final WXRecyclerView view = getHostView().getInnerView();
+      final WXRecyclerView view = bounceRecyclerView.getInnerView();
       view.scrollToPosition(pos);
       final WXComponent cellComp = cell;
       //scroll cell to top
