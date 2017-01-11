@@ -211,7 +211,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import com.taobao.weex.common.WXThread;
 import com.taobao.weex.ui.component.WXComponent;
@@ -326,21 +325,24 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implement
     final View headerView = headComponent.getRealView();
     if (headerView == null)
       return;
-    headerViewStack.push(headerView);
+    //record translation, it should not change after transformation
+    final float translationX = headerView.getTranslationX();
+    final float translationY = headerView.getTranslationY();
     headComponent.removeSticky();
-    final ViewGroup parent = (ViewGroup) getParent();
-    if(parent != null){
-      parent.post(WXThread.secure(new Runnable() {
-        @Override
-        public void run() {
-          ViewGroup existedParent;
-          if((existedParent = (ViewGroup)headerView.getParent())!= null){
-            existedParent.removeView(headerView);
-          }
-          parent.addView(headerView);
+    post(WXThread.secure(new Runnable() {
+      @Override
+      public void run() {
+        ViewGroup existedParent;
+        if((existedParent = (ViewGroup)headerView.getParent())!= null){
+          existedParent.removeView(headerView);
         }
-      }));
-    }
+        addView(headerView);
+        //recover translation, sometimes it will be changed on fling
+        headerView.setTranslationX(translationX);
+        headerView.setTranslationY(translationY);
+        headerViewStack.push(headerView);
+      }
+    }));
   }
 
   /**
@@ -354,17 +356,13 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implement
       return;
     }
     final View headerView = headerViewStack.pop();
-    final ViewGroup parent = (ViewGroup) getParent();
-    if(parent != null){
-      parent.post(WXThread.secure(new Runnable() {
-        @Override
-        public void run() {
-          parent.removeView(headerView);
-          headComponent.recoverySticky();
-        }
-      }));
-    }
-
+    post(WXThread.secure(new Runnable() {
+      @Override
+      public void run() {
+        removeView(headerView);
+        headComponent.recoverySticky();
+      }
+    }));
   }
 
   /**
