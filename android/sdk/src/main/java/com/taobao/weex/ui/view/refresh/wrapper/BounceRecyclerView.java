@@ -325,6 +325,7 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implement
     final View headerView = headComponent.getRealView();
     if (headerView == null)
       return;
+    headerViewStack.push(headerView);
     //record translation, it should not change after transformation
     final float translationX = headerView.getTranslationX();
     final float translationY = headerView.getTranslationY();
@@ -340,7 +341,6 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implement
         //recover translation, sometimes it will be changed on fling
         headerView.setTranslationX(translationX);
         headerView.setTranslationY(translationY);
-        headerViewStack.push(headerView);
       }
     }));
   }
