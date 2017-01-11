@@ -544,6 +544,11 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
     return getInnerView() == null ? 0 : getInnerView().getScrollX();
   }
 
+  @Override
+  public int getOrientation() {
+    return mOrientation;
+  }
+
   public Map<String, HashMap<String, WXComponent>> getStickMap() {
     return mStickyMap;
   }

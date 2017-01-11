@@ -232,4 +232,10 @@ public interface Scrollable {
   int getScrollY();
 
   int getScrollX();
+
+  /**
+   *
+   * @return {@link com.taobao.weex.common.Constants.Orientation#HORIZONTAL} or {@link com.taobao.weex.common.Constants.Orientation#VERTICAL}
+   */
+  int getOrientation();
 }
