@@ -211,10 +211,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import com.taobao.weex.common.WXThread;
 import com.taobao.weex.ui.component.WXComponent;
+import com.taobao.weex.ui.component.list.ListComponentView;
 import com.taobao.weex.ui.component.list.WXCell;
 import com.taobao.weex.ui.view.gesture.WXGesture;
 import com.taobao.weex.ui.view.gesture.WXGestureObservable;
@@ -223,7 +223,7 @@ import com.taobao.weex.ui.view.listview.adapter.RecyclerViewBaseAdapter;
 
 import java.util.Stack;
 
-public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implements WXGestureObservable {
+public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implements ListComponentView,WXGestureObservable {
 
   private RecyclerViewBaseAdapter adapter = null;
   private Stack<View> headerViewStack = new Stack<>();
@@ -243,11 +243,15 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implement
     super(context, attrs, OrientationHelper.VERTICAL);
   }
 
-  public void setAdapter(RecyclerViewBaseAdapter adapter) {
+  public void setRecyclerViewBaseAdapter(RecyclerViewBaseAdapter adapter) {
     this.adapter = adapter;
     if (getInnerView() != null) {
       getInnerView().setAdapter(adapter);
     }
+  }
+
+  public RecyclerViewBaseAdapter getRecyclerViewBaseAdapter() {
+    return adapter;
   }
 
   @Override
@@ -258,11 +262,7 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implement
     }
     return result;
   }
-
-  public RecyclerViewBaseAdapter getAdapter() {
-    return adapter;
-  }
-
+    
   @Override
   public WXRecyclerView setInnerView(Context context) {
     WXRecyclerView wxRecyclerView = new WXRecyclerView(context);
@@ -327,20 +327,23 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implement
     if (headerView == null)
       return;
     headerViewStack.push(headerView);
+    //record translation, it should not change after transformation
+    final float translationX = headerView.getTranslationX();
+    final float translationY = headerView.getTranslationY();
     headComponent.removeSticky();
-    final ViewGroup parent = (ViewGroup) getParent();
-    if(parent != null){
-      parent.post(WXThread.secure(new Runnable() {
-        @Override
-        public void run() {
-          ViewGroup existedParent;
-          if((existedParent = (ViewGroup)headerView.getParent())!= null){
-            existedParent.removeView(headerView);
-          }
-          parent.addView(headerView);
+    post(WXThread.secure(new Runnable() {
+      @Override
+      public void run() {
+        ViewGroup existedParent;
+        if((existedParent = (ViewGroup)headerView.getParent())!= null){
+          existedParent.removeView(headerView);
         }
-      }));
-    }
+        addView(headerView);
+        //recover translation, sometimes it will be changed on fling
+        headerView.setTranslationX(translationX);
+        headerView.setTranslationY(translationY);
+      }
+    }));
   }
 
   /**
@@ -354,17 +357,13 @@ public class BounceRecyclerView extends BaseBounceView<WXRecyclerView> implement
       return;
     }
     final View headerView = headerViewStack.pop();
-    final ViewGroup parent = (ViewGroup) getParent();
-    if(parent != null){
-      parent.post(WXThread.secure(new Runnable() {
-        @Override
-        public void run() {
-          parent.removeView(headerView);
-          headComponent.recoverySticky();
-        }
-      }));
-    }
-
+    post(WXThread.secure(new Runnable() {
+      @Override
+      public void run() {
+        removeView(headerView);
+        headComponent.recoverySticky();
+      }
+    }));
   }
 
   /**
