@@ -312,7 +312,7 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     return super.measure(width, outHeight);
   }
 
-  protected int getOrientation() {
+  public int getOrientation() {
     return Constants.Orientation.VERTICAL;
   }
 
