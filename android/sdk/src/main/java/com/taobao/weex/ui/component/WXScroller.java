@@ -281,6 +281,8 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
   private WXStickyHelper stickyHelper;
   private Handler handler=new Handler();
 
+  private boolean isScrollable = true;
+
   @Deprecated
   public WXScroller(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, String instanceId, boolean isLazy) {
     this(instance,dom,parent);
@@ -583,6 +585,7 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
 
   @WXComponentProp(name = Constants.Name.SCROLLABLE)
   public void setScrollable(boolean scrollable) {
+    this.isScrollable = scrollable;
     View hostView = getInnerView();
     if(hostView instanceof WXHorizontalScrollView) {
       ((WXHorizontalScrollView)hostView).setScrollable(scrollable);
@@ -590,6 +593,12 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
       ((WXScrollView)hostView).setScrollable(scrollable);
     }
   }
+
+  @Override
+  public boolean isScrollable() {
+    return isScrollable;
+  }
+
 
   // TODO Need constrain, each container can only have one sticky child
   @Override

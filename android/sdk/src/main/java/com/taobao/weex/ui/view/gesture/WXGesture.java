@@ -270,6 +270,14 @@ public class WXGesture extends GestureDetector.SimpleOnGestureListener implement
     }
   }
 
+  private boolean isParentScrollable() {
+    if(component == null) {
+      return true;
+    }
+    Scrollable parentScrollable = component.getParentScroller();
+    return parentScrollable == null || parentScrollable.isScrollable();
+  }
+
   private boolean hasSameOrientationWithParent(){
     return (mParentOrientation == Constants.Orientation.HORIZONTAL && component.containsGesture(HighLevelGesture.HORIZONTALPAN))
         || (mParentOrientation == Constants.Orientation.VERTICAL && component.containsGesture(HighLevelGesture.VERTICALPAN));
@@ -283,9 +291,10 @@ public class WXGesture extends GestureDetector.SimpleOnGestureListener implement
         case MotionEvent.ACTION_POINTER_DOWN:
         case MotionEvent.ACTION_DOWN:
           /**
-           * If component has same scroll orientation, we should disallow parent in DOWN.
+           * If component has same scroll orientation with it's parent and it's parent not scrollable
+           * , we should disallow parent in DOWN.
            */
-          if(hasSameOrientationWithParent()){
+          if(hasSameOrientationWithParent() && !isParentScrollable()){
             ViewParent p;
             if ((p = component.getRealView().getParent()) != null) {
               p.requestDisallowInterceptTouchEvent(true);
