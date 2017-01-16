@@ -25,6 +25,7 @@ Other attributes please check out the [common attributes](../references/common-a
 
 - `width`: &lt;length&gt; the width of the component. This style should be specified.
 - `height`: &lt;length&gt; the height of the component. This style should be specifed.
+- `filter`: provides graphical effects for an image. for now, we only support blurring effect, you can use `fliter:blur(num)` to achieve that. `num` is between 0 and 10. **note**: `gif` format is not support blurring.
 
 **common styles**: check out the [common styles](../references/common-attrs.md)
 
