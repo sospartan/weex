@@ -1088,6 +1088,11 @@ public abstract class BasicListComponent<T extends ViewGroup & ListComponentView
     }
   }
 
+  @Override
+  public boolean isConsumeTouchEventByView(int distance) {
+    return true;
+  }
+
   @NonNull
   private ListBaseViewHolder createVHForFakeComponent(int viewType) {
     FrameLayout view = new FrameLayout(getContext());

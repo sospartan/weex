@@ -256,6 +256,7 @@ public class WXGesture extends GestureDetector.SimpleOnGestureListener implement
   private WXGestureType mPendingPan = null;//event type to notify when action_up or action_cancel
   private int mParentOrientation =-1;
   private boolean mIsPreventMoveEvent = false;
+  private WXComponent.OnClickListener mOnClickListener;
 
   public WXGesture(WXComponent wxComponent, Context context) {
     this.component = wxComponent;
@@ -697,5 +698,12 @@ public class WXGesture extends GestureDetector.SimpleOnGestureListener implement
     return true;
   }
 
+  public void setOnClickListener(WXComponent.OnClickListener onClickListener) {
+    mOnClickListener = onClickListener;
+  }
 
+  @Override
+  public boolean onSingleTapUp(MotionEvent e) {
+    return component.performClick();
+  }
 }

@@ -143,7 +143,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -165,6 +167,7 @@ import com.taobao.weex.dom.WXStyle;
 import com.taobao.weex.dom.flex.Spacing;
 import com.taobao.weex.ui.IFComponentHolder;
 import com.taobao.weex.ui.animation.WXAnimationModule;
+import com.taobao.weex.ui.component.gesture.ComponentGestureHelper;
 import com.taobao.weex.ui.component.pesudo.OnActivePseudoListner;
 import com.taobao.weex.ui.component.pesudo.PesudoStatus;
 import com.taobao.weex.ui.component.pesudo.TouchActivePseudoListener;
@@ -196,6 +199,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   public static final String PROP_FIXED_SIZE = "fixedSize";
   public static final String PROP_FS_MATCH_PARENT = "m";
   public static final String PROP_FS_WRAP_CONTENT = "w";
+  private final int mTouchSlop;
 
   private int mFixedProp = 0;
   public static int mComponentNum = 0;
@@ -226,6 +230,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   private WXAnimationModule.AnimationHolder mAnimationHolder;
   private PesudoStatus mPesudoStatus = new PesudoStatus();
   private boolean mIsDestoryed = false;
+  private ComponentGestureHelper mGestureHelper;
 
   //Holding the animation bean when component is uninitialized
   public void postAnimation(WXAnimationModule.AnimationHolder holder) {
@@ -295,6 +300,22 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
 
   }
 
+  public boolean isConsumeTouchEventByView(int distance) {
+//    if(distance < mTouchSlop) {
+//      return (mHostClickListeners != null && mHostClickListeners.size() > 0);
+//    }
+    //ignore click if > touch slop
+    return false;
+  }
+
+  public WXGesture getGesture() {
+    return mGesture;
+  }
+
+  public ComponentGestureHelper getGestureHelper() {
+    return mGestureHelper;
+  }
+
   public interface OnClickListener{
     void onHostViewClick();
   }
@@ -322,6 +343,8 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     mGestureType = new HashSet<>();
     ++mComponentNum;
     onCreate();
+    mGestureHelper = new ComponentGestureHelper(this);
+    mTouchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
   }
 
   protected void onCreate(){
@@ -410,6 +433,19 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     }
   }
 
+  /**
+   * @hide
+   * @return
+   */
+  public boolean performClick(){
+    View view;
+    if((view = getRealView()) != null) {
+      view.performClick();
+    }
+
+    return mHostClickListeners != null && mHostClickListeners.size()>0;
+  }
+
   protected final void addClickListener(OnClickListener l){
     View view;
     if(l != null && (view = getRealView()) != null) {
@@ -425,6 +461,9 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
             }
           }
         });
+      }
+      if(mGesture == null){
+        mGesture = new WXGesture(this,mContext);
       }
       mHostClickListeners.add(l);
 
@@ -846,7 +885,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
           mGesture.setPreventMoveEvent(isPreventMove);
         }
         mGestureType.add(type);
-        ((WXGestureObservable) view).registerGestureListener(mGesture);
+//        ((WXGestureObservable) view).registerGestureListener(mGesture);
       } else {
         WXLogUtils.e(view.getClass().getSimpleName() + " don't implement " +
                      "WXGestureObservable, so no gesture is supported.");
@@ -1408,11 +1447,14 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
   }
 
   private void setActiveTouchListener(){
-    boolean hasActivePesudo = mDomObj.getStyles().getPesudoStyles().containsKey(Constants.PESUDO.ACTIVE);
+//    boolean hasActivePesudo = mDomObj.getStyles().getPesudoStyles().containsKey(Constants.PESUDO.ACTIVE);
     View view;
-    if(hasActivePesudo && (view = getRealView()) != null) {
-      boolean hasTouchConsumer = (mHostClickListeners != null && mHostClickListeners.size() > 0) || mGesture != null;
-      view.setOnTouchListener(new TouchActivePseudoListener(this,!hasTouchConsumer));
+//    if(hasActivePesudo && (view = getRealView()) != null) {
+//      boolean hasTouchConsumer = (mHostClickListeners != null && mHostClickListeners.size() > 0) || mGesture != null;
+//      view.setOnTouchListener(new TouchActivePseudoListener(this,!hasTouchConsumer));
+//    }
+    if( (view = getRealView()) != null){
+      view.setOnTouchListener(mGestureHelper);
     }
   }
 
