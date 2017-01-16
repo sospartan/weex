@@ -280,7 +280,7 @@ public abstract class WXModule implements IWXObject {
     boolean isOnce = false;
     if (options != null && options.size() > 0 && options.containsKey("once")) {
       Object temp = options.get("once");
-      if ("true".equals(temp)) {
+      if (temp!=null && "true".equalsIgnoreCase(temp.toString())) {
         isOnce = true;
       }
     }
