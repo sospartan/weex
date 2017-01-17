@@ -217,7 +217,6 @@ import com.taobao.weex.common.WXConfig;
 import com.taobao.weex.utils.LogLevel;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXSoInstallMgrSdk;
-import com.taobao.weex.utils.WXUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -347,10 +346,9 @@ public class WXEnvironment {
     boolean isCPUSupport = WXSoInstallMgrSdk.isCPUSupport() && !isX86AndExcluded;
     if (WXEnvironment.isApkDebugable()) {
       WXLogUtils.d("WXEnvironment.sSupport:" + isCPUSupport
-                   + "isX86AndExclueded: "+ isX86AndExcluded
-                   + " !WXUtils.isTabletDevice():" + !WXUtils.isTabletDevice());
+                   + "isX86AndExclueded: "+ isX86AndExcluded);
     }
-    return isCPUSupport && !WXUtils.isTabletDevice();
+    return isCPUSupport;
   }
 
   public static boolean isApkDebugable() {
