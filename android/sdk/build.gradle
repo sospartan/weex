@@ -48,7 +48,7 @@ checkstyle {
     toolVersion = '6.9'
 }
 
-version = "0.9.4"
+version = "0.9.5"
 
 android {
     compileSdkVersion 23
