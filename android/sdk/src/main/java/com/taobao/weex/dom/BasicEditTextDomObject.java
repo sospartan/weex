@@ -206,10 +206,11 @@
 package com.taobao.weex.dom;
 
 import android.text.TextPaint;
-import com.facebook.csslayout.CSSConstants;
-import com.facebook.csslayout.CSSMeasureMode;
-import com.facebook.csslayout.CSSNodeAPI;
-import com.facebook.csslayout.MeasureOutput;
+import com.facebook.csslayout.CompatUtil;
+import com.facebook.yoga.YogaMeasureFunction;
+import com.facebook.yoga.YogaMeasureMode;
+import com.facebook.yoga.YogaMeasureOutput;
+import com.facebook.yoga.YogaNodeAPI;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.ui.component.WXText;
 import com.taobao.weex.utils.TypefaceUtil;
@@ -231,19 +232,19 @@ public class BasicEditTextDomObject extends WXDomObject {
   public BasicEditTextDomObject() {
     super();
     mPaint.setTextSize(WXViewUtils.getRealPxByWidth(WXText.sDEFAULT_SIZE,getViewPortWidth()));
-    setMeasureFunction(new MeasureFunction() {
+    setMeasureFunction(new YogaMeasureFunction() {
       @Override
-      public void measure(CSSNodeAPI node,
+      public long measure(YogaNodeAPI node,
                           float width,
-                          CSSMeasureMode widthMode,
+                          YogaMeasureMode widthMode,
                           float height,
-                          CSSMeasureMode heightMode,
-                          MeasureOutput measureOutput) {
-        if (CSSConstants.isUndefined(width)) {
-          width = node.getStyleMaxWidth();
+                          YogaMeasureMode heightMode) {
+        if (CompatUtil.isUndefined(width)) {
+          width = node.getMaxWidth().value;
         }
-        measureOutput.height = getMeasureHeight();
-        measureOutput.width = width;
+//        measureOutput.height = getMeasureHeight();
+//        measureOutput.width = width;
+        return YogaMeasureOutput.make(width,getMeasureHeight());
       }
     });
   }

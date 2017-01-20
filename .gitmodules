@@ -1,0 +1,3 @@
+[submodule "android/sdk/thirdpart/yoga"]
+	path = android/sdk/thirdpart/yoga
+	url = git@github.com:weexteam/yoga.git

@@ -210,18 +210,19 @@ import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
-import com.facebook.csslayout.Spacing;
+import com.facebook.yoga.YogaEdge;
+
 
 class BorderUtil {
 
   static <T> T fetchFromSparseArray(@Nullable SparseArray<T> array, int position, T fallback) {
     return array == null ? fallback :
-           array.get(position, array.get(Spacing.ALL));
+           array.get(position, array.get(YogaEdge.ALL.intValue()));
   }
 
   static int fetchFromSparseArray(@Nullable SparseIntArray array, int position, int fallback) {
     return array == null ? fallback :
-           array.get(position, array.get(Spacing.ALL));
+           array.get(position, array.get(YogaEdge.ALL.intValue()));
   }
 
   static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value) {
@@ -229,12 +230,12 @@ class BorderUtil {
   }
 
   static void updateSparseArray(@NonNull SparseIntArray array, int position, int value) {
-      if (position == Spacing.ALL) {
-        array.put(Spacing.ALL, value);
-        array.put(Spacing.TOP, value);
-        array.put(Spacing.LEFT, value);
-        array.put(Spacing.RIGHT, value);
-        array.put(Spacing.BOTTOM, value);
+      if (position == YogaEdge.ALL.intValue()) {
+        array.put(YogaEdge.ALL.intValue(), value);
+        array.put(YogaEdge.TOP.intValue(), value);
+        array.put(YogaEdge.LEFT.intValue(), value);
+        array.put(YogaEdge.RIGHT.intValue(), value);
+        array.put(YogaEdge.BOTTOM.intValue(), value);
       } else {
         array.put(position, value);
       }
@@ -253,12 +254,12 @@ class BorderUtil {
         array.put(position, value);
       }
     } else {
-      if (position == Spacing.ALL) {
-        array.put(Spacing.ALL, value);
-        array.put(Spacing.TOP, value);
-        array.put(Spacing.LEFT, value);
-        array.put(Spacing.RIGHT, value);
-        array.put(Spacing.BOTTOM, value);
+      if (position == YogaEdge.ALL.intValue()) {
+        array.put(YogaEdge.ALL.intValue(), value);
+        array.put(YogaEdge.TOP.intValue(), value);
+        array.put(YogaEdge.LEFT.intValue(), value);
+        array.put(YogaEdge.RIGHT.intValue(), value);
+        array.put(YogaEdge.BOTTOM.intValue(), value);
       } else {
         array.put(position, value);
       }

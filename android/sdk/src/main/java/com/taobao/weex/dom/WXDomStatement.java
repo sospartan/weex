@@ -212,9 +212,6 @@ import android.util.Pair;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.facebook.csslayout.CSSLayoutContext;
-import com.facebook.csslayout.CSSNodeAPI;
-import com.facebook.csslayout.Spacing;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
@@ -263,7 +260,6 @@ class WXDomStatement {
   private WXRenderManager mWXRenderManager;
   private ArrayList<IWXRenderTask> mNormalTasks;
   private Set <Pair<String, Map<String, Object>>> animations;
-  private CSSLayoutContext mLayoutContext;
   private volatile boolean mDirty;
   private boolean mDestroy;
   private Map<String, AddDomInfo> mAddDom = new HashMap<>();
@@ -280,7 +276,6 @@ class WXDomStatement {
   public WXDomStatement(String instanceId, WXRenderManager renderManager) {
     mDestroy = false;
     mInstanceId = instanceId;
-    mLayoutContext = new CSSLayoutContext();
     mRegistry = new ConcurrentHashMap<>();
     mNormalTasks = new ArrayList<>();
     animations = new LinkedHashSet<>();
@@ -297,7 +292,6 @@ class WXDomStatement {
     mAddDOMConsumer = null;
     mNormalTasks.clear();
     mAddDom.clear();
-    mLayoutContext = null;
     mWXRenderManager = null;
     animations.clear();
   }
@@ -314,8 +308,12 @@ class WXDomStatement {
       for (int i = 0; i < size; i++) {
         String fixedRef = root.getFixedStyleRefs().get(i);
         WXDomObject wxDomObject = mRegistry.get(fixedRef);
-        if (wxDomObject!=null && wxDomObject.getParent() != null) {
-          wxDomObject.getParent().remove(wxDomObject);
+        WXDomObject parent;
+        if (wxDomObject!=null && (parent = wxDomObject.getParent()) != null) {
+          int index = parent.indexOf(wxDomObject);
+          if(index != -1){
+            parent.removeChildAt(index);
+          }
           root.addChildAt(wxDomObject, -1);
         }
       }
@@ -364,7 +362,7 @@ class WXDomStatement {
     long start = System.currentTimeMillis();
 
 
-    rootDom.calculateLayout(mLayoutContext);
+    rootDom.calculateLayout();
 
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
     if (instance != null) {
@@ -415,7 +413,7 @@ class WXDomStatement {
       if (dom.hasUpdate()) {
         dom.markUpdateSeen();
         if (!dom.isYoung()) {
-          final WXDomObject copy = dom.clone();
+          final WXDomObject copy = dom;
           if (copy == null) {
             return;
           }
@@ -670,7 +668,7 @@ class WXDomStatement {
    * <li> dom to be moved is null </li>
    * <li> dom's parent is null </li>
    * <li> new parent is null </li>
-   * <li> parent is under {@link CSSNodeAPI#hasNewLayout()} </li>
+   * <li> parent is under {@link com.facebook.yoga.YogaNodeAPI#hasNewLayout()} </li>
    * </ul>
    * this method will return. Otherwise, put the command object in the queue.
    * @param ref Reference of the dom to be moved.
@@ -880,8 +878,8 @@ class WXDomStatement {
 
         @Override
         public void execute() {
-          Spacing padding = domObject.getPadding();
-          Spacing border = domObject.getBorder();
+          float[] padding = domObject.getPadding();
+          float[] border = domObject.getBorder();
           mWXRenderManager.setPadding(mInstanceId, domObject.getRef(), padding, border);
         }
 

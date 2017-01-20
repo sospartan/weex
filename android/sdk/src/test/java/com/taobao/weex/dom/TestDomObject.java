@@ -204,8 +204,7 @@
  */
 package com.taobao.weex.dom;
 
-import com.facebook.csslayout.Spacing;
-
+import static com.facebook.yoga.YogaEdge.*;
 
 import static com.taobao.weex.common.Constants.Event;
 
@@ -223,12 +222,12 @@ public class TestDomObject extends WXDomObject {
 
   public TestDomObject(){
     mStyles = new WXStyle();
-    setStyleHeight(100);
-    setStyleWidth(50);
-    setPosition(Spacing.LEFT,10);
-    setPosition(Spacing.RIGHT,20);
-    setPosition(Spacing.TOP,20);
-    setPosition(Spacing.BOTTOM,30);
+    setHeight(100);
+    setWidth(50);
+    setPosition(LEFT,10);
+    setPosition(RIGHT,20);
+    setPosition(TOP,20);
+    setPosition(BOTTOM,30);
     mAttributes = new WXAttr();
 
     mEvents = new WXEvent();

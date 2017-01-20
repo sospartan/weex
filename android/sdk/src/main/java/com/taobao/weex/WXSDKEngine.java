@@ -117,6 +117,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.facebook.soloader.SoLoader;
 import com.taobao.weex.adapter.IDrawableLoader;
 import com.taobao.weex.adapter.IWXHttpAdapter;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
@@ -184,6 +185,7 @@ import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXSoInstallMgrSdk;
 import com.taobao.weex.utils.batch.BatchOperationHelper;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -254,6 +256,11 @@ public class WXSDKEngine {
   private static void doInitInternal(final Application application,final InitConfig config){
     WXEnvironment.sApplication = application;
     WXEnvironment.JsFrameworkInit = false;
+    try {
+      SoLoader.init(application,SoLoader.SOLOADER_ALLOW_ASYNC_INIT);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     WXBridgeManager.getInstance().post(new Runnable() {
       @Override

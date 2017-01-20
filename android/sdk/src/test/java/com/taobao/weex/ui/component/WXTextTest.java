@@ -211,7 +211,6 @@ import com.taobao.weex.common.Constants;
 import com.taobao.weex.dom.TestDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.dom.WXTextDomObject;
-import com.facebook.csslayout.Spacing;
 
 import com.taobao.weex.ui.SimpleComponentHolder;
 import org.apache.tools.ant.taskdefs.EchoXML;
@@ -249,8 +248,8 @@ public class WXTextTest {
         Mockito.when(instance.getContext()).thenReturn(RuntimeEnvironment.application);
 
         mParentDomObj = Mockito.spy(new WXDomObject());
-        Mockito.when(mParentDomObj.getPadding()).thenReturn(new Spacing());
-        Mockito.when(mParentDomObj.getBorder()).thenReturn(new Spacing());
+        Mockito.when(mParentDomObj.getPadding()).thenReturn(new float[]{0,0,0,0});
+        Mockito.when(mParentDomObj.getBorder()).thenReturn(new float[]{0,0,0,0});
         Mockito.when(mParentDomObj.clone()).thenReturn(mParentDomObj);
         TestDomObject.setRef(mParentDomObj,WXDomObject.ROOT);
 
@@ -258,9 +257,9 @@ public class WXTextTest {
         TestDomObject.setRef(mDomObject,"1");
         mDomObject.addEvent(Constants.Event.CLICK);
         Mockito.when(mDomObject.clone()).thenReturn(mDomObject);
-        Mockito.when(mDomObject.getPadding()).thenReturn(new Spacing());
-        Mockito.when(mDomObject.getBorder()).thenReturn(new Spacing());
-        Mockito.when(mDomObject.getMargin()).thenReturn(new Spacing());
+        Mockito.when(mDomObject.getPadding()).thenReturn(new float[]{0,0,0,0});
+        Mockito.when(mDomObject.getBorder()).thenReturn(new float[]{0,0,0,0});
+        Mockito.when(mDomObject.getMargin()).thenReturn(new float[]{0,0,0,0});
         Mockito.when(mDomObject.getLayoutWidth()).thenReturn(100f);
         Mockito.when(mDomObject.getLayoutHeight()).thenReturn(100f);
 

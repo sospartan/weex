@@ -211,8 +211,8 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.csslayout.CompatCSSNode;
-import com.facebook.csslayout.Spacing;
-import com.facebook.csslayout.CSSLayoutContext;
+import com.facebook.yoga.YogaEdge;
+import static com.facebook.yoga.YogaEdge.*;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.Constants;
@@ -295,6 +295,11 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     return mRef;
   }
 
+  @Override
+  public float[] getMargin() {
+    return new float[]{getMargin(LEFT).value,getMargin(TOP).value,getMargin(RIGHT).value,getMargin(BOTTOM).value};
+  }
+
   public String getType(){
     return mType;
   }
@@ -311,6 +316,16 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
       mAttributes = new WXAttr();
     }
     return mAttributes;
+  }
+
+  @Override
+  public float[] getPadding() {
+    return new float[]{getPadding(LEFT).value,getPadding(TOP).value,getPadding(RIGHT).value,getPadding(BOTTOM).value};
+  }
+
+  @Override
+  public float[] getBorder() {
+    return new float[]{getBorder(LEFT),getBorder(TOP),getBorder(RIGHT),getBorder(BOTTOM)};
   }
 
   public @NonNull WXEvent getEvents(){
@@ -412,8 +427,6 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
 
   /**
    * Tell whether this object need to be updated. This is usually called when
-   * {@link com.facebook.csslayout.CSSNodeAPI#calculateLayout(CSSLayoutContext)} finishes and new layout has been
-   * calculated. This method is a simple wrapper method for {@link #hasNewLayout()} and
    * {@link #isDirty()}.
    * @return true for need update since last update.
    */
@@ -540,7 +553,7 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
       mAttributes = new WXAttr();
     }
     mAttributes.putAll(attrs);
-    dirty();
+//    dirty();
   }
 
   public void updateStyle(Map<String, Object> styles){
@@ -555,7 +568,7 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
       mStyles = new WXStyle();
     }
     mStyles.putAll(styles,byPesudo);
-    super.dirty();
+//    super.dirty();
   }
 
   /** package **/ void applyStyleToNode() {
@@ -582,84 +595,84 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
             setWrap(stylesMap.getCSSWrap());
             break;
           case Constants.Name.MIN_WIDTH:
-            setStyleMinWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMinWidth(),getViewPortWidth()));
+            setMinWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMinWidth(),getViewPortWidth()));
             break;
           case Constants.Name.MIN_HEIGHT:
-            setStyleMinHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMinHeight(),getViewPortWidth()));
+            setMinHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMinHeight(),getViewPortWidth()));
             break;
           case Constants.Name.MAX_WIDTH:
-            setStyleMaxWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMaxWidth(),getViewPortWidth()));
+            setMaxWidth(WXViewUtils.getRealPxByWidth(stylesMap.getMaxWidth(),getViewPortWidth()));
             break;
           case Constants.Name.MAX_HEIGHT:
-            setStyleMaxHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMaxHeight(),getViewPortWidth()));
+            setMaxHeight(WXViewUtils.getRealPxByWidth(stylesMap.getMaxHeight(),getViewPortWidth()));
             break;
           case Constants.Name.DEFAULT_HEIGHT:
           case Constants.Name.HEIGHT:
-            setStyleHeight(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.HEIGHT)?stylesMap.getHeight():stylesMap.getDefaultHeight(),getViewPortWidth()));
+            setHeight(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.HEIGHT)?stylesMap.getHeight():stylesMap.getDefaultHeight(),getViewPortWidth()));
             break;
           case Constants.Name.WIDTH:
           case Constants.Name.DEFAULT_WIDTH:
-            setStyleWidth(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.WIDTH)?stylesMap.getWidth():stylesMap.getDefaultWidth(),getViewPortWidth()));
+            setWidth(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.WIDTH)?stylesMap.getWidth():stylesMap.getDefaultWidth(),getViewPortWidth()));
             break;
           case Constants.Name.POSITION:
             setPositionType(stylesMap.getPosition());
             break;
           case Constants.Name.LEFT:
-            setPosition(Spacing.LEFT,WXViewUtils.getRealPxByWidth(stylesMap.getLeft(),getViewPortWidth()));
+            setPosition(YogaEdge.LEFT,WXViewUtils.getRealPxByWidth(stylesMap.getLeft(),getViewPortWidth()));
             break;
           case Constants.Name.TOP:
-            setPosition(Spacing.TOP,WXViewUtils.getRealPxByWidth(stylesMap.getTop(),getViewPortWidth()));
+            setPosition(YogaEdge.TOP,WXViewUtils.getRealPxByWidth(stylesMap.getTop(),getViewPortWidth()));
             break;
           case Constants.Name.RIGHT:
-            setPosition(Spacing.RIGHT,WXViewUtils.getRealPxByWidth(stylesMap.getRight(),getViewPortWidth()));
+            setPosition(YogaEdge.RIGHT,WXViewUtils.getRealPxByWidth(stylesMap.getRight(),getViewPortWidth()));
             break;
           case Constants.Name.BOTTOM:
-            setPosition(Spacing.BOTTOM,WXViewUtils.getRealPxByWidth(stylesMap.getBottom(),getViewPortWidth()));
+            setPosition(YogaEdge.BOTTOM,WXViewUtils.getRealPxByWidth(stylesMap.getBottom(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN:
-            setMargin(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getMargin(),getViewPortWidth()));
+            setMargin(YogaEdge.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getMargin(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN_LEFT:
-            setMargin(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginLeft(),getViewPortWidth()));
+            setMargin(YogaEdge.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginLeft(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN_TOP:
-            setMargin(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getMarginTop(),getViewPortWidth()));
+            setMargin(YogaEdge.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getMarginTop(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN_RIGHT:
-            setMargin(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginRight(),getViewPortWidth()));
+            setMargin(YogaEdge.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginRight(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN_BOTTOM:
-            setMargin(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getMarginBottom(),getViewPortWidth()));
+            setMargin(YogaEdge.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getMarginBottom(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_WIDTH:
-            setBorder(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getBorderWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getBorderWidth(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_TOP_WIDTH:
-            setBorder(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getBorderTopWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getBorderTopWidth(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_RIGHT_WIDTH:
-            setBorder(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderRightWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderRightWidth(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_BOTTOM_WIDTH:
-            setBorder(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getBorderBottomWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getBorderBottomWidth(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_LEFT_WIDTH:
-            setBorder(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderLeftWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderLeftWidth(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING:
-            setPadding(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getPadding(),getViewPortWidth()));
+            setPadding(YogaEdge.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getPadding(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING_LEFT:
-            setPadding(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingLeft(),getViewPortWidth()));
+            setPadding(YogaEdge.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingLeft(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING_TOP:
-            setPadding(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingTop(),getViewPortWidth()));
+            setPadding(YogaEdge.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingTop(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING_RIGHT:
-            setPadding(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingRight(),getViewPortWidth()));
+            setPadding(YogaEdge.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingRight(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING_BOTTOM:
-            setPadding(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingBottom(),getViewPortWidth()));
+            setPadding(YogaEdge.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingBottom(),getViewPortWidth()));
             break;
         }
       }
@@ -713,7 +726,7 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     }
     int count = getChildCount();
     for (int i = 0; i < count; ++i) {
-      getChildAt(i).destroy();
+//      getChildAt(i).destroy();
       removeChildAt(i);
     }
     mDomContext = null;

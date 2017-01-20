@@ -204,18 +204,15 @@
  */
 package com.taobao.weex.dom;
 
-import com.facebook.csslayout.CSSMeasureMode;
+import com.facebook.yoga.YogaMeasureMode;
+import com.facebook.yoga.YogaMeasureOutput;
 import com.taobao.weappplus_sdk.BuildConfig;
-import com.taobao.weex.common.Constants;
 import static com.taobao.weex.common.Constants.Name.*;
 
-import com.facebook.csslayout.MeasureOutput;
-import com.taobao.weex.ui.component.WXComponent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
@@ -250,12 +247,11 @@ public class WXTextDomObjectTest {
   @Test
   public void testMeasure() throws Exception {
     testLayoutBefore();
-    MeasureOutput output = new MeasureOutput();
     WXTextDomObject mock = PowerMockito.spy(dom);
     PowerMockito.when(mock,"getTextWidth",dom.getTextPaint(),100f,false).thenReturn(10f);
-    WXTextDomObject.TEXT_MEASURE_FUNCTION.measure(mock,100, CSSMeasureMode.EXACTLY,100,CSSMeasureMode.EXACTLY,output);
+    long result = WXTextDomObject.TEXT_MEASURE_FUNCTION.measure(mock,100, YogaMeasureMode.EXACTLY,100,YogaMeasureMode.EXACTLY);
 
-    assertEquals(output.width,10f,0.1f);
+    assertEquals(result, YogaMeasureOutput.make(10f,0.1f));
   }
 
   @Test

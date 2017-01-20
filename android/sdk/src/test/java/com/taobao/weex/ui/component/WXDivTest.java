@@ -210,7 +210,6 @@ import com.taobao.weex.WXSDKInstanceTest;
 import com.taobao.weex.dom.TestDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.dom.WXEvent;
-import com.facebook.csslayout.Spacing;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -254,7 +253,7 @@ public class WXDivTest {
 
         WXDomObject divDom = new WXDomObject();
         WXDomObject spy = Mockito.spy(divDom);
-        Mockito.when(spy.getPadding()).thenReturn(new Spacing());
+        Mockito.when(spy.getPadding()).thenReturn(new float[]{0,0,0,0});
         Mockito.when(spy.getEvents()).thenReturn(new WXEvent());
         Mockito.when(spy.clone()).thenReturn(divDom);
         TestDomObject.setRef(divDom,"1");
@@ -268,7 +267,7 @@ public class WXDivTest {
         Mockito.when(instance.getContext()).thenReturn(RuntimeEnvironment.application);
 
         WXDomObject testDom = Mockito.mock(WXDomObject.class);
-        Mockito.when(testDom.getPadding()).thenReturn(new Spacing());
+        Mockito.when(testDom.getPadding()).thenReturn(new float[]{0,0,0,0});
         Mockito.when(testDom.clone()).thenReturn(testDom);
         TestDomObject.setRef(testDom,"2");
         WXText child1 = new WXText(instance, testDom, mWXDiv);
@@ -279,7 +278,7 @@ public class WXDivTest {
         assertEquals(1, mWXDiv.childCount());
 
         WXDomObject testDom2 = Mockito.spy(new WXDomObject());
-        Mockito.when(testDom2.getPadding()).thenReturn(new Spacing());
+        Mockito.when(testDom2.getPadding()).thenReturn(new float[]{0,0,0,0});
         Mockito.when(testDom2.clone()).thenReturn(testDom2);
         TestDomObject.setRef(testDom2,"3");
         child2 = new WXText(instance, testDom2, mWXDiv);
@@ -291,7 +290,7 @@ public class WXDivTest {
         assertEquals(child2, mWXDiv.getChild(1));
 
         WXDomObject testDom3 = Mockito.mock(WXDomObject.class);
-        Mockito.when(testDom3.getPadding()).thenReturn(new Spacing());
+        Mockito.when(testDom3.getPadding()).thenReturn(new float[]{0,0,0,0});
         Mockito.when(testDom3.clone()).thenReturn(testDom3);
         TestDomObject.setRef(testDom3,"4");
         WXText child3 = new WXText(instance, testDom3, mWXDiv);

@@ -149,6 +149,7 @@ import android.widget.FrameLayout;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.facebook.yoga.YogaEdge;
 import com.taobao.weex.IWXActivityStateListener;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
@@ -160,7 +161,6 @@ import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomHandler;
 import com.taobao.weex.dom.WXDomObject;
-import com.facebook.csslayout.Spacing;
 import com.taobao.weex.dom.WXDomTask;
 import com.taobao.weex.dom.WXStyle;
 import com.taobao.weex.ui.IFComponentHolder;
@@ -317,7 +317,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     mInstance = instance;
     mContext = mInstance.getContext();
     mParent = parent;
-    mDomObj = dom.clone();
+    mDomObj = dom;
     mCurrentRef = mDomObj.getRef();
     mGestureType = new HashSet<>();
     ++mComponentNum;
@@ -383,7 +383,8 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
         component = this;
       }
       setLayout(component.getDomObject());
-      setPadding(component.getDomObject().getPadding(), component.getDomObject().getBorder());
+      ImmutableDomObject dom = component.getDomObject();
+      setPadding(dom.getPadding(), dom.getBorder());
       addEvents();
 
     }
@@ -481,17 +482,17 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     //offset by sibling
     int siblingOffset = nullParent?0:mParent.getChildrenLayoutTopOffset();
 
-    Spacing parentPadding = (nullParent?new Spacing():mParent.getDomObject().getPadding());
-    Spacing parentBorder = (nullParent?new Spacing():mParent.getDomObject().getBorder());
-    Spacing margin = mDomObj.getMargin();
+    float[] parentPadding = (nullParent?new float[]{0,0,0,0}:mParent.getDomObject().getPadding());
+    float[] parentBorder = (nullParent?new float[]{0,0,0,0}:mParent.getDomObject().getBorder());
+    float[] margin = mDomObj.getMargin();
     int realWidth = (int) mDomObj.getLayoutWidth();
     int realHeight = (int) mDomObj.getLayoutHeight();
-    int realLeft = (int) (mDomObj.getLayoutX() - parentPadding.get(Spacing.LEFT) -
-                          parentBorder.get(Spacing.LEFT));
-    int realTop = (int) (mDomObj.getLayoutY() - parentPadding.get(Spacing.TOP) -
-                         parentBorder.get(Spacing.TOP)) + siblingOffset;
-    int realRight = (int) margin.get(Spacing.RIGHT);
-    int realBottom = (int) margin.get(Spacing.BOTTOM);
+    int realLeft = (int) (mDomObj.getLayoutX() - parentPadding[YogaEdge.LEFT.intValue()] -
+                          parentBorder[YogaEdge.LEFT.intValue()]);
+    int realTop = (int) (mDomObj.getLayoutY() - parentPadding[YogaEdge.TOP.intValue()] -
+                         parentBorder[YogaEdge.TOP.intValue()]) + siblingOffset;
+    int realRight = (int) margin[YogaEdge.RIGHT.intValue()];
+    int realBottom = (int) margin[YogaEdge.BOTTOM.intValue()];
 
     if (mPreRealWidth == realWidth && mPreRealHeight == realHeight && mPreRealLeft == realLeft && mPreRealTop == realTop) {
       return;
@@ -574,11 +575,11 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
 
   }
 
-  public void setPadding(Spacing padding, Spacing border) {
-    int left = (int) (padding.get(Spacing.LEFT) + border.get(Spacing.LEFT));
-    int top = (int) (padding.get(Spacing.TOP) + border.get(Spacing.TOP));
-    int right = (int) (padding.get(Spacing.RIGHT) + border.get(Spacing.RIGHT));
-    int bottom = (int) (padding.get(Spacing.BOTTOM) + border.get(Spacing.BOTTOM));
+  public void setPadding(float[] padding, float[] border) {
+    int left = (int) (padding[YogaEdge.LEFT.intValue()] + border[YogaEdge.LEFT.intValue()]);
+    int top = (int) (padding[YogaEdge.TOP.intValue()] + border[YogaEdge.TOP.intValue()]);
+    int right = (int) (padding[YogaEdge.RIGHT.intValue()] + border[YogaEdge.RIGHT.intValue()]);
+    int bottom = (int) (padding[YogaEdge.BOTTOM.intValue()] + border[YogaEdge.BOTTOM.intValue()]);
 
     if (mHost == null) {
       return;
@@ -1012,7 +1013,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     if (dom == null) {
       return;
     }
-    mDomObj = dom.clone();
+    mDomObj = dom;
   }
 
   public final void removeEvent(String type) {
@@ -1140,19 +1141,19 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     if (borderWidth >= 0) {
       switch (key) {
         case Constants.Name.BORDER_WIDTH:
-          getOrCreateBorder().setBorderWidth(Spacing.ALL, WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
+          getOrCreateBorder().setBorderWidth(YogaEdge.ALL.intValue(), WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
           break;
         case Constants.Name.BORDER_TOP_WIDTH:
-          getOrCreateBorder().setBorderWidth(Spacing.TOP, WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
+          getOrCreateBorder().setBorderWidth(YogaEdge.TOP.intValue(), WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
           break;
         case Constants.Name.BORDER_RIGHT_WIDTH:
-          getOrCreateBorder().setBorderWidth(Spacing.RIGHT, WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
+          getOrCreateBorder().setBorderWidth(YogaEdge.RIGHT.intValue(), WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
           break;
         case Constants.Name.BORDER_BOTTOM_WIDTH:
-          getOrCreateBorder().setBorderWidth(Spacing.BOTTOM, WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
+          getOrCreateBorder().setBorderWidth(YogaEdge.BOTTOM.intValue(), WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
           break;
         case Constants.Name.BORDER_LEFT_WIDTH:
-          getOrCreateBorder().setBorderWidth(Spacing.LEFT, WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
+          getOrCreateBorder().setBorderWidth(YogaEdge.LEFT.intValue(), WXViewUtils.getRealSubPxByWidth(borderWidth,getInstance().getViewPortWidth()));
           break;
       }
     }
@@ -1162,19 +1163,19 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     if(!TextUtils.isEmpty(borderStyle)){
       switch (key){
         case Constants.Name.BORDER_STYLE:
-          getOrCreateBorder().setBorderStyle(Spacing.ALL,borderStyle);
+          getOrCreateBorder().setBorderStyle(YogaEdge.ALL.intValue(),borderStyle);
           break;
         case Constants.Name.BORDER_RIGHT_STYLE:
-          getOrCreateBorder().setBorderStyle(Spacing.RIGHT,borderStyle);
+          getOrCreateBorder().setBorderStyle(YogaEdge.RIGHT.intValue(),borderStyle);
           break;
         case Constants.Name.BORDER_BOTTOM_STYLE:
-          getOrCreateBorder().setBorderStyle(Spacing.BOTTOM,borderStyle);
+          getOrCreateBorder().setBorderStyle(YogaEdge.BOTTOM.intValue(),borderStyle);
           break;
         case Constants.Name.BORDER_LEFT_STYLE:
-          getOrCreateBorder().setBorderStyle(Spacing.LEFT,borderStyle);
+          getOrCreateBorder().setBorderStyle(YogaEdge.LEFT.intValue(),borderStyle);
           break;
         case Constants.Name.BORDER_TOP_STYLE:
-          getOrCreateBorder().setBorderStyle(Spacing.TOP,borderStyle);
+          getOrCreateBorder().setBorderStyle(YogaEdge.TOP.intValue(),borderStyle);
           break;
       }
     }
@@ -1186,19 +1187,19 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
       if (colorInt != Integer.MIN_VALUE) {
         switch (key) {
           case Constants.Name.BORDER_COLOR:
-            getOrCreateBorder().setBorderColor(Spacing.ALL, colorInt);
+            getOrCreateBorder().setBorderColor(YogaEdge.ALL.intValue(), colorInt);
             break;
           case Constants.Name.BORDER_TOP_COLOR:
-            getOrCreateBorder().setBorderColor(Spacing.TOP, colorInt);
+            getOrCreateBorder().setBorderColor(YogaEdge.TOP.intValue(), colorInt);
             break;
           case Constants.Name.BORDER_RIGHT_COLOR:
-            getOrCreateBorder().setBorderColor(Spacing.RIGHT, colorInt);
+            getOrCreateBorder().setBorderColor(YogaEdge.RIGHT.intValue(), colorInt);
             break;
           case Constants.Name.BORDER_BOTTOM_COLOR:
-            getOrCreateBorder().setBorderColor(Spacing.BOTTOM, colorInt);
+            getOrCreateBorder().setBorderColor(YogaEdge.BOTTOM.intValue(), colorInt);
             break;
           case Constants.Name.BORDER_LEFT_COLOR:
-            getOrCreateBorder().setBorderColor(Spacing.LEFT, colorInt);
+            getOrCreateBorder().setBorderColor(YogaEdge.LEFT.intValue(), colorInt);
             break;
         }
       }

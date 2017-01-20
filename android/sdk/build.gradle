@@ -93,9 +93,9 @@ android {
     sourceSets {
         main {
             assets.srcDirs = ['assets']
-            jniLibs.srcDir(['libs'])
+            jniLibs.srcDir(['libs','thirdpart/yoga/android/libs'])
             java {
-                srcDirs = ["src/main/java"];
+                srcDirs = ["src/main/java",'thirdpart/yoga/android/src'];
             }
         }
         debug.setRoot('build-types/debug')
@@ -119,11 +119,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'lib-csslayout')
     provided 'com.android.support:recyclerview-v7:23.1.1'
     provided 'com.android.support:support-v4:23.1.1'
     provided 'com.android.support:appcompat-v7:23.1.1'
     provided 'com.alibaba:fastjson:1.1.46.android'
+    compile 'com.facebook.soloader:soloader:0.1.0@aar'//needed for yoga
 
     testCompile 'com.alibaba:fastjson:1.1.46.android'
     testCompile 'junit:junit:4.12'
@@ -145,16 +145,7 @@ dependencies {
 
 license{
     header=file('license/LICENSE')
-    excludes (["**/WXDataStructureUtil.java",
-               "**/CSSDirection.java",
-               "**/CSSAlignConvert.java",
-               "**/CSSFlexDirectionConvert.java",
-               "**/CSSJustifyConvert.java",
-               "**/CSSPositionTypeConvert.java",
-               "**/CSSTransformFromStyle.java",
-               "**/CSSWrapConvert.java",
-               "**/WXTextDomObject.java",
-               "**/WXCustomStyleSpan.java"])
+    include (["**/com/taobao/weex/**/*.java"])
 }
 preBuild.dependsOn licenseFormat
 

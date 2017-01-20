@@ -205,7 +205,6 @@
 package com.taobao.weex.dom;
 
 
-import com.facebook.csslayout.Spacing;
 
 /**
  * Created by sospartan on 25/10/2016.
@@ -213,7 +212,7 @@ import com.facebook.csslayout.Spacing;
 
 public interface ImmutableDomObject {
   String getRef();
-  Spacing getMargin();
+  float[] getMargin();
   float getLayoutWidth();
   float getLayoutHeight();
   float getLayoutX();
@@ -222,8 +221,8 @@ public interface ImmutableDomObject {
   WXStyle getStyles();
   WXEvent getEvents();
   WXAttr getAttrs();
-  Spacing getPadding();
-  Spacing getBorder();
+  float[] getPadding();
+  float[] getBorder();
   Object getExtra();
   String getType();
 }

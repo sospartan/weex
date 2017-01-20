@@ -206,28 +206,29 @@ package com.taobao.weex.dom;
 
 import android.view.View;
 
-import com.facebook.csslayout.CSSMeasureMode;
-import com.facebook.csslayout.CSSNodeAPI;
-import com.facebook.csslayout.MeasureOutput;
+import com.facebook.yoga.YogaMeasureFunction;
+import com.facebook.yoga.YogaMeasureMode;
+import com.facebook.yoga.YogaMeasureOutput;
+import com.facebook.yoga.YogaNodeAPI;
 import com.taobao.weex.ui.view.WXSwitchView;
 import com.taobao.weex.utils.WXLogUtils;
 
 public class WXSwitchDomObject extends WXDomObject {
 
 
-  private static final MeasureFunction SWITCH_MEASURE_FUNCTION = new MeasureFunction() {
+  private static final YogaMeasureFunction SWITCH_MEASURE_FUNCTION = new YogaMeasureFunction() {
+
 
     private boolean measured;
     private int mWidth;
     private int mHeight;
 
     @Override
-    public void measure(CSSNodeAPI node,
+    public long measure(YogaNodeAPI node,
                         float width,
-                        CSSMeasureMode widthMode,
+                        YogaMeasureMode widthMode,
                         float height,
-                        CSSMeasureMode heightMode,
-                        MeasureOutput measureOutput) {
+                        YogaMeasureMode heightMode) {
       try {
         if (!measured) {
           WXSwitchView wxSwitchView = new WXSwitchView(((WXDomObject) node).getDomContext().getUIContext());
@@ -238,11 +239,11 @@ public class WXSwitchDomObject extends WXDomObject {
           mHeight = wxSwitchView.getMeasuredHeight();
           measured = true;
         }
-        measureOutput.width = mWidth;
-        measureOutput.height = mHeight;
+        return YogaMeasureOutput.make(mWidth,mHeight);
       } catch (RuntimeException e) {
         WXLogUtils.e(TAG, WXLogUtils.getStackTrace(e));
       }
+      return 0;
     }
   };
 

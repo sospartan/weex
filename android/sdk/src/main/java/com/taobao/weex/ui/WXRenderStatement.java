@@ -216,7 +216,6 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.dom.WXDomObject;
-import com.facebook.csslayout.Spacing;
 import com.taobao.weex.ui.animation.WXAnimationBean;
 import com.taobao.weex.ui.animation.WXAnimationModule;
 import com.taobao.weex.ui.component.Scrollable;
@@ -303,7 +302,7 @@ class WXRenderStatement {
   /**
    * set padding style of View
    */
-  void setPadding(String ref, Spacing padding, Spacing border) {
+  void setPadding(String ref, float[] padding, float[] border) {
     WXComponent component = mRegistry.get(ref);
     if (component == null) {
       return;

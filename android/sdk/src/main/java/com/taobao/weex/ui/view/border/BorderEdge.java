@@ -210,7 +210,6 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
 
-import com.facebook.csslayout.Spacing;
 
 /**
  * Edge for border. Every border has four edges, and each edge has a previous corner and a post
@@ -288,7 +287,7 @@ class BorderEdge {
   /**
    * The index of the edge
    * @return index of edge. May be one of
-   * {@link Spacing#TOP},{@link Spacing#BOTTOM},{@link Spacing#RIGHT},{@link Spacing#LEFT}.
+   * {@link com.facebook.yoga.YogaEdge}.
    */
   public int getEdge() {
     return mEdge;
