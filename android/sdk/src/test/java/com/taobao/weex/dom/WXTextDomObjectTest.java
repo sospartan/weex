@@ -204,6 +204,7 @@
  */
 package com.taobao.weex.dom;
 
+import com.taobao.weex.dom.compat.NonYogaNode;
 import com.facebook.yoga.YogaMeasureMode;
 import com.facebook.yoga.YogaMeasureOutput;
 import com.taobao.weappplus_sdk.BuildConfig;
@@ -231,7 +232,7 @@ public class WXTextDomObjectTest {
 
   @Before
   public void setUp() throws Exception {
-    dom = new WXTextDomObject();
+    dom = new WXTextDomObject(new NonYogaNode());
     WXStyle styles = dom.getStyles();
     styles.put(LINES,10);
     styles.put(FONT_SIZE,10);
@@ -247,11 +248,15 @@ public class WXTextDomObjectTest {
   @Test
   public void testMeasure() throws Exception {
     testLayoutBefore();
-    WXTextDomObject mock = PowerMockito.spy(dom);
-    PowerMockito.when(mock,"getTextWidth",dom.getTextPaint(),100f,false).thenReturn(10f);
-    long result = WXTextDomObject.TEXT_MEASURE_FUNCTION.measure(mock,100, YogaMeasureMode.EXACTLY,100,YogaMeasureMode.EXACTLY);
+    NonYogaNode node = PowerMockito.mock(NonYogaNode.class);
 
-    assertEquals(result, YogaMeasureOutput.make(10f,0.1f));
+    WXTextDomObject mock = PowerMockito.spy(dom);
+
+    PowerMockito.when(node.getDOM()).thenReturn(mock);
+    PowerMockito.when(mock,"getTextWidth",dom.getTextPaint(),100f,false).thenReturn(10f);
+    long result = WXTextDomObject.TEXT_MEASURE_FUNCTION.measure(node,100, YogaMeasureMode.EXACTLY,100,YogaMeasureMode.EXACTLY);
+
+    assertEquals(result, YogaMeasureOutput.make(10f,0f));
   }
 
   @Test
@@ -259,12 +264,6 @@ public class WXTextDomObjectTest {
     dom.layoutAfter();
   }
 
-  @Test
-  public void testClone() throws Exception {
-    WXTextDomObject cloneDom = dom.clone();
-
-    assertFalse(cloneDom == dom);
-  }
 
   @After
   public void tearDown() throws Exception {

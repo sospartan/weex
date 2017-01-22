@@ -344,7 +344,7 @@ public class WXIndicator extends WXComponent<WXCircleIndicator> {
 
     @Override
     protected Map<String, String> getDefaultStyle() {
-      WXStyle pendingStyles = getStyles();
+      WXStyle pendingStyles = toImmutable().getStyles();
       Map<String,String> map = new HashMap<>();
       if(!pendingStyles.containsKey(Constants.Name.RIGHT))
         map.put(Constants.Name.LEFT,"0");

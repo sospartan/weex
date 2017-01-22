@@ -234,11 +234,11 @@ import static org.junit.Assert.assertTrue;
  * Created by gulin on 16/2/4.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, sdk = 19)
 public class WXTextTest {
     private WXText mWXText;
     private WXDiv mParent;
-    private WXTextDomObject mDomObject;
+    private TestDomObject mDomObject;
     private WXDomObject mParentDomObj;
 
     @Before
@@ -247,13 +247,12 @@ public class WXTextTest {
         WXSDKInstance instance = Mockito.mock(WXSDKInstance.class);
         Mockito.when(instance.getContext()).thenReturn(RuntimeEnvironment.application);
 
-        mParentDomObj = Mockito.spy(new WXDomObject());
+        mParentDomObj = Mockito.spy(new TestDomObject());
         Mockito.when(mParentDomObj.getPadding()).thenReturn(new float[]{0,0,0,0});
         Mockito.when(mParentDomObj.getBorder()).thenReturn(new float[]{0,0,0,0});
-        Mockito.when(mParentDomObj.clone()).thenReturn(mParentDomObj);
         TestDomObject.setRef(mParentDomObj,WXDomObject.ROOT);
 
-        mDomObject = Mockito.spy(new WXTextDomObject());
+        mDomObject = Mockito.spy(new TestDomObject());
         TestDomObject.setRef(mDomObject,"1");
         mDomObject.addEvent(Constants.Event.CLICK);
         Mockito.when(mDomObject.clone()).thenReturn(mDomObject);
@@ -293,7 +292,7 @@ public class WXTextTest {
     @Test
     public void testSetLayout(){
         testCreateView();
-        mWXText.setLayout(mDomObject);
+        mWXText.setLayout(mDomObject.toImmutable());
         assertNotNull(mWXText.getHostView().getLayoutParams());
         assertEquals(100, mWXText.getHostView().getLayoutParams().height);
         assertEquals(100, mWXText.getHostView().getLayoutParams().width);

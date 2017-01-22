@@ -221,7 +221,10 @@ import android.text.style.AlignmentSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
-import com.facebook.csslayout.CompatUtil;
+
+import com.taobao.weex.dom.compat.CompatNode;
+import com.taobao.weex.dom.compat.CompatUtil;
+import com.taobao.weex.dom.compat.NonYogaNode;
 import com.facebook.yoga.YogaMeasureFunction;
 import com.facebook.yoga.YogaMeasureMode;
 import com.facebook.yoga.YogaMeasureOutput;
@@ -274,7 +277,7 @@ public class WXTextDomObject extends WXDomObject {
 
   /**
    * Object for calculating text's width and height. This class is an anonymous class of
-   * implementing {@link com.facebook.csslayout.CSSNode.MeasureFunction}
+   * implementing {@link com.taobao.weex.dom.compat.compat.CSSNode.MeasureFunction}
    */
   /** package **/ static final YogaMeasureFunction TEXT_MEASURE_FUNCTION = new YogaMeasureFunction() {
     @Override
@@ -283,7 +286,7 @@ public class WXTextDomObject extends WXDomObject {
                                YogaMeasureMode widthMode,
                                float height,
                                YogaMeasureMode heightMode) {
-      WXTextDomObject textDomObject = (WXTextDomObject) node;
+      WXTextDomObject textDomObject = (WXTextDomObject) ((CompatNode)node).getDOM();
       if (CompatUtil.isUndefined(width)) {
         width = node.getMaxWidth().value;
       }
@@ -337,6 +340,10 @@ public class WXTextDomObject extends WXDomObject {
     setMeasureFunction(TEXT_MEASURE_FUNCTION);
   }
 
+  WXTextDomObject(NonYogaNode node) {
+    super(node);
+  }
+
   public TextPaint getTextPaint() {
     return mTextPaint;
   }
@@ -357,14 +364,15 @@ public class WXTextDomObject extends WXDomObject {
 
   @Override
   public void layoutAfter() {
+    float w = WXDomUtils.getContentWidth(getLayoutWidth(),getPadding(),getBorder());
     if (hasBeenMeasured) {
       if (layout != null &&
-          !CompatUtil.floatsEqual(WXDomUtils.getContentWidth(this), previousWidth)) {
-        recalculateLayout();
+          !CompatUtil.floatsEqual(w, previousWidth)) {
+        recalculateLayout(w);
       }
     } else {
       updateStyleAndText();
-      recalculateLayout();
+      recalculateLayout(w);
     }
     hasBeenMeasured = false;
     if (layout != null && !layout.equals(atomicReference.get()) &&
@@ -419,8 +427,7 @@ public class WXTextDomObject extends WXDomObject {
   /**
    * RecalculateLayout.
    */
-  private void recalculateLayout() {
-    float contentWidth = WXDomUtils.getContentWidth(this);
+  private void recalculateLayout(float contentWidth) {
     if (contentWidth > 0) {
       spanned = createSpanned(mText);
       layout = createLayout(contentWidth, true, layout);

@@ -204,6 +204,8 @@
  */
 package com.taobao.weex.dom;
 
+import com.taobao.weex.dom.compat.NonYogaNode;
+
 import static com.facebook.yoga.YogaEdge.*;
 
 import static com.taobao.weex.common.Constants.Event;
@@ -221,6 +223,7 @@ public class TestDomObject extends WXDomObject {
   }
 
   public TestDomObject(){
+    super(new NonYogaNode());
     mStyles = new WXStyle();
     setHeight(100);
     setWidth(50);

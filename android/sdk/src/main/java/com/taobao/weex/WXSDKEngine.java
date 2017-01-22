@@ -260,6 +260,8 @@ public class WXSDKEngine {
       SoLoader.init(application,SoLoader.SOLOADER_ALLOW_ASYNC_INIT);
     } catch (IOException e) {
       e.printStackTrace();
+    } catch (NullPointerException e){
+      //ignore, will throw in unit test.
     }
 
     WXBridgeManager.getInstance().post(new Runnable() {

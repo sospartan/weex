@@ -256,7 +256,7 @@ public class WXDomObjectTest {
     JSONObject child = new JSONObject();
     child.put("ref","101");
     child.put("type","test");
-    WXDomObject childDom = new WXDomObject();
+    WXDomObject childDom = new TestDomObject();
     childDom.parseFromJson(child);
 
     dom.addChildAt(childDom,0);
@@ -286,7 +286,7 @@ public class WXDomObjectTest {
     obj.put("event",event);
     dom.parseFromJson(obj);
 
-    WXDomObject clone = dom.clone();
+    ImmutableDomObject clone = dom.toImmutable();
     assertEquals(clone.getRef(),"101");
     assertEquals(clone.getType(),"test");
 

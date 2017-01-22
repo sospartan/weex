@@ -238,10 +238,10 @@ public class ComponentTest {
       parent.createChildViewAt(-1);
     }
 
-    comp.setLayout(domObject);
+    comp.setLayout(domObject.toImmutable());
 
     domObject = new TestDomObject();
-    comp.updateDom(domObject);
+    comp.updateDom(domObject.toImmutable());
     comp.applyLayoutAndEvent(comp);
 
     addEvent(comp);

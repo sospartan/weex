@@ -221,7 +221,7 @@ import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
-import com.facebook.csslayout.CompatUtil;
+import com.taobao.weex.dom.compat.CompatUtil;
 import com.facebook.yoga.YogaEdge;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXViewUtils;

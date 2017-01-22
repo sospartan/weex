@@ -206,12 +206,21 @@ package com.taobao.weex.dom;
 
 import android.support.v4.util.ArrayMap;
 
+import com.taobao.weex.dom.compat.NonYogaNode;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.ui.component.WXBasicComponentType;
 
 import java.util.Map;
 
 public class WXListDomObject extends WXDomObject {
+
+    public WXListDomObject() {
+        super();
+    }
+
+    WXListDomObject(NonYogaNode node) {
+        super(node);
+    }
 
     @Override
     protected Map<String, String> getDefaultStyle() {

@@ -205,9 +205,8 @@
 
 package com.taobao.weex.utils;
 
-import com.facebook.csslayout.CompatUtil;
+import com.taobao.weex.dom.compat.CompatUtil;
 import com.facebook.yoga.YogaEdge;
-import com.taobao.weex.dom.ImmutableDomObject;
 
 public class WXDomUtils {
 
@@ -216,11 +215,8 @@ public class WXDomUtils {
    * @return the width of the dom that excludes left-padding, left-border-width,
    * right-border-width and right-padding.
    */
-  public static float getContentWidth(ImmutableDomObject domObject) {
-    float rawWidth = domObject.getLayoutWidth();
+  public static float getContentWidth(float rawWidth,float[] padding,float[] border) {
     float leftPadding, rightPadding, leftBorder, rightBorder;
-    float[] padding = domObject.getPadding();
-    float[] border = domObject.getBorder();
 
     if (!CompatUtil.isUndefined((leftPadding = padding[YogaEdge.LEFT.intValue()]))) {
       rawWidth -= leftPadding;
@@ -243,11 +239,8 @@ public class WXDomUtils {
    * @return the height of the dom that excludes top-padding, top-border-width, bottom-padding
    * and bottom-border-width.
    */
-  public static float getContentHeight(ImmutableDomObject domObject) {
-    float rawHeight = domObject.getLayoutHeight();
+  public static float getContentHeight(float rawHeight,float[] padding,float[] border) {
     float topPadding, bottomPadding, topBorder, bottomBorder;
-    float[] padding = domObject.getPadding();
-    float[] border = domObject.getBorder();
 
     if (!CompatUtil.isUndefined((topPadding = padding[YogaEdge.TOP.intValue()]))) {
       rawHeight -= topPadding;

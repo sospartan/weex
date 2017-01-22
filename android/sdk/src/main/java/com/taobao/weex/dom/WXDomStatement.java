@@ -325,7 +325,7 @@ class WXDomStatement {
    * Batch the execution of command objects and execute all the command objects created other
    * places, e.g. call {@link IWXRenderTask#execute()}.
    * First, it will rebuild the dom tree and do pre layout staff.
-   * Then call {@link com.facebook.csslayout.CSSNodeAPI#calculateLayout(CSSLayoutContext)} to
+   * Then call {@link com.taobao.weex.dom.compat.compat.CSSNodeAPI#calculateLayout(CSSLayoutContext)} to
    * start calculate layout.
    * Next, call {@link ApplyUpdateConsumer} to get changed dom and creating
    * corresponding command object.
@@ -526,7 +526,7 @@ class WXDomStatement {
       return;
     }
     domObject.old();
-    component.updateDom(domObject);
+    component.updateDom(domObject.toImmutable());
     if (component instanceof WXVContainer) {
       WXVContainer container = (WXVContainer) component;
       int count = container.childCount();
@@ -902,28 +902,29 @@ class WXDomStatement {
    * {@link com.taobao.weex.common.Constants.Event} or a gesture defined in {@link com.taobao
    * .weex.ui.view.gesture.WXGestureType}
    */
-  void addEvent(final String ref, final String type) {
+  void addEvent(String ref, final String type) {
     if (mDestroy) {
       return;
     }
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
-    final WXDomObject domObject = mRegistry.get(ref);
+    WXDomObject domObject = mRegistry.get(ref);
     if (domObject == null) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_ADDEVENT);
       }
       return;
     }
+    final ImmutableDomObject data = domObject.toImmutable();
     domObject.addEvent(type);
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
       public void execute() {
-        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,ref);
+        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,data.getRef());
         if(comp != null){
           //sync dom change to component
-          comp.updateDom(domObject);
-          mWXRenderManager.addEvent(mInstanceId, ref, type);
+          comp.updateDom(data);
+          mWXRenderManager.addEvent(mInstanceId, data.getRef(), type);
         }
       }
 
@@ -947,12 +948,12 @@ class WXDomStatement {
    * {@link com.taobao.weex.common.Constants.Event} or a gesture defined in {@link com.taobao
    * .weex.ui.view.gesture.WXGestureType}
    */
-  void removeEvent(final String ref, final String type) {
+  void removeEvent(String ref, final String type) {
     if (mDestroy) {
       return;
     }
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
-    final WXDomObject domObject = mRegistry.get(ref);
+    WXDomObject domObject = mRegistry.get(ref);
     if (domObject == null) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_REMOVEEVENT);
@@ -961,15 +962,16 @@ class WXDomStatement {
     }
     domObject.removeEvent(type);
 
+    final ImmutableDomObject data = domObject.toImmutable();
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
       public void execute() {
-        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,ref);
+        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,data.getRef());
         if(comp != null){
           //sync dom change to component
-          comp.updateDom(domObject);
-          mWXRenderManager.removeEvent(mInstanceId, ref, type);
+          comp.updateDom(data);
+          mWXRenderManager.removeEvent(mInstanceId, data.getRef(), type);
         }
 
       }

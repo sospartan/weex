@@ -318,7 +318,7 @@ class WXRenderStatement {
     if (component == null) {
       return;
     }
-    component.setLayout(domObject);
+    component.setLayout(domObject.toImmutable());
   }
 
   /**

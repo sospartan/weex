@@ -313,7 +313,12 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     this(instance,dom,parent);
   }
 
+  @Deprecated
   public WXComponent(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
+    this(instance,dom.toImmutable(),parent);
+  }
+
+  public WXComponent(WXSDKInstance instance, ImmutableDomObject dom, WXVContainer parent) {
     mInstance = instance;
     mContext = mInstance.getContext();
     mParent = parent;
@@ -1009,7 +1014,7 @@ public abstract class  WXComponent<T extends View> implements IWXObject, IWXActi
     return mAbsoluteX;
   }
 
-  public void updateDom(WXDomObject dom) {
+  public void updateDom(ImmutableDomObject dom) {
     if (dom == null) {
       return;
     }

@@ -210,9 +210,14 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.facebook.csslayout.CompatCSSNode;
+import com.taobao.weex.dom.compat.CompatYogaNode;
+import com.taobao.weex.dom.compat.CompatNode;
+import com.taobao.weex.dom.compat.DomBase;
+import com.taobao.weex.dom.compat.NonYogaNode;
 import com.facebook.yoga.YogaEdge;
 import static com.facebook.yoga.YogaEdge.*;
+
+import com.facebook.yoga.YogaNodeAPI;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.Constants;
@@ -232,7 +237,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Actually, {@link com.taobao.weex.ui.component.WXComponent} hold references to
  * {@link android.view.View} and {@link WXDomObject}.
  */
-public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable,ImmutableDomObject {
+public class WXDomObject extends DomBase<WXDomObject> implements Cloneable {
   public static final String CHILDREN = "children";
   public static final String TYPE = "type";
   public static final String TAG = WXDomObject.class.getSimpleName();
@@ -265,6 +270,27 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
 
   private boolean mYoung = false;
 
+  public WXDomObject(){
+    CompatYogaNode<WXDomObject> node = new CompatYogaNode<>();
+    init(node,node);
+  }
+
+  /**
+   * For unit test;
+   */
+  WXDomObject(NonYogaNode node){
+    init(node,node);
+  }
+
+  private void init(YogaNodeAPI node, CompatNode compatNode){
+    compatNode.setDOM(this);
+    mNode = node;
+    mCompatNode = compatNode;
+  }
+
+
+
+
   /** package **/ void traverseTree(Consumer...consumers){
     if (consumers == null) {
       return;
@@ -295,7 +321,6 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     return mRef;
   }
 
-  @Override
   public float[] getMargin() {
     return new float[]{getMargin(LEFT).value,getMargin(TOP).value,getMargin(RIGHT).value,getMargin(BOTTOM).value};
   }
@@ -318,12 +343,10 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     return mAttributes;
   }
 
-  @Override
   public float[] getPadding() {
     return new float[]{getPadding(LEFT).value,getPadding(TOP).value,getPadding(RIGHT).value,getPadding(BOTTOM).value};
   }
 
-  @Override
   public float[] getBorder() {
     return new float[]{getBorder(LEFT),getBorder(TOP),getBorder(RIGHT),getBorder(BOTTOM)};
   }
@@ -340,11 +363,6 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     return mDomContext;
   }
 
-  public void clearEvents(){
-    if(mEvents != null){
-      mEvents.clear();
-    }
-  }
 
   public static void prepareRoot(WXDomObject domObj,float defaultHeight,float defaultWidth) {
     domObj.mRef = WXDomObject.ROOT;
@@ -364,6 +382,7 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     domObj.updateStyle(style);
   }
 
+  @Deprecated
   protected final void copyFields(WXDomObject dest) {
     this.copyTo(dest);
     dest.mRef = mRef;
@@ -695,6 +714,7 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
    * Clone the current object. This is not a deep copy, only shadow copy of some reference.
    * @return The result object of clone.
    */
+  @Deprecated
   @Override
   public WXDomObject clone() {
     if (sDestroy.get()) {
@@ -711,6 +731,10 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
     }
 
     return dom;
+  }
+
+  public ImmutableDomObject toImmutable(){
+    return new ImmutableDomImpl(this);
   }
 
   public void destroy() {
@@ -769,11 +793,12 @@ public class WXDomObject extends CompatCSSNode<WXDomObject> implements Cloneable
       String type = (String) json.get(TYPE);
       WXDomObject domObject = WXDomObjectFactory.newInstance(type);
 
-      domObject.setViewPortWidth(wxsdkInstance.getViewPortWidth());
+
 
       if(domObject == null){
         return null;
       }
+      domObject.setViewPortWidth(wxsdkInstance.getViewPortWidth());
       domObject.parseFromJson(json);
       domObject.mDomContext = wxsdkInstance;
 
