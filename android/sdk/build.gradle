@@ -13,13 +13,6 @@ plugins {
     id "com.github.hierynomus.license" version "0.13.1"
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.hierynomus.license'
 apply plugin: 'checkstyle'
@@ -145,14 +138,19 @@ dependencies {
 }
 
 task licenseFormatWeex (type:nl.javadude.gradle.plugins.license.License) {
-    source = fileTree(dir: "src/main/java").include("**/*.java")
+    source = fileTree(dir: "../",
+            includes: [
+                    "sdk/src/main/java/**/*.java",
+                    "common/src/main/java/**/*.java",
+                    "playground/app/src/main/java/**/*.java"
+            ],
+            excludes: [])
 }
-licenseFormat.dependsOn licenseFormatWeex
 
 license{
-    header=file('license/LICENSE')
+    header=file("license/LICENSE")
 }
-preBuild.dependsOn licenseFormat
+preBuild.dependsOn licenseFormatWeex
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.10'
