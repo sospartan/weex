@@ -1,4 +1,4 @@
-/*
+/**
  *
  *                                  Apache License
  *                            Version 2.0, January 2004
@@ -203,92 +203,40 @@
  *    limitations under the License.
  */
 
-package com.taobao.weex.ui.view.border;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.SparseArray;
-import android.util.SparseIntArray;
-
-import com.facebook.yoga.YogaEdge;
+package com.taobao.weex.dom.compat;
 
 
-class BorderUtil {
+import com.facebook.yoga.YogaNode;
 
-  static <T> T fetchFromSparseArray(@Nullable SparseArray<T> array, int position, T fallback) {
-    return array == null ? fallback :
-           array.get(position, array.get(YogaEdge.ALL.intValue()));
+/**
+ * Created by sospartan on 29/09/2016.
+ */
+public class CompatYogaNode<T> extends YogaNode implements CompatNode<T,CompatYogaNode> {
+  private boolean mShow = true;
+  private T mDOM;
+
+  public void setDOM(T dom){
+    mDOM = dom;
   }
 
-  static int fetchFromSparseArray(@Nullable SparseIntArray array, int position, int fallback) {
-    return array == null ? fallback :
-           array.get(position, array.get(YogaEdge.ALL.intValue()));
+  public T getDOM(){
+    return mDOM;
   }
 
-  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value) {
-    updateSparseArray(array, position, value, false);
+  @Deprecated
+  public final void copyTo(CompatYogaNode dest) {
+    this.copyStyle(dest);//TODO: make sure all style is copied, include width,height,position,direction
   }
 
-  static void updateSparseArray(@NonNull SparseIntArray array, int position, int value) {
-      if (position == YogaEdge.ALL.intValue()) {
-        array.put(YogaEdge.ALL.intValue(), value);
-        array.put(YogaEdge.TOP.intValue(), value);
-        array.put(YogaEdge.LEFT.intValue(), value);
-        array.put(YogaEdge.RIGHT.intValue(), value);
-        array.put(YogaEdge.BOTTOM.intValue(), value);
-      } else {
-        array.put(position, value);
-      }
+  public boolean isShow() {
+    return mShow;
+  }
+
+  public void setVisible(boolean isShow) {
+    if (!mShow && isShow) {
+      markLayoutSeen();
     }
-
-  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value,
-                             boolean borderRadius) {
-    if (borderRadius) {
-      if (position == BorderDrawable.BORDER_RADIUS_ALL) {
-        array.put(BorderDrawable.BORDER_RADIUS_ALL, value);
-        array.put(BorderDrawable.BORDER_TOP_LEFT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_TOP_RIGHT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_BOTTOM_LEFT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_BOTTOM_RIGHT_RADIUS, value);
-      } else {
-        array.put(position, value);
-      }
-    } else {
-      if (position == YogaEdge.ALL.intValue()) {
-        array.put(YogaEdge.ALL.intValue(), value);
-        array.put(YogaEdge.TOP.intValue(), value);
-        array.put(YogaEdge.LEFT.intValue(), value);
-        array.put(YogaEdge.RIGHT.intValue(), value);
-        array.put(YogaEdge.BOTTOM.intValue(), value);
-      } else {
-        array.put(position, value);
-      }
-    }
-  }
-
-  static boolean areEdgesSame(float... numbers) {
-    if (numbers != null && numbers.length > 0) {
-      float init = numbers[0];
-      for (float number : numbers) {
-        if (number != init) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
-  }
-
-  static boolean areEdgesSame(int... numbers) {
-    if (numbers != null && numbers.length > 0) {
-      int init = numbers[0];
-      for (int number : numbers) {
-        if (number != init) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
+    mShow = isShow;
+//    dirty();
   }
 }

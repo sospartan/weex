@@ -205,10 +205,8 @@
 
 package com.taobao.weex.utils;
 
-import com.taobao.weex.dom.ImmutableDomObject;
-import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.CSSConstants;
-import com.taobao.weex.dom.flex.Spacing;
+import com.taobao.weex.dom.compat.CompatUtil;
+import com.facebook.yoga.YogaEdge;
 
 public class WXDomUtils {
 
@@ -217,23 +215,20 @@ public class WXDomUtils {
    * @return the width of the dom that excludes left-padding, left-border-width,
    * right-border-width and right-padding.
    */
-  public static float getContentWidth(ImmutableDomObject domObject) {
-    float rawWidth = domObject.getLayoutWidth();
+  public static float getContentWidth(float rawWidth,float[] padding,float[] border) {
     float leftPadding, rightPadding, leftBorder, rightBorder;
-    Spacing padding = domObject.getPadding();
-    Spacing border = domObject.getBorder();
 
-    if (!CSSConstants.isUndefined((leftPadding = padding.get(Spacing.LEFT)))) {
+    if (!CompatUtil.isUndefined((leftPadding = padding[YogaEdge.LEFT.intValue()]))) {
       rawWidth -= leftPadding;
     }
-    if (!CSSConstants.isUndefined((rightPadding = padding.get(Spacing.RIGHT)))) {
+    if (!CompatUtil.isUndefined((rightPadding = padding[YogaEdge.RIGHT.intValue()]))) {
       rawWidth -= rightPadding;
     }
 
-    if (!CSSConstants.isUndefined(leftBorder = border.get(Spacing.LEFT))) {
+    if (!CompatUtil.isUndefined(leftBorder = border[YogaEdge.LEFT.intValue()])) {
       rawWidth -= leftBorder;
     }
-    if (!CSSConstants.isUndefined(rightBorder = border.get(Spacing.RIGHT))) {
+    if (!CompatUtil.isUndefined(rightBorder = border[YogaEdge.RIGHT.intValue()])) {
       rawWidth -= rightBorder;
     }
     return rawWidth;
@@ -244,23 +239,20 @@ public class WXDomUtils {
    * @return the height of the dom that excludes top-padding, top-border-width, bottom-padding
    * and bottom-border-width.
    */
-  public static float getContentHeight(ImmutableDomObject domObject) {
-    float rawHeight = domObject.getLayoutHeight();
+  public static float getContentHeight(float rawHeight,float[] padding,float[] border) {
     float topPadding, bottomPadding, topBorder, bottomBorder;
-    Spacing padding = domObject.getPadding();
-    Spacing border = domObject.getBorder();
 
-    if (!CSSConstants.isUndefined((topPadding = padding.get(Spacing.TOP)))) {
+    if (!CompatUtil.isUndefined((topPadding = padding[YogaEdge.TOP.intValue()]))) {
       rawHeight -= topPadding;
     }
-    if (!CSSConstants.isUndefined((bottomPadding = padding.get(Spacing.BOTTOM)))) {
+    if (!CompatUtil.isUndefined((bottomPadding = padding[YogaEdge.BOTTOM.intValue()]))) {
       rawHeight -= bottomPadding;
     }
 
-    if (!CSSConstants.isUndefined(topBorder = border.get(Spacing.TOP))) {
+    if (!CompatUtil.isUndefined(topBorder = border[YogaEdge.TOP.intValue()])) {
       rawHeight -= topBorder;
     }
-    if (!CSSConstants.isUndefined(bottomBorder = border.get(Spacing.BOTTOM))) {
+    if (!CompatUtil.isUndefined(bottomBorder = border[YogaEdge.BOTTOM.intValue()])) {
       rawHeight -= bottomBorder;
     }
     return rawHeight;

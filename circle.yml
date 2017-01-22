@@ -9,6 +9,10 @@ machine:
    version: 7
   java:
     version: 'oraclejdk8'
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init
 test:
   override:
     #- npm run build

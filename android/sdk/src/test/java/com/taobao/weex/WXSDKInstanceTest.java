@@ -210,6 +210,7 @@ import com.taobao.weappplus_sdk.BuildConfig;
 import com.taobao.weex.bridge.WXBridgeManagerTest;
 import com.taobao.weex.common.WXPerformance;
 import com.taobao.weex.common.WXRenderStrategy;
+import com.taobao.weex.dom.TestDomObject;
 import com.taobao.weex.dom.WXDomManagerTest;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.component.*;
@@ -282,7 +283,7 @@ public class WXSDKInstanceTest {
 
   public static void setupRoot(WXSDKInstance instance){
 
-    WXDomObject domObject = new WXDomObject();
+    WXDomObject domObject = new TestDomObject();
     WXVContainer comp = (WXVContainer) WXComponentFactory.newInstance(instance, domObject, null);
 
     WXComponent root = WXDivTest.create(comp);

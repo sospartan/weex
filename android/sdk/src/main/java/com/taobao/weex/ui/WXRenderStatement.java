@@ -216,7 +216,6 @@ import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXRenderStrategy;
 import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.Spacing;
 import com.taobao.weex.ui.animation.WXAnimationBean;
 import com.taobao.weex.ui.animation.WXAnimationModule;
 import com.taobao.weex.ui.component.Scrollable;
@@ -303,7 +302,7 @@ class WXRenderStatement {
   /**
    * set padding style of View
    */
-  void setPadding(String ref, Spacing padding, Spacing border) {
+  void setPadding(String ref, float[] padding, float[] border) {
     WXComponent component = mRegistry.get(ref);
     if (component == null) {
       return;
@@ -319,7 +318,7 @@ class WXRenderStatement {
     if (component == null) {
       return;
     }
-    component.setLayout(domObject);
+    component.setLayout(domObject.toImmutable());
   }
 
   /**
@@ -529,10 +528,10 @@ class WXRenderStatement {
     mRegistry.put(dom.getRef(), component);
     if (component instanceof WXVContainer) {
       WXVContainer parentC = (WXVContainer) component;
-      int count = dom.childCount();
+      int count = dom.getChildCount();
       WXDomObject child = null;
       for (int i = 0; i < count; ++i) {
-        child = dom.getChild(i);
+        child = dom.getChildAt(i);
         if (child != null) {
           parentC.addChild(generateComponentTree(child, parentC));
         }

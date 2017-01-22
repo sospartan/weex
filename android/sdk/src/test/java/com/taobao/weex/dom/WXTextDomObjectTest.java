@@ -204,17 +204,16 @@
  */
 package com.taobao.weex.dom;
 
+import com.taobao.weex.dom.compat.NonYogaNode;
+import com.facebook.yoga.YogaMeasureMode;
+import com.facebook.yoga.YogaMeasureOutput;
 import com.taobao.weappplus_sdk.BuildConfig;
-import com.taobao.weex.common.Constants;
 import static com.taobao.weex.common.Constants.Name.*;
 
-import com.taobao.weex.dom.flex.MeasureOutput;
-import com.taobao.weex.ui.component.WXComponent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
@@ -233,7 +232,7 @@ public class WXTextDomObjectTest {
 
   @Before
   public void setUp() throws Exception {
-    dom = new WXTextDomObject();
+    dom = new WXTextDomObject(new NonYogaNode());
     WXStyle styles = dom.getStyles();
     styles.put(LINES,10);
     styles.put(FONT_SIZE,10);
@@ -249,12 +248,15 @@ public class WXTextDomObjectTest {
   @Test
   public void testMeasure() throws Exception {
     testLayoutBefore();
-    MeasureOutput output = new MeasureOutput();
-    WXTextDomObject mock = PowerMockito.spy(dom);
-    PowerMockito.when(mock,"getTextWidth",dom.getTextPaint(),100f,false).thenReturn(10f);
-    WXTextDomObject.TEXT_MEASURE_FUNCTION.measure(mock,100,output);
+    NonYogaNode node = PowerMockito.mock(NonYogaNode.class);
 
-    assertEquals(output.width,10f,0.1f);
+    WXTextDomObject mock = PowerMockito.spy(dom);
+
+    PowerMockito.when(node.getDOM()).thenReturn(mock);
+    PowerMockito.when(mock,"getTextWidth",dom.getTextPaint(),100f,false).thenReturn(10f);
+    long result = WXTextDomObject.TEXT_MEASURE_FUNCTION.measure(node,100, YogaMeasureMode.EXACTLY,100,YogaMeasureMode.EXACTLY);
+
+    assertEquals(result, YogaMeasureOutput.make(10f,0f));
   }
 
   @Test
@@ -262,12 +264,6 @@ public class WXTextDomObjectTest {
     dom.layoutAfter();
   }
 
-  @Test
-  public void testClone() throws Exception {
-    WXTextDomObject cloneDom = dom.clone();
-
-    assertFalse(cloneDom == dom);
-  }
 
   @After
   public void tearDown() throws Exception {

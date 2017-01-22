@@ -221,6 +221,7 @@ import com.taobao.weex.annotation.Component;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXPerformance;
 import com.taobao.weex.common.WXRenderStrategy;
+import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXUtils;
@@ -355,7 +356,12 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
     this(instance,dom,parent);
   }
 
-  public WXEmbed(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
+  @Deprecated
+  public WXEmbed(WXSDKInstance instance, WXDomObject node, WXVContainer parent){
+    this(instance,node.toImmutable(),parent);
+  }
+
+  public WXEmbed(WXSDKInstance instance, ImmutableDomObject node, WXVContainer parent) {
     super(instance, node, parent);
     mListener = new EmbedRenderListener(this);
 
@@ -459,8 +465,8 @@ public class WXEmbed extends WXDiv implements WXSDKInstance.OnInstanceVisibleLis
     ViewGroup.LayoutParams layoutParams = getHostView().getLayoutParams();
     sdkInstance.renderByUrl(WXPerformance.DEFAULT,
                             url,
-                            null, null, layoutParams.width,
-                            layoutParams.height,
+                            null, null, layoutParams==null?0:layoutParams.width,
+                            layoutParams==null?0:layoutParams.height,
                             WXRenderStrategy.APPEND_ASYNC);
     return sdkInstance;
   }

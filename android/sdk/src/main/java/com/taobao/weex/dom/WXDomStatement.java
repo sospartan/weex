@@ -219,9 +219,6 @@ import com.taobao.weex.adapter.IWXUserTrackAdapter;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXErrorCode;
-import com.taobao.weex.dom.flex.CSSLayoutContext;
-import com.taobao.weex.dom.flex.CSSNode;
-import com.taobao.weex.dom.flex.Spacing;
 import com.taobao.weex.ui.IWXRenderTask;
 import com.taobao.weex.ui.WXRenderManager;
 import com.taobao.weex.ui.animation.WXAnimationBean;
@@ -263,7 +260,6 @@ class WXDomStatement {
   private WXRenderManager mWXRenderManager;
   private ArrayList<IWXRenderTask> mNormalTasks;
   private Set <Pair<String, Map<String, Object>>> animations;
-  private CSSLayoutContext mLayoutContext;
   private volatile boolean mDirty;
   private boolean mDestroy;
   private Map<String, AddDomInfo> mAddDom = new HashMap<>();
@@ -280,7 +276,6 @@ class WXDomStatement {
   public WXDomStatement(String instanceId, WXRenderManager renderManager) {
     mDestroy = false;
     mInstanceId = instanceId;
-    mLayoutContext = new CSSLayoutContext();
     mRegistry = new ConcurrentHashMap<>();
     mNormalTasks = new ArrayList<>();
     animations = new LinkedHashSet<>();
@@ -297,7 +292,6 @@ class WXDomStatement {
     mAddDOMConsumer = null;
     mNormalTasks.clear();
     mAddDom.clear();
-    mLayoutContext = null;
     mWXRenderManager = null;
     animations.clear();
   }
@@ -314,9 +308,13 @@ class WXDomStatement {
       for (int i = 0; i < size; i++) {
         String fixedRef = root.getFixedStyleRefs().get(i);
         WXDomObject wxDomObject = mRegistry.get(fixedRef);
-        if (wxDomObject!=null && wxDomObject.parent != null) {
-          wxDomObject.parent.remove(wxDomObject);
-          root.add(wxDomObject, -1);
+        WXDomObject parent;
+        if (wxDomObject!=null && (parent = wxDomObject.getParent()) != null) {
+          int index = parent.indexOf(wxDomObject);
+          if(index != -1){
+            parent.removeChildAt(index);
+          }
+          root.addChildAt(wxDomObject, -1);
         }
       }
     }
@@ -327,7 +325,7 @@ class WXDomStatement {
    * Batch the execution of command objects and execute all the command objects created other
    * places, e.g. call {@link IWXRenderTask#execute()}.
    * First, it will rebuild the dom tree and do pre layout staff.
-   * Then call {@link com.taobao.weex.dom.flex.CSSNode#calculateLayout(CSSLayoutContext)} to
+   * Then call {@link com.taobao.weex.dom.compat.compat.CSSNodeAPI#calculateLayout(CSSLayoutContext)} to
    * start calculate layout.
    * Next, call {@link ApplyUpdateConsumer} to get changed dom and creating
    * corresponding command object.
@@ -364,7 +362,7 @@ class WXDomStatement {
     long start = System.currentTimeMillis();
 
 
-    rootDom.calculateLayout(mLayoutContext);
+    rootDom.calculateLayout();
 
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
     if (instance != null) {
@@ -415,7 +413,7 @@ class WXDomStatement {
       if (dom.hasUpdate()) {
         dom.markUpdateSeen();
         if (!dom.isYoung()) {
-          final WXDomObject copy = dom.clone();
+          final WXDomObject copy = dom;
           if (copy == null) {
             return;
           }
@@ -528,7 +526,7 @@ class WXDomStatement {
       return;
     }
     domObject.old();
-    component.updateDom(domObject);
+    component.updateDom(domObject.toImmutable());
     if (component instanceof WXVContainer) {
       WXVContainer container = (WXVContainer) component;
       int count = container.childCount();
@@ -591,7 +589,7 @@ class WXDomStatement {
       return;
     } else {
       //non-root and parent exist
-      parent.add(domObject, index);
+      parent.addChildAt(domObject, index);
     }
 
     domObject.traverseTree(
@@ -670,44 +668,38 @@ class WXDomStatement {
    * <li> dom to be moved is null </li>
    * <li> dom's parent is null </li>
    * <li> new parent is null </li>
-   * <li> parent is under {@link CSSNode#hasNewLayout()} </li>
+   * <li> parent is under {@link com.facebook.yoga.YogaNodeAPI#hasNewLayout()} </li>
    * </ul>
    * this method will return. Otherwise, put the command object in the queue.
    * @param ref Reference of the dom to be moved.
    * @param parentRef Reference of the new parent DOM node
    * @param index the index of the dom to be inserted in the new parent.
    */
-  void moveDom(final String ref, final String parentRef, int index) {
+  void moveDom(final String ref, final String parentRef, final int index) {
     if (mDestroy) {
       return;
     }
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
     WXDomObject domObject = mRegistry.get(ref);
     WXDomObject parentObject = mRegistry.get(parentRef);
-    if (domObject == null || domObject.parent == null
+    if (domObject == null || domObject.getParent() == null
         || parentObject == null || parentObject.hasNewLayout()) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_MOVEELEMENT);
       }
       return;
     }
-    if (domObject.parent.equals(parentObject)) {
-      if(parentObject.index(domObject) == index) {
-        return;
-      } else if(domObject.parent.index(domObject)<index){
-        index = index -1;
-      }
+    if (domObject.getParent().equals(parentObject) && parentObject.indexOf(domObject) == index) {
+      return;
     }
-
-    final int newIndex = index;
-    domObject.parent.remove(domObject);
-    parentObject.add(domObject, newIndex);
+    domObject.getParent().remove(domObject);
+    parentObject.addChildAt(domObject, index);
 
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
       public void execute() {
-        mWXRenderManager.moveComponent(mInstanceId, ref, parentRef, newIndex);
+        mWXRenderManager.moveComponent(mInstanceId, ref, parentRef, index);
       }
 
       @Override
@@ -740,7 +732,7 @@ class WXDomStatement {
       }
       return;
     }
-    WXDomObject parent = domObject.parent;
+    WXDomObject parent = domObject.getParent();
     if (parent == null) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_REMOVEELEMENT);
@@ -886,8 +878,8 @@ class WXDomStatement {
 
         @Override
         public void execute() {
-          Spacing padding = domObject.getPadding();
-          Spacing border = domObject.getBorder();
+          float[] padding = domObject.getPadding();
+          float[] border = domObject.getBorder();
           mWXRenderManager.setPadding(mInstanceId, domObject.getRef(), padding, border);
         }
 
@@ -910,28 +902,29 @@ class WXDomStatement {
    * {@link com.taobao.weex.common.Constants.Event} or a gesture defined in {@link com.taobao
    * .weex.ui.view.gesture.WXGestureType}
    */
-  void addEvent(final String ref, final String type) {
+  void addEvent(String ref, final String type) {
     if (mDestroy) {
       return;
     }
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
-    final WXDomObject domObject = mRegistry.get(ref);
+    WXDomObject domObject = mRegistry.get(ref);
     if (domObject == null) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_ADDEVENT);
       }
       return;
     }
+    final ImmutableDomObject data = domObject.toImmutable();
     domObject.addEvent(type);
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
       public void execute() {
-        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,ref);
+        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,data.getRef());
         if(comp != null){
           //sync dom change to component
-          comp.updateDom(domObject);
-          mWXRenderManager.addEvent(mInstanceId, ref, type);
+          comp.updateDom(data);
+          mWXRenderManager.addEvent(mInstanceId, data.getRef(), type);
         }
       }
 
@@ -955,12 +948,12 @@ class WXDomStatement {
    * {@link com.taobao.weex.common.Constants.Event} or a gesture defined in {@link com.taobao
    * .weex.ui.view.gesture.WXGestureType}
    */
-  void removeEvent(final String ref, final String type) {
+  void removeEvent(String ref, final String type) {
     if (mDestroy) {
       return;
     }
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
-    final WXDomObject domObject = mRegistry.get(ref);
+    WXDomObject domObject = mRegistry.get(ref);
     if (domObject == null) {
       if (instance != null) {
         instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_ERR_DOM_REMOVEEVENT);
@@ -969,15 +962,16 @@ class WXDomStatement {
     }
     domObject.removeEvent(type);
 
+    final ImmutableDomObject data = domObject.toImmutable();
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
       public void execute() {
-        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,ref);
+        WXComponent comp = mWXRenderManager.getWXComponent(mInstanceId,data.getRef());
         if(comp != null){
           //sync dom change to component
-          comp.updateDom(domObject);
-          mWXRenderManager.removeEvent(mInstanceId, ref, type);
+          comp.updateDom(data);
+          mWXRenderManager.removeEvent(mInstanceId, data.getRef(), type);
         }
 
       }
@@ -1142,8 +1136,8 @@ class WXDomStatement {
 
   private void addAnimationForDomTree(WXDomObject domObject){
     animations.add(new Pair<String, Map<String, Object>>(domObject.getRef(),domObject.getStyles()));
-    for(int i=0;i<domObject.childCount();i++){
-      addAnimationForDomTree(domObject.getChild(i));
+    for(int i=0;i<domObject.getChildCount();i++){
+      addAnimationForDomTree(domObject.getChildAt(i));
     }
   }
 
@@ -1186,6 +1180,7 @@ class WXDomStatement {
     }
     return null;
   }
+
 
 
   private static class AddDOMConsumer implements WXDomObject.Consumer {

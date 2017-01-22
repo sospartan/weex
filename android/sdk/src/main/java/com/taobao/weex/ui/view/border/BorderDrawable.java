@@ -221,8 +221,8 @@ import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
-import com.taobao.weex.dom.flex.FloatUtil;
-import com.taobao.weex.dom.flex.Spacing;
+import com.taobao.weex.dom.compat.CompatUtil;
+import com.facebook.yoga.YogaEdge;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXViewUtils;
 
@@ -360,9 +360,9 @@ public class BorderDrawable extends Drawable {
   public void setBorderWidth(int position, float width) {
     if (mBorderWidth == null) {
       mBorderWidth = new SparseArray<>(5);
-      mBorderWidth.put(Spacing.ALL, DEFAULT_BORDER_WIDTH);
+      mBorderWidth.put(YogaEdge.ALL.intValue(), DEFAULT_BORDER_WIDTH);
     }
-    if (!FloatUtil.floatsEqual(getBorderWidth(position), width)) {
+    if (!CompatUtil.floatsEqual(getBorderWidth(position), width)) {
       BorderUtil.updateSparseArray(mBorderWidth, position, width);
       mBorderWidth.put(position, width);
       mNeedUpdatePath = true;
@@ -377,9 +377,9 @@ public class BorderDrawable extends Drawable {
   public void setBorderRadius(int position, float radius) {
     if (mBorderRadius == null) {
       mBorderRadius = new SparseArray<>(5);
-      mBorderRadius.put(Spacing.ALL, DEFAULT_BORDER_RADIUS);
+      mBorderRadius.put(YogaEdge.ALL.intValue(), DEFAULT_BORDER_RADIUS);
     }
-    if (!FloatUtil.floatsEqual(getBorderRadius(mBorderRadius, position), radius)) {
+    if (!CompatUtil.floatsEqual(getBorderRadius(mBorderRadius, position), radius)) {
       BorderUtil.updateSparseArray(mBorderRadius, position, radius, true);
       mNeedUpdatePath = true;
       invalidateSelf();
@@ -415,7 +415,7 @@ public class BorderDrawable extends Drawable {
   public void setBorderColor(int position, int color) {
     if (mBorderColor == null) {
       mBorderColor = new SparseIntArray(5);
-      mBorderColor.put(Spacing.ALL, DEFAULT_BORDER_COLOR);
+      mBorderColor.put(YogaEdge.ALL.intValue(), DEFAULT_BORDER_COLOR);
     }
     if (getBorderColor(position) != color) {
       BorderUtil.updateSparseArray(mBorderColor, position, color);
@@ -430,7 +430,7 @@ public class BorderDrawable extends Drawable {
   public void setBorderStyle(int position, @NonNull String style) {
     if (mBorderStyle == null) {
       mBorderStyle = new SparseIntArray(5);
-      mBorderStyle.put(Spacing.ALL, DEFAULT_BORDER_STYLE.ordinal());
+      mBorderStyle.put(YogaEdge.ALL.intValue(), DEFAULT_BORDER_STYLE.ordinal());
     }
     try {
       int borderStyle = BorderStyle.valueOf(style.toUpperCase(Locale.US)).ordinal();
@@ -463,10 +463,10 @@ public class BorderDrawable extends Drawable {
 
   public boolean isRounded() {
     return mBorderRadius != null &&
-           (!FloatUtil.floatsEqual(getBorderRadius(mBorderRadius, BORDER_TOP_LEFT_RADIUS), 0) ||
-            !FloatUtil.floatsEqual(getBorderRadius(mBorderRadius, BORDER_TOP_RIGHT_RADIUS), 0) ||
-            !FloatUtil.floatsEqual(getBorderRadius(mBorderRadius, BORDER_BOTTOM_RIGHT_RADIUS), 0) ||
-            !FloatUtil.floatsEqual(getBorderRadius(mBorderRadius, BORDER_BOTTOM_LEFT_RADIUS), 0));
+           (!CompatUtil.floatsEqual(getBorderRadius(mBorderRadius, BORDER_TOP_LEFT_RADIUS), 0) ||
+            !CompatUtil.floatsEqual(getBorderRadius(mBorderRadius, BORDER_TOP_RIGHT_RADIUS), 0) ||
+            !CompatUtil.floatsEqual(getBorderRadius(mBorderRadius, BORDER_BOTTOM_RIGHT_RADIUS), 0) ||
+            !CompatUtil.floatsEqual(getBorderRadius(mBorderRadius, BORDER_BOTTOM_LEFT_RADIUS), 0));
   }
 
   public
@@ -532,7 +532,7 @@ public class BorderDrawable extends Drawable {
       float factor = getScaleFactor(borderBox);
       if (mOverlappingBorderRadius == null) {
         mOverlappingBorderRadius = new SparseArray<>(5);
-        mOverlappingBorderRadius.put(Spacing.ALL, 0f);
+        mOverlappingBorderRadius.put(YogaEdge.ALL.intValue(), 0f);
       }
       if (!Float.isNaN(factor) && factor < 1) {
         mOverlappingBorderRadius.put(BORDER_TOP_LEFT_RADIUS,
@@ -584,7 +584,7 @@ public class BorderDrawable extends Drawable {
   }
 
   private void updateFactor(@NonNull List<Float> list, float numerator, float denominator) {
-    if (!FloatUtil.floatsEqual(denominator, 0)) {
+    if (!CompatUtil.floatsEqual(denominator, 0)) {
       list.add(numerator / denominator);
     }
   }
@@ -593,36 +593,36 @@ public class BorderDrawable extends Drawable {
     RectF rectBounds = new RectF(getBounds());
     BorderCorner topLeft = new TopLeftCorner(
         getBorderRadius(mOverlappingBorderRadius, BORDER_TOP_LEFT_RADIUS),
-        getBorderWidth(Spacing.LEFT),
-        getBorderWidth(Spacing.TOP),
+        getBorderWidth(YogaEdge.LEFT.intValue()),
+        getBorderWidth(YogaEdge.TOP.intValue()),
         rectBounds);
     BorderCorner topRight = new TopRightCorner(
         getBorderRadius(mOverlappingBorderRadius, BORDER_TOP_RIGHT_RADIUS),
-        getBorderWidth(Spacing.TOP),
-        getBorderWidth(Spacing.RIGHT),
+        getBorderWidth(YogaEdge.TOP.intValue()),
+        getBorderWidth(YogaEdge.RIGHT.intValue()),
         rectBounds);
     BorderCorner bottomRight = new BottomRightCorner(
         getBorderRadius(mOverlappingBorderRadius, BORDER_BOTTOM_RIGHT_RADIUS),
-        getBorderWidth(Spacing.RIGHT),
-        getBorderWidth(Spacing.BOTTOM),
+        getBorderWidth(YogaEdge.RIGHT.intValue()),
+        getBorderWidth(YogaEdge.BOTTOM.intValue()),
         rectBounds);
     BorderCorner bottomLeft = new BottomLeftCorner(
         getBorderRadius(mOverlappingBorderRadius, BORDER_BOTTOM_LEFT_RADIUS),
-        getBorderWidth(Spacing.BOTTOM),
-        getBorderWidth(Spacing.LEFT),
+        getBorderWidth(YogaEdge.BOTTOM.intValue()),
+        getBorderWidth(YogaEdge.LEFT.intValue()),
         rectBounds);
-    drawOneSide(canvas, new BorderEdge(topLeft, topRight, Spacing.TOP,
-                                       getBorderWidth(Spacing.TOP)));
-    drawOneSide(canvas, new BorderEdge(topRight, bottomRight, Spacing.RIGHT,
-                                       getBorderWidth(Spacing.RIGHT)));
-    drawOneSide(canvas, new BorderEdge(bottomRight, bottomLeft, Spacing.BOTTOM,
-                                       getBorderWidth(Spacing.BOTTOM)));
-    drawOneSide(canvas, new BorderEdge(bottomLeft, topLeft, Spacing.LEFT,
-                                       getBorderWidth(Spacing.LEFT)));
+    drawOneSide(canvas, new BorderEdge(topLeft, topRight, YogaEdge.TOP.intValue(),
+                                       getBorderWidth(YogaEdge.TOP.intValue())));
+    drawOneSide(canvas, new BorderEdge(topRight, bottomRight, YogaEdge.RIGHT.intValue(),
+                                       getBorderWidth(YogaEdge.RIGHT.intValue())));
+    drawOneSide(canvas, new BorderEdge(bottomRight, bottomLeft, YogaEdge.BOTTOM.intValue(),
+                                       getBorderWidth(YogaEdge.BOTTOM.intValue())));
+    drawOneSide(canvas, new BorderEdge(bottomLeft, topLeft, YogaEdge.LEFT.intValue(),
+                                       getBorderWidth(YogaEdge.LEFT.intValue())));
   }
 
   private void drawOneSide(Canvas canvas, @NonNull BorderEdge borderEdge) {
-    if (!FloatUtil.floatsEqual(0, getBorderWidth(borderEdge.getEdge()))) {
+    if (!CompatUtil.floatsEqual(0, getBorderWidth(borderEdge.getEdge()))) {
       preparePaint(borderEdge.getEdge());
       borderEdge.drawEdge(canvas, mPaint);
     }

@@ -223,6 +223,7 @@ import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.OnWXScrollListener;
 import com.taobao.weex.common.WXThread;
+import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.ComponentCreator;
 import com.taobao.weex.ui.component.helper.WXStickyHelper;
@@ -288,7 +289,14 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
     this(instance,dom,parent);
   }
 
+  @Deprecated
   public WXScroller(WXSDKInstance instance, WXDomObject node,
+                    WXVContainer parent) {
+    super(instance, node, parent);
+    stickyHelper = new WXStickyHelper(this);
+  }
+
+  public WXScroller(WXSDKInstance instance, ImmutableDomObject node,
                     WXVContainer parent) {
     super(instance, node, parent);
     stickyHelper = new WXStickyHelper(this);

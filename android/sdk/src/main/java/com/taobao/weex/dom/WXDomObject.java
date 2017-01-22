@@ -210,20 +210,23 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.taobao.weex.dom.compat.CompatYogaNode;
+import com.taobao.weex.dom.compat.CompatNode;
+import com.taobao.weex.dom.compat.DomBase;
+import com.taobao.weex.dom.compat.NonYogaNode;
+import com.facebook.yoga.YogaEdge;
+import static com.facebook.yoga.YogaEdge.*;
+
+import com.facebook.yoga.YogaNodeAPI;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.flex.CSSLayoutContext;
-import com.taobao.weex.dom.flex.CSSNode;
-import com.taobao.weex.dom.flex.Spacing;
 import com.taobao.weex.ui.component.WXBasicComponentType;
 import com.taobao.weex.utils.WXLogUtils;
 import com.taobao.weex.utils.WXViewUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -234,7 +237,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Actually, {@link com.taobao.weex.ui.component.WXComponent} hold references to
  * {@link android.view.View} and {@link WXDomObject}.
  */
-public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject {
+public class WXDomObject extends DomBase<WXDomObject> implements Cloneable {
   public static final String CHILDREN = "children";
   public static final String TYPE = "type";
   public static final String TAG = WXDomObject.class.getSimpleName();
@@ -257,15 +260,36 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
 
   /** package **/ WXEvent mEvents;
 
-  private List<WXDomObject> mDomChildren;
+//  private List<WXDomObject> mDomChildren;
 
   /** Do not access this field directly. This field will be removed soon. **/
-  @Deprecated
-  public WXDomObject parent;
+//  @Deprecated
+//  public WXDomObject parent;
 
   private ArrayList<String> fixedStyleRefs;
 
   private boolean mYoung = false;
+
+  public WXDomObject(){
+    CompatYogaNode<WXDomObject> node = new CompatYogaNode<>();
+    init(node,node);
+  }
+
+  /**
+   * For unit test;
+   */
+  WXDomObject(NonYogaNode node){
+    init(node,node);
+  }
+
+  private void init(YogaNodeAPI node, CompatNode compatNode){
+    compatNode.setDOM(this);
+    mNode = node;
+    mCompatNode = compatNode;
+  }
+
+
+
 
   /** package **/ void traverseTree(Consumer...consumers){
     if (consumers == null) {
@@ -276,10 +300,10 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
       consumer.accept(this);
     }
 
-    int count = childCount();
+    int count = getChildCount();
     WXDomObject child;
     for (int i = 0; i < count; ++i) {
-      child = getChild(i);
+      child = getChildAt(i);
       child.traverseTree(consumers);
     }
   }
@@ -295,6 +319,10 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
 
   public String getRef(){
     return mRef;
+  }
+
+  public float[] getMargin() {
+    return new float[]{getMargin(LEFT).value,getMargin(TOP).value,getMargin(RIGHT).value,getMargin(BOTTOM).value};
   }
 
   public String getType(){
@@ -315,6 +343,14 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
     return mAttributes;
   }
 
+  public float[] getPadding() {
+    return new float[]{getPadding(LEFT).value,getPadding(TOP).value,getPadding(RIGHT).value,getPadding(BOTTOM).value};
+  }
+
+  public float[] getBorder() {
+    return new float[]{getBorder(LEFT),getBorder(TOP),getBorder(RIGHT),getBorder(BOTTOM)};
+  }
+
   public @NonNull WXEvent getEvents(){
     if(mEvents == null){
       mEvents = new WXEvent();
@@ -327,11 +363,6 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
     return mDomContext;
   }
 
-  public void clearEvents(){
-    if(mEvents != null){
-      mEvents.clear();
-    }
-  }
 
   public static void prepareRoot(WXDomObject domObj,float defaultHeight,float defaultWidth) {
     domObj.mRef = WXDomObject.ROOT;
@@ -351,14 +382,14 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
     domObj.updateStyle(style);
   }
 
+  @Deprecated
   protected final void copyFields(WXDomObject dest) {
-    dest.cssstyle.copy(this.cssstyle);
+    this.copyTo(dest);
     dest.mRef = mRef;
     dest.mType = mType;
     dest.mStyles = mStyles == null ? null : mStyles.clone();//mStyles == null ? null : mStyles.clone();
     dest.mAttributes = mAttributes == null ? null : mAttributes.clone();//mAttrs == null ? null : mAttrs.clone();
     dest.mEvents = mEvents == null ? null : mEvents.clone();
-    dest.csslayout.copy(this.csslayout);
   }
 
   /**
@@ -415,8 +446,6 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
 
   /**
    * Tell whether this object need to be updated. This is usually called when
-   * {@link CSSNode#calculateLayout(CSSLayoutContext)} finishes and new layout has been
-   * calculated. This method is a simple wrapper method for {@link #hasNewLayout()} and
    * {@link #isDirty()}.
    * @return true for need update since last update.
    */
@@ -465,38 +494,21 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
   }
 
   public void remove(WXDomObject child) {
-    if (child == null || mDomChildren == null || sDestroy.get()) {
+    if (child == null || sDestroy.get()) {
       return;
     }
 
-    int index = mDomChildren.indexOf(child);
-    removeFromDom(child);
-    if (index != -1) {
-      super.removeChildAt(index);
-    }
-  }
+    int index = indexOf(child);
 
-  public void removeFromDom(WXDomObject child) {
-    if (child == null || mDomChildren == null || sDestroy.get()) {
-      return;
-    }
-
-    int index = mDomChildren.indexOf(child);
     if (index == -1) {
       if (WXEnvironment.isApkDebugable()) {
         WXLogUtils.e("[WXDomObject] remove function error");
       }
       return;
     }
-    mDomChildren.remove(index).parent = null;
+    removeChildAt(index);
   }
 
-  public int index(WXDomObject child) {
-    if (child == null || mDomChildren == null || sDestroy.get()) {
-      return -1;
-    }
-    return mDomChildren.indexOf(child);
-  }
 
   /**
    * Add the given WXDomObject as this object's child at specified index.
@@ -504,47 +516,18 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
    * @param index the index of child to be added. If the index is -1, the child will be added
    *              as the last child of current dom object.
    */
-  public void add(WXDomObject child, int index) {
-    if (child == null || index < -1 || sDestroy.get()) {
-      return;
-    }
-    if (mDomChildren == null) {
-      mDomChildren = new ArrayList<>();
-    }
-
-    int count = mDomChildren.size();
-    index = index >= count ? -1 : index;
-    if (index == -1) {
-      mDomChildren.add(child);
-      super.addChildAt(child, super.getChildCount());
-    } else {
-      mDomChildren.add(index, child);
-      super.addChildAt(child, index);
-    }
-    child.parent = this;
-  }
-
-  @Deprecated
-  public void add2Dom(WXDomObject child, int index) {
+  public void addChildAt(WXDomObject child, int index) {
     if (child == null || index < -1 || sDestroy.get()) {
       return;
     }
 
-    int count = super.getChildCount();
+    int count = getChildCount();
     index = index >= count ? -1 : index;
     if (index == -1) {
       super.addChildAt(child, super.getChildCount());
     } else {
       super.addChildAt(child, index);
     }
-    child.parent = this;
-  }
-
-  public WXDomObject getChild(int index) {
-    if (mDomChildren == null || sDestroy.get()) {
-      return null;
-    }
-    return mDomChildren.get(index);
   }
 
   /**
@@ -589,7 +572,7 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
       mAttributes = new WXAttr();
     }
     mAttributes.putAll(attrs);
-    super.dirty();
+//    dirty();
   }
 
   public void updateStyle(Map<String, Object> styles){
@@ -604,7 +587,7 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
       mStyles = new WXStyle();
     }
     mStyles.putAll(styles,byPesudo);
-    super.dirty();
+//    super.dirty();
   }
 
   /** package **/ void applyStyleToNode() {
@@ -644,79 +627,75 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
             break;
           case Constants.Name.DEFAULT_HEIGHT:
           case Constants.Name.HEIGHT:
-            setStyleHeight(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.HEIGHT)?stylesMap.getHeight():stylesMap.getDefaultHeight(),getViewPortWidth()));
+            setHeight(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.HEIGHT)?stylesMap.getHeight():stylesMap.getDefaultHeight(),getViewPortWidth()));
             break;
           case Constants.Name.WIDTH:
           case Constants.Name.DEFAULT_WIDTH:
-            setStyleWidth(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.WIDTH)?stylesMap.getWidth():stylesMap.getDefaultWidth(),getViewPortWidth()));
+            setWidth(WXViewUtils.getRealPxByWidth(stylesMap.containsKey(Constants.Name.WIDTH)?stylesMap.getWidth():stylesMap.getDefaultWidth(),getViewPortWidth()));
             break;
           case Constants.Name.POSITION:
             setPositionType(stylesMap.getPosition());
             break;
           case Constants.Name.LEFT:
-            setPositionLeft(WXViewUtils.getRealPxByWidth(stylesMap.getLeft(),getViewPortWidth()));
+            setPosition(YogaEdge.LEFT,WXViewUtils.getRealPxByWidth(stylesMap.getLeft(),getViewPortWidth()));
             break;
           case Constants.Name.TOP:
-            setPositionTop(WXViewUtils.getRealPxByWidth(stylesMap.getTop(),getViewPortWidth()));
+            setPosition(YogaEdge.TOP,WXViewUtils.getRealPxByWidth(stylesMap.getTop(),getViewPortWidth()));
             break;
           case Constants.Name.RIGHT:
-            setPositionRight(WXViewUtils.getRealPxByWidth(stylesMap.getRight(),getViewPortWidth()));
+            setPosition(YogaEdge.RIGHT,WXViewUtils.getRealPxByWidth(stylesMap.getRight(),getViewPortWidth()));
             break;
           case Constants.Name.BOTTOM:
-            setPositionBottom(WXViewUtils.getRealPxByWidth(stylesMap.getBottom(),getViewPortWidth()));
+            setPosition(YogaEdge.BOTTOM,WXViewUtils.getRealPxByWidth(stylesMap.getBottom(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN:
-            setMargin(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getMargin(),getViewPortWidth()));
+            setMargin(YogaEdge.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getMargin(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN_LEFT:
-            setMargin(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginLeft(),getViewPortWidth()));
+            setMargin(YogaEdge.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginLeft(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN_TOP:
-            setMargin(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getMarginTop(),getViewPortWidth()));
+            setMargin(YogaEdge.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getMarginTop(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN_RIGHT:
-            setMargin(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginRight(),getViewPortWidth()));
+            setMargin(YogaEdge.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getMarginRight(),getViewPortWidth()));
             break;
           case Constants.Name.MARGIN_BOTTOM:
-            setMargin(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getMarginBottom(),getViewPortWidth()));
+            setMargin(YogaEdge.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getMarginBottom(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_WIDTH:
-            setBorder(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getBorderWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getBorderWidth(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_TOP_WIDTH:
-            setBorder(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getBorderTopWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getBorderTopWidth(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_RIGHT_WIDTH:
-            setBorder(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderRightWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderRightWidth(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_BOTTOM_WIDTH:
-            setBorder(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getBorderBottomWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getBorderBottomWidth(),getViewPortWidth()));
             break;
           case Constants.Name.BORDER_LEFT_WIDTH:
-            setBorder(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderLeftWidth(),getViewPortWidth()));
+            setBorder(YogaEdge.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getBorderLeftWidth(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING:
-            setPadding(Spacing.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getPadding(),getViewPortWidth()));
+            setPadding(YogaEdge.ALL, WXViewUtils.getRealPxByWidth(stylesMap.getPadding(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING_LEFT:
-            setPadding(Spacing.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingLeft(),getViewPortWidth()));
+            setPadding(YogaEdge.LEFT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingLeft(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING_TOP:
-            setPadding(Spacing.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingTop(),getViewPortWidth()));
+            setPadding(YogaEdge.TOP, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingTop(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING_RIGHT:
-            setPadding(Spacing.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingRight(),getViewPortWidth()));
+            setPadding(YogaEdge.RIGHT, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingRight(),getViewPortWidth()));
             break;
           case Constants.Name.PADDING_BOTTOM:
-            setPadding(Spacing.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingBottom(),getViewPortWidth()));
+            setPadding(YogaEdge.BOTTOM, WXViewUtils.getRealPxByWidth(stylesMap.getPaddingBottom(),getViewPortWidth()));
             break;
         }
       }
     }
-  }
-
-  public int childCount() {
-    return mDomChildren == null ? 0 : mDomChildren.size();
   }
 
   public void hide() {
@@ -735,6 +714,7 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
    * Clone the current object. This is not a deep copy, only shadow copy of some reference.
    * @return The result object of clone.
    */
+  @Deprecated
   @Override
   public WXDomObject clone() {
     if (sDestroy.get()) {
@@ -753,6 +733,10 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
     return dom;
   }
 
+  public ImmutableDomObject toImmutable(){
+    return new ImmutableDomImpl(this);
+  }
+
   public void destroy() {
     sDestroy.set(true);
     if (mStyles != null) {
@@ -764,12 +748,10 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
     if (mEvents != null) {
       mEvents.clear();
     }
-    if (mDomChildren != null) {
-      int count = mDomChildren.size();
-      for (int i = 0; i < count; ++i) {
-        mDomChildren.get(i).destroy();
-      }
-      mDomChildren.clear();
+    int count = getChildCount();
+    for (int i = 0; i < count; ++i) {
+//      getChildAt(i).destroy();
+      removeChildAt(i);
     }
     mDomContext = null;
   }
@@ -811,11 +793,12 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
       String type = (String) json.get(TYPE);
       WXDomObject domObject = WXDomObjectFactory.newInstance(type);
 
-      domObject.setViewPortWidth(wxsdkInstance.getViewPortWidth());
+
 
       if(domObject == null){
         return null;
       }
+      domObject.setViewPortWidth(wxsdkInstance.getViewPortWidth());
       domObject.parseFromJson(json);
       domObject.mDomContext = wxsdkInstance;
 
@@ -824,7 +807,7 @@ public class WXDomObject extends CSSNode implements Cloneable,ImmutableDomObject
         JSONArray childrenArray = (JSONArray) children;
         int count = childrenArray.size();
         for (int i = 0; i < count; ++i) {
-          domObject.add(parse(childrenArray.getJSONObject(i),wxsdkInstance),-1);
+          domObject.addChildAt(parse(childrenArray.getJSONObject(i),wxsdkInstance),-1);
         }
       }
 

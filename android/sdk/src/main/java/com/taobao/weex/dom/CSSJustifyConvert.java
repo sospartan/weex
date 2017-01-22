@@ -206,22 +206,22 @@ package com.taobao.weex.dom;
 
 import android.text.TextUtils;
 
-import com.taobao.weex.dom.flex.CSSJustify;
+import com.facebook.yoga.YogaJustify;
 
 class CSSJustifyConvert {
 
-  public static CSSJustify convert(String s) {
-    CSSJustify cssJustify = CSSJustify.FLEX_START;
+  public static YogaJustify convert(String s) {
+    YogaJustify cssJustify = YogaJustify.FLEX_START;
     if (TextUtils.isEmpty(s) || s.equals("flex-start")) {
-      cssJustify = CSSJustify.FLEX_START;
+      cssJustify = YogaJustify.FLEX_START;
     } else if (s.equals("flex-end")) {
-      cssJustify = CSSJustify.FLEX_END;
+      cssJustify = YogaJustify.FLEX_END;
     } else if (s.equals("center")) {
-      cssJustify = CSSJustify.CENTER;
+      cssJustify = YogaJustify.CENTER;
     } else if (s.equals("space-between")) {
-      cssJustify = CSSJustify.SPACE_BETWEEN;
+      cssJustify = YogaJustify.SPACE_BETWEEN;
     } else if (s.equals("space-around")) {
-      cssJustify = CSSJustify.SPACE_AROUND;
+      cssJustify = YogaJustify.SPACE_AROUND;
     }
     return cssJustify;
   }

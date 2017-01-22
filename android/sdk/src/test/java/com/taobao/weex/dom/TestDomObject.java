@@ -204,7 +204,9 @@
  */
 package com.taobao.weex.dom;
 
-import com.taobao.weex.dom.flex.CSSLayout;
+import com.taobao.weex.dom.compat.NonYogaNode;
+
+import static com.facebook.yoga.YogaEdge.*;
 
 import static com.taobao.weex.common.Constants.Event;
 
@@ -221,13 +223,14 @@ public class TestDomObject extends WXDomObject {
   }
 
   public TestDomObject(){
+    super(new NonYogaNode());
     mStyles = new WXStyle();
-    csslayout.dimensions[0] = 100;
-    csslayout.dimensions[0] = 50;
-    csslayout.position[CSSLayout.POSITION_LEFT] = 10;
-    csslayout.position[CSSLayout.POSITION_RIGHT] = 20;
-    csslayout.position[CSSLayout.POSITION_TOP] = 20;
-    csslayout.position[CSSLayout.POSITION_BOTTOM] = 30;
+    setHeight(100);
+    setWidth(50);
+    setPosition(LEFT,10);
+    setPosition(RIGHT,20);
+    setPosition(TOP,20);
+    setPosition(BOTTOM,30);
     mAttributes = new WXAttr();
 
     mEvents = new WXEvent();

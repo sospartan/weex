@@ -206,16 +206,16 @@ package com.taobao.weex.dom;
 
 import android.text.TextUtils;
 
-import com.taobao.weex.dom.flex.CSSPositionType;
+import com.facebook.yoga.YogaPositionType;
 
 class CSSPositionTypeConvert {
 
-  public static CSSPositionType convert(String s) {
-    CSSPositionType position = CSSPositionType.RELATIVE;
+  public static YogaPositionType convert(String s) {
+    YogaPositionType position = YogaPositionType.RELATIVE;
     if (TextUtils.isEmpty(s) || s.equals("relative") || s.equals("sticky")) {
-      position = CSSPositionType.RELATIVE;
+      position = YogaPositionType.RELATIVE;
     } else if (s.equals("absolute") || s.equals("fixed")) {
-      position = CSSPositionType.ABSOLUTE;
+      position = YogaPositionType.ABSOLUTE;
     }
     return position;
   }

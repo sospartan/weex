@@ -1,4 +1,4 @@
-/*
+/**
  *
  *                                  Apache License
  *                            Version 2.0, January 2004
@@ -202,93 +202,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+package com.taobao.weex.dom.compat;
 
-package com.taobao.weex.ui.view.border;
+/**
+ * Created by sospartan on 21/01/2017.
+ */
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.SparseArray;
-import android.util.SparseIntArray;
+public interface CompatNode<T,D extends CompatNode> {
+  void setDOM(T dom);
 
-import com.facebook.yoga.YogaEdge;
+  T getDOM();
 
+  void copyTo(D dest);
 
-class BorderUtil {
+  boolean isShow();
 
-  static <T> T fetchFromSparseArray(@Nullable SparseArray<T> array, int position, T fallback) {
-    return array == null ? fallback :
-           array.get(position, array.get(YogaEdge.ALL.intValue()));
-  }
-
-  static int fetchFromSparseArray(@Nullable SparseIntArray array, int position, int fallback) {
-    return array == null ? fallback :
-           array.get(position, array.get(YogaEdge.ALL.intValue()));
-  }
-
-  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value) {
-    updateSparseArray(array, position, value, false);
-  }
-
-  static void updateSparseArray(@NonNull SparseIntArray array, int position, int value) {
-      if (position == YogaEdge.ALL.intValue()) {
-        array.put(YogaEdge.ALL.intValue(), value);
-        array.put(YogaEdge.TOP.intValue(), value);
-        array.put(YogaEdge.LEFT.intValue(), value);
-        array.put(YogaEdge.RIGHT.intValue(), value);
-        array.put(YogaEdge.BOTTOM.intValue(), value);
-      } else {
-        array.put(position, value);
-      }
-    }
-
-  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value,
-                             boolean borderRadius) {
-    if (borderRadius) {
-      if (position == BorderDrawable.BORDER_RADIUS_ALL) {
-        array.put(BorderDrawable.BORDER_RADIUS_ALL, value);
-        array.put(BorderDrawable.BORDER_TOP_LEFT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_TOP_RIGHT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_BOTTOM_LEFT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_BOTTOM_RIGHT_RADIUS, value);
-      } else {
-        array.put(position, value);
-      }
-    } else {
-      if (position == YogaEdge.ALL.intValue()) {
-        array.put(YogaEdge.ALL.intValue(), value);
-        array.put(YogaEdge.TOP.intValue(), value);
-        array.put(YogaEdge.LEFT.intValue(), value);
-        array.put(YogaEdge.RIGHT.intValue(), value);
-        array.put(YogaEdge.BOTTOM.intValue(), value);
-      } else {
-        array.put(position, value);
-      }
-    }
-  }
-
-  static boolean areEdgesSame(float... numbers) {
-    if (numbers != null && numbers.length > 0) {
-      float init = numbers[0];
-      for (float number : numbers) {
-        if (number != init) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
-  }
-
-  static boolean areEdgesSame(int... numbers) {
-    if (numbers != null && numbers.length > 0) {
-      int init = numbers[0];
-      for (int number : numbers) {
-        if (number != init) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
-  }
+  void setVisible(boolean isShow);
 }

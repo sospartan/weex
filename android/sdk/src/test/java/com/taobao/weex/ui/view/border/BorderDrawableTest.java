@@ -210,7 +210,8 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 
-import com.taobao.weex.dom.flex.Spacing;
+import com.facebook.yoga.YogaEdge;
+import com.taobao.weex.common.Constants;
 import com.taobao.weex.utils.WXResourceUtils;
 
 import org.junit.Before;
@@ -255,45 +256,45 @@ public class BorderDrawableTest {
   @Test
   public void testBorderWidth() throws Exception {
     BorderDrawable none = new BorderDrawable();
-    assertThat(none.getBorderWidth(Spacing.ALL), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
-    assertThat(none.getBorderWidth(Spacing.LEFT), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
-    assertThat(none.getBorderWidth(Spacing.RIGHT), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
-    assertThat(none.getBorderWidth(Spacing.TOP), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
-    assertThat(none.getBorderWidth(Spacing.BOTTOM), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
+    assertThat(none.getBorderWidth(YogaEdge.ALL.intValue()), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
+    assertThat(none.getBorderWidth(YogaEdge.LEFT.intValue()), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
+    assertThat(none.getBorderWidth(YogaEdge.RIGHT.intValue()), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
+    assertThat(none.getBorderWidth(YogaEdge.TOP.intValue()), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
+    assertThat(none.getBorderWidth(YogaEdge.BOTTOM.intValue()), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
 
     BorderDrawable full = new BorderDrawable();
-    full.setBorderWidth(Spacing.ALL, 12);
-    assertThat(full.getBorderWidth(Spacing.ALL), is(12f));
-    assertThat(full.getBorderWidth(Spacing.LEFT), is(12f));
-    assertThat(full.getBorderWidth(Spacing.RIGHT), is(12f));
-    assertThat(full.getBorderWidth(Spacing.TOP), is(12f));
-    assertThat(full.getBorderWidth(Spacing.BOTTOM), is(12f));
+    full.setBorderWidth(YogaEdge.ALL.intValue(), 12);
+    assertThat(full.getBorderWidth(YogaEdge.ALL.intValue()), is(12f));
+    assertThat(full.getBorderWidth(YogaEdge.LEFT.intValue()), is(12f));
+    assertThat(full.getBorderWidth(YogaEdge.RIGHT.intValue()), is(12f));
+    assertThat(full.getBorderWidth(YogaEdge.TOP.intValue()), is(12f));
+    assertThat(full.getBorderWidth(YogaEdge.BOTTOM.intValue()), is(12f));
 
     BorderDrawable noneAndPart = new BorderDrawable();
-    noneAndPart.setBorderWidth(Spacing.LEFT, 5);
-    noneAndPart.setBorderWidth(Spacing.TOP, 12);
-    assertThat(noneAndPart.getBorderWidth(Spacing.LEFT), is(5f));
-    assertThat(noneAndPart.getBorderWidth(Spacing.RIGHT), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
-    assertThat(noneAndPart.getBorderWidth(Spacing.TOP), is(12f));
-    assertThat(noneAndPart.getBorderWidth(Spacing.BOTTOM), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
+    noneAndPart.setBorderWidth(YogaEdge.LEFT.intValue(), 5);
+    noneAndPart.setBorderWidth(YogaEdge.TOP.intValue(), 12);
+    assertThat(noneAndPart.getBorderWidth(YogaEdge.LEFT.intValue()), is(5f));
+    assertThat(noneAndPart.getBorderWidth(YogaEdge.RIGHT.intValue()), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
+    assertThat(noneAndPart.getBorderWidth(YogaEdge.TOP.intValue()), is(12f));
+    assertThat(noneAndPart.getBorderWidth(YogaEdge.BOTTOM.intValue()), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
 
     BorderDrawable fullAndPart = new BorderDrawable();
-    fullAndPart.setBorderWidth(Spacing.ALL, 5);
-    fullAndPart.setBorderWidth(Spacing.LEFT, 12);
-    fullAndPart.setBorderWidth(Spacing.TOP, 19);
-    assertThat(fullAndPart.getBorderWidth(Spacing.LEFT), is(12f));
-    assertThat(fullAndPart.getBorderWidth(Spacing.RIGHT), is(5f));
-    assertThat(fullAndPart.getBorderWidth(Spacing.TOP), is(19f));
-    assertThat(fullAndPart.getBorderWidth(Spacing.BOTTOM), is(5f));
+    fullAndPart.setBorderWidth(YogaEdge.ALL.intValue(), 5);
+    fullAndPart.setBorderWidth(YogaEdge.LEFT.intValue(), 12);
+    fullAndPart.setBorderWidth(YogaEdge.TOP.intValue(), 19);
+    assertThat(fullAndPart.getBorderWidth(YogaEdge.LEFT.intValue()), is(12f));
+    assertThat(fullAndPart.getBorderWidth(YogaEdge.RIGHT.intValue()), is(5f));
+    assertThat(fullAndPart.getBorderWidth(YogaEdge.TOP.intValue()), is(19f));
+    assertThat(fullAndPart.getBorderWidth(YogaEdge.BOTTOM.intValue()), is(5f));
 
     BorderDrawable partAndFull = new BorderDrawable();
-    partAndFull.setBorderWidth(Spacing.LEFT, 12);
-    partAndFull.setBorderWidth(Spacing.ALL, 5);
-    assertThat(partAndFull.getBorderWidth(Spacing.ALL), is(5f));
-    assertThat(partAndFull.getBorderWidth(Spacing.LEFT), is(5f));
-    assertThat(partAndFull.getBorderWidth(Spacing.RIGHT), is(5f));
-    assertThat(partAndFull.getBorderWidth(Spacing.TOP), is(5f));
-    assertThat(partAndFull.getBorderWidth(Spacing.BOTTOM), is(5f));
+    partAndFull.setBorderWidth(YogaEdge.LEFT.intValue(), 12);
+    partAndFull.setBorderWidth(YogaEdge.ALL.intValue(), 5);
+    assertThat(partAndFull.getBorderWidth(YogaEdge.ALL.intValue()), is(5f));
+    assertThat(partAndFull.getBorderWidth(YogaEdge.LEFT.intValue()), is(5f));
+    assertThat(partAndFull.getBorderWidth(YogaEdge.RIGHT.intValue()), is(5f));
+    assertThat(partAndFull.getBorderWidth(YogaEdge.TOP.intValue()), is(5f));
+    assertThat(partAndFull.getBorderWidth(YogaEdge.BOTTOM.intValue()), is(5f));
   }
 
   @Test
@@ -307,7 +308,7 @@ public class BorderDrawableTest {
     assertThat(none.getBorderRadius(BorderDrawable.BORDER_BOTTOM_LEFT_RADIUS), is(BorderDrawable.DEFAULT_BORDER_WIDTH));
 
     BorderDrawable full = new BorderDrawable();
-    full.setBorderRadius(Spacing.ALL, 12);
+    full.setBorderRadius(YogaEdge.ALL.intValue(), 12);
     full.setBounds(new Rect(0, 0, 400, 400));
     full.draw(new Canvas());
     assertThat(full.getBorderRadius(BorderDrawable.BORDER_TOP_LEFT_RADIUS), is(12f));
@@ -442,90 +443,90 @@ public class BorderDrawableTest {
   @Test
   public void testBorderColor() throws Exception {
     BorderDrawable none = new BorderDrawable();
-    assertThat(none.getBorderColor(Spacing.ALL), is(BorderDrawable.DEFAULT_BORDER_COLOR));
-    assertThat(none.getBorderColor(Spacing.LEFT), is(BorderDrawable.DEFAULT_BORDER_COLOR));
-    assertThat(none.getBorderColor(Spacing.RIGHT), is(BorderDrawable.DEFAULT_BORDER_COLOR));
-    assertThat(none.getBorderColor(Spacing.TOP), is(BorderDrawable.DEFAULT_BORDER_COLOR));
-    assertThat(none.getBorderColor(Spacing.BOTTOM), is(BorderDrawable.DEFAULT_BORDER_COLOR));
+    assertThat(none.getBorderColor(YogaEdge.ALL.intValue()), is(BorderDrawable.DEFAULT_BORDER_COLOR));
+    assertThat(none.getBorderColor(YogaEdge.LEFT.intValue()), is(BorderDrawable.DEFAULT_BORDER_COLOR));
+    assertThat(none.getBorderColor(YogaEdge.RIGHT.intValue()), is(BorderDrawable.DEFAULT_BORDER_COLOR));
+    assertThat(none.getBorderColor(YogaEdge.TOP.intValue()), is(BorderDrawable.DEFAULT_BORDER_COLOR));
+    assertThat(none.getBorderColor(YogaEdge.BOTTOM.intValue()), is(BorderDrawable.DEFAULT_BORDER_COLOR));
 
     BorderDrawable full = new BorderDrawable();
-    full.setBorderColor(Spacing.ALL, Color.RED);
-    assertThat(full.getBorderColor(Spacing.ALL), is(Color.RED));
-    assertThat(full.getBorderColor(Spacing.LEFT), is(Color.RED));
-    assertThat(full.getBorderColor(Spacing.RIGHT), is(Color.RED));
-    assertThat(full.getBorderColor(Spacing.TOP), is(Color.RED));
-    assertThat(full.getBorderColor(Spacing.BOTTOM), is(Color.RED));
+    full.setBorderColor(YogaEdge.ALL.intValue(), Color.RED);
+    assertThat(full.getBorderColor(YogaEdge.ALL.intValue()), is(Color.RED));
+    assertThat(full.getBorderColor(YogaEdge.LEFT.intValue()), is(Color.RED));
+    assertThat(full.getBorderColor(YogaEdge.RIGHT.intValue()), is(Color.RED));
+    assertThat(full.getBorderColor(YogaEdge.TOP.intValue()), is(Color.RED));
+    assertThat(full.getBorderColor(YogaEdge.BOTTOM.intValue()), is(Color.RED));
 
     BorderDrawable noneAndPart = new BorderDrawable();
-    noneAndPart.setBorderColor(Spacing.LEFT, Color.BLUE);
-    noneAndPart.setBorderColor(Spacing.TOP, Color.GREEN);
-    assertThat(noneAndPart.getBorderColor(Spacing.LEFT), is(Color.BLUE));
-    assertThat(noneAndPart.getBorderColor(Spacing.RIGHT), is(BorderDrawable.DEFAULT_BORDER_COLOR));
-    assertThat(noneAndPart.getBorderColor(Spacing.TOP), is(Color.GREEN));
-    assertThat(noneAndPart.getBorderColor(Spacing.BOTTOM), is(BorderDrawable.DEFAULT_BORDER_COLOR));
+    noneAndPart.setBorderColor(YogaEdge.LEFT.intValue(), Color.BLUE);
+    noneAndPart.setBorderColor(YogaEdge.TOP.intValue(), Color.GREEN);
+    assertThat(noneAndPart.getBorderColor(YogaEdge.LEFT.intValue()), is(Color.BLUE));
+    assertThat(noneAndPart.getBorderColor(YogaEdge.RIGHT.intValue()), is(BorderDrawable.DEFAULT_BORDER_COLOR));
+    assertThat(noneAndPart.getBorderColor(YogaEdge.TOP.intValue()), is(Color.GREEN));
+    assertThat(noneAndPart.getBorderColor(YogaEdge.BOTTOM.intValue()), is(BorderDrawable.DEFAULT_BORDER_COLOR));
 
     BorderDrawable fullAndPart = new BorderDrawable();
-    fullAndPart.setBorderColor(Spacing.ALL, Color.BLUE);
-    fullAndPart.setBorderColor(Spacing.LEFT, Color.GREEN);
-    fullAndPart.setBorderColor(Spacing.TOP, Color.RED);
-    assertThat(fullAndPart.getBorderColor(Spacing.LEFT), is(Color.GREEN));
-    assertThat(fullAndPart.getBorderColor(Spacing.RIGHT), is(Color.BLUE));
-    assertThat(fullAndPart.getBorderColor(Spacing.TOP), is(Color.RED));
-    assertThat(fullAndPart.getBorderColor(Spacing.BOTTOM), is(Color.BLUE));
+    fullAndPart.setBorderColor(YogaEdge.ALL.intValue(), Color.BLUE);
+    fullAndPart.setBorderColor(YogaEdge.LEFT.intValue(), Color.GREEN);
+    fullAndPart.setBorderColor(YogaEdge.TOP.intValue(), Color.RED);
+    assertThat(fullAndPart.getBorderColor(YogaEdge.LEFT.intValue()), is(Color.GREEN));
+    assertThat(fullAndPart.getBorderColor(YogaEdge.RIGHT.intValue()), is(Color.BLUE));
+    assertThat(fullAndPart.getBorderColor(YogaEdge.TOP.intValue()), is(Color.RED));
+    assertThat(fullAndPart.getBorderColor(YogaEdge.BOTTOM.intValue()), is(Color.BLUE));
 
     BorderDrawable partAndFull = new BorderDrawable();
-    partAndFull.setBorderColor(Spacing.LEFT, Color.RED);
-    partAndFull.setBorderColor(Spacing.ALL, Color.BLUE);
-    assertThat(partAndFull.getBorderColor(Spacing.ALL), is(Color.BLUE));
-    assertThat(partAndFull.getBorderColor(Spacing.LEFT), is(Color.BLUE));
-    assertThat(partAndFull.getBorderColor(Spacing.RIGHT), is(Color.BLUE));
-    assertThat(partAndFull.getBorderColor(Spacing.TOP), is(Color.BLUE));
-    assertThat(partAndFull.getBorderColor(Spacing.BOTTOM), is(Color.BLUE));
+    partAndFull.setBorderColor(YogaEdge.LEFT.intValue(), Color.RED);
+    partAndFull.setBorderColor(YogaEdge.ALL.intValue(), Color.BLUE);
+    assertThat(partAndFull.getBorderColor(YogaEdge.ALL.intValue()), is(Color.BLUE));
+    assertThat(partAndFull.getBorderColor(YogaEdge.LEFT.intValue()), is(Color.BLUE));
+    assertThat(partAndFull.getBorderColor(YogaEdge.RIGHT.intValue()), is(Color.BLUE));
+    assertThat(partAndFull.getBorderColor(YogaEdge.TOP.intValue()), is(Color.BLUE));
+    assertThat(partAndFull.getBorderColor(YogaEdge.BOTTOM.intValue()), is(Color.BLUE));
 
   }
 
   @Test
   public void testBorderStyle() throws Exception {
     BorderDrawable none = new BorderDrawable();
-    assertThat(none.getBorderStyle(Spacing.ALL), is(BorderStyle.SOLID.ordinal()));
-    assertThat(none.getBorderStyle(Spacing.LEFT), is(BorderStyle.SOLID.ordinal()));
-    assertThat(none.getBorderStyle(Spacing.RIGHT), is(BorderStyle.SOLID.ordinal()));
-    assertThat(none.getBorderStyle(Spacing.TOP), is(BorderStyle.SOLID.ordinal()));
-    assertThat(none.getBorderStyle(Spacing.BOTTOM), is(BorderStyle.SOLID.ordinal()));
+    assertThat(none.getBorderStyle(YogaEdge.ALL.intValue()), is(BorderStyle.SOLID.ordinal()));
+    assertThat(none.getBorderStyle(YogaEdge.LEFT.intValue()), is(BorderStyle.SOLID.ordinal()));
+    assertThat(none.getBorderStyle(YogaEdge.RIGHT.intValue()), is(BorderStyle.SOLID.ordinal()));
+    assertThat(none.getBorderStyle(YogaEdge.TOP.intValue()), is(BorderStyle.SOLID.ordinal()));
+    assertThat(none.getBorderStyle(YogaEdge.BOTTOM.intValue()), is(BorderStyle.SOLID.ordinal()));
 
     BorderDrawable full = new BorderDrawable();
-    full.setBorderStyle(Spacing.ALL, BorderStyle.DOTTED.name());
-    assertThat(full.getBorderStyle(Spacing.ALL), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(full.getBorderStyle(Spacing.LEFT), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(full.getBorderStyle(Spacing.RIGHT), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(full.getBorderStyle(Spacing.TOP), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(full.getBorderStyle(Spacing.BOTTOM), is(BorderStyle.DOTTED.ordinal()));
+    full.setBorderStyle(YogaEdge.ALL.intValue(), BorderStyle.DOTTED.name());
+    assertThat(full.getBorderStyle(YogaEdge.ALL.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(full.getBorderStyle(YogaEdge.LEFT.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(full.getBorderStyle(YogaEdge.RIGHT.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(full.getBorderStyle(YogaEdge.TOP.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(full.getBorderStyle(YogaEdge.BOTTOM.intValue()), is(BorderStyle.DOTTED.ordinal()));
 
     BorderDrawable noneAndPart = new BorderDrawable();
-    noneAndPart.setBorderStyle(Spacing.LEFT, BorderStyle.DOTTED.name());
-    noneAndPart.setBorderStyle(Spacing.TOP, BorderStyle.DASHED.name());
-    assertThat(noneAndPart.getBorderStyle(Spacing.LEFT), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(noneAndPart.getBorderStyle(Spacing.RIGHT), is(BorderStyle.SOLID.ordinal()));
-    assertThat(noneAndPart.getBorderStyle(Spacing.TOP), is(BorderStyle.DASHED.ordinal()));
-    assertThat(noneAndPart.getBorderStyle(Spacing.BOTTOM), is(BorderStyle.SOLID.ordinal()));
+    noneAndPart.setBorderStyle(YogaEdge.LEFT.intValue(), BorderStyle.DOTTED.name());
+    noneAndPart.setBorderStyle(YogaEdge.TOP.intValue(), BorderStyle.DASHED.name());
+    assertThat(noneAndPart.getBorderStyle(YogaEdge.LEFT.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(noneAndPart.getBorderStyle(YogaEdge.RIGHT.intValue()), is(BorderStyle.SOLID.ordinal()));
+    assertThat(noneAndPart.getBorderStyle(YogaEdge.TOP.intValue()), is(BorderStyle.DASHED.ordinal()));
+    assertThat(noneAndPart.getBorderStyle(YogaEdge.BOTTOM.intValue()), is(BorderStyle.SOLID.ordinal()));
 
     BorderDrawable fullAndPart = new BorderDrawable();
-    fullAndPart.setBorderStyle(Spacing.ALL, BorderStyle.DASHED.name());
-    fullAndPart.setBorderStyle(Spacing.LEFT, BorderStyle.DOTTED.name());
-    fullAndPart.setBorderStyle(Spacing.TOP, BorderStyle.SOLID.name());
-    assertThat(fullAndPart.getBorderStyle(Spacing.LEFT), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(fullAndPart.getBorderStyle(Spacing.RIGHT), is(BorderStyle.DASHED.ordinal()));
-    assertThat(fullAndPart.getBorderStyle(Spacing.TOP), is(BorderStyle.SOLID.ordinal()));
-    assertThat(fullAndPart.getBorderStyle(Spacing.BOTTOM), is(BorderStyle.DASHED.ordinal()));
+    fullAndPart.setBorderStyle(YogaEdge.ALL.intValue(), BorderStyle.DASHED.name());
+    fullAndPart.setBorderStyle(YogaEdge.LEFT.intValue(), BorderStyle.DOTTED.name());
+    fullAndPart.setBorderStyle(YogaEdge.TOP.intValue(), BorderStyle.SOLID.name());
+    assertThat(fullAndPart.getBorderStyle(YogaEdge.LEFT.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(fullAndPart.getBorderStyle(YogaEdge.RIGHT.intValue()), is(BorderStyle.DASHED.ordinal()));
+    assertThat(fullAndPart.getBorderStyle(YogaEdge.TOP.intValue()), is(BorderStyle.SOLID.ordinal()));
+    assertThat(fullAndPart.getBorderStyle(YogaEdge.BOTTOM.intValue()), is(BorderStyle.DASHED.ordinal()));
 
     BorderDrawable partAndFull = new BorderDrawable();
-    partAndFull.setBorderStyle(Spacing.LEFT, BorderStyle.DASHED.name());
-    partAndFull.setBorderStyle(Spacing.ALL, BorderStyle.DOTTED.name());
-    assertThat(partAndFull.getBorderStyle(Spacing.ALL), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(partAndFull.getBorderStyle(Spacing.LEFT), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(partAndFull.getBorderStyle(Spacing.RIGHT), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(partAndFull.getBorderStyle(Spacing.TOP), is(BorderStyle.DOTTED.ordinal()));
-    assertThat(partAndFull.getBorderStyle(Spacing.BOTTOM), is(BorderStyle.DOTTED.ordinal()));
+    partAndFull.setBorderStyle(YogaEdge.LEFT.intValue(), BorderStyle.DASHED.name());
+    partAndFull.setBorderStyle(YogaEdge.ALL.intValue(), BorderStyle.DOTTED.name());
+    assertThat(partAndFull.getBorderStyle(YogaEdge.ALL.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(partAndFull.getBorderStyle(YogaEdge.LEFT.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(partAndFull.getBorderStyle(YogaEdge.RIGHT.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(partAndFull.getBorderStyle(YogaEdge.TOP.intValue()), is(BorderStyle.DOTTED.ordinal()));
+    assertThat(partAndFull.getBorderStyle(YogaEdge.BOTTOM.intValue()), is(BorderStyle.DOTTED.ordinal()));
   }
 
   @Test
@@ -534,7 +535,7 @@ public class BorderDrawableTest {
     assertThat(none.isRounded(), is(false));
 
     BorderDrawable full = new BorderDrawable();
-    full.setBorderRadius(Spacing.ALL, 12);
+    full.setBorderRadius(YogaEdge.ALL.intValue(), 12);
     assertThat(full.isRounded(), is(true));
 
     BorderDrawable noneAndPart = new BorderDrawable();

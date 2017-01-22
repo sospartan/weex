@@ -210,7 +210,6 @@ import com.taobao.weex.WXSDKInstanceTest;
 import com.taobao.weex.dom.TestDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.dom.WXEvent;
-import com.taobao.weex.dom.flex.Spacing;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -252,11 +251,12 @@ public class WXDivTest {
         WXSDKInstance instance = Mockito.mock(WXSDKInstance.class);
         Mockito.when(instance.getContext()).thenReturn(RuntimeEnvironment.application);
 
-        WXDomObject divDom = new WXDomObject();
+        WXDomObject divDom = new TestDomObject();
         WXDomObject spy = Mockito.spy(divDom);
-        Mockito.when(spy.getPadding()).thenReturn(new Spacing());
+        Mockito.when(spy.getPadding()).thenReturn(new float[]{0,0,0,0});
         Mockito.when(spy.getEvents()).thenReturn(new WXEvent());
         Mockito.when(spy.clone()).thenReturn(divDom);
+        Mockito.when(spy.toImmutable()).thenReturn(divDom.toImmutable());
         TestDomObject.setRef(divDom,"1");
         mWXDiv = new WXDiv(instance, divDom, null);
         mWXDiv.initView();
@@ -268,8 +268,9 @@ public class WXDivTest {
         Mockito.when(instance.getContext()).thenReturn(RuntimeEnvironment.application);
 
         WXDomObject testDom = Mockito.mock(WXDomObject.class);
-        Mockito.when(testDom.getPadding()).thenReturn(new Spacing());
-        Mockito.when(testDom.clone()).thenReturn(testDom);
+        Mockito.when(testDom.getPadding()).thenReturn(new float[]{0,0,0,0});
+//        Mockito.when(testDom.clone()).thenReturn(testDom);
+        Mockito.when(testDom.toImmutable()).thenReturn(new TestDomObject().toImmutable());
         TestDomObject.setRef(testDom,"2");
         WXText child1 = new WXText(instance, testDom, mWXDiv);
         child1.initView();
@@ -278,9 +279,9 @@ public class WXDivTest {
 
         assertEquals(1, mWXDiv.childCount());
 
-        WXDomObject testDom2 = Mockito.spy(new WXDomObject());
-        Mockito.when(testDom2.getPadding()).thenReturn(new Spacing());
-        Mockito.when(testDom2.clone()).thenReturn(testDom2);
+        WXDomObject testDom2 = Mockito.spy(new TestDomObject());
+        Mockito.when(testDom2.getPadding()).thenReturn(new float[]{0,0,0,0});
+        Mockito.when(testDom2.toImmutable()).thenReturn(new TestDomObject().toImmutable());
         TestDomObject.setRef(testDom2,"3");
         child2 = new WXText(instance, testDom2, mWXDiv);
         child2.initView();
@@ -291,8 +292,8 @@ public class WXDivTest {
         assertEquals(child2, mWXDiv.getChild(1));
 
         WXDomObject testDom3 = Mockito.mock(WXDomObject.class);
-        Mockito.when(testDom3.getPadding()).thenReturn(new Spacing());
-        Mockito.when(testDom3.clone()).thenReturn(testDom3);
+        Mockito.when(testDom3.getPadding()).thenReturn(new float[]{0,0,0,0});
+        Mockito.when(testDom3.toImmutable()).thenReturn(new TestDomObject().toImmutable());
         TestDomObject.setRef(testDom3,"4");
         WXText child3 = new WXText(instance, testDom3, mWXDiv);
         child3.initView();

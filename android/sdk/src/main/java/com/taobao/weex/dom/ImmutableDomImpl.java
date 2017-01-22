@@ -1,4 +1,4 @@
-/*
+/**
  *
  *                                  Apache License
  *                            Version 2.0, January 2004
@@ -202,93 +202,112 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+package com.taobao.weex.dom;
 
-package com.taobao.weex.ui.view.border;
+/**
+ * Created by sospartan on 20/01/2017.
+ */
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.SparseArray;
-import android.util.SparseIntArray;
+final class ImmutableDomImpl implements ImmutableDomObject {
+  private final String mRef;
+  private final String mType;
+  private final float[] mMargin;
+  private final float mWidth;
+  private final float mHeight;
+  private final float mPosX;
+  private final float mPosY;
+  private final float[] mBorder;
+  private final float[] mPadding;
+  private final boolean mIsFixed;
+  private final Object mExtra;
+  private final WXStyle mStyle;
+  private final WXAttr mAttr;
+  private final WXEvent mEvent;
 
-import com.facebook.yoga.YogaEdge;
-
-
-class BorderUtil {
-
-  static <T> T fetchFromSparseArray(@Nullable SparseArray<T> array, int position, T fallback) {
-    return array == null ? fallback :
-           array.get(position, array.get(YogaEdge.ALL.intValue()));
+  ImmutableDomImpl(WXDomObject dom){
+    mRef = dom.getRef();
+    mMargin = dom.getMargin();
+    mWidth = dom.getLayoutWidth();
+    mHeight = dom.getLayoutHeight();
+    mPosX = dom.getLayoutX();
+    mPosY = dom.getLayoutY();
+    mBorder = dom.getBorder();
+    mPadding = dom.getPadding();
+    mIsFixed = dom.isFixed();
+    mType = dom.getType();
+    mExtra = dom.getExtra();
+    mStyle = dom.getStyles().clone();
+    mAttr = dom.getAttrs().clone();
+    mEvent = dom.getEvents().clone();
   }
 
-  static int fetchFromSparseArray(@Nullable SparseIntArray array, int position, int fallback) {
-    return array == null ? fallback :
-           array.get(position, array.get(YogaEdge.ALL.intValue()));
+  @Override
+  public String getRef() {
+    return mRef;
   }
 
-  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value) {
-    updateSparseArray(array, position, value, false);
+  @Override
+  public float[] getMargin() {
+    return mMargin;
   }
 
-  static void updateSparseArray(@NonNull SparseIntArray array, int position, int value) {
-      if (position == YogaEdge.ALL.intValue()) {
-        array.put(YogaEdge.ALL.intValue(), value);
-        array.put(YogaEdge.TOP.intValue(), value);
-        array.put(YogaEdge.LEFT.intValue(), value);
-        array.put(YogaEdge.RIGHT.intValue(), value);
-        array.put(YogaEdge.BOTTOM.intValue(), value);
-      } else {
-        array.put(position, value);
-      }
-    }
-
-  static <T> void updateSparseArray(@NonNull SparseArray<T> array, int position, T value,
-                             boolean borderRadius) {
-    if (borderRadius) {
-      if (position == BorderDrawable.BORDER_RADIUS_ALL) {
-        array.put(BorderDrawable.BORDER_RADIUS_ALL, value);
-        array.put(BorderDrawable.BORDER_TOP_LEFT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_TOP_RIGHT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_BOTTOM_LEFT_RADIUS, value);
-        array.put(BorderDrawable.BORDER_BOTTOM_RIGHT_RADIUS, value);
-      } else {
-        array.put(position, value);
-      }
-    } else {
-      if (position == YogaEdge.ALL.intValue()) {
-        array.put(YogaEdge.ALL.intValue(), value);
-        array.put(YogaEdge.TOP.intValue(), value);
-        array.put(YogaEdge.LEFT.intValue(), value);
-        array.put(YogaEdge.RIGHT.intValue(), value);
-        array.put(YogaEdge.BOTTOM.intValue(), value);
-      } else {
-        array.put(position, value);
-      }
-    }
+  @Override
+  public float getLayoutWidth() {
+    return mWidth;
   }
 
-  static boolean areEdgesSame(float... numbers) {
-    if (numbers != null && numbers.length > 0) {
-      float init = numbers[0];
-      for (float number : numbers) {
-        if (number != init) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
+  @Override
+  public float getLayoutHeight() {
+    return mHeight;
   }
 
-  static boolean areEdgesSame(int... numbers) {
-    if (numbers != null && numbers.length > 0) {
-      int init = numbers[0];
-      for (int number : numbers) {
-        if (number != init) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
+  @Override
+  public float getLayoutX() {
+    return mPosX;
+  }
+
+  @Override
+  public float getLayoutY() {
+    return mPosY;
+  }
+
+  @Override
+  public boolean isFixed() {
+    return mIsFixed;
+  }
+
+  @Override
+  public WXStyle getStyles() {
+    return mStyle;
+  }
+
+  @Override
+  public WXEvent getEvents() {
+    return mEvent;
+  }
+
+  @Override
+  public WXAttr getAttrs() {
+    return mAttr;
+  }
+
+  @Override
+  public float[] getPadding() {
+    return mPadding;
+  }
+
+  @Override
+  public float[] getBorder() {
+    return mBorder;
+  }
+
+  @Override
+  public Object getExtra() {
+    return mExtra;
+  }
+
+  @Override
+  public String getType() {
+    return mType;
   }
 }

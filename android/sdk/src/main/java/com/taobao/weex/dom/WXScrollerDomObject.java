@@ -206,19 +206,29 @@ package com.taobao.weex.dom;
 
 import android.support.v4.util.ArrayMap;
 
+import com.taobao.weex.dom.compat.NonYogaNode;
 import com.taobao.weex.common.Constants;
 
 import java.util.Map;
 
 public class WXScrollerDomObject extends WXDomObject {
 
+
+    WXScrollerDomObject(NonYogaNode node) {
+        super(node);
+    }
+
+    public WXScrollerDomObject() {
+        super();
+    }
+
     @Override
     protected Map<String, String> getDefaultStyle() {
         Map<String, String> map = new ArrayMap<>();
 
         boolean isVertical = true;
-        if (parent != null) {
-            String direction = (String) parent.getAttrs().get(Constants.Name.SCROLL_DIRECTION);
+        if (getParent() != null) {
+            String direction = (String) getParent().getAttrs().get(Constants.Name.SCROLL_DIRECTION);
             if (direction != null && direction.equals("horizontal")) {
                 isVertical = false;
             }

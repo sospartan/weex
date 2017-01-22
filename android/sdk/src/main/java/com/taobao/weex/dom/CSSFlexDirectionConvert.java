@@ -206,22 +206,22 @@ package com.taobao.weex.dom;
 
 import android.text.TextUtils;
 
-import com.taobao.weex.dom.flex.CSSFlexDirection;
+import com.facebook.yoga.YogaFlexDirection;
 
 class CSSFlexDirectionConvert {
 
-  public static CSSFlexDirection convert(String s) {
-    CSSFlexDirection cssFlexDirection = CSSFlexDirection.ROW;
+  public static YogaFlexDirection convert(String s) {
+    YogaFlexDirection cssFlexDirection = YogaFlexDirection.ROW;
     if (TextUtils.isEmpty(s)) {
-      cssFlexDirection = CSSFlexDirection.ROW;
+      cssFlexDirection = YogaFlexDirection.ROW;
     } else if (s.equals("column")) {
-      cssFlexDirection = CSSFlexDirection.COLUMN;
+      cssFlexDirection = YogaFlexDirection.COLUMN;
     } else if (s.equals("column-reverse")) {
-      cssFlexDirection = CSSFlexDirection.COLUMN_REVERSE;
+      cssFlexDirection = YogaFlexDirection.COLUMN_REVERSE;
     } else if (s.equals("row")) {
-      cssFlexDirection = CSSFlexDirection.ROW;
+      cssFlexDirection = YogaFlexDirection.ROW;
     } else if (s.equals("row-reverse")) {
-      cssFlexDirection = CSSFlexDirection.ROW_REVERSE;
+      cssFlexDirection = YogaFlexDirection.ROW_REVERSE;
     }
     return cssFlexDirection;
   }

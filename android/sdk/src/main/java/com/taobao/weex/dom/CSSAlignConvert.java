@@ -206,39 +206,40 @@ package com.taobao.weex.dom;
 
 import android.text.TextUtils;
 
-import com.taobao.weex.dom.flex.CSSAlign;
+import com.facebook.yoga.YogaAlign;
+import com.taobao.weex.common.Constants;
 
 final class CSSAlignConvert {
 
-  public static CSSAlign convert2AlignItems(String s) {
-    CSSAlign align = CSSAlign.STRETCH;
+  public static YogaAlign convert2AlignItems(String s) {
+    YogaAlign align = YogaAlign.STRETCH;
     if (TextUtils.isEmpty(s)) {
-      align = CSSAlign.STRETCH;
-    } else if (s.equals("stretch")) {
-      align = CSSAlign.STRETCH;
-    } else if (s.equals("flex-end")) {
-      align = CSSAlign.FLEX_END;
-    } else if (s.equals("auto")) {
-      align = CSSAlign.AUTO;
-    } else if (s.equals("center")) {
-      align = CSSAlign.CENTER;
+      align = YogaAlign.STRETCH;
+    } else if (s.equals(Constants.Value.STRETCH)) {
+      align = YogaAlign.STRETCH;
+    } else if (s.equals(Constants.Value.FLEX_END)) {
+      align = YogaAlign.FLEX_END;
+    } else if (s.equals(Constants.Value.CENTER)) {
+      align = YogaAlign.CENTER;
+    } else if (s.equals(Constants.Value.FLEX_START)){
+      align = YogaAlign.FLEX_START;
     }
 
     return align;
   }
 
-  public static CSSAlign convert2AlignSelf(String s) {
-    CSSAlign align = CSSAlign.AUTO;
+  public static YogaAlign convert2AlignSelf(String s) {
+    YogaAlign align = YogaAlign.AUTO;
     if (TextUtils.isEmpty(s)) {
-      align = CSSAlign.AUTO;
-    } else if (s.equals("flex-start")) {
-      align = CSSAlign.FLEX_START;
-    } else if (s.equals("flex-end")) {
-      align = CSSAlign.FLEX_END;
-    } else if (s.equals("stretch")) {
-      align = CSSAlign.STRETCH;
-    } else if (s.equals("center")) {
-      align = CSSAlign.CENTER;
+      align = YogaAlign.AUTO;
+    } else if (s.equals(Constants.Value.FLEX_START)) {
+      align = YogaAlign.FLEX_START;
+    } else if (s.equals(Constants.Value.FLEX_END)) {
+      align = YogaAlign.FLEX_END;
+    } else if (s.equals(Constants.Value.STRETCH)) {
+      align = YogaAlign.STRETCH;
+    } else if (s.equals(Constants.Value.CENTER)) {
+      align = YogaAlign.CENTER;
     }
 
     return align;

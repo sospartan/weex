@@ -366,6 +366,10 @@ public class Constants {
     String PLAY = "play";
     String PAUSE = "pause";
     String STOP = "stop";
+    String FLEX_START = "flex-start";
+    String STRETCH = "stretch";
+    String FLEX_END = "flex-end";
+    String AUTO = "auto";
     String DIRECTION_LEFT = "left";
     String DIRECTION_RIGHT = "right";
     String DIRECTION_UP = "up";

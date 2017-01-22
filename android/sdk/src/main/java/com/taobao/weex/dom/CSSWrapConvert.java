@@ -206,16 +206,16 @@ package com.taobao.weex.dom;
 
 import android.text.TextUtils;
 
-import com.taobao.weex.dom.flex.CSSWrap;
+import com.facebook.yoga.YogaWrap;
 
 class CSSWrapConvert {
 
-  public static CSSWrap convert(String s) {
-    CSSWrap cssWrap = CSSWrap.NOWRAP;
+  public static YogaWrap convert(String s) {
+    YogaWrap cssWrap = YogaWrap.NO_WRAP;
     if (TextUtils.isEmpty(s)) {
       return cssWrap;
     } else if (s.equals("wrap")) {
-      return CSSWrap.WRAP;
+      return YogaWrap.WRAP;
     }
     return cssWrap;
   }

@@ -213,7 +213,6 @@ import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.common.WXThread;
 import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.Spacing;
 import com.taobao.weex.ui.animation.WXAnimationBean;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.utils.WXUtils;
@@ -329,7 +328,7 @@ public class WXRenderManager {
     statement.setExtra(ref, extra);
   }
 
-  public void setPadding(String instanceId, String ref, Spacing padding, Spacing border) {
+  public void setPadding(String instanceId, String ref, float[] padding, float[] border) {
     WXRenderStatement statement = mRegistries.get(instanceId);
     if (statement == null) {
       return;
