@@ -9,14 +9,23 @@ buildscript {
     }
 }
 
-
 plugins {
     id "com.github.hierynomus.license" version "0.13.1"
+    id "de.undercouch.download" version "3.1.2"
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.hierynomus.license'
 apply plugin: 'checkstyle'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+task("showBuildscriptDependencies", type: DependencyReportTask) {
+    configurations = buildscript.configurations
+}
 
 ext.disableCov = project.hasProperty('disableCov') ? project.getProperty('disableCov') : 'false'
 if(!disableCov.toBoolean()){
@@ -41,6 +50,39 @@ task checkstyle(type: Checkstyle) {
 checkstyle {
     toolVersion = '6.9'
 }
+
+license{
+    header=file("license/LICENSE")
+}
+
+task licenseFormatWeex (type:nl.javadude.gradle.plugins.license.License) {
+    source = fileTree(dir: "../",
+            includes: [
+                    "sdk/src/main/java/**/*.java",
+                    "common/src/main/java/**/*.java",
+                    "playground/app/src/main/java/**/*.java"
+            ],
+            excludes: [])
+}
+preBuild.dependsOn licenseFormatWeex
+
+def yogazip = "weex_20170123"
+task downloadZipFile(type: de.undercouch.gradle.tasks.download.Download) {
+    src "https://github.com/weexteam/yoga/archive/${yogazip}.zip"
+    overwrite false
+    acceptAnyCertificate true
+    dest file("${buildDir}/tmp/yoga.zip")
+}
+task getYoga(dependsOn: downloadZipFile, type: Copy) {
+    def zipFile = file("${buildDir}/tmp/yoga.zip")
+    def outputDir = file("${buildDir}/generated")
+
+    from zipTree(zipFile)
+    exclude '**/java/tests/**'
+    into outputDir
+}
+
+preBuild.dependsOn getYoga
 
 version = "0.9.4"
 
@@ -98,9 +140,9 @@ android {
     sourceSets {
         main {
             assets.srcDirs = ['assets']
-            jniLibs.srcDir(['libs','thirdpart/yoga/android/libs'])
+            jniLibs.srcDir(['libs',"${buildDir}/generated/yoga-${yogazip}/android/libs"])
             java {
-                srcDirs = ["src/main/java",'thirdpart/yoga/android/src'];
+                srcDirs = ["src/main/java","${buildDir}/generated/yoga-${yogazip}/java"];
             }
         }
         debug.setRoot('build-types/debug')
@@ -147,21 +189,6 @@ dependencies {
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile "org.robolectric:shadows-httpclient:3.0"
 }
-
-task licenseFormatWeex (type:nl.javadude.gradle.plugins.license.License) {
-    source = fileTree(dir: "../",
-            includes: [
-                    "sdk/src/main/java/**/*.java",
-                    "common/src/main/java/**/*.java",
-                    "playground/app/src/main/java/**/*.java"
-            ],
-            excludes: [])
-}
-
-license{
-    header=file("license/LICENSE")
-}
-preBuild.dependsOn licenseFormatWeex
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.10'
