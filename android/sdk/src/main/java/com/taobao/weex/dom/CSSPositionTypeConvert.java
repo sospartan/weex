@@ -207,14 +207,15 @@ package com.taobao.weex.dom;
 import android.text.TextUtils;
 
 import com.facebook.yoga.YogaPositionType;
+import static com.taobao.weex.common.Constants.Value.*;
 
 class CSSPositionTypeConvert {
 
   public static YogaPositionType convert(String s) {
     YogaPositionType position = YogaPositionType.RELATIVE;
-    if (TextUtils.isEmpty(s) || s.equals("relative") || s.equals("sticky")) {
+    if (TextUtils.isEmpty(s) || s.equals(RELATIVE) || s.equals(STICKY)) {
       position = YogaPositionType.RELATIVE;
-    } else if (s.equals("absolute") || s.equals("fixed")) {
+    } else if (s.equals(ABSOLUTE) || s.equals(FIXED)) {
       position = YogaPositionType.ABSOLUTE;
     }
     return position;

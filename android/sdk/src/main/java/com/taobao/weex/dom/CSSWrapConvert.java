@@ -207,6 +207,7 @@ package com.taobao.weex.dom;
 import android.text.TextUtils;
 
 import com.facebook.yoga.YogaWrap;
+import com.taobao.weex.common.Constants;
 
 class CSSWrapConvert {
 
@@ -214,7 +215,7 @@ class CSSWrapConvert {
     YogaWrap cssWrap = YogaWrap.NO_WRAP;
     if (TextUtils.isEmpty(s)) {
       return cssWrap;
-    } else if (s.equals("wrap")) {
+    } else if (s.equals(Constants.Value.WRAP)) {
       return YogaWrap.WRAP;
     }
     return cssWrap;

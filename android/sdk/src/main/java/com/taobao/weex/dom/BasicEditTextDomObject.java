@@ -207,7 +207,6 @@ package com.taobao.weex.dom;
 
 import android.text.TextPaint;
 import com.taobao.weex.dom.compat.CompatUtil;
-import com.taobao.weex.dom.compat.NonYogaNode;
 import com.facebook.yoga.YogaMeasureFunction;
 import com.facebook.yoga.YogaMeasureMode;
 import com.facebook.yoga.YogaMeasureOutput;
@@ -243,15 +242,9 @@ public class BasicEditTextDomObject extends WXDomObject {
         if (CompatUtil.isUndefined(width)) {
           width = node.getMaxWidth().value;
         }
-//        measureOutput.height = getMeasureHeight();
-//        measureOutput.width = width;
         return YogaMeasureOutput.make(width,getMeasureHeight());
       }
     });
-  }
-
-  BasicEditTextDomObject(NonYogaNode node) {
-    super(node);
   }
 
   @Override

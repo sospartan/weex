@@ -310,10 +310,7 @@ class WXDomStatement {
         WXDomObject wxDomObject = mRegistry.get(fixedRef);
         WXDomObject parent;
         if (wxDomObject!=null && (parent = wxDomObject.getParent()) != null) {
-          int index = parent.indexOf(wxDomObject);
-          if(index != -1){
-            parent.removeChildAt(index);
-          }
+          parent.remove(wxDomObject);
           root.addChildAt(wxDomObject, -1);
         }
       }
@@ -413,7 +410,7 @@ class WXDomStatement {
       if (dom.hasUpdate()) {
         dom.markUpdateSeen();
         if (!dom.isYoung()) {
-          final WXDomObject copy = dom;
+          final ImmutableDomObject copy = dom.toImmutable();
           if (copy == null) {
             return;
           }
@@ -675,7 +672,7 @@ class WXDomStatement {
    * @param parentRef Reference of the new parent DOM node
    * @param index the index of the dom to be inserted in the new parent.
    */
-  void moveDom(final String ref, final String parentRef, final int index) {
+  void moveDom(final String ref, final String parentRef, int index) {
     if (mDestroy) {
       return;
     }
@@ -689,17 +686,25 @@ class WXDomStatement {
       }
       return;
     }
-    if (domObject.getParent().equals(parentObject) && parentObject.indexOf(domObject) == index) {
-      return;
+
+
+
+    if (domObject.getParent().equals(parentObject)) {
+      if(parentObject.indexOf(domObject) == index){
+        return;
+      }else if(domObject.getParent().indexOf(domObject)<index){
+        index = index -1;
+      }
     }
+    final int newIndex = index;
     domObject.getParent().remove(domObject);
-    parentObject.addChildAt(domObject, index);
+    parentObject.addChildAt(domObject, newIndex);
 
     mNormalTasks.add(new IWXRenderTask() {
 
       @Override
       public void execute() {
-        mWXRenderManager.moveComponent(mInstanceId, ref, parentRef, index);
+        mWXRenderManager.moveComponent(mInstanceId, ref, parentRef, newIndex);
       }
 
       @Override

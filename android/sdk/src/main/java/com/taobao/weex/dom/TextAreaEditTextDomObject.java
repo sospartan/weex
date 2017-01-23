@@ -204,7 +204,6 @@
  */
 package com.taobao.weex.dom;
 
-import com.taobao.weex.dom.compat.NonYogaNode;
 import com.taobao.weex.common.Constants;
 
 /**
@@ -214,14 +213,6 @@ public class TextAreaEditTextDomObject extends BasicEditTextDomObject {
 
   public static final int DEFAULT_ROWS = 2;
   private int mNumberOfLines = DEFAULT_ROWS;
-
-  public TextAreaEditTextDomObject(){
-    super();
-  }
-
-  TextAreaEditTextDomObject(NonYogaNode node){
-    super(node);
-  }
 
   @Override
   protected float getMeasureHeight(){

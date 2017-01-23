@@ -205,7 +205,6 @@
 package com.taobao.weex.dom;
 
 import com.alibaba.fastjson.JSONObject;
-import com.taobao.weex.dom.compat.NonYogaNode;
 import com.taobao.weappplus_sdk.BuildConfig;
 import com.taobao.weex.InitConfig;
 import com.taobao.weex.WXSDKEngine;
@@ -263,11 +262,11 @@ public class WXDomStatementTest {
   @Test
   public void testCustomDomObject() throws Exception {
     WXDomObject root = new TestDomObject();
-    root.addChildAt(new WXListDomObject(new NonYogaNode()),0);
-    root.addChildAt(new WXScrollerDomObject(new NonYogaNode()),0);
-    root.addChildAt(new WXTextDomObject(new NonYogaNode()),0);
-    root.addChildAt(new WXSwitchDomObject(new NonYogaNode()),0);
-    root.addChildAt(new TextAreaEditTextDomObject(new NonYogaNode()),0);
+    root.addChildAt(new WXListDomObject(),0);
+    root.addChildAt(new WXScrollerDomObject(),0);
+    root.addChildAt(new WXTextDomObject(),0);
+    root.addChildAt(new WXSwitchDomObject(),0);
+    root.addChildAt(new TextAreaEditTextDomObject(),0);
     stmt.layout(root);
     root.traverseTree(WXDomStatement.ApplyStyleConsumer.getInstance());
   }

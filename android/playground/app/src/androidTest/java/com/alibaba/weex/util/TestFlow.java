@@ -18,8 +18,10 @@ import com.alibaba.weex.R;
 import com.alibaba.weex.WXPageActivity;
 import com.alibaba.weex.WeappJsBaseTestCase;
 import com.alibaba.weex.constants.Constants;
+import com.taobao.weex.devtools.inspector.elements.ObjectDescriptor;
 import com.taobao.weex.ui.view.WXTextView;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

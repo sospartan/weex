@@ -224,7 +224,6 @@ import android.text.style.UnderlineSpan;
 
 import com.taobao.weex.dom.compat.CompatNode;
 import com.taobao.weex.dom.compat.CompatUtil;
-import com.taobao.weex.dom.compat.NonYogaNode;
 import com.facebook.yoga.YogaMeasureFunction;
 import com.facebook.yoga.YogaMeasureMode;
 import com.facebook.yoga.YogaMeasureOutput;
@@ -338,10 +337,6 @@ public class WXTextDomObject extends WXDomObject {
     super();
     mTextPaint.setFlags(TextPaint.ANTI_ALIAS_FLAG);
     setMeasureFunction(TEXT_MEASURE_FUNCTION);
-  }
-
-  WXTextDomObject(NonYogaNode node) {
-    super(node);
   }
 
   public TextPaint getTextPaint() {

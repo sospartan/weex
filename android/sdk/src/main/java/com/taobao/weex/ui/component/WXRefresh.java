@@ -236,13 +236,8 @@ public class WXRefresh extends WXBaseRefresh implements WXSwipeLayout.WXOnRefres
     this(instance,dom,parent,isLazy);
   }
 
-  @Deprecated
   public WXRefresh(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) {
     super(instance, node, parent, lazy);
-  }
-
-  public WXRefresh(WXSDKInstance instance, ImmutableDomObject node, WXVContainer parent){
-    super(instance,node,parent);
   }
 
   @Override

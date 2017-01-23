@@ -204,9 +204,11 @@
  */
 package com.taobao.weex.ui.component;
 
+import android.view.ViewGroup;
 import com.taobao.weappplus_sdk.BuildConfig;
 import com.taobao.weex.WXSDKInstanceTest;
-import com.taobao.weex.dom.WXScrollerDomObjectTest;
+import com.taobao.weex.dom.TestDomObject;
+import com.taobao.weex.dom.WXScrollerDomObject;
 import com.taobao.weex.ui.view.WXScrollView;
 import org.junit.After;
 import org.junit.Before;
@@ -215,6 +217,8 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by sospartan on 8/25/16.
@@ -227,7 +231,7 @@ public class WXScrollerTest {
   public static WXScroller create(){
     WXDiv div = WXDivTest.create();
     ComponentTest.create(div);
-    WXScroller component = new WXScroller(WXSDKInstanceTest.createInstance(), WXScrollerDomObjectTest.create(),div);
+    WXScroller component = new WXScroller(WXSDKInstanceTest.createInstance(),new WXScrollerDomObject(),div);
     div.addChild(component);
     return component;
   }

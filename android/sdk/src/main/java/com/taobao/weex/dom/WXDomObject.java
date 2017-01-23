@@ -210,6 +210,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.taobao.weappplus_sdk.BuildConfig;
 import com.taobao.weex.dom.compat.CompatYogaNode;
 import com.taobao.weex.dom.compat.CompatNode;
 import com.taobao.weex.dom.compat.DomBase;
@@ -271,19 +272,19 @@ public class WXDomObject extends DomBase<WXDomObject> implements Cloneable {
   private boolean mYoung = false;
 
   public WXDomObject(){
-    CompatYogaNode<WXDomObject> node = new CompatYogaNode<>();
-    init(node,node);
+    if(BuildConfig.isMockEnvirment){
+      NonYogaNode<WXDomObject> node = new NonYogaNode<>();
+      node.setDOM(this);
+      init(node,node);
+    }else {
+      CompatYogaNode<WXDomObject> node = new CompatYogaNode<>();
+      node.setDOM(this);
+      init(node,node);
+    }
   }
 
-  /**
-   * For unit test;
-   */
-  WXDomObject(NonYogaNode node){
-    init(node,node);
-  }
 
   private void init(YogaNodeAPI node, CompatNode compatNode){
-    compatNode.setDOM(this);
     mNode = node;
     mCompatNode = compatNode;
   }

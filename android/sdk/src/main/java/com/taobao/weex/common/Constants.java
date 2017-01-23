@@ -374,6 +374,11 @@ public class Constants {
     String DIRECTION_RIGHT = "right";
     String DIRECTION_UP = "up";
     String DIRECTION_DOWN = "down";
+    String SPACE_BETWEEN = "space-between";
+    String SPACE_AROUND = "space-around";
+    String RELATIVE = "relative";
+    String ABSOLUTE = "absolute";
+    String WRAP = "wrap";
   }
 
   public interface Event {

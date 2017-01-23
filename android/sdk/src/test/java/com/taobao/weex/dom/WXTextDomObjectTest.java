@@ -232,7 +232,7 @@ public class WXTextDomObjectTest {
 
   @Before
   public void setUp() throws Exception {
-    dom = new WXTextDomObject(new NonYogaNode());
+    dom = new WXTextDomObject();
     WXStyle styles = dom.getStyles();
     styles.put(LINES,10);
     styles.put(FONT_SIZE,10);

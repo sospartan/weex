@@ -207,7 +207,6 @@ package com.taobao.weex.dom;
 import android.view.View;
 
 import com.taobao.weex.dom.compat.CompatYogaNode;
-import com.taobao.weex.dom.compat.NonYogaNode;
 import com.facebook.yoga.YogaMeasureFunction;
 import com.facebook.yoga.YogaMeasureMode;
 import com.facebook.yoga.YogaMeasureOutput;
@@ -254,7 +253,4 @@ public class WXSwitchDomObject extends WXDomObject {
     setMeasureFunction(SWITCH_MEASURE_FUNCTION);
   }
 
-  WXSwitchDomObject(NonYogaNode node) {
-    super(node);
-  }
 }

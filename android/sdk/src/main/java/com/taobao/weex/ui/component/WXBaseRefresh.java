@@ -208,7 +208,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.Component;
-import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.view.WXFrameLayout;
 
@@ -221,13 +220,8 @@ public class WXBaseRefresh extends WXVContainer<WXFrameLayout> {
 
   private WXLoadingIndicator mLoadingIndicator;
 
-  @Deprecated
   public WXBaseRefresh(WXSDKInstance instance, WXDomObject node, WXVContainer parent, boolean lazy) {
     super(instance, node, parent, lazy);
-  }
-
-  public WXBaseRefresh(WXSDKInstance instance, ImmutableDomObject node, WXVContainer parent) {
-    super(instance, node, parent);
   }
 
   @Override

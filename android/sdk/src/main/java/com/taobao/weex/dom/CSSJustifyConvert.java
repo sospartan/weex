@@ -207,20 +207,21 @@ package com.taobao.weex.dom;
 import android.text.TextUtils;
 
 import com.facebook.yoga.YogaJustify;
+import static com.taobao.weex.common.Constants.Value.*;
 
 class CSSJustifyConvert {
 
   public static YogaJustify convert(String s) {
     YogaJustify cssJustify = YogaJustify.FLEX_START;
-    if (TextUtils.isEmpty(s) || s.equals("flex-start")) {
+    if (TextUtils.isEmpty(s) || s.equals(FLEX_START)) {
       cssJustify = YogaJustify.FLEX_START;
-    } else if (s.equals("flex-end")) {
+    } else if (s.equals(FLEX_END)) {
       cssJustify = YogaJustify.FLEX_END;
-    } else if (s.equals("center")) {
+    } else if (s.equals(CENTER)) {
       cssJustify = YogaJustify.CENTER;
-    } else if (s.equals("space-between")) {
+    } else if (s.equals(SPACE_BETWEEN)) {
       cssJustify = YogaJustify.SPACE_BETWEEN;
-    } else if (s.equals("space-around")) {
+    } else if (s.equals(SPACE_AROUND)) {
       cssJustify = YogaJustify.SPACE_AROUND;
     }
     return cssJustify;

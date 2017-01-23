@@ -212,6 +212,7 @@ import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.common.WXThread;
+import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.animation.WXAnimationBean;
 import com.taobao.weex.ui.component.WXComponent;
@@ -309,7 +310,7 @@ public class WXRenderManager {
     return statement.createBodyOnDomThread(domObject);
   }
 
-  public void setLayout(String instanceId, String ref, WXDomObject domObject) {
+  public void setLayout(String instanceId, String ref, ImmutableDomObject domObject) {
     WXRenderStatement statement = mRegistries.get(instanceId);
     if (statement == null) {
       return;

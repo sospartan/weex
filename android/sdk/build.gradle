@@ -30,7 +30,6 @@ project.ext.set("androidTargetSDK",project.hasProperty('targetSDK') ? project.ge
 
 task checkstyle(type: Checkstyle) {
     configFile file("${project.rootDir}/config/quality/checkstyle.xml") // Where my checkstyle config is...
-    // configProperties.checkstyleSuppressionsPath = file("${project.rootDir}/config/quality/checkstyle/suppressions.xml").absolutePath // Where is my suppressions file for checkstyle is...
     source 'src'
     include '**/*.java'
     exclude '**/gen/**'
@@ -63,9 +62,20 @@ android {
 
     }
 
+    def isMockEnvirment = "false";
+    List<String> runTasks = gradle.startParameter.getTaskNames();
+
+    for (String item : runTasks) {
+        if (item.contains("DebugUnitTest")) {
+            isMockEnvirment = "true"
+            break;
+        }
+    }
+
     defaultConfig {
         buildConfigField "String", "buildJavascriptFrameworkVersion", "\"${jsfmVersion}\""
         buildConfigField "String", "buildVersion", "\"${version}\""
+        buildConfigField "boolean", "isMockEnvirment", "${isMockEnvirment}"
         minSdkVersion 14
         targetSdkVersion project.androidTargetSDK
         versionCode 1
