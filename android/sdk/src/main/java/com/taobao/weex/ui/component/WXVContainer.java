@@ -211,7 +211,6 @@ import android.view.ViewGroup;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.common.Constants;
-import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomObject;
 
 import java.util.ArrayList;
@@ -234,12 +233,7 @@ public abstract class WXVContainer<T extends ViewGroup> extends WXComponent<T> {
     super(instance, node, parent);
   }
 
-  @Deprecated
   public WXVContainer(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
-    super(instance, node, parent);
-  }
-
-  public WXVContainer(WXSDKInstance instance, ImmutableDomObject node, WXVContainer parent) {
     super(instance, node, parent);
   }
 

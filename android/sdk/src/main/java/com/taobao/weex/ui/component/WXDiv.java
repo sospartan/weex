@@ -209,7 +209,6 @@ import android.support.annotation.NonNull;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.Component;
-import com.taobao.weex.dom.ImmutableDomObject;
 import com.taobao.weex.dom.WXDomObject;
 import com.taobao.weex.ui.ComponentCreator;
 import com.taobao.weex.ui.view.WXFrameLayout;
@@ -233,12 +232,7 @@ public class WXDiv extends WXVContainer<WXFrameLayout> {
     this(instance,dom,parent);
   }
 
-  @Deprecated
-  public WXDiv(WXSDKInstance instance, WXDomObject node, WXVContainer parent){
-    this(instance,node.toImmutable(),parent);
-  }
-
-  public WXDiv(WXSDKInstance instance, ImmutableDomObject node, WXVContainer parent) {
+  public WXDiv(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
     super(instance, node, parent);
   }
 
