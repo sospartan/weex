@@ -21,10 +21,17 @@ export function getFilters (key, config) {
       return val * config.scale + 'px'
     },
     string: function (val) {
-      // string of a pure number or a number suffixed with a 'px' unit
-      if (val.match(/^-?\d*\.?\d+(?:px)?$/)) {
-        return parseFloat(val) * config.scale + 'px'
+      // string of a number suffixed with a 'px' or 'wx' unit. original RegExp is /^-?\d*\.?\d+(?:px)?$/
+      const match = val.match(/^([+-]?\d.*)+([p,w]x)$/)
+      if (match && match.length === 3) {
+        if (match[2] === 'px') {
+          return parseFloat(match[1]) * config.scale + 'px'
+        }
+        else if (match[2] === 'wx') {
+          return parseFloat(match[1]) * config.devicePixelRatio + 'px'
+        }
       }
+
       if (key.match(/transform/) && val.match(/translate/)) {
         return val.replace(/\d*\.?\d+px/g, function (match) {
           return parseInt(parseFloat(match) * config.scale) + 'px'

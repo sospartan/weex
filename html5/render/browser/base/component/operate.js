@@ -140,7 +140,8 @@ export function updateStyle (style) {
       continue
     }
     const parser = getFilters(key,
-      { scale: this.data.scale })[typeof value]
+      { scale: this.data.scale,
+        devicePixelRatio: global.WXEnvironment.devicePixelRatio })[typeof value]
     if (typeof parser === 'function') {
       value = parser(value)
     }
