@@ -44,8 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __weex_template__ = __webpack_require__(220)
-	var __weex_script__ = __webpack_require__(221)
+	var __weex_template__ = __webpack_require__(222)
+	var __weex_script__ = __webpack_require__(223)
 
 	__weex_define__('@weex-component/2c445dcf67fa0895d197edb5ffa2f439', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2173,7 +2173,9 @@
 /* 217 */,
 /* 218 */,
 /* 219 */,
-/* 220 */
+/* 220 */,
+/* 221 */,
+/* 222 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2290,7 +2292,7 @@
 	}
 
 /***/ },
-/* 221 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
@@ -2359,8 +2361,8 @@
 	    stream.fetch({
 	      method: 'POST',
 	      url: POST_URL,
-	      type: 'json'
-	    }, function (ret) {
+	      type: 'json',
+	      body: (0, _stringify2.default)({ username: 'weex' }) }, function (ret) {
 	      if (!ret.ok) {
 	        me.postResult = "request failed";
 	      } else {

@@ -44,10 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(289)
-	var __weex_template__ = __webpack_require__(297)
-	var __weex_style__ = __webpack_require__(298)
-	var __weex_script__ = __webpack_require__(299)
+	__webpack_require__(297)
+	var __weex_template__ = __webpack_require__(305)
+	var __weex_style__ = __webpack_require__(306)
+	var __weex_script__ = __webpack_require__(307)
 
 	__weex_define__('@weex-component/601bcbb157cb7b89fd0d4cc63178b528', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2232,12 +2232,20 @@
 /* 286 */,
 /* 287 */,
 /* 288 */,
-/* 289 */
+/* 289 */,
+/* 290 */,
+/* 291 */,
+/* 292 */,
+/* 293 */,
+/* 294 */,
+/* 295 */,
+/* 296 */,
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __weex_template__ = __webpack_require__(290)
-	var __weex_style__ = __webpack_require__(291)
-	var __weex_script__ = __webpack_require__(292)
+	var __weex_template__ = __webpack_require__(298)
+	var __weex_style__ = __webpack_require__(299)
+	var __weex_script__ = __webpack_require__(300)
 
 	__weex_define__('@weex-component/style-item', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2254,7 +2262,7 @@
 
 
 /***/ },
-/* 290 */
+/* 298 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2272,7 +2280,7 @@
 	}
 
 /***/ },
-/* 291 */
+/* 299 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2291,7 +2299,7 @@
 	}
 
 /***/ },
-/* 292 */
+/* 300 */
 /***/ function(module, exports) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
@@ -2310,11 +2318,11 @@
 
 
 /***/ },
-/* 293 */,
-/* 294 */,
-/* 295 */,
-/* 296 */,
-/* 297 */
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2940,7 +2948,7 @@
 	}
 
 /***/ },
-/* 298 */
+/* 306 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2957,7 +2965,7 @@
 	}
 
 /***/ },
-/* 299 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';

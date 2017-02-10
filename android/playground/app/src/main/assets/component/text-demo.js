@@ -2310,6 +2310,96 @@
 	          "attr": {
 	            "value": "bold"
 	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "100"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "200"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "300"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "400"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "500"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "600"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "700"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "800"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {},
+	          "attr": {
+	            "value": "900"
+	          }
 	        }
 	      ]
 	    },
