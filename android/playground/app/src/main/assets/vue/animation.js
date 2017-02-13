@@ -47,114 +47,50 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  var animation = __weex_require_module__('animation')
-	  module.exports = {
-	    data: function () {
-	      return {
-	        transformOrigin: 'center center',
-	        current_rotate: 0,
-	        current_scale: 1,
-	        current_color: '#FF0000',
-	        current_opacity: 1,
-	        current_translate: '',
-	        current_transform: '',
-	        isStop: true
-	      }
-	    },
-	    components: {
-	      panel: __webpack_require__(377),
-	      button: __webpack_require__(378)
-	    },
-	    methods: {
-	      anim: function(styles, timingFunction, duration, callback) {
-	        animation.transition(this.$refs.block.ref, {
-	          styles: styles,
-	          timingFunction: timingFunction,
-	          duration: duration
-	        }, callback);
-	      },
-	      rotate: function() {
-	        var self = this;
-	        self.current_rotate += 90;
-	        self.anim({
-	          transform: 'rotate(' + self.current_rotate + 'deg)'
-	        }, 'ease-in-out', 500, function() {
-	          if (self.current_rotate === 360) {
-	            self.current_rotate = 0;
-	          }
-	          else {
-	            self.rotate();
-	          }
-	        });
-	      },
-	      translate: function() {
-	        this.current_translate = this.current_translate ? '' : 'translate(50%, 50%)';
-	        this.anim({
-	          transform: this.current_translate
-	        }, 'ease-in', 500, function() {
-	        });
-	      },
-	      scale: function() {
-	        var self = this;
-	        self.current_scale = self.current_scale === 2 ? .5 : 2
-	        self.anim({
-	          transform: 'scale(' + self.current_scale + ')'
-	        }, 'linear', 500, function() {
-	        });
-	      },
-	      transform: function() {
-	        var self = this;
-	        this.current_transform = this.current_transform ? '' : 'rotate(45deg) scale(1.5)';
-	        this.anim({
-	          transform: this.current_transform,
-	          transformOrigin: 'left top'
-	        }, 'ease-out', 500, function() {
-	          if (self.current_transform !== '') {
-	            self.anim({
-	              transform: 'rotate(-90deg) scale(1.2)',
-	              transformOrigin: 'left top'
-	            }, 'ease-out', 500, function() {
-	            })
-	          }
-	          else {
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	          }
-	        });
-	      },
-	      composite: function() {
-	        var self = this;
-	        self.current_transform = self.current_transform ? '' : 'rotate(45deg) scale(1.5) translate(50%, 50%)';
-	        self.current_color = self.current_color === '#F0AD4E' ? '#D9534F' : '#F0AD4E';
-	        self.current_opacity = self.current_opacity === 1 ? 0.1 : 1;
-	        this.anim({
-	          transform: this.current_transform,
-	          transformOrigin: 'left top',
-	          backgroundColor: self.current_color,
-	          opacity: self.current_opacity
-	        }, 'ease-out', 1000, function() {
-	        });
-	      },
-	      color: function() {
-	        var self = this;
-	        self.current_color = self.current_color === '#F0AD4E' ? '#D9534F' : '#F0AD4E';
-	        self.anim({
-	          backgroundColor: self.current_color
-	        }, 'linear', 500, function() {
-	        });
-	      },
-	      opacity: function() {
-	        var self = this;
-	        self.current_opacity = self.current_opacity === 1 ? 0.1 : 1;
-	        self.anim({
-	          opacity: self.current_opacity
-	        }, 'linear', 500, function() {
-	        });
-	      }
-	    }
-	  };
+	/* styles */
+	__vue_styles__.push(__webpack_require__(381)
+	)
 
-	module.exports.style = {
+	/* script */
+	__vue_exports__ = __webpack_require__(382)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(391)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/animation.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
+	new Vue(module.exports)
+
+
+/***/ },
+
+/***/ 381:
+/***/ function(module, exports) {
+
+	module.exports = {
 	  "block": {
 	    "position": "absolute",
 	    "width": 250,
@@ -170,30 +106,182 @@
 	    "fontSize": 70
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',[_h('panel',{attrs:{"title":"Transform","type":"primary"}},[_h('button',{attrs:{"value":"Rotate","type":"primary","size":"middle"},nativeOn:{"click":function($event){rotate($event)}}}),_h('button',{staticStyle:{marginTop:"12px"},attrs:{"value":"Scale","type":"primary","size":"middle"},nativeOn:{"click":function($event){scale($event)}}}),_h('button',{staticStyle:{marginTop:"12px"},attrs:{"value":"Translate","type":"primary","size":"middle"},nativeOn:{"click":function($event){translate($event)}}}),_h('button',{staticStyle:{marginTop:"12px"},attrs:{"value":"Transform","type":"success","size":"middle"},nativeOn:{"click":function($event){transform($event)}}})]),_h('panel',{attrs:{"title":"Others","type":"primary"}},[_h('button',{attrs:{"value":"BgColor","type":"primary","size":"middle"},nativeOn:{"click":function($event){color($event)}}}),_h('button',{staticStyle:{marginTop:"12px"},attrs:{"value":"Opacity","type":"primary","size":"middle"},nativeOn:{"click":function($event){opacity($event)}}}),_h('button',{staticStyle:{marginTop:"12px"},attrs:{"value":"All","type":"success","size":"middle"},nativeOn:{"click":function($event){composite($event)}}})]),_h('div',{ref:"block",staticClass:["block"],style:{ transformOrigin: transformOrigin }},[_m(0)])])}}
-	module.exports.staticRenderFns = [function(){with(this){return _h('text',{staticClass:["block-txt"]},["Anim"])}}]
-	module.exports.el = "body"
-	new Vue(module.exports)
+
+/***/ },
+
+/***/ 382:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var animation = __weex_require_module__('animation');
+	module.exports = {
+	  data: function data() {
+	    return {
+	      transformOrigin: 'center center',
+	      current_rotate: 0,
+	      current_scale: 1,
+	      current_color: '#FF0000',
+	      current_opacity: 1,
+	      current_translate: '',
+	      current_transform: '',
+	      isStop: true
+	    };
+	  },
+	  components: {
+	    panel: __webpack_require__(383),
+	    button: __webpack_require__(387)
+	  },
+	  methods: {
+	    anim: function anim(styles, timingFunction, duration, callback) {
+	      animation.transition(this.$refs.block.ref, {
+	        styles: styles,
+	        timingFunction: timingFunction,
+	        duration: duration
+	      }, callback);
+	    },
+	    rotate: function rotate() {
+	      var self = this;
+	      self.current_rotate += 90;
+	      self.anim({
+	        transform: 'rotate(' + self.current_rotate + 'deg)'
+	      }, 'ease-in-out', 500, function () {
+	        if (self.current_rotate === 360) {
+	          self.current_rotate = 0;
+	        } else {
+	          self.rotate();
+	        }
+	      });
+	    },
+	    translate: function translate() {
+	      this.current_translate = this.current_translate ? '' : 'translate(50%, 50%)';
+	      this.anim({
+	        transform: this.current_translate
+	      }, 'ease-in', 500, function () {});
+	    },
+	    scale: function scale() {
+	      var self = this;
+	      self.current_scale = self.current_scale === 2 ? .5 : 2;
+	      self.anim({
+	        transform: 'scale(' + self.current_scale + ')'
+	      }, 'linear', 500, function () {});
+	    },
+	    transform: function transform() {
+	      var self = this;
+	      this.current_transform = this.current_transform ? '' : 'rotate(45deg) scale(1.5)';
+	      this.anim({
+	        transform: this.current_transform,
+	        transformOrigin: 'left top'
+	      }, 'ease-out', 500, function () {
+	        if (self.current_transform !== '') {
+	          self.anim({
+	            transform: 'rotate(-90deg) scale(1.2)',
+	            transformOrigin: 'left top'
+	          }, 'ease-out', 500, function () {});
+	        } else {}
+	      });
+	    },
+	    composite: function composite() {
+	      var self = this;
+	      self.current_transform = self.current_transform ? '' : 'rotate(45deg) scale(1.5) translate(50%, 50%)';
+	      self.current_color = self.current_color === '#F0AD4E' ? '#D9534F' : '#F0AD4E';
+	      self.current_opacity = self.current_opacity === 1 ? 0.1 : 1;
+	      this.anim({
+	        transform: this.current_transform,
+	        transformOrigin: 'left top',
+	        backgroundColor: self.current_color,
+	        opacity: self.current_opacity
+	      }, 'ease-out', 1000, function () {});
+	    },
+	    color: function color() {
+	      var self = this;
+	      self.current_color = self.current_color === '#F0AD4E' ? '#D9534F' : '#F0AD4E';
+	      self.anim({
+	        backgroundColor: self.current_color
+	      }, 'linear', 500, function () {});
+	    },
+	    opacity: function opacity() {
+	      var self = this;
+	      self.current_opacity = self.current_opacity === 1 ? 0.1 : 1;
+	      self.anim({
+	        opacity: self.current_opacity
+	      }, 'linear', 500, function () {});
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 383:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(384)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(385)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(386)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/panel.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 377:
+/***/ 384:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      title: { default: '' },
-	      paddingBody: { default: 20 },
-	      paddingHead: { default: 20 },
-	      dataClass: { default: '' }, // FIXME transfer class
-	      border:{ default: 0 }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "panel": {
 	    "marginBottom": 20,
 	    "backgroundColor": "#ffffff",
@@ -239,38 +327,132 @@
 	  "panel-header-danger": {
 	    "backgroundColor": "rgb(217,83,79)",
 	    "color": "#ffffff"
-	  },
-	  "panel-body": {}
+	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['panel', 'panel-' + type],style:{ borderWidth: border }},[_h('text',{class:['panel-header', 'panel-header-' + type],style:{
-	        paddingTop: paddingHead,
-	        paddingBottom: paddingHead,
-	        paddingLeft: paddingHead*1.5,
-	        paddingRight: paddingHead*1.5
-	      }},[_s(title)]),_h('div',{class:['panel-body', 'panel-body-' + type],style:{
-	        paddingTop: paddingBody,
-	        paddingBottom: paddingBody,
-	        paddingLeft: paddingBody*1.5,
-	        paddingRight: paddingBody*1.5
-	      }},[_t("default")])])}}
-	delete module.exports.el
+
+/***/ },
+
+/***/ 385:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    title: { default: '' },
+	    paddingBody: { default: 20 },
+	    paddingHead: { default: 20 },
+	    dataClass: { default: '' }, // FIXME transfer class
+	    border: { default: 0 }
+	  }
+	};
+
+/***/ },
+
+/***/ 386:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['panel', 'panel-' + _vm.type],
+	    style: {
+	      borderWidth: _vm.border
+	    }
+	  }, [_h('text', {
+	    class: ['panel-header', 'panel-header-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingHead,
+	      paddingBottom: _vm.paddingHead,
+	      paddingLeft: _vm.paddingHead * 1.5,
+	      paddingRight: _vm.paddingHead * 1.5
+	    }
+	  }, [_vm._s(_vm.title)]), _h('div', {
+	    class: ['panel-body', 'panel-body-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingBody,
+	      paddingBottom: _vm.paddingBody,
+	      paddingLeft: _vm.paddingBody * 1.5,
+	      paddingRight: _vm.paddingBody * 1.5
+	    }
+	  }, [_vm._t("default")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 387:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(388)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(389)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(390)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/button.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 378:
+/***/ 388:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      size: { default: 'large' },
-	      value: { default: '' }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "btn": {
 	    "marginBottom": 0,
 	    "alignItems": "center",
@@ -364,9 +546,163 @@
 	    "fontSize": 30
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['btn', 'btn-' + type, 'btn-sz-' + size]},[_h('text',{class:['btn-txt', 'btn-txt-' + type, 'btn-txt-sz-' + size]},[_s(value)])])}}
-	delete module.exports.el
 
+/***/ },
+
+/***/ 389:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    size: { default: 'large' },
+	    value: { default: '' }
+	  }
+	};
+
+/***/ },
+
+/***/ 390:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['btn', 'btn-' + _vm.type, 'btn-sz-' + _vm.size]
+	  }, [_h('text', {
+	    class: ['btn-txt', 'btn-txt-' + _vm.type, 'btn-txt-sz-' + _vm.size]
+	  }, [_vm._s(_vm.value)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 391:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', [_h('panel', {
+	    attrs: {
+	      "title": "Transform",
+	      "type": "primary"
+	    }
+	  }, [_h('button', {
+	    attrs: {
+	      "value": "Rotate",
+	      "type": "primary",
+	      "size": "middle"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.rotate($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginTop: "12px"
+	    },
+	    attrs: {
+	      "value": "Scale",
+	      "type": "primary",
+	      "size": "middle"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.scale($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginTop: "12px"
+	    },
+	    attrs: {
+	      "value": "Translate",
+	      "type": "primary",
+	      "size": "middle"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.translate($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginTop: "12px"
+	    },
+	    attrs: {
+	      "value": "Transform",
+	      "type": "success",
+	      "size": "middle"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.transform($event)
+	      }
+	    }
+	  })]), _h('panel', {
+	    attrs: {
+	      "title": "Others",
+	      "type": "primary"
+	    }
+	  }, [_h('button', {
+	    attrs: {
+	      "value": "BgColor",
+	      "type": "primary",
+	      "size": "middle"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.color($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginTop: "12px"
+	    },
+	    attrs: {
+	      "value": "Opacity",
+	      "type": "primary",
+	      "size": "middle"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.opacity($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginTop: "12px"
+	    },
+	    attrs: {
+	      "value": "All",
+	      "type": "success",
+	      "size": "middle"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.composite($event)
+	      }
+	    }
+	  })]), _h('div', {
+	    ref: "block",
+	    staticClass: ["block"],
+	    style: {
+	      transformOrigin: _vm.transformOrigin
+	    }
+	  }, [_h('text', {
+	    staticClass: ["block-txt"]
+	  }, ["Anim"])])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
 

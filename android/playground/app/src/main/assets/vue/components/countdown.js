@@ -47,91 +47,91 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  module.exports = {
-	    data: function () {
-	      return {
-	        countdown1: {
-	          remain: 5000,
-	          time: {
-	            D: '0',
-	            hh: '00',
-	            mm: '00',
-	            ss: '00'
-	          }
-	        },
-	        countdown2: {
-	          remain: 5000,
-	          time: {
-	            MM: '0',
-	            ss: '0'
-	          }
-	        }
-	      }
-	    },
-	    components: {
-	      panel: __webpack_require__(377),
-	      countdown: __webpack_require__(380)
-	    },
-	    methods: {
-	      tick: function (e, k) {
-	        this[k].time = JSON.parse(JSON.stringify(e))
-	      }
-	    }
-	  }
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	module.exports.style = {
-	  "ctno1": {
-	    "borderRadius": 8,
-	    "paddingTop": 6,
-	    "paddingBottom": 6,
-	    "paddingRight": 4,
-	    "paddingLeft": 4,
-	    "marginLeft": 2,
-	    "marginRight": 2,
-	    "backgroundColor": "rgb(242,222,222)",
-	    "color": "rgb(169,68,66)"
-	  },
-	  "ctno2": {
-	    "borderRadius": 8,
-	    "paddingTop": 30,
-	    "paddingBottom": 30,
-	    "paddingLeft": 16,
-	    "paddingRight": 16,
-	    "backgroundColor": "rgb(217,237,247)",
-	    "color": "rgb(49,112,143)",
-	    "textAlign": "center",
-	    "fontSize": 40
-	  }
+	/* styles */
+	__vue_styles__.push(__webpack_require__(398)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(399)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(404)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
 	}
-	module.exports.render = function() {with(this){return _h('scroller',[_h('panel',{attrs:{"title":"Countdown","type":"primary"}},[_h('countdown',{staticStyle:{width:"750",marginTop:"20",marginBottom:"20"},attrs:{"remain":countdown1.remain},on:{"tick":function($event){tick($event, 'countdown1')}}},[_h('text',{staticClass:["ctno1"]},[_s(countdown1.time.D)]),_m(0),_h('text',{staticClass:["ctno1"]},[_s(countdown1.time.hh)]),_m(1),_h('text',{staticClass:["ctno1"]},[_s(countdown1.time.mm)]),_m(2),_h('text',{staticClass:["ctno1"]},[_s(countdown1.time.ss)]),_m(3)]),_h('countdown',{staticStyle:{width:"600"},attrs:{"remain":countdown2.remain},on:{"tick":function($event){tick($event, 'countdown2')}}},[_h('text',{staticClass:["ctno2"]},[_s(countdown2.time.MM)]),_m(4),_h('text',{staticClass:["ctno2"]},[_s(countdown2.time.ss)])])])])}}
-	module.exports.staticRenderFns = [function(){with(this){return _h('text',{staticClass:["ctno1"],staticStyle:{backgroundColor:"#FFFFFF",color:"#AAAAAA"}},["day(s)"])}},
-	function() {with(this){return _h('text',{staticClass:["ctno1"],staticStyle:{backgroundColor:"#FFFFFF",color:"#AAAAAA"}},["hour(s)"])}},
-	function() {with(this){return _h('text',{staticClass:["ctno1"],staticStyle:{backgroundColor:"#FFFFFF",color:"#AAAAAA"}},["minute(s)"])}},
-	function() {with(this){return _h('text',{staticClass:["ctno1"],staticStyle:{backgroundColor:"#FFFFFF",color:"#AAAAAA"}},["second(s)"])}},
-	function() {with(this){return _h('text',{staticClass:["ctno2"],staticStyle:{backgroundColor:"#FFFFFF",color:"#AAAAAA"}},[":"])}}]
-	module.exports.el = "body"
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/components/countdown.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
 	new Vue(module.exports)
 
 
 /***/ },
 
-/***/ 377:
+/***/ 383:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(384)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(385)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(386)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/panel.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+
+
+/***/ },
+
+/***/ 384:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      title: { default: '' },
-	      paddingBody: { default: 20 },
-	      paddingHead: { default: 20 },
-	      dataClass: { default: '' }, // FIXME transfer class
-	      border:{ default: 0 }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "panel": {
 	    "marginBottom": 20,
 	    "backgroundColor": "#ffffff",
@@ -177,30 +177,285 @@
 	  "panel-header-danger": {
 	    "backgroundColor": "rgb(217,83,79)",
 	    "color": "#ffffff"
-	  },
-	  "panel-body": {}
+	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['panel', 'panel-' + type],style:{ borderWidth: border }},[_h('text',{class:['panel-header', 'panel-header-' + type],style:{
-	        paddingTop: paddingHead,
-	        paddingBottom: paddingHead,
-	        paddingLeft: paddingHead*1.5,
-	        paddingRight: paddingHead*1.5
-	      }},[_s(title)]),_h('div',{class:['panel-body', 'panel-body-' + type],style:{
-	        paddingTop: paddingBody,
-	        paddingBottom: paddingBody,
-	        paddingLeft: paddingBody*1.5,
-	        paddingRight: paddingBody*1.5
-	      }},[_t("default")])])}}
-	delete module.exports.el
+
+/***/ },
+
+/***/ 385:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    title: { default: '' },
+	    paddingBody: { default: 20 },
+	    paddingHead: { default: 20 },
+	    dataClass: { default: '' }, // FIXME transfer class
+	    border: { default: 0 }
+	  }
+	};
+
+/***/ },
+
+/***/ 386:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['panel', 'panel-' + _vm.type],
+	    style: {
+	      borderWidth: _vm.border
+	    }
+	  }, [_h('text', {
+	    class: ['panel-header', 'panel-header-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingHead,
+	      paddingBottom: _vm.paddingHead,
+	      paddingLeft: _vm.paddingHead * 1.5,
+	      paddingRight: _vm.paddingHead * 1.5
+	    }
+	  }, [_vm._s(_vm.title)]), _h('div', {
+	    class: ['panel-body', 'panel-body-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingBody,
+	      paddingBottom: _vm.paddingBody,
+	      paddingLeft: _vm.paddingBody * 1.5,
+	      paddingRight: _vm.paddingBody * 1.5
+	    }
+	  }, [_vm._t("default")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 398:
+/***/ function(module, exports) {
+
+	module.exports = {
+	  "ctno1": {
+	    "borderRadius": 8,
+	    "paddingTop": 6,
+	    "paddingBottom": 6,
+	    "paddingRight": 4,
+	    "paddingLeft": 4,
+	    "marginLeft": 2,
+	    "marginRight": 2,
+	    "backgroundColor": "rgb(242,222,222)",
+	    "color": "rgb(169,68,66)"
+	  },
+	  "ctno2": {
+	    "borderRadius": 8,
+	    "paddingTop": 30,
+	    "paddingBottom": 30,
+	    "paddingLeft": 16,
+	    "paddingRight": 16,
+	    "backgroundColor": "rgb(217,237,247)",
+	    "color": "rgb(49,112,143)",
+	    "textAlign": "center",
+	    "fontSize": 40
+	  }
+	}
+
+/***/ },
+
+/***/ 399:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  data: function data() {
+	    return {
+	      countdown1: {
+	        remain: 5000,
+	        time: {
+	          D: '0',
+	          hh: '00',
+	          mm: '00',
+	          ss: '00'
+	        }
+	      },
+	      countdown2: {
+	        remain: 5000,
+	        time: {
+	          MM: '0',
+	          ss: '0'
+	        }
+	      }
+	    };
+	  },
+	  components: {
+	    panel: __webpack_require__(383),
+	    countdown: __webpack_require__(400)
+	  },
+	  methods: {
+	    tick: function tick(e, k) {
+	      this[k].time = JSON.parse(JSON.stringify(e));
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 400:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(401)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(402)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(403)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/countdown.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 380:
+/***/ 401:
 /***/ function(module, exports) {
 
-	
-	function format (str) {
+	module.exports = {
+	  "wrap": {
+	    "overflow": "hidden"
+	  }
+	}
+
+/***/ },
+
+/***/ 402:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	function format(str) {
 	  if (str.length >= 2) {
 	    return str;
 	  } else {
@@ -209,21 +464,21 @@
 	}
 
 	function getTime(target, now) {
-	  var remain = parseInt((target - now) / 1000)
-	  var D = String(parseInt(remain / 86400))
-	  var DD = format(D)
-	  var h = String(parseInt((remain - parseInt(D) * 86400) / 3600))
-	  var hh = format(h)
-	  var H = String(parseInt(remain / 3600))
-	  var HH = format(H)
-	  var m = String(parseInt((remain - parseInt(H) * 3600) / 60))
-	  var mm = format(m)
-	  var M = String(parseInt(remain / 60))
-	  var MM = format(M)
-	  var s = String(remain - parseInt(M) * 60)
-	  var ss = format(s)
-	  var S = String(remain)
-	  var SS = format(S)
+	  var remain = parseInt((target - now) / 1000);
+	  var D = String(parseInt(remain / 86400));
+	  var DD = format(D);
+	  var h = String(parseInt((remain - parseInt(D) * 86400) / 3600));
+	  var hh = format(h);
+	  var H = String(parseInt(remain / 3600));
+	  var HH = format(H);
+	  var m = String(parseInt((remain - parseInt(H) * 3600) / 60));
+	  var mm = format(m);
+	  var M = String(parseInt(remain / 60));
+	  var MM = format(M);
+	  var s = String(remain - parseInt(M) * 60);
+	  var ss = format(s);
+	  var S = String(remain);
+	  var SS = format(S);
 	  return {
 	    D: D, DD: DD,
 	    h: h, hh: hh,
@@ -232,7 +487,7 @@
 	    M: M, MM: MM,
 	    s: s, ss: ss,
 	    S: S, SS: SS
-	  }
+	  };
 	}
 
 	module.exports = {
@@ -241,51 +496,144 @@
 	      default: 0
 	    }
 	  },
-	  data: function () {
+	  data: function data() {
 	    return {
 	      now: 0,
 	      target: 0,
 	      outofview: false
-	    }
+	    };
 	  },
-	  created: function() {
+	  created: function created() {
 	    this.now = Date.now();
-	    this.target = this.now + this.remain * 1000
+	    this.target = this.now + this.remain * 1000;
 	    if (this.remain > 0) {
 	      this.run();
 	    }
 	  },
 	  methods: {
-	    run: function() {
+	    run: function run() {
 	      if (!this.outofview) {
-	        this.now = Date.now()
+	        this.now = Date.now();
 	      }
-	      var time = getTime(this.target, this.now)
+	      var time = getTime(this.target, this.now);
 	      if (this.target >= this.now) {
-	        this.$emit('tick', time)
+	        this.$emit('tick', time);
 	      } else {
-	        this.$emit('alarm', time)
-	        return
+	        this.$emit('alarm', time);
+	        return;
 	      }
-	      setTimeout(this.run.bind(this), 1000)
+	      setTimeout(this.run.bind(this), 1000);
 	    },
-	    appeared: function() {
-	      this.outofview = false
+	    appeared: function appeared() {
+	      this.outofview = false;
 	    },
-	    disappeared: function() {
-	      this.outofview = true
+	    disappeared: function disappeared() {
+	      this.outofview = true;
 	    }
 	  }
-	}
+	};
 
-	module.exports.style = {
-	  "wrap": {
-	    "overflow": "hidden"
-	  }
-	}
-	module.exports.render = function() {with(this){return _h('div',{staticStyle:{overflow:"hidden",flexDirection:"row"},on:{"appear":appeared,"disappear":disappeared}},[_t("default")])}}
-	delete module.exports.el
+/***/ },
 
+/***/ 403:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    staticStyle: {
+	      overflow: "hidden",
+	      flexDirection: "row"
+	    },
+	    on: {
+	      "appear": _vm.appeared,
+	      "disappear": _vm.disappeared
+	    }
+	  }, [_vm._t("default")])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 404:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('scroller', [_h('panel', {
+	    attrs: {
+	      "title": "Countdown",
+	      "type": "primary"
+	    }
+	  }, [_h('countdown', {
+	    staticStyle: {
+	      width: "750",
+	      marginTop: "20",
+	      marginBottom: "20"
+	    },
+	    attrs: {
+	      "remain": _vm.countdown1.remain
+	    },
+	    on: {
+	      "tick": function($event) {
+	        _vm.tick($event, 'countdown1')
+	      }
+	    }
+	  }, [_h('text', {
+	    staticClass: ["ctno1"]
+	  }, [_vm._s(_vm.countdown1.time.D)]), _h('text', {
+	    staticClass: ["ctno1"],
+	    staticStyle: {
+	      backgroundColor: "#FFFFFF",
+	      color: "#AAAAAA"
+	    }
+	  }, ["day(s)"]), _h('text', {
+	    staticClass: ["ctno1"]
+	  }, [_vm._s(_vm.countdown1.time.hh)]), _h('text', {
+	    staticClass: ["ctno1"],
+	    staticStyle: {
+	      backgroundColor: "#FFFFFF",
+	      color: "#AAAAAA"
+	    }
+	  }, ["hour(s)"]), _h('text', {
+	    staticClass: ["ctno1"]
+	  }, [_vm._s(_vm.countdown1.time.mm)]), _h('text', {
+	    staticClass: ["ctno1"],
+	    staticStyle: {
+	      backgroundColor: "#FFFFFF",
+	      color: "#AAAAAA"
+	    }
+	  }, ["minute(s)"]), _h('text', {
+	    staticClass: ["ctno1"]
+	  }, [_vm._s(_vm.countdown1.time.ss)]), _h('text', {
+	    staticClass: ["ctno1"],
+	    staticStyle: {
+	      backgroundColor: "#FFFFFF",
+	      color: "#AAAAAA"
+	    }
+	  }, ["second(s)"])]), _h('countdown', {
+	    staticStyle: {
+	      width: "600"
+	    },
+	    attrs: {
+	      "remain": _vm.countdown2.remain
+	    },
+	    on: {
+	      "tick": function($event) {
+	        _vm.tick($event, 'countdown2')
+	      }
+	    }
+	  }, [_h('text', {
+	    staticClass: ["ctno2"]
+	  }, [_vm._s(_vm.countdown2.time.MM)]), _h('text', {
+	    staticClass: ["ctno2"],
+	    staticStyle: {
+	      backgroundColor: "#FFFFFF",
+	      color: "#AAAAAA"
+	    }
+	  }, [":"]), _h('text', {
+	    staticClass: ["ctno2"]
+	  }, [_vm._s(_vm.countdown2.time.ss)])])])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
 

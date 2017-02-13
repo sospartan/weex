@@ -47,72 +47,91 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  var modal = __weex_require_module__('modal')
-	  module.exports = {
-	    data: function () {
-	      return {
-	        playStatus: 'play'
-	      }
-	    },
-	    components: {
-	      button: __webpack_require__(378)
-	    },
-	    methods: {
-	      pause: function() {
-	        this.playStatus = 'pause'
-	        modal.toast({ 'message': 'click pause' })
-	      },
-	      play: function() {
-	        this.playStatus = 'play'
-	        modal.toast({ 'message': 'click play' })
-	      },
-	      onpause: function(e) {
-	        this.playStatus = e.playStatus
-	        modal.toast({ 'message': 'video pause' })
-	      },
-	      onstart: function(e) {
-	        this.playStatus = e.playStatus
-	        modal.toast({ 'message': 'video start' })
-	      },
-	      onfinish: function(e) {
-	        this.playStatus = e.playStatus
-	        modal.toast({ 'message': 'video finish' })
-	      },
-	      onfail: function(e) {
-	        this.playStatus = e.playStatus
-	        modal.toast({ 'message': 'video fail' })
-	      }
-	    }
-	  };
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	module.exports.style = {
-	  "video": {
-	    "width": 750,
-	    "height": 460,
-	    "marginBottom": 80
-	  }
+	/* styles */
+	__vue_styles__.push(__webpack_require__(458)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(459)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(460)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
 	}
-	module.exports.render = function() {with(this){return _h('scroller',[_h('video',{staticClass:["video"],attrs:{"onpause":"onpause","onstart":"onstart","onfinish":"onfinish","onfail":"onfail","src":"http://g.tbcdn.cn/ali-wireless-h5/res/0.0.6/toy.mp4","auto-play":"true","playStatus":playStatus}}),_h('div',{staticStyle:{flexDirection:"row",justifyContent:"center"}},[_h('button',{attrs:{"value":"Pause"},nativeOn:{"click":function($event){pause($event)}}}),_h('button',{staticStyle:{marginLeft:"20px"},attrs:{"value":"Play","type":"primary"},nativeOn:{"click":function($event){play($event)}}})])])}}
-	module.exports.el = "body"
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/components/video.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
 	new Vue(module.exports)
 
 
 /***/ },
 
-/***/ 378:
+/***/ 387:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(388)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(389)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(390)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/button.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+
+
+/***/ },
+
+/***/ 388:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      size: { default: 'large' },
-	      value: { default: '' }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "btn": {
 	    "marginBottom": 0,
 	    "alignItems": "center",
@@ -206,9 +225,171 @@
 	    "fontSize": 30
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['btn', 'btn-' + type, 'btn-sz-' + size]},[_h('text',{class:['btn-txt', 'btn-txt-' + type, 'btn-txt-sz-' + size]},[_s(value)])])}}
-	delete module.exports.el
 
+/***/ },
+
+/***/ 389:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    size: { default: 'large' },
+	    value: { default: '' }
+	  }
+	};
+
+/***/ },
+
+/***/ 390:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['btn', 'btn-' + _vm.type, 'btn-sz-' + _vm.size]
+	  }, [_h('text', {
+	    class: ['btn-txt', 'btn-txt-' + _vm.type, 'btn-txt-sz-' + _vm.size]
+	  }, [_vm._s(_vm.value)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 458:
+/***/ function(module, exports) {
+
+	module.exports = {
+	  "video": {
+	    "width": 750,
+	    "height": 460,
+	    "marginBottom": 80
+	  }
+	}
+
+/***/ },
+
+/***/ 459:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var modal = __weex_require_module__('modal');
+	module.exports = {
+	  data: function data() {
+	    return {
+	      playStatus: 'play'
+	    };
+	  },
+	  components: {
+	    button: __webpack_require__(387)
+	  },
+	  methods: {
+	    pause: function pause() {
+	      this.playStatus = 'pause';
+	      modal.toast({ 'message': 'click pause' });
+	    },
+	    play: function play() {
+	      this.playStatus = 'play';
+	      modal.toast({ 'message': 'click play' });
+	    },
+	    onpause: function onpause(e) {
+	      this.playStatus = e.playStatus;
+	      modal.toast({ 'message': 'video pause' });
+	    },
+	    onstart: function onstart(e) {
+	      this.playStatus = e.playStatus;
+	      modal.toast({ 'message': 'video start' });
+	    },
+	    onfinish: function onfinish(e) {
+	      this.playStatus = e.playStatus;
+	      modal.toast({ 'message': 'video finish' });
+	    },
+	    onfail: function onfail(e) {
+	      this.playStatus = e.playStatus;
+	      modal.toast({ 'message': 'video fail' });
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 460:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('scroller', [_h('video', {
+	    staticClass: ["video"],
+	    attrs: {
+	      "onpause": "onpause",
+	      "onstart": "onstart",
+	      "onfinish": "onfinish",
+	      "onfail": "onfail",
+	      "src": "http://g.tbcdn.cn/ali-wireless-h5/res/0.0.6/toy.mp4",
+	      "auto-play": "true",
+	      "playStatus": _vm.playStatus
+	    }
+	  }), _h('div', {
+	    staticStyle: {
+	      flexDirection: "row",
+	      justifyContent: "center"
+	    }
+	  }, [_h('button', {
+	    attrs: {
+	      "value": "Pause"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.pause($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginLeft: "20px"
+	    },
+	    attrs: {
+	      "value": "Play",
+	      "type": "primary"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.play($event)
+	      }
+	    }
+	  })])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
 

@@ -47,68 +47,87 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  var modal = __weex_require_module__('modal')
-	  var clipboard = __weex_require_module__('clipboard')
-	  module.exports = {
-	    data: function () {
-	      return {
-	        textToCopy : '',
-	        textFromPaste: '',
-	        tips : ''
-	      }
-	    },
-	    components: {
-	      panel: __webpack_require__(377),
-	      tip: __webpack_require__(379),
-	      button: __webpack_require__(378)
-	    },
-	    mounted: function() {
-	      this.tips = "1. Just click COPY button. It will auto generate a string with random text, and copy to system clipboard. \n 2. do copy in another app, then come back and click PASTE button."
-	    },
-	    methods: {
-	      doCopy: function() {
-	        modal.toast({'message': 'doCopy!', duration: 0.5})
-	        textToCopy = "autoGenerateTextToCopy" + Math.random()
-	        clipboard.setString(textToCopy)
-	        this.textToCopy = textToCopy
-	        this.tips = "copy done. Now system clipboard has string of '" + textToCopy + "', try PASTE button, or paste in another app."
-	      },
-	      doPaste: function() {
-	        var me = this
-	        modal.toast({'message': 'doPaste!', duration: 0.5})
-	        clipboard.getString(function(ret) {
-	          console.log("paste result is " + JSON.stringify(ret))
-	          me.textFromPaste = ret.data
-	          me.tips = "Paste done. Only support native(Android/iOS) NOW. according to security reason, paste in html5 is not supported."
-	        })
-	      }
-	    }
-	  }
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	module.exports.render = function() {with(this){return _h('scroller',[_h('panel',{attrs:{"title":"Clipboard","type":"primary"}},[_h('panel',{attrs:{"title":"Copy to clipboard5"}},[_h('text',{staticStyle:{lineHeight:"40px",fontSize:"28px"}},[_s(textToCopy)]),_h('button',{attrs:{"type":"info","size":"middle","value":"Copy"},nativeOn:{"click":function($event){doCopy($event)}}})]),_h('panel',{attrs:{"title":"Paste from clipboard"}},[_h('text',{staticStyle:{lineHeight:"40px",fontSize:"28px"}},[_s(textFromPaste)]),_h('button',{attrs:{"type":"info","size":"middle","value":"Paste"},nativeOn:{"click":function($event){doPaste($event)}}})]),_h('panel',{attrs:{"title":"Result"}},[_h('tip',{staticStyle:{marginBottom:"20px"},attrs:{"value":tips}})])])])}}
-	module.exports.el = "body"
+	/* script */
+	__vue_exports__ = __webpack_require__(481)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(482)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/modules/clipboard.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
 	new Vue(module.exports)
 
 
 /***/ },
 
-/***/ 377:
+/***/ 383:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(384)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(385)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(386)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/panel.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+
+
+/***/ },
+
+/***/ 384:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      title: { default: '' },
-	      paddingBody: { default: 20 },
-	      paddingHead: { default: 20 },
-	      dataClass: { default: '' }, // FIXME transfer class
-	      border:{ default: 0 }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "panel": {
 	    "marginBottom": 20,
 	    "backgroundColor": "#ffffff",
@@ -154,38 +173,132 @@
 	  "panel-header-danger": {
 	    "backgroundColor": "rgb(217,83,79)",
 	    "color": "#ffffff"
-	  },
-	  "panel-body": {}
+	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['panel', 'panel-' + type],style:{ borderWidth: border }},[_h('text',{class:['panel-header', 'panel-header-' + type],style:{
-	        paddingTop: paddingHead,
-	        paddingBottom: paddingHead,
-	        paddingLeft: paddingHead*1.5,
-	        paddingRight: paddingHead*1.5
-	      }},[_s(title)]),_h('div',{class:['panel-body', 'panel-body-' + type],style:{
-	        paddingTop: paddingBody,
-	        paddingBottom: paddingBody,
-	        paddingLeft: paddingBody*1.5,
-	        paddingRight: paddingBody*1.5
-	      }},[_t("default")])])}}
-	delete module.exports.el
+
+/***/ },
+
+/***/ 385:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    title: { default: '' },
+	    paddingBody: { default: 20 },
+	    paddingHead: { default: 20 },
+	    dataClass: { default: '' }, // FIXME transfer class
+	    border: { default: 0 }
+	  }
+	};
+
+/***/ },
+
+/***/ 386:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['panel', 'panel-' + _vm.type],
+	    style: {
+	      borderWidth: _vm.border
+	    }
+	  }, [_h('text', {
+	    class: ['panel-header', 'panel-header-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingHead,
+	      paddingBottom: _vm.paddingHead,
+	      paddingLeft: _vm.paddingHead * 1.5,
+	      paddingRight: _vm.paddingHead * 1.5
+	    }
+	  }, [_vm._s(_vm.title)]), _h('div', {
+	    class: ['panel-body', 'panel-body-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingBody,
+	      paddingBottom: _vm.paddingBody,
+	      paddingLeft: _vm.paddingBody * 1.5,
+	      paddingRight: _vm.paddingBody * 1.5
+	    }
+	  }, [_vm._t("default")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 387:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(388)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(389)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(390)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/button.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 378:
+/***/ 388:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      size: { default: 'large' },
-	      value: { default: '' }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "btn": {
 	    "marginBottom": 0,
 	    "alignItems": "center",
@@ -279,24 +392,91 @@
 	    "fontSize": 30
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['btn', 'btn-' + type, 'btn-sz-' + size]},[_h('text',{class:['btn-txt', 'btn-txt-' + type, 'btn-txt-sz-' + size]},[_s(value)])])}}
-	delete module.exports.el
+
+/***/ },
+
+/***/ 389:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    size: { default: 'large' },
+	    value: { default: '' }
+	  }
+	};
+
+/***/ },
+
+/***/ 390:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['btn', 'btn-' + _vm.type, 'btn-sz-' + _vm.size]
+	  }, [_h('text', {
+	    class: ['btn-txt', 'btn-txt-' + _vm.type, 'btn-txt-sz-' + _vm.size]
+	  }, [_vm._s(_vm.value)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 393:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(394)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(395)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(396)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/tip.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 379:
+/***/ 394:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'success' },
-	      value: { default: '' }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "tip": {
 	    "paddingLeft": 36,
 	    "paddingRight": 36,
@@ -336,9 +516,175 @@
 	    "color": "#a94442"
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['tip', 'tip-' + type]},[_h('text',{class:['tip-txt', 'tip-txt-' + type]},[_s(value)])])}}
-	delete module.exports.el
 
+/***/ },
+
+/***/ 395:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'success' },
+	    value: { default: '' }
+	  }
+	};
+
+/***/ },
+
+/***/ 396:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['tip', 'tip-' + _vm.type]
+	  }, [_h('text', {
+	    class: ['tip-txt', 'tip-txt-' + _vm.type]
+	  }, [_vm._s(_vm.value)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 481:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var modal = __weex_require_module__('modal');
+	var clipboard = __weex_require_module__('clipboard');
+	module.exports = {
+	  data: function data() {
+	    return {
+	      textToCopy: '',
+	      textFromPaste: '',
+	      tips: ''
+	    };
+	  },
+	  components: {
+	    panel: __webpack_require__(383),
+	    tip: __webpack_require__(393),
+	    button: __webpack_require__(387)
+	  },
+	  mounted: function mounted() {
+	    this.tips = "1. Just click COPY button. It will auto generate a string with random text, and copy to system clipboard. \n 2. do copy in another app, then come back and click PASTE button.";
+	  },
+	  methods: {
+	    doCopy: function doCopy() {
+	      modal.toast({ 'message': 'doCopy!', duration: 0.5 });
+	      textToCopy = "autoGenerateTextToCopy" + Math.random();
+	      clipboard.setString(textToCopy);
+	      this.textToCopy = textToCopy;
+	      this.tips = "copy done. Now system clipboard has string of '" + textToCopy + "', try PASTE button, or paste in another app.";
+	    },
+	    doPaste: function doPaste() {
+	      var me = this;
+	      modal.toast({ 'message': 'doPaste!', duration: 0.5 });
+	      clipboard.getString(function (ret) {
+	        console.log("paste result is " + JSON.stringify(ret));
+	        me.textFromPaste = ret.data;
+	        me.tips = "Paste done. Only support native(Android/iOS) NOW. according to security reason, paste in html5 is not supported.";
+	      });
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 482:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('scroller', [_h('panel', {
+	    attrs: {
+	      "title": "Clipboard",
+	      "type": "primary"
+	    }
+	  }, [_h('panel', {
+	    attrs: {
+	      "title": "Copy to clipboard5"
+	    }
+	  }, [_h('text', {
+	    staticStyle: {
+	      lineHeight: "40px",
+	      fontSize: "28px"
+	    }
+	  }, [_vm._s(_vm.textToCopy)]), _h('button', {
+	    attrs: {
+	      "type": "info",
+	      "size": "middle",
+	      "value": "Copy"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.doCopy($event)
+	      }
+	    }
+	  })]), _h('panel', {
+	    attrs: {
+	      "title": "Paste from clipboard"
+	    }
+	  }, [_h('text', {
+	    staticStyle: {
+	      lineHeight: "40px",
+	      fontSize: "28px"
+	    }
+	  }, [_vm._s(_vm.textFromPaste)]), _h('button', {
+	    attrs: {
+	      "type": "info",
+	      "size": "middle",
+	      "value": "Paste"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.doPaste($event)
+	      }
+	    }
+	  })]), _h('panel', {
+	    attrs: {
+	      "title": "Result"
+	    }
+	  }, [_h('tip', {
+	    staticStyle: {
+	      marginBottom: "20px"
+	    },
+	    attrs: {
+	      "value": _vm.tips
+	    }
+	  })])])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
 

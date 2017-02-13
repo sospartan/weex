@@ -47,81 +47,91 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  var webview = __weex_require_module__('webview');
-	  module.exports = {
-	    components: {
-	      button: __webpack_require__(378)
-	    },
-	    methods: {
-	      goback: function() {
-	        var el = this.$refs.webview
-	        webview.goBack(el)
-	      },
-	      goforward: function() {
-	        var el = this.$refs.webview
-	        webview.goForward(el)
-	      },
-	      refresh: function() {
-	        var el = this.$refs.webview
-	        webview.reload(el)
-	      },
-	      startload: function(e) {
-	      },
-	      finishload: function(e) {
-	      },
-	      failload: function(e) {
-	      }
-	    }
-	  }
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	module.exports.style = {
-	  "wrapper": {
-	    "width": 750,
-	    "position": "absolute",
-	    "top": 0,
-	    "left": 0,
-	    "right": 0,
-	    "bottom": 0
-	  },
-	  "content": {
-	    "position": "absolute",
-	    "top": 0,
-	    "left": 0,
-	    "right": 0,
-	    "bottom": 0,
-	    "marginTop": 0,
-	    "marginBottom": 70
-	  },
-	  "toolbar": {
-	    "flexDirection": "row",
-	    "position": "fixed",
-	    "bottom": 0,
-	    "left": 0,
-	    "right": 0,
-	    "height": 70
-	  }
+	/* styles */
+	__vue_styles__.push(__webpack_require__(461)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(462)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(463)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
 	}
-	module.exports.render = function() {with(this){return _h('div',{staticClass:["wrapper"]},[_h('div',{staticClass:["toolbar"],attrs:{"append":"tree"}},[_h('button',{staticStyle:{marginLeft:"30px",width:"210px",marginTop:"5px",marginBottom:"5px"},attrs:{"type":"primary","size":"small","value":"back"},nativeOn:{"click":function($event){goback($event)}}}),_h('button',{staticStyle:{marginLeft:"30px",width:"210px",marginTop:"5px",marginBottom:"5px"},attrs:{"type":"primary","size":"small","value":"forward"},nativeOn:{"click":function($event){goforward($event)}}}),_h('button',{staticStyle:{marginLeft:"30px",width:"210px",marginTop:"5px",marginBottom:"5px"},attrs:{"type":"primary","size":"small","value":"refresh"},nativeOn:{"click":function($event){refresh($event)}}})]),_h('web',{ref:"webview",staticClass:["content"],attrs:{"src":"http://alibaba.github.io/weex/index.html"},on:{"pagestart":startload,"pagefinish":finishload,"error":failload}})])}}
-	module.exports.el = "body"
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/components/web.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
 	new Vue(module.exports)
 
 
 /***/ },
 
-/***/ 378:
+/***/ 387:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(388)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(389)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(390)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/button.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+
+
+/***/ },
+
+/***/ 388:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      size: { default: 'large' },
-	      value: { default: '' }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "btn": {
 	    "marginBottom": 0,
 	    "alignItems": "center",
@@ -215,9 +225,234 @@
 	    "fontSize": 30
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['btn', 'btn-' + type, 'btn-sz-' + size]},[_h('text',{class:['btn-txt', 'btn-txt-' + type, 'btn-txt-sz-' + size]},[_s(value)])])}}
-	delete module.exports.el
 
+/***/ },
+
+/***/ 389:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    size: { default: 'large' },
+	    value: { default: '' }
+	  }
+	};
+
+/***/ },
+
+/***/ 390:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['btn', 'btn-' + _vm.type, 'btn-sz-' + _vm.size]
+	  }, [_h('text', {
+	    class: ['btn-txt', 'btn-txt-' + _vm.type, 'btn-txt-sz-' + _vm.size]
+	  }, [_vm._s(_vm.value)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 461:
+/***/ function(module, exports) {
+
+	module.exports = {
+	  "wrapper": {
+	    "width": 750,
+	    "position": "absolute",
+	    "top": 0,
+	    "left": 0,
+	    "right": 0,
+	    "bottom": 0
+	  },
+	  "content": {
+	    "position": "absolute",
+	    "top": 0,
+	    "left": 0,
+	    "right": 0,
+	    "bottom": 0,
+	    "marginTop": 0,
+	    "marginBottom": 70
+	  },
+	  "toolbar": {
+	    "flexDirection": "row",
+	    "position": "fixed",
+	    "bottom": 0,
+	    "left": 0,
+	    "right": 0,
+	    "height": 70
+	  }
+	}
+
+/***/ },
+
+/***/ 462:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var webview = __weex_require_module__('webview');
+	module.exports = {
+	  components: {
+	    button: __webpack_require__(387)
+	  },
+	  methods: {
+	    goback: function goback() {
+	      var el = this.$refs.webview;
+	      webview.goBack(el);
+	    },
+	    goforward: function goforward() {
+	      var el = this.$refs.webview;
+	      webview.goForward(el);
+	    },
+	    refresh: function refresh() {
+	      var el = this.$refs.webview;
+	      webview.reload(el);
+	    },
+	    startload: function startload(e) {},
+	    finishload: function finishload(e) {},
+	    failload: function failload(e) {}
+	  }
+	};
+
+/***/ },
+
+/***/ 463:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    staticClass: ["wrapper"]
+	  }, [_h('div', {
+	    staticClass: ["toolbar"],
+	    appendAsTree: true,
+	    attrs: {
+	      "append": "tree"
+	    }
+	  }, [_h('button', {
+	    staticStyle: {
+	      marginLeft: "30px",
+	      width: "210px",
+	      marginTop: "5px",
+	      marginBottom: "5px"
+	    },
+	    attrs: {
+	      "type": "primary",
+	      "size": "small",
+	      "value": "back"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.goback($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginLeft: "30px",
+	      width: "210px",
+	      marginTop: "5px",
+	      marginBottom: "5px"
+	    },
+	    attrs: {
+	      "type": "primary",
+	      "size": "small",
+	      "value": "forward"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.goforward($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginLeft: "30px",
+	      width: "210px",
+	      marginTop: "5px",
+	      marginBottom: "5px"
+	    },
+	    attrs: {
+	      "type": "primary",
+	      "size": "small",
+	      "value": "refresh"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.refresh($event)
+	      }
+	    }
+	  })]), _h('web', {
+	    ref: "webview",
+	    staticClass: ["content"],
+	    attrs: {
+	      "src": "http://alibaba.github.io/weex/index.html"
+	    },
+	    on: {
+	      "pagestart": _vm.startload,
+	      "pagefinish": _vm.finishload,
+	      "error": _vm.failload
+	    }
+	  })])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
 

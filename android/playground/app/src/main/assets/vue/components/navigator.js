@@ -47,81 +47,87 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  var navigator = __weex_require_module__('navigator')
-	  var getBaseURL = __webpack_require__(382).getBaseURL
-	  module.exports = {
-	    data: function () {
-	      return {
-	        navBarHeight: 88,
-	        title: 'Navigator',
-	        dir: 'examples',
-	        baseURL: ''
-	      }
-	    },
-	    components: {
-	      panel: __webpack_require__(377),
-	      navpage: __webpack_require__(383),
-	      button: __webpack_require__(378)
-	    },
-	    created: function() {
-	      this.$getConfig(function (config) {
-	        var env = config.env;
-	        if(env.platform == 'iOS'){
-	          var scale = env.scale;
-	          var deviceWidth = env.deviceWidth / scale;
-	          this.navBarHeight = 64.0 * 750.0 / deviceWidth;
-	        }
-	      }.bind(this));
-	      this.baseURL = getBaseURL(this)
-	    },
-	    methods: {
-	      naviBarLeftItemClick: function (e) {
-	        modal.toast({ message: 'naviBarLeftItemClick', duration: 2 })
-	      },
-	      naviBarRightItemClick: function (e) {
-	        modal.toast({ message: 'naviBarRightItemClick', duration: 2 })
-	      },
-	      push: function () {
-	        var params = {
-	          'url':  this.baseURL + 'vue/components/navigator.js?test=1',
-	          'animated' : 'true',
-	        }
-	        navigator.push(params, function () {});
-	      },
-	      pop: function () {
-	        var params = {
-	          'url':  this.baseURL + 'vue/components/navigator.js?test=1',
-	          'animated' : 'true',
-	        }
-	        navigator.pop(params, function () {});
-	      },
-	    }
-	  }
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	module.exports.render = function() {with(this){return _h('navpage',{attrs:{"dataRole":"none","height":navBarHeight,"title":title,"backgroundColor":"#ff5898","titleColor":"white","leftItemTitle":"More","leftItemColor":"white","rightItemSrc":"http://gtms02.alicdn.com/tps/i2/TB1ED7iMpXXXXXEXXXXWA_BHXXX-48-48.png"},on:{"naviBarLeftItemClick":naviBarLeftItemClick,"naviBarRightItemClick":naviBarRightItemClick}},[_h('panel',{attrs:{"title":"push a new page"}},[_h('button',{attrs:{"type":"primary","size":"small","value":"push"},nativeOn:{"click":function($event){push($event)}}})]),_h('panel',{attrs:{"title":"pop to the last page"}},[_h('button',{attrs:{"type":"success","size":"small","value":"pop"},nativeOn:{"click":function($event){pop($event)}}})])])}}
-	module.exports.el = "body"
+	/* script */
+	__vue_exports__ = __webpack_require__(420)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(430)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/components/navigator.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
 	new Vue(module.exports)
 
 
 /***/ },
 
-/***/ 377:
+/***/ 383:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(384)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(385)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(386)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/panel.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+
+
+/***/ },
+
+/***/ 384:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      title: { default: '' },
-	      paddingBody: { default: 20 },
-	      paddingHead: { default: 20 },
-	      dataClass: { default: '' }, // FIXME transfer class
-	      border:{ default: 0 }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "panel": {
 	    "marginBottom": 20,
 	    "backgroundColor": "#ffffff",
@@ -167,38 +173,132 @@
 	  "panel-header-danger": {
 	    "backgroundColor": "rgb(217,83,79)",
 	    "color": "#ffffff"
-	  },
-	  "panel-body": {}
+	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['panel', 'panel-' + type],style:{ borderWidth: border }},[_h('text',{class:['panel-header', 'panel-header-' + type],style:{
-	        paddingTop: paddingHead,
-	        paddingBottom: paddingHead,
-	        paddingLeft: paddingHead*1.5,
-	        paddingRight: paddingHead*1.5
-	      }},[_s(title)]),_h('div',{class:['panel-body', 'panel-body-' + type],style:{
-	        paddingTop: paddingBody,
-	        paddingBottom: paddingBody,
-	        paddingLeft: paddingBody*1.5,
-	        paddingRight: paddingBody*1.5
-	      }},[_t("default")])])}}
-	delete module.exports.el
+
+/***/ },
+
+/***/ 385:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    title: { default: '' },
+	    paddingBody: { default: 20 },
+	    paddingHead: { default: 20 },
+	    dataClass: { default: '' }, // FIXME transfer class
+	    border: { default: 0 }
+	  }
+	};
+
+/***/ },
+
+/***/ 386:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['panel', 'panel-' + _vm.type],
+	    style: {
+	      borderWidth: _vm.border
+	    }
+	  }, [_h('text', {
+	    class: ['panel-header', 'panel-header-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingHead,
+	      paddingBottom: _vm.paddingHead,
+	      paddingLeft: _vm.paddingHead * 1.5,
+	      paddingRight: _vm.paddingHead * 1.5
+	    }
+	  }, [_vm._s(_vm.title)]), _h('div', {
+	    class: ['panel-body', 'panel-body-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingBody,
+	      paddingBottom: _vm.paddingBody,
+	      paddingLeft: _vm.paddingBody * 1.5,
+	      paddingRight: _vm.paddingBody * 1.5
+	    }
+	  }, [_vm._t("default")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 387:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(388)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(389)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(390)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/button.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 378:
+/***/ 388:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      size: { default: 'large' },
-	      value: { default: '' }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "btn": {
 	    "marginBottom": 0,
 	    "alignItems": "center",
@@ -292,13 +392,127 @@
 	    "fontSize": 30
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['btn', 'btn-' + type, 'btn-sz-' + size]},[_h('text',{class:['btn-txt', 'btn-txt-' + type, 'btn-txt-sz-' + size]},[_s(value)])])}}
-	delete module.exports.el
-
 
 /***/ },
 
-/***/ 382:
+/***/ 389:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    size: { default: 'large' },
+	    value: { default: '' }
+	  }
+	};
+
+/***/ },
+
+/***/ 390:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['btn', 'btn-' + _vm.type, 'btn-sz-' + _vm.size]
+	  }, [_h('text', {
+	    class: ['btn-txt', 'btn-txt-' + _vm.type, 'btn-txt-sz-' + _vm.size]
+	  }, [_vm._s(_vm.value)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 420:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var navigator = __weex_require_module__('navigator');
+	var getBaseURL = __webpack_require__(421).getBaseURL;
+	module.exports = {
+	  data: function data() {
+	    return {
+	      navBarHeight: 88,
+	      title: 'Navigator',
+	      dir: 'examples',
+	      baseURL: ''
+	    };
+	  },
+	  components: {
+	    panel: __webpack_require__(383),
+	    navpage: __webpack_require__(422),
+	    button: __webpack_require__(387)
+	  },
+	  created: function created() {
+	    this.$getConfig(function (config) {
+	      var env = config.env;
+	      if (env.platform == 'iOS') {
+	        var scale = env.scale;
+	        var deviceWidth = env.deviceWidth / scale;
+	        this.navBarHeight = 64.0 * 750.0 / deviceWidth;
+	      }
+	    }.bind(this));
+	    this.baseURL = getBaseURL(this);
+	  },
+	  methods: {
+	    naviBarLeftItemClick: function naviBarLeftItemClick(e) {
+	      modal.toast({ message: 'naviBarLeftItemClick', duration: 2 });
+	    },
+	    naviBarRightItemClick: function naviBarRightItemClick(e) {
+	      modal.toast({ message: 'naviBarRightItemClick', duration: 2 });
+	    },
+	    push: function push() {
+	      var params = {
+	        'url': this.baseURL + 'vue/components/navigator.js?test=1',
+	        'animated': 'true'
+	      };
+	      navigator.push(params, function () {});
+	    },
+	    pop: function pop() {
+	      var params = {
+	        'url': this.baseURL + 'vue/components/navigator.js?test=1',
+	        'animated': 'true'
+	      };
+	      navigator.pop(params, function () {});
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 421:
 /***/ function(module, exports) {
 
 	exports.getBaseURL = function (vm) {
@@ -335,38 +549,51 @@
 
 /***/ },
 
-/***/ 383:
+/***/ 422:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  module.exports = {
-	    components: {
-	      navbar: __webpack_require__(384)
-	    },
-	    props: {
-	      dataRole: { default: 'navbar' },
-	      backgroundColor: { default: 'black' },
-	      height: { default: 88 },
-	      title: { default: "" },
-	      titleColor: { default: 'black' },
-	      rightItemSrc: { default: '' },
-	      rightItemTitle: { default: '' },
-	      rightItemColor: { default: 'black' },
-	      leftItemSrc: { default: '' },
-	      leftItemTitle: { default: '' },
-	      leftItemColor: { default: 'black' }
-	    },
-	    methods: {
-	      naviBarRightItemClick: function (e) {
-	        this.$emit('naviBarRightItemClick', e)
-	      },
-	      naviBarLeftItemClick: function (e) {
-	        this.$emit('naviBarLeftItemClick', e)
-	      }
-	    }
-	  }
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	module.exports.style = {
+	/* styles */
+	__vue_styles__.push(__webpack_require__(423)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(424)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(429)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/navpage.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+
+
+/***/ },
+
+/***/ 423:
+/***/ function(module, exports) {
+
+	module.exports = {
 	  "wrapper": {
 	    "position": "absolute",
 	    "top": 0,
@@ -376,51 +603,123 @@
 	    "width": 750
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{staticClass:["wrapper"]},[_h('navbar',{attrs:{"dataRole":dataRole,"height":height,"backgroundColor":backgroundColor,"title":title,"titleColor":titleColor,"leftItemSrc":leftItemSrc,"leftItemTitle":leftItemTitle,"leftItemColor":leftItemColor,"rightItemSrc":rightItemSrc,"rightItemTitle":rightItemTitle,"rightItemColor":rightItemColor},on:{"naviBarRightItemClick":naviBarRightItemClick,"naviBarLeftItemClick":naviBarLeftItemClick}}),_h('div',{staticClass:["wrapper"],style:{ marginTop: height }},[_t("default")])])}}
-	delete module.exports.el
+
+/***/ },
+
+/***/ 424:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  components: {
+	    navbar: __webpack_require__(425)
+	  },
+	  props: {
+	    dataRole: { default: 'navbar' },
+	    backgroundColor: { default: 'black' },
+	    height: { default: 88 },
+	    title: { default: "" },
+	    titleColor: { default: 'black' },
+	    rightItemSrc: { default: '' },
+	    rightItemTitle: { default: '' },
+	    rightItemColor: { default: 'black' },
+	    leftItemSrc: { default: '' },
+	    leftItemTitle: { default: '' },
+	    leftItemColor: { default: 'black' }
+	  },
+	  methods: {
+	    naviBarRightItemClick: function naviBarRightItemClick(e) {
+	      this.$emit('naviBarRightItemClick', e);
+	    },
+	    naviBarLeftItemClick: function naviBarLeftItemClick(e) {
+	      this.$emit('naviBarLeftItemClick', e);
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 425:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(426)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(427)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(428)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/navbar.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 384:
+/***/ 426:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      dataRole: { default: 'navbar' },
-	      //导航条背景色
-	      backgroundColor: { default: 'black' },
-	      //导航条高度
-	      height: { default: 88 },
-	      //导航条标题 
-	      title: { default: '' },
-	      //导航条标题颜色
-	      titleColor: { default: 'black' },
-	      //右侧按钮图片
-	      rightItemSrc: { default: '' },
-	      //右侧按钮标题
-	      rightItemTitle: { default: '' },
-	      //右侧按钮标题颜色
-	      rightItemColor: { default: 'black' },
-	      //左侧按钮图片
-	      leftItemSrc: { default: '' },
-	      //左侧按钮标题
-	      leftItemTitle: { default: '' },
-	      //左侧按钮颜色
-	      leftItemColor: { default: 'black' }
-	    },
-	    methods: {
-	      onclickrightitem: function (e) {
-	        this.$emit('naviBarRightItemClick');
-	      },
-	      onclickleftitem: function (e) {
-	        this.$emit('naviBarLeftItemClick');
-	      }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "container": {
 	    "flexDirection": "row",
 	    "position": "fixed",
@@ -469,9 +768,291 @@
 	    "height": 50
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{staticClass:["container"],style:{ height: height, backgroundColor: backgroundColor },attrs:{"dataRole":dataRole}},[(!rightItemSrc)?_h('text',{staticClass:["right-text"],style:{ color: rightItemColor },attrs:{"naviItemPosition":"right"},on:{"click":onclickrightitem}},[_s(rightItemTitle)]):_e(),(rightItemSrc)?_h('image',{staticClass:["right-image"],attrs:{"naviItemPosition":"right","src":rightItemSrc},on:{"click":onclickrightitem}}):_e(),(!leftItemSrc)?_h('text',{staticClass:["left-text"],style:{ color: leftItemColor },attrs:{"naviItemPosition":"left"},on:{"click":onclickleftitem}},[_s(leftItemTitle)]):_e(),(leftItemSrc)?_h('image',{staticClass:["left-image"],attrs:{"naviItemPosition":"left","src":leftItemSrc},on:{"click":onclickleftitem}}):_e(),_h('text',{staticClass:["center-text"],style:{ color: titleColor },attrs:{"naviItemPosition":"center"}},[_s(title)])])}}
-	delete module.exports.el
 
+/***/ },
+
+/***/ 427:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    dataRole: { default: 'navbar' },
+	    //导航条背景色
+	    backgroundColor: { default: 'black' },
+	    //导航条高度
+	    height: { default: 88 },
+	    //导航条标题 
+	    title: { default: '' },
+	    //导航条标题颜色
+	    titleColor: { default: 'black' },
+	    //右侧按钮图片
+	    rightItemSrc: { default: '' },
+	    //右侧按钮标题
+	    rightItemTitle: { default: '' },
+	    //右侧按钮标题颜色
+	    rightItemColor: { default: 'black' },
+	    //左侧按钮图片
+	    leftItemSrc: { default: '' },
+	    //左侧按钮标题
+	    leftItemTitle: { default: '' },
+	    //左侧按钮颜色
+	    leftItemColor: { default: 'black' }
+	  },
+	  methods: {
+	    onclickrightitem: function onclickrightitem(e) {
+	      this.$emit('naviBarRightItemClick');
+	    },
+	    onclickleftitem: function onclickleftitem(e) {
+	      this.$emit('naviBarLeftItemClick');
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 428:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    staticClass: ["container"],
+	    style: {
+	      height: _vm.height,
+	      backgroundColor: _vm.backgroundColor
+	    },
+	    attrs: {
+	      "dataRole": _vm.dataRole
+	    }
+	  }, [(!_vm.rightItemSrc) ? _h('text', {
+	    staticClass: ["right-text"],
+	    style: {
+	      color: _vm.rightItemColor
+	    },
+	    attrs: {
+	      "naviItemPosition": "right"
+	    },
+	    on: {
+	      "click": _vm.onclickrightitem
+	    }
+	  }, [_vm._s(_vm.rightItemTitle)]) : _vm._e(), (_vm.rightItemSrc) ? _h('image', {
+	    staticClass: ["right-image"],
+	    attrs: {
+	      "naviItemPosition": "right",
+	      "src": _vm.rightItemSrc
+	    },
+	    on: {
+	      "click": _vm.onclickrightitem
+	    }
+	  }) : _vm._e(), (!_vm.leftItemSrc) ? _h('text', {
+	    staticClass: ["left-text"],
+	    style: {
+	      color: _vm.leftItemColor
+	    },
+	    attrs: {
+	      "naviItemPosition": "left"
+	    },
+	    on: {
+	      "click": _vm.onclickleftitem
+	    }
+	  }, [_vm._s(_vm.leftItemTitle)]) : _vm._e(), (_vm.leftItemSrc) ? _h('image', {
+	    staticClass: ["left-image"],
+	    attrs: {
+	      "naviItemPosition": "left",
+	      "src": _vm.leftItemSrc
+	    },
+	    on: {
+	      "click": _vm.onclickleftitem
+	    }
+	  }) : _vm._e(), _h('text', {
+	    staticClass: ["center-text"],
+	    style: {
+	      color: _vm.titleColor
+	    },
+	    attrs: {
+	      "naviItemPosition": "center"
+	    }
+	  }, [_vm._s(_vm.title)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 429:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    staticClass: ["wrapper"]
+	  }, [_h('navbar', {
+	    attrs: {
+	      "dataRole": _vm.dataRole,
+	      "height": _vm.height,
+	      "backgroundColor": _vm.backgroundColor,
+	      "title": _vm.title,
+	      "titleColor": _vm.titleColor,
+	      "leftItemSrc": _vm.leftItemSrc,
+	      "leftItemTitle": _vm.leftItemTitle,
+	      "leftItemColor": _vm.leftItemColor,
+	      "rightItemSrc": _vm.rightItemSrc,
+	      "rightItemTitle": _vm.rightItemTitle,
+	      "rightItemColor": _vm.rightItemColor
+	    },
+	    on: {
+	      "naviBarRightItemClick": _vm.naviBarRightItemClick,
+	      "naviBarLeftItemClick": _vm.naviBarLeftItemClick
+	    }
+	  }), _h('div', {
+	    staticClass: ["wrapper"],
+	    style: {
+	      marginTop: _vm.height
+	    }
+	  }, [_vm._t("default")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 430:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('navpage', {
+	    attrs: {
+	      "dataRole": "none",
+	      "height": _vm.navBarHeight,
+	      "title": _vm.title,
+	      "backgroundColor": "#ff5898",
+	      "titleColor": "white",
+	      "leftItemTitle": "More",
+	      "leftItemColor": "white",
+	      "rightItemSrc": "http://gtms02.alicdn.com/tps/i2/TB1ED7iMpXXXXXEXXXXWA_BHXXX-48-48.png"
+	    },
+	    on: {
+	      "naviBarLeftItemClick": _vm.naviBarLeftItemClick,
+	      "naviBarRightItemClick": _vm.naviBarRightItemClick
+	    }
+	  }, [_h('panel', {
+	    attrs: {
+	      "title": "push a new page"
+	    }
+	  }, [_h('button', {
+	    attrs: {
+	      "type": "primary",
+	      "size": "small",
+	      "value": "push"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.push($event)
+	      }
+	    }
+	  })]), _h('panel', {
+	    attrs: {
+	      "title": "pop to the last page"
+	    }
+	  }, [_h('button', {
+	    attrs: {
+	      "type": "success",
+	      "size": "small",
+	      "value": "pop"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.pop($event)
+	      }
+	    }
+	  })])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
 

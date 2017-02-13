@@ -2316,7 +2316,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "100"
+	          },
 	          "attr": {
 	            "value": "100"
 	          }
@@ -2326,7 +2328,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "200"
+	          },
 	          "attr": {
 	            "value": "200"
 	          }
@@ -2336,7 +2340,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "300"
+	          },
 	          "attr": {
 	            "value": "300"
 	          }
@@ -2346,7 +2352,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "400"
+	          },
 	          "attr": {
 	            "value": "400"
 	          }
@@ -2356,7 +2364,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "500"
+	          },
 	          "attr": {
 	            "value": "500"
 	          }
@@ -2366,7 +2376,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "600"
+	          },
 	          "attr": {
 	            "value": "600"
 	          }
@@ -2376,7 +2388,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "700"
+	          },
 	          "attr": {
 	            "value": "700"
 	          }
@@ -2386,7 +2400,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "800"
+	          },
 	          "attr": {
 	            "value": "800"
 	          }
@@ -2396,7 +2412,9 @@
 	          "classList": [
 	            "txt"
 	          ],
-	          "style": {},
+	          "style": {
+	            "fontWeight": "900"
+	          },
 	          "attr": {
 	            "value": "900"
 	          }

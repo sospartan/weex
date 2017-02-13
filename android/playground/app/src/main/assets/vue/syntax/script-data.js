@@ -42,79 +42,173 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(577)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(578)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(579)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/syntax/script-data.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
+	new Vue(module.exports)
+
+
+/***/ },
+
+/***/ 577:
 /***/ function(module, exports) {
 
-	
-	  // // if this is a sub component and the parent component could set `firstName` and `lastName` by:
-	  // // `<subcomponent first-name="John" last-name="Smith"></subcomponent>`
-	  // // but the `date` won't be changed from parent component
-	  // module.exports = {
-	  //   props: ['firstName', 'lastName'],
-	  //   data: function () {
-	  //     return {
-	  //       date: Date.now()
-	  //     }
-	  //   }
-	  // }
-
-	  // // more `props` formats like
-	  // module.exports = {
-	  //   props: {
-	  //     firstName: {
-	  //       default: 'John'
-	  //     },
-	  //     lastName: {
-	  //       type: String,
-	  //       default: 'Smith'
-	  //     }
-	  //   },
-	  //   data: function () {
-	  //     return {
-	  //       date: Date.now()
-	  //     }
-	  //   }
-	  // }
-
-	  module.exports = {
-	    data: function () {
-	      return {
-	        firstName: 'John',
-	        lastName: 'Smith',
-	        date: Date.now()
-	      }
-	    },
-	    methods: {
-	      update: function () {
-	        this.today = '2016-01-01'
-	        console.log('today:', this.today)
-	      }
-	    },
-	    computed: {
-	      fullName: function () {
-	        return this.firstName + ' ' + this.lastName
-	      },
-	      today: {
-	        get: function () {
-	          return new Date(this.date).toDateString()
-	        },
-	        set: function (v) {
-	          this.date = Date.parse(v)
-	        }
-	      }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "title": {
 	    "fontSize": 48
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{on:{"click":update}},[_h('text',{staticClass:["title"]},[_s(firstName)]),_h('text',{staticClass:["title"]},[_s(lastName)]),_h('text',{staticClass:["title"]},[_s(fullName)]),_h('text',{staticClass:["title"]},[_s(today)])])}}
-	module.exports.el = "body"
-	new Vue(module.exports)
 
+/***/ },
+
+/***/ 578:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	// // if this is a sub component and the parent component could set `firstName` and `lastName` by:
+	// // `<subcomponent first-name="John" last-name="Smith"></subcomponent>`
+	// // but the `date` won't be changed from parent component
+	// module.exports = {
+	//   props: ['firstName', 'lastName'],
+	//   data: function () {
+	//     return {
+	//       date: Date.now()
+	//     }
+	//   }
+	// }
+
+	// // more `props` formats like
+	// module.exports = {
+	//   props: {
+	//     firstName: {
+	//       default: 'John'
+	//     },
+	//     lastName: {
+	//       type: String,
+	//       default: 'Smith'
+	//     }
+	//   },
+	//   data: function () {
+	//     return {
+	//       date: Date.now()
+	//     }
+	//   }
+	// }
+
+	module.exports = {
+	  data: function data() {
+	    return {
+	      firstName: 'John',
+	      lastName: 'Smith',
+	      date: Date.now()
+	    };
+	  },
+	  methods: {
+	    update: function update() {
+	      this.today = '2016-01-01';
+	      console.log('today:', this.today);
+	    }
+	  },
+	  computed: {
+	    fullName: function fullName() {
+	      return this.firstName + ' ' + this.lastName;
+	    },
+	    today: {
+	      get: function get() {
+	        return new Date(this.date).toDateString();
+	      },
+	      set: function set(v) {
+	        this.date = Date.parse(v);
+	      }
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 579:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    on: {
+	      "click": _vm.update
+	    }
+	  }, [_h('text', {
+	    staticClass: ["title"]
+	  }, [_vm._s(_vm.firstName)]), _h('text', {
+	    staticClass: ["title"]
+	  }, [_vm._s(_vm.lastName)]), _h('text', {
+	    staticClass: ["title"]
+	  }, [_vm._s(_vm.fullName)]), _h('text', {
+	    staticClass: ["title"]
+	  }, [_vm._s(_vm.today)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
-/******/ ]);
+
+/******/ });

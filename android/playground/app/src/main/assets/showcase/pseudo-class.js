@@ -44,9 +44,9 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __weex_template__ = __webpack_require__(290)
-	var __weex_style__ = __webpack_require__(291)
-	var __weex_script__ = __webpack_require__(292)
+	var __weex_template__ = __webpack_require__(294)
+	var __weex_style__ = __webpack_require__(295)
+	var __weex_script__ = __webpack_require__(296)
 
 	__weex_define__('@weex-component/07aaf1221ad656e37ebe37291f40d193', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2232,7 +2232,11 @@
 /* 287 */,
 /* 288 */,
 /* 289 */,
-/* 290 */
+/* 290 */,
+/* 291 */,
+/* 292 */,
+/* 293 */,
+/* 294 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2358,7 +2362,7 @@
 	}
 
 /***/ },
-/* 291 */
+/* 295 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2372,27 +2376,36 @@
 	  "logo": {
 	    "width": 360,
 	    "height": 82,
-	    "backgroundColor": "#008000"
+	    "backgroundColor": "#008000",
+	    "width:active": 180,
+	    "height:active": 82,
+	    "backgroundColor:active": "#FF0000"
 	  },
 	  "focusinput": {
 	    "fontSize": 60,
 	    "height": 80,
-	    "width": 700
+	    "width": 700,
+	    "color:focus": "#008000",
+	    "backgroundColor:focus": "#FF0000"
 	  },
 	  "enabledinput": {
 	    "fontSize": 60,
 	    "height": 80,
-	    "width": 700
+	    "width": 700,
+	    "color:enabled": "#FFFF00",
+	    "backgroundColor:enabled": "#0000FF"
 	  },
 	  "disabledinput": {
 	    "fontSize": 60,
 	    "height": 80,
-	    "width": 700
+	    "width": 700,
+	    "color:disabled": "#FFFFFF",
+	    "backgroundColor:disabled": "#808080"
 	  }
 	}
 
 /***/ },
-/* 292 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';

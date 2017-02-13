@@ -47,88 +47,87 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  var modal = __weex_require_module__('modal')
-	  module.exports = {
-	    data: function () {
-	      return {}
-	    },
-	    components: {
-	      panel: __webpack_require__(377),
-	      button: __webpack_require__(378)
-	    },
-	    methods: {
-	      toast: function(msg, duration) {
-	        if (!msg || typeof msg !== 'string') {
-	          msg = 'I am Toast show!'
-	        }
-	        duration = duration || 2
-	        modal.toast({
-	          'message': msg,
-	          'duration': duration
-	        })
-	      },
-	      alert: function(msg, okTitle, cancelTitle) {
-	        if (!msg || typeof msg !== 'string') {
-	          msg = "I am Alert!"
-	        }
-	         modal.alert({
-	          'message': msg,
-	          'okTitle': okTitle,
-	          'cancelTitle': cancelTitle
-	        }, function() {
-	          modal.toast({ message: "Click Alert OK Bnt!!" })
-	        })
-	      },
-	      confirm: function(msg, okTitle, cancelTitle) {
-	        if (!msg || typeof msg !== 'string') {
-	          msg = "I am Confirm!"
-	        }
-	        okTitle = okTitle || "OK"
-	        cancelTitle = cancelTitle || "Cancel"
-	        modal.confirm({
-	          'message': msg,
-	          'okTitle': okTitle,
-	          'cancelTitle': cancelTitle
-	        }, function(result) {
-	          modal.toast({ message: "Click Confirm  " + JSON.stringify(result) })
-	        })
-	      },
-	      prompt: function() {
-	        modal.prompt( {
-	          'message': 'I am Prompt!',
-	          'okTitle': 'ok',
-	          'cancelTitle': 'cancel'
-	        }, function(result) {
-	          modal.toast({ message: "Click Prompt  " + JSON.stringify(result) })
-	        })
-	      }
-	    }
-	  }
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	module.exports.render = function() {with(this){return _h('scroller',[_h('panel',{attrs:{"title":"Toast","type":"primary"}},[_h('button',{attrs:{"type":"primary","value":"Toast"},nativeOn:{"click":function($event){toast($event)}}})]),_h('panel',{attrs:{"title":"Dialog","type":"primary"}},[_h('button',{staticStyle:{marginBottom:"20px"},attrs:{"type":"success","value":"Alert"},nativeOn:{"click":function($event){alert($event)}}}),_h('button',{staticStyle:{marginBottom:"20px"},attrs:{"type":"primary","value":"Confirm"},nativeOn:{"click":function($event){confirm($event)}}}),_h('button',{attrs:{"type":"warning","value":"Prompt"},nativeOn:{"click":function($event){prompt($event)}}})])])}}
-	module.exports.el = "body"
+	/* script */
+	__vue_exports__ = __webpack_require__(485)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(486)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/modules/modal.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
 	new Vue(module.exports)
 
 
 /***/ },
 
-/***/ 377:
+/***/ 383:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(384)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(385)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(386)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/panel.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+
+
+/***/ },
+
+/***/ 384:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      title: { default: '' },
-	      paddingBody: { default: 20 },
-	      paddingHead: { default: 20 },
-	      dataClass: { default: '' }, // FIXME transfer class
-	      border:{ default: 0 }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "panel": {
 	    "marginBottom": 20,
 	    "backgroundColor": "#ffffff",
@@ -174,38 +173,132 @@
 	  "panel-header-danger": {
 	    "backgroundColor": "rgb(217,83,79)",
 	    "color": "#ffffff"
-	  },
-	  "panel-body": {}
+	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['panel', 'panel-' + type],style:{ borderWidth: border }},[_h('text',{class:['panel-header', 'panel-header-' + type],style:{
-	        paddingTop: paddingHead,
-	        paddingBottom: paddingHead,
-	        paddingLeft: paddingHead*1.5,
-	        paddingRight: paddingHead*1.5
-	      }},[_s(title)]),_h('div',{class:['panel-body', 'panel-body-' + type],style:{
-	        paddingTop: paddingBody,
-	        paddingBottom: paddingBody,
-	        paddingLeft: paddingBody*1.5,
-	        paddingRight: paddingBody*1.5
-	      }},[_t("default")])])}}
-	delete module.exports.el
+
+/***/ },
+
+/***/ 385:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    title: { default: '' },
+	    paddingBody: { default: 20 },
+	    paddingHead: { default: 20 },
+	    dataClass: { default: '' }, // FIXME transfer class
+	    border: { default: 0 }
+	  }
+	};
+
+/***/ },
+
+/***/ 386:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['panel', 'panel-' + _vm.type],
+	    style: {
+	      borderWidth: _vm.border
+	    }
+	  }, [_h('text', {
+	    class: ['panel-header', 'panel-header-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingHead,
+	      paddingBottom: _vm.paddingHead,
+	      paddingLeft: _vm.paddingHead * 1.5,
+	      paddingRight: _vm.paddingHead * 1.5
+	    }
+	  }, [_vm._s(_vm.title)]), _h('div', {
+	    class: ['panel-body', 'panel-body-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingBody,
+	      paddingBottom: _vm.paddingBody,
+	      paddingLeft: _vm.paddingBody * 1.5,
+	      paddingRight: _vm.paddingBody * 1.5
+	    }
+	  }, [_vm._t("default")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 387:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(388)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(389)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(390)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/button.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 378:
+/***/ 388:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      size: { default: 'large' },
-	      value: { default: '' }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "btn": {
 	    "marginBottom": 0,
 	    "alignItems": "center",
@@ -299,9 +392,189 @@
 	    "fontSize": 30
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['btn', 'btn-' + type, 'btn-sz-' + size]},[_h('text',{class:['btn-txt', 'btn-txt-' + type, 'btn-txt-sz-' + size]},[_s(value)])])}}
-	delete module.exports.el
 
+/***/ },
+
+/***/ 389:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    size: { default: 'large' },
+	    value: { default: '' }
+	  }
+	};
+
+/***/ },
+
+/***/ 390:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['btn', 'btn-' + _vm.type, 'btn-sz-' + _vm.size]
+	  }, [_h('text', {
+	    class: ['btn-txt', 'btn-txt-' + _vm.type, 'btn-txt-sz-' + _vm.size]
+	  }, [_vm._s(_vm.value)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 485:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var modal = __weex_require_module__('modal');
+	module.exports = {
+	  data: function data() {
+	    return {};
+	  },
+	  components: {
+	    panel: __webpack_require__(383),
+	    button: __webpack_require__(387)
+	  },
+	  methods: {
+	    toast: function toast(msg, duration) {
+	      if (!msg || typeof msg !== 'string') {
+	        msg = 'I am Toast show!';
+	      }
+	      duration = duration || 2;
+	      modal.toast({
+	        'message': msg,
+	        'duration': duration
+	      });
+	    },
+	    alert: function alert(msg, okTitle, cancelTitle) {
+	      if (!msg || typeof msg !== 'string') {
+	        msg = "I am Alert!";
+	      }
+	      modal.alert({
+	        'message': msg,
+	        'okTitle': okTitle,
+	        'cancelTitle': cancelTitle
+	      }, function () {
+	        modal.toast({ message: "Click Alert OK Bnt!!" });
+	      });
+	    },
+	    confirm: function confirm(msg, okTitle, cancelTitle) {
+	      if (!msg || typeof msg !== 'string') {
+	        msg = "I am Confirm!";
+	      }
+	      okTitle = okTitle || "OK";
+	      cancelTitle = cancelTitle || "Cancel";
+	      modal.confirm({
+	        'message': msg,
+	        'okTitle': okTitle,
+	        'cancelTitle': cancelTitle
+	      }, function (result) {
+	        modal.toast({ message: "Click Confirm  " + JSON.stringify(result) });
+	      });
+	    },
+	    prompt: function prompt() {
+	      modal.prompt({
+	        'message': 'I am Prompt!',
+	        'okTitle': 'ok',
+	        'cancelTitle': 'cancel'
+	      }, function (result) {
+	        modal.toast({ message: "Click Prompt  " + JSON.stringify(result) });
+	      });
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 486:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('scroller', [_h('panel', {
+	    attrs: {
+	      "title": "Toast",
+	      "type": "primary"
+	    }
+	  }, [_h('button', {
+	    attrs: {
+	      "type": "primary",
+	      "value": "Toast"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.toast($event)
+	      }
+	    }
+	  })]), _h('panel', {
+	    attrs: {
+	      "title": "Dialog",
+	      "type": "primary"
+	    }
+	  }, [_h('button', {
+	    staticStyle: {
+	      marginBottom: "20px"
+	    },
+	    attrs: {
+	      "type": "success",
+	      "value": "Alert"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.alert($event)
+	      }
+	    }
+	  }), _h('button', {
+	    staticStyle: {
+	      marginBottom: "20px"
+	    },
+	    attrs: {
+	      "type": "primary",
+	      "value": "Confirm"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.confirm($event)
+	      }
+	    }
+	  }), _h('button', {
+	    attrs: {
+	      "type": "warning",
+	      "value": "Prompt"
+	    },
+	    nativeOn: {
+	      "click": function($event) {
+	        _vm.prompt($event)
+	      }
+	    }
+	  })])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
 

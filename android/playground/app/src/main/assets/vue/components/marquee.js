@@ -47,75 +47,87 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	  module.exports = {
-	    data: function () {
-	      return {
-	        marquee: {
-	          height: 30,
-	          duration: 1500,
-	          interval: 2000,
-	          list: [
-	            {text: 'Introducing Bots on Messenger'},
-	            {text: 'Capturing 3D 360-Stereo VR Video'},
-	            {text: 'The Future of Video on Facebook'},
-	            {text: 'Announcing Vue.js 2.0'},
-	            {text: 'Not Your Average Virtual-DOM'},
-	            {text: 'Templates, JSX, or Hyperscript?'}
-	          ]
-	        }
-	      }
-	    },
-	    components: {
-	      panel: __webpack_require__(377),
-	      marquee: __webpack_require__(381)
-	    },
-	    methods: {
-	      marqueeChange: function (e) {
-	        console.log(e)
-	      }
-	    }
-	  }
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
 
-	module.exports.render = function() {with(this){return _h('scroller',[_h('panel',{attrs:{"title":"Marquee","type":"primary"}},[_h('marquee',{style:{
-	          width: 700,
-	          height: marquee.height * 2,
-	          backgroundColor: 'rgb(223, 240, 216)',
-	          borderRadius: 8,
-	          paddingLeft: 10,
-	          paddingRight: 10
-	        },attrs:{"step":marquee.height * 2,"count":marquee.list.length,"interval":marquee.interval,"duration":marquee.duration},on:{"change":marqueeChange}},[_l((marquee.list),function(item){return _h('div',{style:{
-	            height: marquee.height * marquee.length,
-	            paddingTop: marquee.height * 0.5,
-	            paddingBottom: marquee.height * 0.5,
-	            overflow: 'hidden'
-	          }},[_h('text',{style:{
-	              height: marquee.height,
-	              color: 'rgb(60, 118, 61)',
-	              fontSize: 28
-	            }},[_s(item.text)])])})])])])}}
-	module.exports.el = "body"
+	/* script */
+	__vue_exports__ = __webpack_require__(414)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(419)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/components/marquee.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+	module.exports.el = 'true'
 	new Vue(module.exports)
 
 
 /***/ },
 
-/***/ 377:
+/***/ 383:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(384)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(385)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(386)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/panel.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
+
+
+/***/ },
+
+/***/ 384:
 /***/ function(module, exports) {
 
-	
-	  module.exports = {
-	    props: {
-	      type: { default: 'default' },
-	      title: { default: '' },
-	      paddingBody: { default: 20 },
-	      paddingHead: { default: 20 },
-	      dataClass: { default: '' }, // FIXME transfer class
-	      border:{ default: 0 }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "panel": {
 	    "marginBottom": 20,
 	    "backgroundColor": "#ffffff",
@@ -161,82 +173,199 @@
 	  "panel-header-danger": {
 	    "backgroundColor": "rgb(217,83,79)",
 	    "color": "#ffffff"
-	  },
-	  "panel-body": {}
+	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{class:['panel', 'panel-' + type],style:{ borderWidth: border }},[_h('text',{class:['panel-header', 'panel-header-' + type],style:{
-	        paddingTop: paddingHead,
-	        paddingBottom: paddingHead,
-	        paddingLeft: paddingHead*1.5,
-	        paddingRight: paddingHead*1.5
-	      }},[_s(title)]),_h('div',{class:['panel-body', 'panel-body-' + type],style:{
-	        paddingTop: paddingBody,
-	        paddingBottom: paddingBody,
-	        paddingLeft: paddingBody*1.5,
-	        paddingRight: paddingBody*1.5
-	      }},[_t("default")])])}}
-	delete module.exports.el
+
+/***/ },
+
+/***/ 385:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  props: {
+	    type: { default: 'default' },
+	    title: { default: '' },
+	    paddingBody: { default: 20 },
+	    paddingHead: { default: 20 },
+	    dataClass: { default: '' }, // FIXME transfer class
+	    border: { default: 0 }
+	  }
+	};
+
+/***/ },
+
+/***/ 386:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    class: ['panel', 'panel-' + _vm.type],
+	    style: {
+	      borderWidth: _vm.border
+	    }
+	  }, [_h('text', {
+	    class: ['panel-header', 'panel-header-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingHead,
+	      paddingBottom: _vm.paddingHead,
+	      paddingLeft: _vm.paddingHead * 1.5,
+	      paddingRight: _vm.paddingHead * 1.5
+	    }
+	  }, [_vm._s(_vm.title)]), _h('div', {
+	    class: ['panel-body', 'panel-body-' + _vm.type],
+	    style: {
+	      paddingTop: _vm.paddingBody,
+	      paddingBottom: _vm.paddingBody,
+	      paddingLeft: _vm.paddingBody * 1.5,
+	      paddingRight: _vm.paddingBody * 1.5
+	    }
+	  }, [_vm._t("default")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 414:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	module.exports = {
+	  data: function data() {
+	    return {
+	      marquee: {
+	        height: 30,
+	        duration: 1500,
+	        interval: 2000,
+	        list: [{ text: 'Introducing Bots on Messenger' }, { text: 'Capturing 3D 360-Stereo VR Video' }, { text: 'The Future of Video on Facebook' }, { text: 'Announcing Vue.js 2.0' }, { text: 'Not Your Average Virtual-DOM' }, { text: 'Templates, JSX, or Hyperscript?' }]
+	      }
+	    };
+	  },
+	  components: {
+	    panel: __webpack_require__(383),
+	    marquee: __webpack_require__(415)
+	  },
+	  methods: {
+	    marqueeChange: function marqueeChange(e) {
+	      console.log(e);
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 415:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = []
+
+	/* styles */
+	__vue_styles__.push(__webpack_require__(416)
+	)
+
+	/* script */
+	__vue_exports__ = __webpack_require__(417)
+
+	/* template */
+	var __vue_template__ = __webpack_require__(418)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/marquee.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__.style = __vue_options__.style || {}
+	__vue_styles__.forEach(function (module) {
+	for (var name in module) {
+	__vue_options__.style[name] = module[name]
+	}
+	})
+
+	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 381:
+/***/ 416:
 /***/ function(module, exports) {
 
-	
-	  var animation = __weex_require_module__('animation')
-
-	  module.exports = {
-	    props: {
-	      step: { default: 0 },
-	      count: { default: 0 },
-	      index: { default: 1 },
-	      duration: { default: 0 },
-	      interval: { default: 0 },
-	      outofview: { default: false }
-	    },
-	    created: function () {
-	      if (this.interval > 0 && this.step > 0 && this.duration > 0) {
-	        this.run()
-	      }
-	    },
-	    methods: {
-	      run: function () {
-	        if (this.outofview) {
-	          setTimeout(this.run.bind(this), this.interval)
-	        } else {
-	          setTimeout(function () {
-	            this.animation(this.run.bind(this))
-	          }.bind(this), this.interval)
-	        }
-	      },
-	      animation: function (cb) {
-	        var offset = -this.step * this.index;
-	        animation.transition(this.$refs.anim.ref, {
-	          styles: {
-	            transform: 'translateY(' + offset + 'px) translateZ(0)'
-	          },
-	          timingFunction: 'ease',
-	          duration: this.duration
-	        }, function () {
-	          this.index = (this.index + 1) % (this.count);
-	          this.$emit('change', {
-	            index: this.index,
-	            count: this.count
-	          });
-	          cb && cb();
-	        }.bind(this));
-	      },
-	      appeared: function() {
-	        this.outofview = false
-	      },
-	      disappeared: function() {
-	        this.outofview = true
-	      }
-	    }
-	  }
-
-	module.exports.style = {
+	module.exports = {
 	  "wrap": {
 	    "overflow": "hidden",
 	    "position": "relative"
@@ -247,9 +376,158 @@
 	    "transform": "translateY(0) translateZ(0)"
 	  }
 	}
-	module.exports.render = function() {with(this){return _h('div',{staticClass:["wrap"],on:{"appear":appeared,"disappear":disappeared}},[_h('div',{ref:"anim",staticClass:["anim"]},[_t("default")])])}}
-	delete module.exports.el
 
+/***/ },
+
+/***/ 417:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+	var _animation = __weex_require_module__('animation');
+
+	module.exports = {
+	  props: {
+	    step: { default: 0 },
+	    count: { default: 0 },
+	    index: { default: 1 },
+	    duration: { default: 0 },
+	    interval: { default: 0 },
+	    outofview: { default: false }
+	  },
+	  created: function created() {
+	    if (this.interval > 0 && this.step > 0 && this.duration > 0) {
+	      this.run();
+	    }
+	  },
+	  methods: {
+	    run: function run() {
+	      if (this.outofview) {
+	        setTimeout(this.run.bind(this), this.interval);
+	      } else {
+	        setTimeout(function () {
+	          this.animation(this.run.bind(this));
+	        }.bind(this), this.interval);
+	      }
+	    },
+	    animation: function animation(cb) {
+	      var offset = -this.step * this.index;
+	      _animation.transition(this.$refs.anim.ref, {
+	        styles: {
+	          transform: 'translateY(' + offset + 'px) translateZ(0)'
+	        },
+	        timingFunction: 'ease',
+	        duration: this.duration
+	      }, function () {
+	        this.index = (this.index + 1) % this.count;
+	        this.$emit('change', {
+	          index: this.index,
+	          count: this.count
+	        });
+	        cb && cb();
+	      }.bind(this));
+	    },
+	    appeared: function appeared() {
+	      this.outofview = false;
+	    },
+	    disappeared: function disappeared() {
+	      this.outofview = true;
+	    }
+	  }
+	};
+
+/***/ },
+
+/***/ 418:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('div', {
+	    staticClass: ["wrap"],
+	    on: {
+	      "appear": _vm.appeared,
+	      "disappear": _vm.disappeared
+	    }
+	  }, [_h('div', {
+	    ref: "anim",
+	    staticClass: ["anim"]
+	  }, [_vm._t("default")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+
+/***/ },
+
+/***/ 419:
+/***/ function(module, exports) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+	  return _h('scroller', [_h('panel', {
+	    attrs: {
+	      "title": "Marquee",
+	      "type": "primary"
+	    }
+	  }, [_h('marquee', {
+	    style: {
+	      width: 700,
+	      height: _vm.marquee.height * 2,
+	      backgroundColor: 'rgb(223, 240, 216)',
+	      borderRadius: 8,
+	      paddingLeft: 10,
+	      paddingRight: 10
+	    },
+	    attrs: {
+	      "step": _vm.marquee.height * 2,
+	      "count": _vm.marquee.list.length,
+	      "interval": _vm.marquee.interval,
+	      "duration": _vm.marquee.duration
+	    },
+	    on: {
+	      "change": _vm.marqueeChange
+	    }
+	  }, [_vm._l((_vm.marquee.list), function(item) {
+	    return _h('div', {
+	      style: {
+	        height: _vm.marquee.height * _vm.marquee.length,
+	        paddingTop: _vm.marquee.height * 0.5,
+	        paddingBottom: _vm.marquee.height * 0.5,
+	        overflow: 'hidden'
+	      }
+	    }, [_h('text', {
+	      style: {
+	        height: _vm.marquee.height,
+	        color: 'rgb(60, 118, 61)',
+	        fontSize: 28
+	      }
+	    }, [_vm._s(item.text)])])
+	  })])])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
 
 /***/ }
 
