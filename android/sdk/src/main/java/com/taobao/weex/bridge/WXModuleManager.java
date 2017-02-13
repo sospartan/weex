@@ -242,7 +242,7 @@ public class WXModuleManager {
    * module object dictionary
    * K : instanceId, V : Modules
    */
-  private static Map<String, ConcurrentHashMap<String, WXModule>> sInstanceModuleMap = new ConcurrentHashMap<>();
+  private static Map<String, Map<String, WXModule>> sInstanceModuleMap = new ConcurrentHashMap<>();
 
   /**
    * Register module to JavaScript and Android
@@ -347,7 +347,7 @@ public class WXModuleManager {
 
     //not global module
     if (wxModule == null) {
-      ConcurrentHashMap<String, WXModule> moduleMap = sInstanceModuleMap.get(instanceId);
+      Map<String, WXModule> moduleMap = sInstanceModuleMap.get(instanceId);
       if (moduleMap == null) {
         moduleMap = new ConcurrentHashMap<>();
         sInstanceModuleMap.put(instanceId, moduleMap);
@@ -374,7 +374,7 @@ public class WXModuleManager {
 
   public static void onActivityCreate(String instanceId){
 
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -390,7 +390,7 @@ public class WXModuleManager {
 
   public static void onActivityStart(String instanceId){
 
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -404,7 +404,7 @@ public class WXModuleManager {
   }
 
   public static void onActivityPause(String instanceId){
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -418,7 +418,7 @@ public class WXModuleManager {
   }
 
   public static void onActivityResume(String instanceId){
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -432,7 +432,7 @@ public class WXModuleManager {
   }
 
   public static void onActivityStop(String instanceId){
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -446,7 +446,7 @@ public class WXModuleManager {
   }
 
   public static void onActivityDestroy(String instanceId){
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -460,7 +460,7 @@ public class WXModuleManager {
   }
 
   public static boolean onActivityBack(String instanceId){
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -476,7 +476,7 @@ public class WXModuleManager {
 
   public static void onActivityResult(String instanceId,int requestCode, int resultCode, Intent data){
 
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -490,7 +490,7 @@ public class WXModuleManager {
   }
 
   public static boolean onCreateOptionsMenu(String instanceId,Menu menu) {
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -505,7 +505,7 @@ public class WXModuleManager {
   }
 
   public static void onRequestPermissionsResult(String instanceId ,int requestCode, String[] permissions, int[] grantResults) {
-    ConcurrentHashMap<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
+    Map<String, WXModule> modules = sInstanceModuleMap.get(instanceId);
     if(modules!=null) {
       for (String key : modules.keySet()) {
         WXModule module = modules.get(key);
@@ -520,7 +520,7 @@ public class WXModuleManager {
 
   public static void destroyInstanceModules(String instanceId) {
     sDomModuleMap.remove(instanceId);
-    ConcurrentHashMap<String, WXModule> moduleMap = sInstanceModuleMap.remove(instanceId);
+    Map<String, WXModule> moduleMap = sInstanceModuleMap.remove(instanceId);
     if (moduleMap == null || moduleMap.size() < 1) {
       return;
     }
