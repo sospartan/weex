@@ -174,4 +174,3 @@ public class ImageAdapter implements IWXImgLoaderAdapter {
 }
 
 ```
-
