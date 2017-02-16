@@ -30,7 +30,7 @@ Refer to the following example:
     }
 
 ```
-#### Support two callback mode as  sync or async
+#### Support synchronous/asynchronous callback 
 you can add  `` @JSMethod (uiThread = false or true ) `` annotation to choose the  callback mode of moudle . see the follow  example.
 ```java
      // as sync-callback mode 
