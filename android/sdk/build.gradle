@@ -48,7 +48,7 @@ checkstyle {
     toolVersion = '6.9'
 }
 
-version = "0.9.5"
+version = "0.10.0"
 
 android {
     compileSdkVersion 23
@@ -57,7 +57,7 @@ android {
 
     useLibrary 'org.apache.http.legacy'
 
-    def jsfmVersion = "0.15.2"
+    def jsfmVersion = "0.19.6"
     try{
         def line
         new File("assets/main.js").withReader { line = it.readLine() }
