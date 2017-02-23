@@ -224,6 +224,7 @@ import com.taobao.weex.utils.FontDO;
 import com.taobao.weex.utils.TypefaceUtil;
 import com.taobao.weex.utils.WXUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -315,18 +316,6 @@ public final class WXDomManager {
     mDomThread = null;
   }
 
-  /**
-   * Invoke {@link WXDomStatement} for creating body according to the JSONObject.
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance
-   * @param element the jsonObject according to which to create command object.
-   */
-  void createBody(String instanceId, JSONObject element) {
-    throwIfNotDomThread();
-    WXDomStatement statement = new WXDomStatement(instanceId, mWXRenderManager);
-    mDomRegistries.put(instanceId, statement);
-    statement.createBody(element);
-  }
-
   private boolean isDomThread() {
     return !WXEnvironment.isApkDebugable() || Thread.currentThread().getId() == mDomThread.getId();
   }
@@ -342,199 +331,10 @@ public final class WXDomManager {
     }
   }
 
-  /**
-   * Invoke {@link WXDomStatement} for adding a dom node to its parent in a specific location.
-   *
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance
-   * @param element the dom object in the form of JSONObject
-   * @param parentRef parent to which the dom is added.
-   * @param index the location of which the dom is added.
-   */
-  void addDom(String instanceId, String parentRef, JSONObject element, int index) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.addDom(element, parentRef, index);
-  }
-
-  void invokeMethod(String instanceId, String ref, String method, JSONArray args){
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.invokeMethod(ref,method,args);
-  }
-
   private void throwIfNotDomThread(){
     if (!isDomThread()) {
       throw new WXRuntimeException("dom operation must be done in dom thread");
     }
-  }
-
-  /**
-   * Invoke {@link WXDomStatement} for removing the specified {@link WXDomObject}.
-   *
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance
-   * @param ref of the dom.
-   */
-  //removeElement(ref:String)
-  void removeDom(String instanceId, String ref) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.removeDom(ref);
-  }
-
-
-  /**
-   * Invoke {@link WXDomStatement} for moving the specific {@link WXDomObject} to a new parent.
-   *
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance
-   * @param ref of the dom to be moved.
-   * @param parentRef of the new parent DOM node
-   * @param index the index of the dom to be inserted in the new parent.
-   */
-  void moveDom(String instanceId, String ref, String parentRef, int index) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.moveDom(ref, parentRef, index);
-  }
-
-  /**
-   * Invoke {@link WXDomStatement} for updating the attributes according to the
-   * given attribute.
-   *
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance
-   * @param ref of the dom.
-   * @param attr the new attribute. This attribute is only a part of the full attribute, and will be
-   *             merged into attributes
-   */
-  void updateAttrs(String instanceId, String ref, JSONObject attr) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.updateAttrs(ref, attr);
-  }
-
-  /**
-   * Invoke {@link WXDomStatement} for updating style
-   *
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance
-   * @param ref the given dom object
-   * @param style the given style.
-   */
-  void updateStyle(String instanceId, String ref, JSONObject style, boolean byPesudo) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.updateStyle(ref, style, byPesudo);
-  }
-
-  /**
-   * Invoke {@link WXDomStatement} for adding a default event listener to the corresponding {@link
-   * WXDomObject}.
-   *
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance
-   * @param ref of the dom.
-   * @param type the type of the event, this may be a plain event defined in
-   * {@link com.taobao.weex.common.Constants.Event} or a gesture defined in {@link com.taobao
-   * .weex.ui.view.gesture.WXGestureType}
-   */
-  void addEvent(String instanceId, String ref, String type) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.addEvent(ref, type);
-  }
-
-  /**
-   * Invoke the {@link WXDomStatement} for removing the event listener of the corresponding {@link
-   * WXDomObject}.
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance
-   * @param ref of the dom.
-   * @param type the type of the event, this may be a plain event defined in
-   * {@link com.taobao.weex.common.Constants.Event} or a gesture defined in {@link com.taobao
-   * .weex.ui.view.gesture.WXGestureType}
-   */
-  void removeEvent(String instanceId, String ref, String type) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.removeEvent(ref, type);
-  }
-
-  /**
-   * Invoke the {@link WXDomStatement} for scrolling the given view to the specified position.
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance to
-   *                                                                    scroll.
-   * @param ref of the dom.
-   * @param options the specified position
-   */
-  void scrollToDom(String instanceId, String ref, JSONObject options) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.scrollToDom(ref, options);
-  }
-
-  /**
-   * Notify the creating of whole dom tree has finished. This message is sent by JS.
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance to
-   *                                                                    notify.
-   */
-  void createFinish(String instanceId) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.createFinish();
-  }
-
-  /**
-   * Notify the refreshing has finished.
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance to
-   *                                                                    notify.
-   */
-  void refreshFinish(String instanceId) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.refreshFinish();
-  }
-
-  /**
-   * Notify the update has finished.
-   * @param instanceId {@link com.taobao.weex.WXSDKInstance#mInstanceId} for the instance to
-   *                                                                    notify.
-   */
-  void updateFinish(String instanceId) {
-    throwIfNotDomThread();
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.updateFinish();
   }
 
   void startAnimation(@NonNull String instanceId,
@@ -551,49 +351,39 @@ public final class WXDomManager {
     statement.startAnimation(ref,animation,callBack);
   }
 
-  public void addRule(String instanceId,final String type,final JSONObject jsonObject) {
-    if (Constants.Name.FONT_FACE.equals(type)) {
-      FontDO fontDO = parseFontDO(jsonObject, mWXRenderManager.getWXSDKInstance(instanceId));
-      if (fontDO != null && !TextUtils.isEmpty(fontDO.getFontFamilyName())) {
-        FontDO cacheFontDO = TypefaceUtil.getFontDO(fontDO.getFontFamilyName());
-        if (cacheFontDO == null || !TextUtils.equals(cacheFontDO.getUrl(), fontDO.getUrl())) {
-          TypefaceUtil.putFontDO(fontDO);
-          TypefaceUtil.loadTypeface(fontDO);
-        } else {
-          TypefaceUtil.loadTypeface(cacheFontDO);
-        }
+  public void executeAction(String instanceId, DOMAction action, boolean createContext) {
+    DOMActionContext context = mDomRegistries.get(instanceId);
+    if(context == null){
+      if(createContext){
+        WXDomStatement oldStatement = new WXDomStatement(instanceId, mWXRenderManager);
+        mDomRegistries.put(instanceId, oldStatement);
+        context = oldStatement;
+      }else{
+        //Instance not existed.
+        return;
       }
     }
+    action.executeDom(context);
+
   }
 
-  private FontDO parseFontDO(JSONObject jsonObject,WXSDKInstance instance) {
-    if(jsonObject == null) {
-      return null;
-    }
-    String src = jsonObject.getString(Constants.Name.SRC);
-    String name = jsonObject.getString(Constants.Name.FONT_FAMILY);
-
-    return new FontDO(name, src,instance);
-  }
 
   /**
-   * Gets the coordinate information of the control
-   * @param instanceId wxsdkinstance id
-   * @param ref ref
-   * @param callback callback
+   *  @param action
+   * @param createContext only true when create body
    */
-  public void getComponentSize(String instanceId, String ref, JSCallback callback) {
-    if (!isDomThread()) {
-      throw new WXRuntimeException("getComponentSize operation must be done in dom thread");
-    }
-    WXDomStatement statement = mDomRegistries.get(instanceId);
-    if (statement == null) {
-      Map<String, Object> options = new HashMap<>();
-      options.put("result", false);
-      options.put("errMsg", "Component does not exist");
-      callback.invoke(options);
+  public void postAction(String instanceId,DOMAction action, boolean createContext){
+    if(action == null){
       return;
     }
-    statement.getComponentSize(ref, callback);
+    Message msg = Message.obtain();
+    msg.what = WXDomHandler.MsgType.WX_EXECUTE_ACTION;
+    WXDomTask task = new WXDomTask();
+    task.instanceId = instanceId;
+    task.args = new ArrayList<>();
+    task.args.add(action);
+    task.args.add(createContext);
+    msg.obj = task;
+    sendMessage(msg);
   }
 }

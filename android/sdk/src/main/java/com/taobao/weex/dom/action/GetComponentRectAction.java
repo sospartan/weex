@@ -202,121 +202,112 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.dom;
+package com.taobao.weex.dom.action;
 
-import android.os.Message;
+import android.graphics.Rect;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.view.View;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.WXSDKManager;
-import com.taobao.weex.bridge.WXBridgeManager;
-import com.taobao.weex.common.WXModule;
-import com.taobao.weex.dom.action.Actions;
-import com.taobao.weex.utils.WXLogUtils;
+import com.taobao.weex.bridge.JSCallback;
+import com.taobao.weex.bridge.SimpleJSCallback;
+import com.taobao.weex.dom.DOMAction;
+import com.taobao.weex.dom.DOMActionContext;
+import com.taobao.weex.dom.RenderAction;
+import com.taobao.weex.dom.RenderActionContext;
+import com.taobao.weex.ui.component.WXComponent;
+import com.taobao.weex.utils.WXViewUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * <p>
- * Module class for dom operation. Methods in this class will run in dom thread by default.
- * Actually, methods in this class are wrapper classes, they just wrap method call info, and hand
- * the wrapped info to the {@link WXDomHandler} for further process. This class is also singleton
- * in the {@link com.taobao.weex.WXSDKInstance}
- * </p>
- * <p>
- *   This module is work different with other regular module, method is invoked directly, without reflection.
- * </p>
+ * Created by sospartan on 02/03/2017.
  */
-public final class WXDomModule extends WXModule {
-
-  /** package **/
-  // method
-  public static final String CREATE_BODY = "createBody";
-  public static final String UPDATE_ATTRS = "updateAttrs";
-  public static final String UPDATE_STYLE = "updateStyle";
-  public static final String REMOVE_ELEMENT = "removeElement";
-  public static final String ADD_ELEMENT = "addElement";
-  public static final String MOVE_ELEMENT = "moveElement";
-  public static final String ADD_EVENT = "addEvent";
-  public static final String REMOVE_EVENT = "removeEvent";
-  public static final String CREATE_FINISH = "createFinish";
-  public static final String REFRESH_FINISH = "refreshFinish";
-  public static final String UPDATE_FINISH = "updateFinish";
-  public static final String SCROLL_TO_ELEMENT = "scrollToElement";
-  public static final String ADD_RULE = "addRule";
-  public static final String GET_COMPONENT_RECT = "getComponentRect";
-
-  public static final String WXDOM = "dom";
+class GetComponentRectAction implements DOMAction, RenderAction {
+  private final String mRef;
+  private final String mCallback;
 
 
-  public static final String INVOKE_METHOD = "invokeMethod";
-  /**
-   * Methods expose to js. Every method which will be called in js should add to this array.
-   */
-  public static final String[] METHODS = {CREATE_BODY, UPDATE_ATTRS, UPDATE_STYLE,
-      REMOVE_ELEMENT, ADD_ELEMENT, MOVE_ELEMENT, ADD_EVENT, REMOVE_EVENT, CREATE_FINISH,
-      REFRESH_FINISH, UPDATE_FINISH, SCROLL_TO_ELEMENT, ADD_RULE,GET_COMPONENT_RECT,
-      INVOKE_METHOD};
-
-  public WXDomModule(WXSDKInstance instance){
-    mWXSDKInstance = instance;
+  GetComponentRectAction(String ref, String callback) {
+    this.mRef = ref;
+    this.mCallback = callback;
   }
 
-  public void callDomMethod(JSONObject task) {
-    if (task == null) {
-      return;
+  @Override
+  public void executeDom(DOMActionContext context) {
+    JSCallback jsCallback = new SimpleJSCallback(context.getInstance().getInstanceId(), mCallback);
+    if (context.isDestory()) {
+      Map<String, Object> options = new HashMap<>();
+      options.put("result", false);
+      options.put("errMsg", "Component does not exist");
+      jsCallback.invoke(options);
+    } else {
+      context.postRenderTask(this);
     }
-    String method = (String) task.get(WXBridgeManager.METHOD);
-    JSONArray args = (JSONArray) task.get(WXBridgeManager.ARGS);
-    callDomMethod(method,args);
-  }
-  
-  public Object callDomMethod(String method, JSONArray args) {
 
-    if (method == null) {
-      return null;
-    }
-    //TODO：add pooling
-    try {
-      DOMAction action = Actions.get(method,args);
-      if(action == null){
-        WXLogUtils.e("Unknown dom action.");
+  }
+
+  @Override
+  public void executeRender(RenderActionContext context) {
+    JSCallback jsCallback = new SimpleJSCallback(context.getInstance().getInstanceId(), mCallback);
+    if (TextUtils.isEmpty(mRef)) {
+      Map<String, Object> options = new HashMap<>();
+      options.put("result", false);
+      options.put("errMsg", "Illegal parameter");
+      jsCallback.invoke(options);
+    } else if ("viewport".equalsIgnoreCase(mRef)) {
+      callbackViewport(context, jsCallback);
+    } else {
+      WXComponent component = context.getComponent(mRef);
+      Map<String, Object> options = new HashMap<>();
+      if (component != null) {
+        Map<String, String> size = new HashMap<>();
+        Rect sizes = component.getComponentSize();
+        size.put("width", getWebPxValue(sizes.width()));
+        size.put("height", getWebPxValue(sizes.height()));
+        size.put("bottom", getWebPxValue(sizes.bottom));
+        size.put("left", getWebPxValue(sizes.left));
+        size.put("right", getWebPxValue(sizes.right));
+        size.put("top", getWebPxValue(sizes.top));
+        options.put("size", size);
+        options.put("result", true);
+      } else {
+        options.put("errMsg", "Component does not exist");
       }
-
-      postAction(action,CREATE_BODY.equals(method));
-    } catch (IndexOutOfBoundsException e) {
-      // no enougn args
-      e.printStackTrace();
-      WXLogUtils.e("Dom module call miss arguments.");
-    } catch (ClassCastException cce) {
-      WXLogUtils.e("Dom module call arguments format error!!");
+      jsCallback.invoke(options);
     }
-    return null;
   }
 
-  /**
-   * invoke dom method
-   * @param ref
-   * @param method
-   * @param args
-   */
-  public void invokeMethod(String ref, String method, JSONArray args){
-    if(ref == null || method == null){
-      return;
+  private void callbackViewport(RenderActionContext context, JSCallback jsCallback) {
+    WXSDKInstance instance = context.getInstance();
+    View container;
+    if ((container = instance.getContainerView()) != null) {
+      Map<String, Object> options = new HashMap<>();
+      Map<String, String> sizes = new HashMap<>();
+      int[] location = new int[2];
+      instance.getContainerView().getLocationOnScreen(location);
+      sizes.put("left", "0");
+      sizes.put("top", "0");
+      sizes.put("right", getWebPxValue(container.getWidth()));
+      sizes.put("bottom", getWebPxValue(container.getHeight()));
+      sizes.put("width", getWebPxValue(container.getWidth()));
+      sizes.put("height", getWebPxValue(container.getHeight()));
+      options.put("size", sizes);
+      options.put("result", true);
+      jsCallback.invoke(options);
+    } else {
+      Map<String, Object> options = new HashMap<>();
+      options.put("result", false);
+      options.put("errMsg", "Component does not exist");
+      jsCallback.invoke(options);
     }
-
-    postAction(Actions.getInvokeMethod(ref,method,args),false);
   }
 
-  /**
-   *  @param action
-   * @param createContext only true when create body
-   */
-  public void postAction(DOMAction action, boolean createContext){
-    WXSDKManager.getInstance().getWXDomManager().postAction(mWXSDKInstance.getInstanceId(),action,createContext);
+  @NonNull
+  private String getWebPxValue(int value) {
+    return String.valueOf(WXViewUtils.getWebPxByWidth(value, WXSDKInstance.getViewPortWidth()));
   }
 
 

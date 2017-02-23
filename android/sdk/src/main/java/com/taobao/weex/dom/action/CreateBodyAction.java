@@ -202,122 +202,101 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.dom;
+package com.taobao.weex.dom.action;
 
-import android.os.Message;
+import android.widget.ScrollView;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
-import com.taobao.weex.bridge.WXBridgeManager;
-import com.taobao.weex.common.WXModule;
-import com.taobao.weex.dom.action.Actions;
+import com.taobao.weex.adapter.IWXUserTrackAdapter;
+import com.taobao.weex.common.WXErrorCode;
+import com.taobao.weex.common.WXRenderStrategy;
+import com.taobao.weex.dom.DOMActionContext;
+import com.taobao.weex.dom.RenderActionContext;
+import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.component.WXComponent;
+import com.taobao.weex.ui.component.WXScroller;
 import com.taobao.weex.utils.WXLogUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.taobao.weex.utils.WXViewUtils;
 
 /**
- * <p>
- * Module class for dom operation. Methods in this class will run in dom thread by default.
- * Actually, methods in this class are wrapper classes, they just wrap method call info, and hand
- * the wrapped info to the {@link WXDomHandler} for further process. This class is also singleton
- * in the {@link com.taobao.weex.WXSDKInstance}
- * </p>
- * <p>
- *   This module is work different with other regular module, method is invoked directly, without reflection.
- * </p>
+ * Created by sospartan on 14/02/2017.
  */
-public final class WXDomModule extends WXModule {
 
-  /** package **/
-  // method
-  public static final String CREATE_BODY = "createBody";
-  public static final String UPDATE_ATTRS = "updateAttrs";
-  public static final String UPDATE_STYLE = "updateStyle";
-  public static final String REMOVE_ELEMENT = "removeElement";
-  public static final String ADD_ELEMENT = "addElement";
-  public static final String MOVE_ELEMENT = "moveElement";
-  public static final String ADD_EVENT = "addEvent";
-  public static final String REMOVE_EVENT = "removeEvent";
-  public static final String CREATE_FINISH = "createFinish";
-  public static final String REFRESH_FINISH = "refreshFinish";
-  public static final String UPDATE_FINISH = "updateFinish";
-  public static final String SCROLL_TO_ELEMENT = "scrollToElement";
-  public static final String ADD_RULE = "addRule";
-  public static final String GET_COMPONENT_RECT = "getComponentRect";
+class CreateBodyAction extends AbstractAddElementAction {
+  private final JSONObject mData;
 
-  public static final String WXDOM = "dom";
-
-
-  public static final String INVOKE_METHOD = "invokeMethod";
-  /**
-   * Methods expose to js. Every method which will be called in js should add to this array.
-   */
-  public static final String[] METHODS = {CREATE_BODY, UPDATE_ATTRS, UPDATE_STYLE,
-      REMOVE_ELEMENT, ADD_ELEMENT, MOVE_ELEMENT, ADD_EVENT, REMOVE_EVENT, CREATE_FINISH,
-      REFRESH_FINISH, UPDATE_FINISH, SCROLL_TO_ELEMENT, ADD_RULE,GET_COMPONENT_RECT,
-      INVOKE_METHOD};
-
-  public WXDomModule(WXSDKInstance instance){
-    mWXSDKInstance = instance;
+  CreateBodyAction(JSONObject data) {
+    mData = data;
   }
 
-  public void callDomMethod(JSONObject task) {
-    if (task == null) {
+  @Override
+  public void executeDom(DOMActionContext context) {
+    addDomInternal(context, mData);
+  }
+
+  @Override
+  protected WXComponent createComponent(DOMActionContext context, WXDomObject domObject) {
+    return generateComponentTree(context, domObject, null);
+  }
+
+  @Override
+  protected void appendDomToTree(DOMActionContext context, WXDomObject domObject) {
+    String instanceId = context.getInstanceId();
+    WXDomObject.prepareRoot(domObject,
+        WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexHeight(instanceId), WXSDKManager.getInstanceViewPortWidth(instanceId)),
+        WXViewUtils.getWebPxByWidth(WXViewUtils.getWeexWidth(instanceId), WXSDKManager.getInstanceViewPortWidth(instanceId)));
+  }
+
+  @Override
+  protected WXErrorCode getErrorCode() {
+    return WXErrorCode.WX_ERR_DOM_CREATEBODY;
+  }
+
+  @Override
+  protected String getStatementName() {
+    return "createBody";
+  }
+
+
+  @Override
+  public void executeRender(RenderActionContext context) {
+    WXComponent component = context.getComponent(WXDomObject.ROOT);
+    WXSDKInstance instance = context.getInstance();
+    if (instance == null || instance.getContext() == null) {
+      WXLogUtils.e("instance is null or instance is destroy!");
       return;
     }
-    String method = (String) task.get(WXBridgeManager.METHOD);
-    JSONArray args = (JSONArray) task.get(WXBridgeManager.ARGS);
-    callDomMethod(method,args);
-  }
-  
-  public Object callDomMethod(String method, JSONArray args) {
-
-    if (method == null) {
-      return null;
-    }
-    //TODO：add pooling
     try {
-      DOMAction action = Actions.get(method,args);
-      if(action == null){
-        WXLogUtils.e("Unknown dom action.");
+      long start = System.currentTimeMillis();
+      component.createView();
+      if (WXEnvironment.isApkDebugable()) {
+        WXLogUtils.renderPerformanceLog("createView", (System.currentTimeMillis() - start));
+      }
+      start = System.currentTimeMillis();
+      component.applyLayoutAndEvent(component);
+      component.bindData(component);
+
+      if (WXEnvironment.isApkDebugable()) {
+        WXLogUtils.renderPerformanceLog("bind", (System.currentTimeMillis() - start));
       }
 
-      postAction(action,CREATE_BODY.equals(method));
-    } catch (IndexOutOfBoundsException e) {
-      // no enougn args
-      e.printStackTrace();
-      WXLogUtils.e("Dom module call miss arguments.");
-    } catch (ClassCastException cce) {
-      WXLogUtils.e("Dom module call arguments format error!!");
+      if (component instanceof WXScroller) {
+        WXScroller scroller = (WXScroller) component;
+        if (scroller.getInnerView() instanceof ScrollView) {
+          instance.setRootScrollView((ScrollView) scroller.getInnerView());
+        }
+      }
+      instance.onRootCreated(component);
+      if (instance.getRenderStrategy() != WXRenderStrategy.APPEND_ONCE) {
+        instance.onCreateFinish();
+      }
+      instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_SUCCESS);
+    } catch (Exception e) {
+      WXLogUtils.e("create body failed.", e);
     }
-    return null;
   }
-
-  /**
-   * invoke dom method
-   * @param ref
-   * @param method
-   * @param args
-   */
-  public void invokeMethod(String ref, String method, JSONArray args){
-    if(ref == null || method == null){
-      return;
-    }
-
-    postAction(Actions.getInvokeMethod(ref,method,args),false);
-  }
-
-  /**
-   *  @param action
-   * @param createContext only true when create body
-   */
-  public void postAction(DOMAction action, boolean createContext){
-    WXSDKManager.getInstance().getWXDomManager().postAction(mWXSDKInstance.getInstanceId(),action,createContext);
-  }
-
 
 }

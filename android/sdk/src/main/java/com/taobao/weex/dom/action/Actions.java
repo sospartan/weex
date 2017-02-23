@@ -202,122 +202,113 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.dom;
-
-import android.os.Message;
+package com.taobao.weex.dom.action;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.WXSDKManager;
-import com.taobao.weex.bridge.WXBridgeManager;
-import com.taobao.weex.common.WXModule;
-import com.taobao.weex.dom.action.Actions;
-import com.taobao.weex.utils.WXLogUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.taobao.weex.dom.DOMAction;
+import static com.taobao.weex.dom.WXDomModule.*;
 
 /**
- * <p>
- * Module class for dom operation. Methods in this class will run in dom thread by default.
- * Actually, methods in this class are wrapper classes, they just wrap method call info, and hand
- * the wrapped info to the {@link WXDomHandler} for further process. This class is also singleton
- * in the {@link com.taobao.weex.WXSDKInstance}
- * </p>
- * <p>
- *   This module is work different with other regular module, method is invoked directly, without reflection.
- * </p>
+ * Created by sospartan on 01/03/2017.
  */
-public final class WXDomModule extends WXModule {
 
-  /** package **/
-  // method
-  public static final String CREATE_BODY = "createBody";
-  public static final String UPDATE_ATTRS = "updateAttrs";
-  public static final String UPDATE_STYLE = "updateStyle";
-  public static final String REMOVE_ELEMENT = "removeElement";
-  public static final String ADD_ELEMENT = "addElement";
-  public static final String MOVE_ELEMENT = "moveElement";
-  public static final String ADD_EVENT = "addEvent";
-  public static final String REMOVE_EVENT = "removeEvent";
-  public static final String CREATE_FINISH = "createFinish";
-  public static final String REFRESH_FINISH = "refreshFinish";
-  public static final String UPDATE_FINISH = "updateFinish";
-  public static final String SCROLL_TO_ELEMENT = "scrollToElement";
-  public static final String ADD_RULE = "addRule";
-  public static final String GET_COMPONENT_RECT = "getComponentRect";
+public class Actions {
 
-  public static final String WXDOM = "dom";
-
-
-  public static final String INVOKE_METHOD = "invokeMethod";
-  /**
-   * Methods expose to js. Every method which will be called in js should add to this array.
-   */
-  public static final String[] METHODS = {CREATE_BODY, UPDATE_ATTRS, UPDATE_STYLE,
-      REMOVE_ELEMENT, ADD_ELEMENT, MOVE_ELEMENT, ADD_EVENT, REMOVE_EVENT, CREATE_FINISH,
-      REFRESH_FINISH, UPDATE_FINISH, SCROLL_TO_ELEMENT, ADD_RULE,GET_COMPONENT_RECT,
-      INVOKE_METHOD};
-
-  public WXDomModule(WXSDKInstance instance){
-    mWXSDKInstance = instance;
-  }
-
-  public void callDomMethod(JSONObject task) {
-    if (task == null) {
-      return;
+  public static DOMAction get(String actionName,JSONArray args){
+    switch (actionName) {
+      case CREATE_BODY:
+        if (args == null) {
+          return null;
+        }
+        return new CreateBodyAction(args.getJSONObject(0));
+      case UPDATE_ATTRS:
+        if (args == null) {
+          return null;
+        }
+        return new UpdateAttributeAction(args.getString(0),args.getJSONObject(1));
+      case UPDATE_STYLE:
+        if (args == null) {
+          return null;
+        }
+        return new UpdateStyleAction(args.getString(0),args.getJSONObject(1));
+      case REMOVE_ELEMENT:
+        if (args == null) {
+          return null;
+        }
+        return new RemoveElementAction(args.getString(0));
+      case ADD_ELEMENT:
+        if (args == null) {
+          return null;
+        }
+        return new AddElementAction(args.getJSONObject(1),args.getString(0),args.getInteger(2));
+      case MOVE_ELEMENT:
+        if (args == null) {
+          return null;
+        }
+        return new MoveElementAction(args.getString(0),args.getString(1),args.getInteger(2));
+      case ADD_EVENT:
+        if (args == null) {
+          return null;
+        }
+        return new AddEventAction(args.getString(0),args.getString(1));
+      case REMOVE_EVENT:
+        if (args == null) {
+          return null;
+        }
+        return new RemoveEventAction(args.getString(0),args.getString(1));
+      case CREATE_FINISH:
+        return new CreateFinishAction();
+      case REFRESH_FINISH:
+        return new RefreshFinishAction();
+      case UPDATE_FINISH:
+        return new UpdateFinishAction();
+      case SCROLL_TO_ELEMENT:
+        if (args == null) {
+          return null;
+        }
+        return new ScrollToElementAction(args.getString(0),args.getJSONObject(1));
+      case ADD_RULE:
+        if (args == null) {
+          return null;
+        }
+        return new AddRuleAction(args.getString(0),args.getJSONObject(1));
+      case GET_COMPONENT_RECT:
+        if(args == null){
+          return null;
+        }
+        return new GetComponentRectAction(args.getString(0),args.getString(1));
+      case INVOKE_METHOD:
+        if(args == null){
+          return null;
+        }
+        return new InvokeMethodAction(args.getString(0),args.getString(1),args.getJSONArray(2));
     }
-    String method = (String) task.get(WXBridgeManager.METHOD);
-    JSONArray args = (JSONArray) task.get(WXBridgeManager.ARGS);
-    callDomMethod(method,args);
-  }
-  
-  public Object callDomMethod(String method, JSONArray args) {
 
-    if (method == null) {
-      return null;
-    }
-    //TODO：add pooling
-    try {
-      DOMAction action = Actions.get(method,args);
-      if(action == null){
-        WXLogUtils.e("Unknown dom action.");
-      }
-
-      postAction(action,CREATE_BODY.equals(method));
-    } catch (IndexOutOfBoundsException e) {
-      // no enougn args
-      e.printStackTrace();
-      WXLogUtils.e("Dom module call miss arguments.");
-    } catch (ClassCastException cce) {
-      WXLogUtils.e("Dom module call arguments format error!!");
-    }
     return null;
   }
 
-  /**
-   * invoke dom method
-   * @param ref
-   * @param method
-   * @param args
-   */
-  public void invokeMethod(String ref, String method, JSONArray args){
-    if(ref == null || method == null){
-      return;
-    }
 
-    postAction(Actions.getInvokeMethod(ref,method,args),false);
+  public static DOMAction getInvokeMethod(String ref,String method,JSONArray args){
+    return new InvokeMethodAction(ref,method,args);
   }
 
   /**
-   *  @param action
-   * @param createContext only true when create body
+   * Bridge will get this action directly.
+   * @param data
+   * @param parentRef
+   * @param index
+   * @return
    */
-  public void postAction(DOMAction action, boolean createContext){
-    WXSDKManager.getInstance().getWXDomManager().postAction(mWXSDKInstance.getInstanceId(),action,createContext);
+  public static DOMAction getAddElement(JSONObject data, String parentRef, int index){
+    return new AddElementAction(data,parentRef,index);
   }
 
+  public static DOMAction getUpdateStyle(String ref, JSONObject data, boolean byPesudo){
+    return new UpdateStyleAction(ref,data,byPesudo);
+  }
 
+  public static DOMAction getAddEvent(String ref, String type) {
+    return new AddEventAction(ref,type);
+  }
 }

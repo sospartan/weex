@@ -202,122 +202,112 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.taobao.weex.dom;
+package com.taobao.weex.dom.action;
 
-import android.os.Message;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.WXSDKManager;
-import com.taobao.weex.bridge.WXBridgeManager;
-import com.taobao.weex.common.WXModule;
-import com.taobao.weex.dom.action.Actions;
+import com.taobao.weex.adapter.IWXUserTrackAdapter;
+import com.taobao.weex.common.WXErrorCode;
+import com.taobao.weex.dom.DOMAction;
+import com.taobao.weex.dom.DOMActionContext;
+import com.taobao.weex.dom.RenderAction;
+import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.component.WXComponent;
+import com.taobao.weex.ui.component.WXComponentFactory;
+import com.taobao.weex.ui.component.WXVContainer;
 import com.taobao.weex.utils.WXLogUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
- * <p>
- * Module class for dom operation. Methods in this class will run in dom thread by default.
- * Actually, methods in this class are wrapper classes, they just wrap method call info, and hand
- * the wrapped info to the {@link WXDomHandler} for further process. This class is also singleton
- * in the {@link com.taobao.weex.WXSDKInstance}
- * </p>
- * <p>
- *   This module is work different with other regular module, method is invoked directly, without reflection.
- * </p>
+ * Created by sospartan on 22/02/2017.
  */
-public final class WXDomModule extends WXModule {
 
-  /** package **/
-  // method
-  public static final String CREATE_BODY = "createBody";
-  public static final String UPDATE_ATTRS = "updateAttrs";
-  public static final String UPDATE_STYLE = "updateStyle";
-  public static final String REMOVE_ELEMENT = "removeElement";
-  public static final String ADD_ELEMENT = "addElement";
-  public static final String MOVE_ELEMENT = "moveElement";
-  public static final String ADD_EVENT = "addEvent";
-  public static final String REMOVE_EVENT = "removeEvent";
-  public static final String CREATE_FINISH = "createFinish";
-  public static final String REFRESH_FINISH = "refreshFinish";
-  public static final String UPDATE_FINISH = "updateFinish";
-  public static final String SCROLL_TO_ELEMENT = "scrollToElement";
-  public static final String ADD_RULE = "addRule";
-  public static final String GET_COMPONENT_RECT = "getComponentRect";
-
-  public static final String WXDOM = "dom";
+abstract class AbstractAddElementAction implements DOMAction, RenderAction {
 
 
-  public static final String INVOKE_METHOD = "invokeMethod";
-  /**
-   * Methods expose to js. Every method which will be called in js should add to this array.
-   */
-  public static final String[] METHODS = {CREATE_BODY, UPDATE_ATTRS, UPDATE_STYLE,
-      REMOVE_ELEMENT, ADD_ELEMENT, MOVE_ELEMENT, ADD_EVENT, REMOVE_EVENT, CREATE_FINISH,
-      REFRESH_FINISH, UPDATE_FINISH, SCROLL_TO_ELEMENT, ADD_RULE,GET_COMPONENT_RECT,
-      INVOKE_METHOD};
-
-  public WXDomModule(WXSDKInstance instance){
-    mWXSDKInstance = instance;
-  }
-
-  public void callDomMethod(JSONObject task) {
-    if (task == null) {
-      return;
-    }
-    String method = (String) task.get(WXBridgeManager.METHOD);
-    JSONArray args = (JSONArray) task.get(WXBridgeManager.ARGS);
-    callDomMethod(method,args);
-  }
-  
-  public Object callDomMethod(String method, JSONArray args) {
-
-    if (method == null) {
+  protected WXComponent generateComponentTree(DOMActionContext context, WXDomObject dom, WXVContainer parent) {
+    if (dom == null) {
       return null;
     }
-    //TODO：add pooling
-    try {
-      DOMAction action = Actions.get(method,args);
-      if(action == null){
-        WXLogUtils.e("Unknown dom action.");
-      }
+    WXComponent component = WXComponentFactory.newInstance(context.getInstance(), dom, parent);
 
-      postAction(action,CREATE_BODY.equals(method));
-    } catch (IndexOutOfBoundsException e) {
-      // no enougn args
-      e.printStackTrace();
-      WXLogUtils.e("Dom module call miss arguments.");
-    } catch (ClassCastException cce) {
-      WXLogUtils.e("Dom module call arguments format error!!");
+    context.registerComponent(dom.getRef(), component);
+    if (component instanceof WXVContainer) {
+      WXVContainer parentC = (WXVContainer) component;
+      int count = dom.childCount();
+      WXDomObject child = null;
+      for (int i = 0; i < count; ++i) {
+        child = dom.getChild(i);
+        if (child != null) {
+          parentC.addChild(generateComponentTree(context, child, parentC));
+        }
+      }
     }
-    return null;
+
+    return component;
   }
 
   /**
-   * invoke dom method
-   * @param ref
-   * @param method
-   * @param args
+   * Add DOM node.
    */
-  public void invokeMethod(String ref, String method, JSONArray args){
-    if(ref == null || method == null){
+  protected void addDomInternal(DOMActionContext context, JSONObject dom) {
+    if (context.isDestory()) {
       return;
     }
 
-    postAction(Actions.getInvokeMethod(ref,method,args),false);
+    WXSDKInstance instance = context.getInstance();
+    if (instance == null) {
+      return;
+    }
+    WXErrorCode errCode = getErrorCode();
+    if (dom == null) {
+      instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, errCode);
+    }
+
+    //only non-root has parent.
+    WXDomObject domObject = WXDomObject.parse(dom, instance);
+
+    if (domObject == null || context.getDomByRef(domObject.getRef()) != null) {
+      if (WXEnvironment.isApkDebugable()) {
+        WXLogUtils.e("[WXDomStatement] " + getStatementName() + " error,DOM object is null or already registered!!");
+      }
+      instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, errCode);
+      return;
+    }
+    appendDomToTree(context, domObject);
+
+    domObject.traverseTree(
+        context.getAddDOMConsumer(),
+        context.getApplyStyleConsumer()
+    );
+
+    //Create component in dom thread
+    WXComponent component = createComponent(context, domObject);
+    if (component == null) {
+      instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, errCode);
+      //stop redner, some fatal happened.
+      return;
+    }
+    context.addDomInfo(domObject.getRef(), component);
+    context.postRenderTask(this);
+    addAnimationForDomTree(context, domObject);
+
+    instance.commitUTStab(IWXUserTrackAdapter.DOM_MODULE, WXErrorCode.WX_SUCCESS);
   }
 
-  /**
-   *  @param action
-   * @param createContext only true when create body
-   */
-  public void postAction(DOMAction action, boolean createContext){
-    WXSDKManager.getInstance().getWXDomManager().postAction(mWXSDKInstance.getInstanceId(),action,createContext);
+  public void addAnimationForDomTree(DOMActionContext context, WXDomObject domObject) {
+    context.addAnimationForElement(domObject.getRef(), domObject.getStyles());
+    for (int i = 0; i < domObject.childCount(); i++) {
+      addAnimationForDomTree(context, domObject.getChild(i));
+    }
   }
 
+  protected abstract WXComponent createComponent(DOMActionContext context, WXDomObject domObject);
 
+  protected abstract void appendDomToTree(DOMActionContext context, WXDomObject domObject);
+
+  protected abstract String getStatementName();
+
+  protected abstract WXErrorCode getErrorCode();
 }

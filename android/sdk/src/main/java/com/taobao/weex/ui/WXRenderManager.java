@@ -294,22 +294,6 @@ public class WXRenderManager {
     mRegistries.put(instance.getInstanceId(), new WXRenderStatement(instance));
   }
 
-  public void createBody(String instanceId, WXComponent component) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.createBody(component);
-  }
-
-  public WXComponent createBodyOnDomThread(String instanceId, WXDomObject domObject) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return null;
-    }
-    return statement.createBodyOnDomThread(domObject);
-  }
-
   public void setLayout(String instanceId, String ref, WXDomObject domObject) {
     WXRenderStatement statement = mRegistries.get(instanceId);
     if (statement == null) {
@@ -328,119 +312,6 @@ public class WXRenderManager {
     }
     statement.setExtra(ref, extra);
   }
-
-  public void setPadding(String instanceId, String ref, Spacing padding, Spacing border) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.setPadding(ref, padding, border);
-  }
-
-  public void addComponent(String instanceId, WXDomObject dom, String parentRef, int index) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.addComponent(dom, parentRef, index);
-  }
-
-  public @Nullable WXComponent createComponentOnDomThread(String instanceId, WXDomObject dom, String parentRef, int index) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return null;
-    }
-    return statement.createComponentOnDomThread(dom, parentRef, index);
-  }
-
-  public void addComponent(String instanceId, WXComponent component, String parentRef, int index) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.addComponent(component, parentRef, index);
-  }
-
-  public void removeComponent(String instanceId, String ref) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.removeComponent(ref);
-  }
-
-  public void moveComponent(String instanceId, String ref, String parentRef, int index) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.move(ref, parentRef, index);
-  }
-
-  public void updateAttrs(String instanceId, String ref, Map<String, Object> attrs) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.updateAttrs(ref, attrs);
-  }
-
-  public void updateStyle(String instanceId, String ref, Map<String, Object> style) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.updateStyle(ref, style);
-  }
-
-  public void addEvent(String instanceId, String ref, String type) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return ;
-    }
-    statement.addEvent(ref, type);
-  }
-
-  public void removeEvent(String instanceId, String ref, String type) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return ;
-    }
-    statement.removeEvent(ref, type);
-  }
-
-  public void scrollToComponent(String instanceId, String ref, Map<String, Object> options) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.scrollTo(ref, options);
-  }
-
-  public void createFinish(String instanceId, int width, int height) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.createFinish(width, height);
-  }
-
-  public void refreshFinish(String instanceId, int width, int height) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.refreshFinish(width, height);
-  }
-
-  public void updateFinish(String instanceId) {
-    WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      return;
-    }
-    statement.updateFinish();
-  }
-
 
   public void startAnimation(String instanceId, @NonNull String ref,
                              @NonNull WXAnimationBean animationBean, @Nullable String
@@ -466,15 +337,11 @@ public class WXRenderManager {
     return instances;
   }
 
-  public void getComponentSize(String instanceId, String ref, JSCallback callback) {
+  public void registerComponent(String instanceId, String ref, WXComponent comp) {
     WXRenderStatement statement = mRegistries.get(instanceId);
-    if (statement == null) {
-      Map<String, Object> options = new HashMap<>();
-      options.put("result", false);
-      options.put("errMsg", "Component does not exist");
-      callback.invoke(options);
-      return;
+    if (statement != null) {
+      statement.registerComponent(ref,comp);
     }
-    statement.getComponentSize(ref, callback);
   }
+
 }
