@@ -628,7 +628,10 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
 
     item.setWatchEvent(event,isWatch);
 
-    procAppear(0,0,0,0);//check current components appearance status.
+    //only trigger event when add watch
+    if(isWatch) {
+      procAppear(0, 0, 0, 0);//check current components appearance status.
+    }
   }
 
   /**
