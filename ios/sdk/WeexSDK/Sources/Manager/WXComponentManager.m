@@ -17,6 +17,11 @@
 #import "WXUtility.h"
 #import "WXMonitor.h"
 #import "WXScrollerProtocol.h"
+#import "WXSDKManager.h"
+#import "WXSDKError.h"
+#import "WXInvocationConfig.h"
+#import "WXHandlerFactory.h"
+#import "WXValidateProtocol.h"
 
 static NSThread *WXComponentThread;
 
@@ -60,7 +65,6 @@ static NSThread *WXComponentThread;
         _fixedComponents = [NSMutableArray wx_mutableArrayUsingWeakReferences];
         _uiTaskQueue = [NSMutableArray array];
         _isValid = YES;
-        
         [self _startDisplayLink];
     }
     
@@ -98,7 +102,9 @@ static NSThread *WXComponentThread;
     [[NSRunLoop currentRunLoop] addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
     
     while (!_stopRunning) {
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        @autoreleasepool {
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        }
     }
 }
 
@@ -159,30 +165,30 @@ static NSThread *WXComponentThread;
     WXAssertParam(data);
     
     _rootComponent = [self _buildComponentForData:data];
-    self.weexInstance.rootView.wx_component = _rootComponent;
-    
+
     [self _initRootCSSNode];
     
     __weak typeof(self) weakSelf = self;
     [self _addUITask:^{
         __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.weexInstance.rootView.wx_component = strongSelf->_rootComponent;
         [strongSelf.weexInstance.rootView addSubview:strongSelf->_rootComponent.view];
     }];
 }
 
 static bool rootNodeIsDirty(void *context)
 {
-    WXComponentManager *mananger = (__bridge WXComponentManager *)(context);
-    return [mananger->_rootComponent needsLayout];
+    WXComponentManager *manager = (__bridge WXComponentManager *)(context);
+    return [manager->_rootComponent needsLayout];
 }
 
 static css_node_t * rootNodeGetChild(void *context, int i)
 {
-    WXComponentManager *mananger = (__bridge WXComponentManager *)(context);
+    WXComponentManager *manager = (__bridge WXComponentManager *)(context);
     if (i == 0) {
-        return mananger->_rootComponent.cssNode;
-    } else if(mananger->_fixedComponents.count > 0) {
-        return ((WXComponent *)((mananger->_fixedComponents)[i-1])).cssNode;
+        return manager->_rootComponent.cssNode;
+    } else if(manager->_fixedComponents.count >= i) {
+        return ((WXComponent *)((manager->_fixedComponents)[i-1])).cssNode;
     }
     
     return NULL;
@@ -202,12 +208,11 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 
 - (void)_recursivelyAddComponent:(NSDictionary *)componentData toSupercomponent:(WXComponent *)supercomponent atIndex:(NSInteger)index appendingInTree:(BOOL)appendingInTree
 {
-     WXComponent *component = [self _buildComponentForData:componentData];
+    WXComponent *component = [self _buildComponentForData:componentData];
     
-    index = (index == -1 ? supercomponent.subcomponents.count : index);
+    index = (index == -1 ? supercomponent->_subcomponents.count : index);
     
     [supercomponent _insertSubcomponent:component atIndex:index];
-    
     // use _lazyCreateView to forbid component like cell's view creating
     if(supercomponent && component && supercomponent->_lazyCreateView) {
         component->_lazyCreateView = YES;
@@ -267,18 +272,44 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     [_indexDict removeObjectForKey:ref];
     
     [self _addUITask:^{
+        if (component.supercomponent) {
+            [component.supercomponent willRemoveSubview:component];
+        }
         [component removeFromSuperview];
     }];
+    
+    [self _checkFixedSubcomponentToRemove:component];
+}
+
+- (void)_checkFixedSubcomponentToRemove:(WXComponent *)component
+{
+    for (WXComponent *subcomponent in component.subcomponents) {
+        if (subcomponent->_positionType == WXPositionTypeFixed) {
+             [self _addUITask:^{
+                 [subcomponent removeFromSuperview];
+             }];
+        }
+        
+        [self _checkFixedSubcomponentToRemove:subcomponent];
+    }
 }
 
 - (WXComponent *)componentForRef:(NSString *)ref
 {
-    NSDictionary *dict = [_indexDict copy];
-    return [dict objectForKey:ref];
+    WXAssertComponentThread();
+    
+    return [_indexDict objectForKey:ref];
+}
+
+- (WXComponent *)componentForRoot
+{
+    return _rootComponent;
 }
 
 - (NSUInteger)numberOfComponents
 {
+    WXAssertComponentThread();
+    
     return _indexDict.count;
 }
 
@@ -290,18 +321,60 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     NSDictionary *attributes = data[@"attr"];
     NSArray *events = data[@"event"];
     
+    if (self.weexInstance.needValidate) {
+        id<WXValidateProtocol> validateHandler = [WXHandlerFactory handlerForProtocol:@protocol(WXValidateProtocol)];
+        if (validateHandler) {
+            WXComponentValidateResult* validateResult =  [validateHandler validateWithWXSDKInstance:self.weexInstance component:type];
+            if (validateResult && !validateResult.isSuccess) {
+                type = validateResult.replacedComponent? validateResult.replacedComponent : @"div";
+                WXLogError(@"%@",[validateResult.error.userInfo objectForKey:@"errorMsg"]);
+            }
+        }
+    }
+
     Class clazz = [WXComponentFactory classWithComponentName:type];
     WXComponent *component = [[clazz alloc] initWithRef:ref type:type styles:styles attributes:attributes events:events weexInstance:self.weexInstance];
     WXAssert(component, @"Component build failed for data:%@", data);
     
     [_indexDict setObject:component forKey:component.ref];
-    
+    [component readyToRender];// notify redyToRender event when init
     return component;
 }
 
-#pragma mark Updating
+#pragma mark Reset
+-(BOOL)isShouldReset:(id )value
+{
+    if([value isKindOfClass:[NSString class]]) {
+        if(!value || [@"" isEqualToString:value]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+-(void)filterStyles:(NSDictionary *)styles normalStyles:(NSMutableDictionary *)normalStyles resetStyles:(NSMutableArray *)resetStyles
+{
+    for (NSString *key in styles) {
+        id value = [styles objectForKey:key];
+        if([self isShouldReset:value]) {
+            [resetStyles addObject:key];
+        }else{
+            [normalStyles setObject:styles[key] forKey:key];
+        }
+    }
+}
 
 - (void)updateStyles:(NSDictionary *)styles forComponent:(NSString *)ref
+{
+    [self handleStyles:styles forComponent:ref isUpdateStyles:YES];
+}
+
+- (void)updatePseudoClassStyles:(NSDictionary *)styles forComponent:(NSString *)ref
+{
+    [self handleStyles:styles forComponent:ref isUpdateStyles:NO];
+}
+
+- (void)handleStyles:(NSDictionary *)styles forComponent:(NSString *)ref isUpdateStyles:(BOOL)isUpdateStyles
 {
     WXAssertParam(styles);
     WXAssertParam(ref);
@@ -309,9 +382,13 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     WXComponent *component = [_indexDict objectForKey:ref];
     WXAssertComponentExist(component);
     
-    [component _updateStylesOnComponentThread:styles];
+    NSMutableDictionary *normalStyles = [NSMutableDictionary new];
+    NSMutableArray *resetStyles = [NSMutableArray new];
+    [self filterStyles:styles normalStyles:normalStyles resetStyles:resetStyles];
+    [component _updateStylesOnComponentThread:normalStyles resetStyles:resetStyles isUpdateStyles:isUpdateStyles];
     [self _addUITask:^{
-        [component _updateStylesOnMainThread:styles];
+        [component _updateStylesOnMainThread:normalStyles resetStyles:resetStyles];
+        [component readyToRender];
     }];
 }
 
@@ -326,6 +403,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     [component _updateAttributesOnComponentThread:attributes];
     [self _addUITask:^{
         [component _updateAttributesOnMainThread:attributes];
+        [component readyToRender];
     }];
 }
 
@@ -375,9 +453,13 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     }
 
     CGFloat offset = [[options objectForKey:@"offset"] floatValue];
+    BOOL animated = YES;
+    if ([options objectForKey:@"animated"]) {
+        animated = [[options objectForKey:@"animated"] boolValue];
+    }
     
     [self _addUITask:^{
-        [scrollerComponent scrollToComponent:toComponent withOffset:offset];
+        [scrollerComponent scrollToComponent:toComponent withOffset:offset animated:animated];
     }];
 }
 
@@ -434,10 +516,11 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 {
     WXAssertComponentThread();
     
-    for (NSString *key in _indexDict) {
-        WXComponent *component = [_indexDict objectForKey:key];;
+    NSEnumerator *enumerator = [_indexDict objectEnumerator];
+    WXComponent *component;
+    while ((component = [enumerator nextObject])) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [component _unloadView];
+            [component _unloadViewWithReusing:NO];
         });
     }
     
@@ -508,7 +591,6 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 - (void)_layoutAndSyncUI
 {
     [self _layout];
-    
     if(_uiTaskQueue.count > 0){
         [self _syncUITasks];
         _noTaskTickCount = 0;
@@ -524,14 +606,16 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 - (void)_layout
 {
     BOOL needsLayout = NO;
-    for (NSString *ref in _indexDict) {
-        WXComponent *component = [_indexDict objectForKey:ref];
-        
+
+    NSEnumerator *enumerator = [_indexDict objectEnumerator];
+    WXComponent *component;
+    while ((component = [enumerator nextObject])) {
         if ([component needsLayout]) {
             needsLayout = YES;
+            break;
         }
     }
-    
+
     if (!needsLayout) {
         return;
     }
@@ -591,7 +675,9 @@ static css_node_t * rootNodeGetChild(void *context, int i)
                               WXRoundPixelValue(_rootCSSNode->layout.dimensions[CSS_WIDTH]),
                               WXRoundPixelValue(_rootCSSNode->layout.dimensions[CSS_HEIGHT]));
     WXPerformBlockOnMainThread(^{
-        self.weexInstance.rootView.frame = frame;
+        if(!self.weexInstance.isRootViewFrozen) {
+            self.weexInstance.rootView.frame = frame;
+        }
     });
     
     resetNodeLayout(_rootCSSNode);

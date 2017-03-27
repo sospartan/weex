@@ -1,9 +1,8 @@
 ##Extend to Android
 <span class="weex-version">0.4</span>
-<a href="https://github.com/weexteam/article/issues/27"  class="weex-translate">cn</a>
  
 ### Module extend
-weex sdk support Moulde extend,
+weex sdk support Module extend,
 Weex SDK provides only rendering capabilities, rather than have other capabilities, such as network, picture, and URL redirection. If you want the these features, you need to implement it.  
 
 For example: If you want to implement an address jumping function, you can achieve a Module Follow the steps below. 
@@ -14,7 +13,7 @@ For example: If you want to implement an address jumping function, you can achie
 4. The module class also can not be an inner class  
 5. Customize can not be obfuscated by tools like ProGuard
 6. Module methods will be invoked in UI thread, do not put time consuming operation there
-7. Weex params can be int, double, float, String, Map, List, self-defined class that implements WXObject interface
+7. Weex params can be int, double, float, String, Map, List
 
 Refer to the following example: 
 
@@ -30,7 +29,22 @@ Refer to the following example:
     }
 
 ```
+#### Support synchronous/asynchronous callback 
+you can add  `` @JSMethod (uiThread = false or true ) `` annotation to choose the  callback mode of moudle . see the follow  example.
+```java
+     // as sync-callback mode 
+    @JSMethod (uiThread = false)
+    public void testSyncCall(){
+        WXLogUtils.d("WXComponentSyncTest :"+ Thread.currentThread().getName());
+    }
+    
+    // as async-callback mode 
+    @JSMethod (uiThread = true)
+    public void testAsyncCall(){
+        WXLogUtils.e("WXComponentASynTest :"+ Thread.currentThread().getName() );
+    }
 
+```
 #### Register the moulde
 
 ```java
@@ -43,7 +57,7 @@ Refer to the following example:
 Now `event` moudle is avaiable in weex, use the module like this:   
 ```javascript
 
-var event = require('@weex-module/event');
+var event = weex.requireModule('event');
 event.openURL("http://www.github.com");
 
 ```

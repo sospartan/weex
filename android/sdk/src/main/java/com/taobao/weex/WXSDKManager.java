@@ -129,20 +129,26 @@ package com.taobao.weex;
 
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.taobao.weex.adapter.DefaultUriAdapter;
 import com.taobao.weex.adapter.DefaultWXHttpAdapter;
+import com.taobao.weex.adapter.IDrawableLoader;
 import com.taobao.weex.adapter.IWXDebugAdapter;
 import com.taobao.weex.adapter.IWXHttpAdapter;
 import com.taobao.weex.adapter.IWXImgLoaderAdapter;
+import com.taobao.weex.adapter.IWXJSExceptionAdapter;
 import com.taobao.weex.adapter.IWXUserTrackAdapter;
 import com.taobao.weex.adapter.URIAdapter;
 import com.taobao.weex.appfram.navigator.IActivityNavBarSetter;
 import com.taobao.weex.appfram.storage.DefaultWXStorage;
 import com.taobao.weex.appfram.storage.IWXStorageAdapter;
+import com.taobao.weex.appfram.websocket.IWebSocketAdapter;
+import com.taobao.weex.appfram.websocket.IWebSocketAdapterFactory;
 import com.taobao.weex.bridge.WXBridgeManager;
 import com.taobao.weex.bridge.WXModuleManager;
+import com.taobao.weex.bridge.WXValidateProcessor;
 import com.taobao.weex.common.WXRefreshData;
 import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.common.WXThread;
@@ -161,7 +167,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class WXSDKManager {
 
-  private static WXSDKManager sManager;
+  private static volatile WXSDKManager sManager;
   private static AtomicInteger sInstanceId = new AtomicInteger(0);
   private final WXDomManager mWXDomManager;
   private WXBridgeManager mBridgeManager;
@@ -169,12 +175,20 @@ public class WXSDKManager {
 
   private IWXUserTrackAdapter mIWXUserTrackAdapter;
   private IWXImgLoaderAdapter mIWXImgLoaderAdapter;
+  private IDrawableLoader mDrawableLoader;
   private IWXHttpAdapter mIWXHttpAdapter;
   private IWXDebugAdapter mIWXDebugAdapter;
   private IActivityNavBarSetter mActivityNavBarSetter;
 
+
+
+  private IWXJSExceptionAdapter mIWXJSExceptionAdapter;
+
   private IWXStorageAdapter mIWXStorageAdapter;
   private URIAdapter mURIAdapter;
+  private IWebSocketAdapterFactory mIWebSocketAdapterFactory;
+
+  private WXValidateProcessor mWXValidateProcessor;
 
   private WXSDKManager() {
     mWXRenderManager = new WXRenderManager();
@@ -191,6 +205,10 @@ public class WXSDKManager {
       }
     }
     return sManager;
+  }
+
+  public static int getInstanceViewPortWidth(String instanceId){
+    return getInstance().getSDKInstance(instanceId).getInstanceViewPortWidth();
   }
 
   static void setInstance(WXSDKManager manager){
@@ -222,7 +240,7 @@ public class WXSDKManager {
   }
 
   public WXSDKInstance getSDKInstance(String instanceId) {
-    return mWXRenderManager.getWXSDKInstance(instanceId);
+    return instanceId == null? null : mWXRenderManager.getWXSDKInstance(instanceId);
   }
 
   public void postOnUiThread(Runnable runnable, long delayMillis) {
@@ -257,6 +275,10 @@ public class WXSDKManager {
     mBridgeManager.registerModules(modules);
   }
 
+  /**
+   * Do not direct invoke this method in Components, use {@link WXSDKInstance#fireEvent(String, String, Map, Map)} instead.
+   */
+  @Deprecated
   public void fireEvent(final String instanceId, String ref, String type) {
     fireEvent(instanceId, ref, type, new HashMap<String, Object>());
   }
@@ -315,6 +337,18 @@ public class WXSDKManager {
     return mIWXImgLoaderAdapter;
   }
 
+  public IDrawableLoader getDrawableLoader() {
+    return mDrawableLoader;
+  }
+
+  public IWXJSExceptionAdapter getIWXJSExceptionAdapter() {
+    return mIWXJSExceptionAdapter;
+  }
+
+   void setIWXJSExceptionAdapter(IWXJSExceptionAdapter IWXJSExceptionAdapter) {
+    mIWXJSExceptionAdapter = IWXJSExceptionAdapter;
+  }
+
   public @NonNull IWXHttpAdapter getIWXHttpAdapter() {
     if (mIWXHttpAdapter == null) {
       mIWXHttpAdapter = new DefaultWXHttpAdapter();
@@ -333,9 +367,12 @@ public class WXSDKManager {
     this.mIWXDebugAdapter = config.getDebugAdapter();
     this.mIWXHttpAdapter = config.getHttpAdapter();
     this.mIWXImgLoaderAdapter = config.getImgAdapter();
+    this.mDrawableLoader = config.getDrawableLoader();
     this.mIWXStorageAdapter = config.getStorageAdapter();
     this.mIWXUserTrackAdapter = config.getUtAdapter();
     this.mURIAdapter = config.getURIAdapter();
+    this.mIWebSocketAdapterFactory = config.getWebSocketAdapterFactory();
+    this.mIWXJSExceptionAdapter = config.getJSExceptionAdapter();
   }
 
   public IWXDebugAdapter getIWXDebugAdapter() {
@@ -353,5 +390,37 @@ public class WXSDKManager {
     return mIWXStorageAdapter;
   }
 
+  /**
+   * Weex embedders can use <code>notifyTrimMemory</code> to reduce
+   * memory at a proper time.
+   *
+   * It's not a good idea to reduce memory at any time, because
+   * memory trimming is a expense operation, and V8 needs to do
+   * a full GC and all the inline caches get to be cleared.
+   *
+   * The embedder needs to make some scheduling strategies to
+   * ensure that the embedded application is just on an idle time.
+   * If the application use the same js bundle to render pages,
+   * it's not a good idea to trim memory every time of exiting
+   * pages.
+   */
+  public void notifyTrimMemory() {
+    mBridgeManager.notifyTrimMemory();
+  }
+  public @Nullable
+  IWebSocketAdapter getIWXWebSocketAdapter() {
+    if (mIWebSocketAdapterFactory != null) {
+      return mIWebSocketAdapterFactory.createWebSocketAdapter();
+    }
+    return null;
+  }
+
+  public void registerValidateProcessor(WXValidateProcessor processor){
+    this.mWXValidateProcessor = processor;
+  }
+
+  public WXValidateProcessor getValidateProcessor(){
+    return mWXValidateProcessor;
+  }
 
 }

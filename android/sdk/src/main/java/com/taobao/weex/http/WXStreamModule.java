@@ -205,17 +205,19 @@
 package com.taobao.weex.http;
 
 import android.net.Uri;
-import android.text.TextUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.adapter.IWXHttpAdapter;
 import com.taobao.weex.adapter.URIAdapter;
+import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.bridge.WXBridgeManager;
-import com.taobao.weex.common.*;
-import com.taobao.weex.utils.WXJsonUtils;
+import com.taobao.weex.common.WXModule;
+import com.taobao.weex.common.WXRequest;
+import com.taobao.weex.common.WXResponse;
 import com.taobao.weex.utils.WXLogUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -250,7 +252,7 @@ public class WXStreamModule extends WXModule {
    * @param callback formate：handler(err, response)
    */
   @Deprecated
-  @WXModuleAnno
+  @JSMethod(uiThread = false)
   public void sendHttp(String params, final String callback) {
 
     JSONObject paramsObj = JSON.parseObject(params);
@@ -260,6 +262,7 @@ public class WXStreamModule extends WXModule {
     String body = paramsObj.getString("body");
     int timeout = paramsObj.getIntValue("timeout");
 
+    if (method != null) method = method.toUpperCase();
     Options.Builder builder = new Options.Builder()
             .setMethod(!"GET".equals(method)
                     &&!"POST".equals(method)
@@ -275,7 +278,7 @@ public class WXStreamModule extends WXModule {
     sendRequest(builder.createOptions(), new ResponseCallback() {
       @Override
       public void onResponse(WXResponse response, Map<String, String> headers) {
-        if(callback != null)
+        if(callback != null && mWXSDKInstance != null)
           WXBridgeManager.getInstance().callback(mWXSDKInstance.getInstanceId(), callback,
             (response == null || response.originalData == null) ? "{}" :
               readAsString(response.originalData,
@@ -307,7 +310,7 @@ public class WXStreamModule extends WXModule {
    *  statusText：状态消息，用于定位具体错误原因
    *  headers: object 响应头
    */
-  @WXModuleAnno
+  @JSMethod(uiThread = false)
   public void fetch(String optionsStr, final JSCallback callback, JSCallback progressCallback){
 
     JSONObject optionsObj = null;
@@ -334,6 +337,7 @@ public class WXStreamModule extends WXModule {
     String type = optionsObj.getString("type");
     int timeout = optionsObj.getIntValue("timeout");
 
+    if (method != null) method = method.toUpperCase();
     Options.Builder builder = new Options.Builder()
             .setMethod(!"GET".equals(method)
                     &&!"POST".equals(method)
@@ -354,11 +358,11 @@ public class WXStreamModule extends WXModule {
         if(callback != null) {
           Map<String, Object> resp = new HashMap<>();
           if(response == null|| "-1".equals(response.statusCode)){
-            resp.put(STATUS,"-1");
+            resp.put(STATUS,-1);
             resp.put(STATUS_TEXT,Status.ERR_CONNECT_FAILED);
           }else {
-            resp.put(STATUS, response.statusCode);
             int code = Integer.parseInt(response.statusCode);
+            resp.put(STATUS, code);
             resp.put("ok", (code >= 200 && code <= 299));
             if (response.originalData == null) {
               resp.put("data", null);
@@ -367,7 +371,7 @@ public class WXStreamModule extends WXModule {
                       headers != null ? getHeader(headers, "Content-Type") : ""
               );
               try {
-                resp.put("data", parseJson(respData, options.getType()));
+                resp.put("data", parseData(respData, options.getType()));
               } catch (JSONException exception) {
                 WXLogUtils.e("", exception);
                 resp.put("ok", false);
@@ -383,7 +387,7 @@ public class WXStreamModule extends WXModule {
     }, progressCallback);
   }
 
-  Object parseJson(String data,Options.Type type) throws JSONException{
+  Object parseData(String data, Options.Type type) throws JSONException{
     if( type == Options.Type.json){
       return JSONObject.parse(data);
     }else if( type == Options.Type.jsonp){
@@ -504,20 +508,23 @@ public class WXStreamModule extends WXModule {
 
     @Override
     public void onHeadersReceived(int statusCode,Map<String,List<String>> headers) {
-      mResponse.put("readyState",2);
-      mResponse.put("status",statusCode);
+      mResponse.put("readyState", 2);
+      mResponse.put("status", statusCode);
 
-      Iterator<Map.Entry<String,List<String>>> it = headers.entrySet().iterator();
-      Map<String,String> simpleHeaders = new HashMap<>();
-      while(it.hasNext()){
-        Map.Entry<String,List<String>> entry = it.next();
-        if(entry.getValue().size()>0)
-          simpleHeaders.put(entry.getKey()==null?"_":entry.getKey(),entry.getValue().get(0));
+      Map<String, String> simpleHeaders = new HashMap<>();
+      if (headers != null) {
+        Iterator<Map.Entry<String, List<String>>> it = headers.entrySet().iterator();
+        while (it.hasNext()) {
+          Map.Entry<String, List<String>> entry = it.next();
+          if (entry.getValue().size() > 0) {
+            simpleHeaders.put(entry.getKey() == null ? "_" : entry.getKey(), entry.getValue().get(0));
+          }
+        }
       }
 
-      mResponse.put("headers",simpleHeaders);
+      mResponse.put("headers", simpleHeaders);
       mRespHeaders = simpleHeaders;
-      if(mProgressCallback!=null){
+      if (mProgressCallback != null) {
         mProgressCallback.invokeAndKeepAlive(mResponse);
       }
     }

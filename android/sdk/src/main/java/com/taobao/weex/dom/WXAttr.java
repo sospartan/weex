@@ -204,19 +204,40 @@
  */
 package com.taobao.weex.dom;
 
+import android.support.annotation.NonNull;
+import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
+
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXImageSharpen;
+import com.taobao.weex.ui.view.listview.WXRecyclerView;
 import com.taobao.weex.utils.WXLogUtils;
+import com.taobao.weex.utils.WXUtils;
+import com.taobao.weex.utils.WXViewUtils;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
+
+import static java.lang.Boolean.parseBoolean;
 
 /**
  * store value of component attribute
  *
  */
-public class WXAttr extends SafePutConcurrentHashMap<String, Object> {
+public class WXAttr implements Map<String, Object>,Cloneable {
 
   private static final long serialVersionUID = -2619357510079360946L;
+  private @NonNull final ArrayMap<String, Object> map;
+
+  public WXAttr(){
+    map=new ArrayMap<>();
+  }
+
+  public WXAttr(@NonNull Map<String,Object> standardMap) {
+    this();
+    map.putAll(standardMap);
+  }
 
   public static String getPrefix(Map<String, Object> attr) {
     if (attr == null) {
@@ -308,6 +329,19 @@ public class WXAttr extends SafePutConcurrentHashMap<String, Object> {
     return src.toString();
   }
 
+  public boolean canRecycled() {
+    Object obj = get(Constants.Name.RECYCLE);
+    if (obj == null) {
+      return true;
+    }
+    try {
+      return parseBoolean(String.valueOf(obj));
+    } catch (Exception e) {
+      WXLogUtils.e("[WXAttr] recycle:", e);
+    }
+    return true;
+  }
+
   public boolean showIndicators() {
     Object obj = get(Constants.Name.SHOW_INDICATORS);
     if (obj == null) {
@@ -315,7 +349,7 @@ public class WXAttr extends SafePutConcurrentHashMap<String, Object> {
     }
 
     try {
-      return Boolean.parseBoolean(String.valueOf(obj));
+      return parseBoolean(String.valueOf(obj));
     } catch (Exception e) {
       WXLogUtils.e("[WXAttr] showIndicators:", e);
     }
@@ -329,7 +363,7 @@ public class WXAttr extends SafePutConcurrentHashMap<String, Object> {
     }
 
     try {
-      return Boolean.parseBoolean(String.valueOf(obj));
+      return parseBoolean(String.valueOf(obj));
     } catch (Exception e) {
       WXLogUtils.e("[WXAttr] autoPlay:", e);
     }
@@ -360,7 +394,7 @@ public class WXAttr extends SafePutConcurrentHashMap<String, Object> {
   }
 
   public String optString(String key){
-    if(contains(key)){
+    if(containsKey(key)){
       Object value = get(key);
       if (value instanceof String) {
         return (String) value;
@@ -378,7 +412,7 @@ public class WXAttr extends SafePutConcurrentHashMap<String, Object> {
     }
 
     try {
-      return Boolean.parseBoolean(String.valueOf(obj));
+      return parseBoolean(String.valueOf(obj));
     } catch (Exception e) {
       WXLogUtils.e("[WXAttr] recycleImage:", e);
     }
@@ -390,5 +424,182 @@ public class WXAttr extends SafePutConcurrentHashMap<String, Object> {
       return "vertical";
     }
     return scrollDirection.toString();
+  }
+
+  public float getElevation(int viewPortW) {
+    Object obj = get(Constants.Name.ELEVATION);
+    float ret = Float.NaN;
+    if (obj != null) {
+      String number = obj.toString();
+      if (!TextUtils.isEmpty(number)) {
+        ret = WXViewUtils.getRealSubPxByWidth(WXUtils.getFloat(number),viewPortW);
+      } else {
+        ret = 0;
+      }
+    }
+    return ret;
+  }
+
+  public float getColumnWidth(){
+
+    Object obj = get(Constants.Name.COLUMN_WIDTH);
+    if (obj == null) {
+      return Constants.Value.AUTO;
+    }
+
+    String value = String.valueOf(obj);
+    if(Constants.Name.AUTO.equals(value)){
+      return Constants.Value.AUTO;
+    }
+
+    try {
+      float columnWidth = Float.parseFloat(value);
+      return columnWidth > 0 ? columnWidth : 0;
+    } catch (Exception e) {
+      WXLogUtils.e("[WXAttr] getColumnWidth:", e);
+    }
+    return Constants.Value.AUTO;
+  }
+
+  public int getColumnCount() {
+
+    Object obj = get(Constants.Name.COLUMN_COUNT);
+    if (obj == null) {
+      return Constants.Value.AUTO;
+    }
+
+    String value = String.valueOf(obj);
+    if(Constants.Name.AUTO.equals(value)){
+      return Constants.Value.AUTO;
+    }
+
+    try {
+      int columnCount = Integer.parseInt(value);
+      return columnCount > 0 ? columnCount : Constants.Value.AUTO;
+    } catch (Exception e) {
+      WXLogUtils.e("[WXAttr] getColumnCount:", e);
+      return Constants.Value.AUTO;
+    }
+  }
+
+  public float getColumnGap() {
+
+    Object obj = get(Constants.Name.COLUMN_GAP);
+    if (obj == null) {
+      return Constants.Value.COLUMN_GAP_NORMAL;
+    }
+
+    String value = String.valueOf(obj);
+    if (Constants.Name.NORMAL.equals(value)) {
+      return Constants.Value.COLUMN_GAP_NORMAL;
+    }
+
+    try {
+      float columnGap = Float.parseFloat(value);
+      return columnGap >= 0 ? columnGap : Constants.Value.AUTO;
+    } catch (Exception e) {
+      WXLogUtils.e("[WXAttr] getColumnGap:", e);
+    }
+    return Constants.Value.COLUMN_GAP_NORMAL;
+  }
+
+  public int getLayoutType(){
+    Object obj = get(Constants.Name.LAYOUT);
+    if (obj == null) {
+      return WXRecyclerView.TYPE_LINEAR_LAYOUT;
+    }
+
+    try {
+      switch(String.valueOf(obj)){
+        case Constants.Value.MULTI_COLUMN :
+          return  WXRecyclerView.TYPE_STAGGERED_GRID_LAYOUT;
+        case Constants.Value.GRID :
+          return  WXRecyclerView.TYPE_GRID_LAYOUT;
+        default:
+          return WXRecyclerView.TYPE_LINEAR_LAYOUT;
+      }
+    } catch (Exception e) {
+      WXLogUtils.e("[WXAttr] getLayoutType:", e);
+    }
+    return WXRecyclerView.TYPE_LINEAR_LAYOUT;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    return map.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return map.hashCode();
+  }
+
+  @Override
+  public void clear() {
+    map.clear();
+  }
+
+  @Override
+  public boolean containsKey(Object key) {
+    return map.containsKey(key);
+  }
+
+  @Override
+  public boolean containsValue(Object value) {
+    return map.containsValue(value);
+  }
+
+  @NonNull
+  @Override
+  public Set<Entry<String, Object>> entrySet() {
+    return map.entrySet();
+  }
+
+  @Override
+  public Object get(Object key) {
+    return map.get(key);
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return map.isEmpty();
+  }
+
+  @NonNull
+  @Override
+  public Set<String> keySet() {
+    return map.keySet();
+  }
+
+  @Override
+  public Object put(String key, Object value) {
+    return map.put(key,value);
+  }
+
+  @Override
+  public void putAll(Map<? extends String, ?> map) {
+    this.map.putAll(map);
+  }
+
+  @Override
+  public Object remove(Object key) {
+    return map.remove(key);
+  }
+
+  @Override
+  public int size() {
+    return map.size();
+  }
+
+  @NonNull
+  @Override
+  public Collection<Object> values() {
+    return map.values();
+  }
+
+  @Override
+  protected WXAttr clone(){
+    return new WXAttr(map);
   }
 }

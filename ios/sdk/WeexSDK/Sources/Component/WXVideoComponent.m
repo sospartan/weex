@@ -7,6 +7,9 @@
  */
 
 #import "WXVideoComponent.h"
+#import "WXHandlerFactory.h"
+#import "WXURLRewriteProtocol.h"
+
 #import <AVFoundation/AVPlayer.h>
 #import <AVKit/AVPlayerViewController.h>
 #import <MediaPlayer/MPMoviePlayerViewController.h>
@@ -25,6 +28,7 @@
 
 @property (nonatomic, strong) UIViewController* playerViewController;
 @property (nonatomic, strong) AVPlayerItem* playerItem;
+@property (nonatomic, strong) WXSDKInstance* weexSDKInstance;
 
 @end
 
@@ -33,7 +37,7 @@
 - (id)init
 {
     if (self = [super init]) {
-        if ([self greater8SysVer]){
+        if ([self greater8SysVer]) {
             _playerViewController = [AVPlayerViewController new];
             
         } else {
@@ -75,7 +79,8 @@
 
 - (void)dealloc
 {
-    if ([self greater8SysVer]){
+    _weexSDKInstance = nil;
+    if ([self greater8SysVer]) {
         AVPlayerViewController *AVVC = (AVPlayerViewController*)_playerViewController;
         [AVVC.player removeObserver:self forKeyPath:@"rate"];
         [_playerItem removeObserver:self forKeyPath:@"status"];
@@ -134,7 +139,14 @@
 
 - (void)setURL:(NSURL *)URL
 {
-    if ([self greater8SysVer]){
+    NSMutableString *urlStr = nil;
+    WX_REWRITE_URL(URL.absoluteString, WXResourceTypeVideo, self.weexSDKInstance, &urlStr)
+    
+    if (!urlStr) {
+        return;
+    }
+    NSURL *newURL = [NSURL URLWithString:urlStr];
+    if ([self greater8SysVer]) {
         
         AVPlayerViewController *AVVC = (AVPlayerViewController*)_playerViewController;
         if (AVVC.player && _playerItem) {
@@ -142,7 +154,7 @@
             [AVVC.player removeObserver:self forKeyPath:@"rate"];
             [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object: _playerItem];
         }
-        _playerItem = [[AVPlayerItem alloc] initWithURL:URL];
+        _playerItem = [[AVPlayerItem alloc] initWithURL:newURL];
         AVPlayer *player = [AVPlayer playerWithPlayerItem: _playerItem];
         AVVC.player = player;
         
@@ -160,7 +172,7 @@
     }
     else {
         MPMoviePlayerViewController *MPVC = (MPMoviePlayerViewController*)_playerViewController;
-        [MPVC moviePlayer].contentURL = URL;
+        [MPVC moviePlayer].contentURL = newURL;
     }
 }
 
@@ -191,7 +203,7 @@
 
 - (void)pause
 {
-    if ([self greater8SysVer]){
+    if ([self greater8SysVer]) {
         AVPlayerViewController *AVVC = (AVPlayerViewController*)_playerViewController;
         [[AVVC player] pause];
     } else {
@@ -204,7 +216,7 @@
 
 @interface WXVideoComponent()
 
-@property (nonatomic, strong) WXVideoView *videoView;
+@property (nonatomic, weak) WXVideoView *videoView;
 @property (nonatomic, strong) NSURL *videoURL;
 @property (nonatomic) BOOL autoPlay;
 @property (nonatomic) BOOL playStatus;
@@ -234,7 +246,10 @@
 
 -(UIView *)loadView
 {
-    return [[WXVideoView alloc] init];
+    WXVideoView* videoView = [[WXVideoView alloc] init];
+    videoView.weexSDKInstance = self.weexInstance;
+    
+    return videoView;
 }
 
 -(void)viewDidLoad

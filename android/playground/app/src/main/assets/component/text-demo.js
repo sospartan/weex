@@ -44,9 +44,9 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __weex_template__ = __webpack_require__(178)
-	var __weex_style__ = __webpack_require__(179)
-	var __weex_script__ = __webpack_require__(180)
+	var __weex_template__ = __webpack_require__(176)
+	var __weex_style__ = __webpack_require__(177)
+	var __weex_script__ = __webpack_require__(178)
 
 	__weex_define__('@weex-component/c0ea4ed580d5c38f82bd25b5602f26fe', [], function(__weex_require__, __weex_exports__, __weex_module__) {
 
@@ -2118,9 +2118,7 @@
 /* 173 */,
 /* 174 */,
 /* 175 */,
-/* 176 */,
-/* 177 */,
-/* 178 */
+/* 176 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2312,6 +2310,114 @@
 	          "attr": {
 	            "value": "bold"
 	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "100"
+	          },
+	          "attr": {
+	            "value": "100"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "200"
+	          },
+	          "attr": {
+	            "value": "200"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "300"
+	          },
+	          "attr": {
+	            "value": "300"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "400"
+	          },
+	          "attr": {
+	            "value": "400"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "500"
+	          },
+	          "attr": {
+	            "value": "500"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "600"
+	          },
+	          "attr": {
+	            "value": "600"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "700"
+	          },
+	          "attr": {
+	            "value": "700"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "800"
+	          },
+	          "attr": {
+	            "value": "800"
+	          }
+	        },
+	        {
+	          "type": "text",
+	          "classList": [
+	            "txt"
+	          ],
+	          "style": {
+	            "fontWeight": "900"
+	          },
+	          "attr": {
+	            "value": "900"
+	          }
 	        }
 	      ]
 	    },
@@ -2500,7 +2606,7 @@
 	}
 
 /***/ },
-/* 179 */
+/* 177 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -2511,7 +2617,7 @@
 	}
 
 /***/ },
-/* 180 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module, exports, __weex_require__){'use strict';

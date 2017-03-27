@@ -204,20 +204,29 @@
  */
 package com.taobao.weex.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
+import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.WXRuntimeException;
 import com.taobao.weex.ui.view.border.BorderDrawable;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Utility class for views
@@ -239,12 +248,32 @@ public class WXViewUtils {
   public static final int OPAQUE = -1;
   public static final int DIMENSION_UNSET = -1;
   private static final boolean mUseWebPx = false;
+  private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
-  public static int getWeexHeight(String instanceId){
-    return getWeexHeight(instanceId, true);
+  @SuppressLint("NewApi")
+  public static int generateViewId() {
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+      for (;;) {
+        final int result = sNextGeneratedId.get();
+        // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+        int newValue = result + 1;
+        if (newValue > 0x00FFFFFF)
+          newValue = 1; // Roll over to 1, not 0.
+        if (sNextGeneratedId.compareAndSet(result, newValue)) {
+          return result;
+        }
+      }
+    } else {
+      return View.generateViewId();
+    }
   }
 
-  public static int getWeexHeight(String instanceId, boolean useDefault) {
+  private static int mScreenWidth;
+  private static int mScreenHeight;
+
+
+  public static int getWeexHeight(String instanceId){
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(instanceId);
     if (instance != null) {
       int weexHeight = instance.getWeexHeight();
@@ -252,46 +281,15 @@ public class WXViewUtils {
         return weexHeight;
       }
       else {
-        if(useDefault) {
-          return getScreenHeight(WXEnvironment.sApplication);
-        }
-        else {
-          return weexHeight;
-        }
+        return getScreenHeight(WXEnvironment.sApplication);
       }
     }
     return -3;
   }
 
-  @Deprecated
-  public static int getScreenHeight() {
-    if(WXEnvironment.sApplication!=null){
-      return WXEnvironment.sApplication.getResources()
-              .getDisplayMetrics()
-              .heightPixels;
-    }
-    if(WXEnvironment.isApkDebugable()){
-      throw new WXRuntimeException("Error Context is null When getScreenHeight");
-    }
-    return 0;
-  }
 
-  public static int getScreenHeight(Context cxt) {
-    if(cxt!=null){
-      return cxt.getResources().getDisplayMetrics().heightPixels;
-    }
-    if(WXEnvironment.isApkDebugable()){
-      throw new WXRuntimeException("Error Context is null When getScreenHeight");
-    }
-    return 0;
-
-  }
 
   public static int getWeexWidth(String instanceId){
-    return getWeexWidth(instanceId, true);
-  }
-
-  public static int getWeexWidth(String instanceId, boolean useDefault) {
     WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(instanceId);
     if (instance != null) {
       int weexWidth = instance.getWeexWidth();
@@ -299,11 +297,7 @@ public class WXViewUtils {
         return weexWidth;
       }
       else {
-        if (useDefault) {
-          return getScreenWidth(WXEnvironment.sApplication);
-        } else {
-          return weexWidth;
-        }
+        return getScreenWidth(WXEnvironment.sApplication);
       }
     }
     return -3;
@@ -311,39 +305,51 @@ public class WXViewUtils {
 
   @Deprecated
   public static int getScreenWidth( ) {
-    if(WXEnvironment.sApplication!=null) {
-      int width = WXEnvironment.sApplication.getResources().getDisplayMetrics().widthPixels;
-
-      if(WXEnvironment.SETTING_FORCE_VERTICAL_SCREEN){
-        int height = WXEnvironment.sApplication.getResources()
-                .getDisplayMetrics()
-                .heightPixels;
-        width = height > width ?width:height;
-      }
-      return width;
-    }
-    if(WXEnvironment.isApkDebugable()){
-      throw new WXRuntimeException("Error Context is null When getScreenHeight");
-    }
-    return 0;
+    return getScreenWidth(WXEnvironment.sApplication);
   }
 
-  public static int getScreenWidth(Context cxt) {
-    if(cxt!=null){
-      int width = WXEnvironment.sApplication.getResources().getDisplayMetrics().widthPixels;
+  public static float getScreenDensity(Context ctx){
+    if(ctx != null){
+      try{
+        Resources res = ctx.getResources();
+        return res.getDisplayMetrics().density;
+      }catch (Exception e){
+        WXLogUtils.e("getScreenDensityDpi exception:"+e.getMessage());
+      }
+    }
+    return Constants.Value.DENSITY;
+  }
 
+  public static int getScreenWidth(Context ctx) {
+    if(ctx!=null){
+      Resources res = ctx.getResources();
+      mScreenWidth = res.getDisplayMetrics().widthPixels;
       if(WXEnvironment.SETTING_FORCE_VERTICAL_SCREEN){
-        int height = WXEnvironment.sApplication.getResources()
+        mScreenHeight = res
                 .getDisplayMetrics()
                 .heightPixels;
-        width = height > width ?width:height;
+        mScreenWidth = mScreenHeight > mScreenWidth ? mScreenWidth : mScreenHeight;
       }
-      return width;
-    }
-    if(WXEnvironment.isApkDebugable()){
+    } else if(WXEnvironment.isApkDebugable()){
       throw new WXRuntimeException("Error Context is null When getScreenHeight");
     }
-    return 0;
+    return mScreenWidth;
+  }
+
+
+  @Deprecated
+  public static int getScreenHeight() {
+    return getScreenHeight(WXEnvironment.sApplication);
+  }
+
+  public static int getScreenHeight(Context cxt) {
+    if(cxt!=null){
+       mScreenHeight =cxt.getResources().getDisplayMetrics().heightPixels;
+    } else if (WXEnvironment.isApkDebugable()){
+      throw new WXRuntimeException("Error Context is null When getScreenHeight");
+    }
+    return mScreenHeight;
+
   }
 
   /**
@@ -354,26 +360,36 @@ public class WXViewUtils {
    * @param pxValue the raw distance from JS or CSS. The result will be rounded to a closet int.
    * @return the actual distance in the screen.
    */
+
+  @Deprecated
   public static float getRealPxByWidth(float pxValue) {
+     return getRealPxByWidth(pxValue,750);
+  }
+  public static float getRealPxByWidth(float pxValue,int customViewport) {
     if (Float.isNaN(pxValue)) {
       return pxValue;
     }
     if (mUseWebPx) {
       return (float) Math.rint(pxValue);
     } else {
-      float realPx = (pxValue * getScreenWidth() / WXEnvironment.sDefaultWidth);
+      float realPx = (pxValue * getScreenWidth() / customViewport);
       return realPx > 0.005 && realPx < 1 ? 1 : (float) Math.rint(realPx);
     }
   }
 
+  @Deprecated
   public static float getRealSubPxByWidth(float pxValue) {
+    return getRealSubPxByWidth(pxValue,750);
+  }
+
+  public static float getRealSubPxByWidth(float pxValue,int customViewport) {
     if (Float.isNaN(pxValue)) {
       return pxValue;
     }
     if (mUseWebPx) {
       return (float) Math.rint(pxValue);
     } else {
-      float realPx = (pxValue * getScreenWidth() / WXEnvironment.sDefaultWidth);
+      float realPx = (pxValue * getScreenWidth() / customViewport);
       return realPx > 0.005 && realPx < 1 ? 1 : realPx;
     }
   }
@@ -381,22 +397,31 @@ public class WXViewUtils {
   /**
    *  Internal interface that just for debug, you should never call this method because of accuracy loss obviously
    */
+  @Deprecated
   public static float getWeexPxByReal(float pxValue) {
+    return getWeexPxByReal(pxValue,750);
+  }
+
+  public static float getWeexPxByReal(float pxValue,int customViewport) {
     if (Float.isNaN(pxValue)) {
       return pxValue;
     }
     if (mUseWebPx) {
       return (float) Math.rint(pxValue);
     } else {
-      return pxValue * WXEnvironment.sDefaultWidth / getScreenWidth();
+      return pxValue * customViewport / getScreenWidth();
     }
   }
 
-  public static int getRealPxByWidth2(float pxValue) {
+  @Deprecated
+  public static float getRealPxByWidth2(float pxValue) {
+    return getRealPxByWidth2(pxValue,750);
+  }
+  public static int getRealPxByWidth2(float pxValue,int customViewport) {
     if (mUseWebPx) {
       return (int) pxValue;
     } else {
-      float realPx = (pxValue * getScreenWidth() / WXEnvironment.sDefaultWidth);
+      float realPx = (pxValue * getScreenWidth() / customViewport);
       return realPx > 0.005 && realPx < 1 ? 1 : (int) realPx - 1;
     }
   }
@@ -409,14 +434,19 @@ public class WXViewUtils {
    * @param pxValue the raw distance of native. The result will be rounded to a closet int.
    * @return the distance in JS,CSS where the screenWidth is 750 px.
    */
+  @Deprecated
   public static float getWebPxByWidth(float pxValue) {
+    return getWebPxByWidth(pxValue,750);
+  }
+
+  public static float getWebPxByWidth(float pxValue,int customViewport) {
     if (pxValue < -1.9999 && pxValue > -2.005) {
       return Float.NaN;
     }
     if (mUseWebPx) {
       return pxValue;
     } else {
-      float realPx = (pxValue * WXEnvironment.sDefaultWidth / getScreenWidth());
+      float realPx = (pxValue * customViewport / getScreenWidth());
       return realPx > 0.005 && realPx < 1 ? 1 : realPx;
     }
   }
@@ -514,5 +544,70 @@ public class WXViewUtils {
       }
     }
     return null;
+  }
+
+  public static void clipCanvasWithinBorderBox(View targetView, Canvas canvas) {
+    Drawable drawable;
+    if (clipCanvasDueToAndroidVersion(canvas) &&
+        clipCanvasIfAnimationExist() &&
+        ((drawable = targetView.getBackground()) instanceof BorderDrawable)) {
+      BorderDrawable borderDrawable = (BorderDrawable) drawable;
+      if (borderDrawable.isRounded()) {
+        if (clipCanvasIfBackgroundImageExist(targetView, borderDrawable)) {
+          Path path = borderDrawable.getContentPath(
+              new RectF(0, 0, targetView.getWidth(), targetView.getHeight()));
+          canvas.clipPath(path);
+        }
+      }
+    }
+  }
+
+  /**
+   * According to https://developer.android.com/guide/topics/graphics/hardware-accel.html#unsupported
+   API 18 or higher supports clipPath to canvas based on hardware acceleration.
+   * @param canvas
+   * @return
+   */
+  private static boolean clipCanvasDueToAndroidVersion(Canvas canvas) {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 ||
+           !canvas.isHardwareAccelerated();
+  }
+
+  /**
+   * According to https://code.google.com/p/android/issues/detail?id=225556&sort=-id&colspec=ID
+   * clipPath doesn't work with rotation nor scale when API level is 24.
+   * As animation will not cause redraw if hardware-acceleration enabled, clipCanvas feature has
+   * to be disabled when API level is 24 without considering the animation property.
+   * As the compile version of weex_sdk is 23, so API level 24 has to be hard-code.
+   */
+  private static boolean clipCanvasIfAnimationExist() {
+    return Build.VERSION.SDK_INT != 24;
+  }
+
+  /**
+   * Due limitation in Android platform, the linear gradient in the following page will not be
+   * rounded if {@link Canvas#clipPath(Path)} of the parent view invoked when API level is lower
+   * than 21.
+   * http://dotwe.org/weex/963c9ade129f86757cecdd85651cd30e
+   * @param targetView
+   * @param borderDrawable
+   * @return
+   */
+  private static boolean clipCanvasIfBackgroundImageExist(@NonNull View targetView,
+                                                          @NonNull BorderDrawable borderDrawable) {
+    if (targetView instanceof ViewGroup) {
+      View child;
+      ViewGroup parent = ((ViewGroup) targetView);
+      int count = parent.getChildCount();
+      for (int i = 0; i < count; i++) {
+        child = parent.getChildAt(i);
+        if (child.getBackground() instanceof BorderDrawable &&
+            ((BorderDrawable) child.getBackground()).hasImage() &&
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }

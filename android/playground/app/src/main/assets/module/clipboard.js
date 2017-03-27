@@ -2128,15 +2128,13 @@
 /* 186 */,
 /* 187 */,
 /* 188 */,
-/* 189 */,
-/* 190 */,
-/* 191 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(192), __esModule: true };
+	module.exports = { "default": __webpack_require__(190), __esModule: true };
 
 /***/ },
-/* 192 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var core  = __webpack_require__(34)
@@ -2146,6 +2144,8 @@
 	};
 
 /***/ },
+/* 191 */,
+/* 192 */,
 /* 193 */,
 /* 194 */,
 /* 195 */,
@@ -2259,7 +2259,7 @@
 
 	module.exports = function(module, exports, __weex_require__){'use strict';
 
-	var _stringify = __webpack_require__(191);
+	var _stringify = __webpack_require__(189);
 
 	var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -2283,22 +2283,23 @@
 	    },
 
 	    doCopy: function doCopy() {
-	      textToCopy = "autoGenerateTextToCopy" + Math.random();
+	      var self = this;
+	      var textToCopy = "autoGenerateTextToCopy" + Math.random();
 
-	      var $clipboard = __weex_require__('@weex-module/clipboard');
-	      $clipboard.setString(textToCopy);
+	      var clipboard = __weex_require__('@weex-module/clipboard');
+	      clipboard.setString(textToCopy);
 
-	      this.textToCopy = textToCopy;
-	      this.tips = "copy done. Now system clipboard has string of '" + textToCopy + "', try PASTE button, or paste in another app.";
+	      self.textToCopy = textToCopy;
+	      self.tips = "copy done. Now system clipboard has string of '" + textToCopy + "', try PASTE button, or paste in another app.";
 	    },
 
 	    doPaste: function doPaste() {
-	      var $clipboard = __weex_require__('@weex-module/clipboard');
+	      var clipboard = __weex_require__('@weex-module/clipboard');
 	      var me = this;
-	      $clipboard.getString(function (ret) {
+	      clipboard.getString(function (ret) {
 	        console.log("paste result is " + (0, _stringify2.default)(ret));
 
-	        me.textFromPaste = ret.data;
+	        me.textFromPaste = (0, _stringify2.default)(ret);
 	        me.tips = "Paste done. Only support native(Android/iOS) NOW. according to security reason, paste in html5 is not supported.";
 	      });
 	    }

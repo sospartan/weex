@@ -1,10 +1,10 @@
-//
-//  WXComponentTests.m
-//  WeexSDK
-//
-//  Created by yinfeng on 16/7/18.
-//  Copyright © 2016年 taobao. All rights reserved.
-//
+/**
+ * Created by Weex.
+ * Copyright (c) 2016, Alibaba, Inc. All rights reserved.
+ *
+ * This source code is licensed under the Apache Licence 2.0.
+ * For the full copyright and license information,please view the LICENSE file in the root directory of this source tree.
+ */
 
 #import <XCTest/XCTest.h>
 #import "WXSDKInstance.h"
@@ -54,7 +54,6 @@
      */
     XCTAssertTrue(component->_isLayoutDirty);
     XCTAssertTrue(CGRectEqualToRect(component.calculatedFrame, CGRectZero));
-    XCTAssertTrue(CGPointEqualToPoint(component.absolutePosition, CGPointZero));
     XCTAssertEqual(component->_positionType, WXPositionTypeRelative);
     
     /**
@@ -162,7 +161,7 @@
     WXComponent *component = [[WXComponent alloc] initWithRef:@"1" type:@"div" styles:testStyles attributes:nil events:nil weexInstance:[[WXSDKInstance alloc] init]];
     
     css_node_t *cssNode = component.cssNode;
-    CGFloat scale = WXScreenResizeRadio();
+    CGFloat scale = [WXUtility defaultPixelScaleFactor];
     
     XCTAssertEqual(cssNode->style.flex, 2.0);
     XCTAssertEqual(cssNode->style.flex_direction, CSS_FLEX_DIRECTION_ROW);

@@ -209,7 +209,7 @@ import android.os.Message;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.taobao.weex.utils.WXLogUtils;
+import com.taobao.weex.bridge.JSCallback;
 
 /**
  * Handler for dom operations.
@@ -219,7 +219,7 @@ public class WXDomHandler implements Handler.Callback {
   /**
    * The batch operation in dom thread will run at most once in 16ms.
    */
-  private static final int DELAY_TIME = 16;//ms
+  public static final int DELAY_TIME = 16;//ms
   private WXDomManager mWXDomManager;
   private boolean mHasBatch = false;
 
@@ -252,7 +252,12 @@ public class WXDomHandler implements Handler.Callback {
         mWXDomManager.updateAttrs(task.instanceId, (String) task.args.get(0), (JSONObject) task.args.get(1));
         break;
       case MsgType.WX_DOM_UPDATE_STYLE:
-        mWXDomManager.updateStyle(task.instanceId, (String) task.args.get(0), (JSONObject) task.args.get(1));
+        mWXDomManager.updateStyle(
+            task.instanceId,
+            (String) task.args.get(0),
+            (JSONObject) task.args.get(1),
+            task.args.size() > 2 && (boolean) task.args.get(2)
+        );
         break;
       case MsgType.WX_DOM_ADD_DOM:
         mWXDomManager.addDom(task.instanceId, (String) task.args.get(0), (JSONObject) task.args.get(1), (Integer) task.args.get(2));
@@ -285,15 +290,18 @@ public class WXDomHandler implements Handler.Callback {
                                      (String) task.args.get(2));
         break;
       case MsgType.WX_DOM_BATCH:
+
         mWXDomManager.batch();
         mHasBatch = false;
         break;
-
       case MsgType.WX_DOM_SCROLLTO:
         mWXDomManager.scrollToDom(task.instanceId, (String) task.args.get(0), (JSONObject) task.args.get(1));
         break;
       case MsgType.WX_DOM_ADD_RULE:
         mWXDomManager.addRule(task.instanceId,(String) task.args.get(0), (JSONObject) task.args.get(1));
+        break;
+      case MsgType.WX_COMPONENT_SIZE:
+        mWXDomManager.getComponentSize(task.instanceId, (String) task.args.get(0), (JSCallback) task.args.get(1));
         break;
       case MsgType.WX_DOM_INVOKE:
         mWXDomManager.invokeMethod(
@@ -301,9 +309,6 @@ public class WXDomHandler implements Handler.Callback {
             (String)task.args.get(0),
             (String)task.args.get(1),
             (JSONArray)task.args.get(2));
-        break;
-      case MsgType.WX_COMPONENT_SIZE:
-        mWXDomManager.getComponentSize(task.instanceId,(String) task.args.get(0),(String) task.args.get(1));
         break;
       default:
         break;
