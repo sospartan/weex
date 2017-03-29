@@ -51,14 +51,14 @@
 	var __vue_styles__ = []
 
 	/* styles */
-	__vue_styles__.push(__webpack_require__(398)
+	__vue_styles__.push(__webpack_require__(414)
 	)
 
 	/* script */
-	__vue_exports__ = __webpack_require__(399)
+	__vue_exports__ = __webpack_require__(415)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(404)
+	var __vue_template__ = __webpack_require__(420)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -70,15 +70,19 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/components/countdown.vue"
+	__vue_options__.__file = "/Users/lixinke/git/weex/weex/examples/vue/components/countdown.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__._scopeId = "data-v-43bbe5cd"
 	__vue_options__.style = __vue_options__.style || {}
 	__vue_styles__.forEach(function (module) {
-	for (var name in module) {
-	__vue_options__.style[name] = module[name]
-	}
+	  for (var name in module) {
+	    __vue_options__.style[name] = module[name]
+	  }
 	})
+	if (typeof __register_static_styles__ === "function") {
+	  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+	}
 
 	module.exports = __vue_exports__
 	module.exports.el = 'true'
@@ -87,21 +91,21 @@
 
 /***/ },
 
-/***/ 383:
+/***/ 399:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_exports__, __vue_options__
 	var __vue_styles__ = []
 
 	/* styles */
-	__vue_styles__.push(__webpack_require__(384)
+	__vue_styles__.push(__webpack_require__(400)
 	)
 
 	/* script */
-	__vue_exports__ = __webpack_require__(385)
+	__vue_exports__ = __webpack_require__(401)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(386)
+	var __vue_template__ = __webpack_require__(402)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -113,22 +117,26 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/panel.vue"
+	__vue_options__.__file = "/Users/lixinke/git/weex/weex/examples/vue/include/panel.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__._scopeId = "data-v-28bab7d8"
 	__vue_options__.style = __vue_options__.style || {}
 	__vue_styles__.forEach(function (module) {
-	for (var name in module) {
-	__vue_options__.style[name] = module[name]
-	}
+	  for (var name in module) {
+	    __vue_options__.style[name] = module[name]
+	  }
 	})
+	if (typeof __register_static_styles__ === "function") {
+	  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+	}
 
 	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 384:
+/***/ 400:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -182,7 +190,7 @@
 
 /***/ },
 
-/***/ 385:
+/***/ 401:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -227,16 +235,16 @@
 
 /***/ },
 
-/***/ 386:
+/***/ 402:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _h('div', {
+	  return _c('div', {
 	    class: ['panel', 'panel-' + _vm.type],
 	    style: {
 	      borderWidth: _vm.border
 	    }
-	  }, [_h('text', {
+	  }, [_c('text', {
 	    class: ['panel-header', 'panel-header-' + _vm.type],
 	    style: {
 	      paddingTop: _vm.paddingHead,
@@ -244,7 +252,7 @@
 	      paddingLeft: _vm.paddingHead * 1.5,
 	      paddingRight: _vm.paddingHead * 1.5
 	    }
-	  }, [_vm._s(_vm.title)]), _h('div', {
+	  }, [_vm._v(_vm._s(_vm.title))]), _c('div', {
 	    class: ['panel-body', 'panel-body-' + _vm.type],
 	    style: {
 	      paddingTop: _vm.paddingBody,
@@ -252,13 +260,13 @@
 	      paddingLeft: _vm.paddingBody * 1.5,
 	      paddingRight: _vm.paddingBody * 1.5
 	    }
-	  }, [_vm._t("default")])])
+	  }, [_vm._t("default")], 2)])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 
 /***/ },
 
-/***/ 398:
+/***/ 414:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -288,7 +296,7 @@
 
 /***/ },
 
-/***/ 399:
+/***/ 415:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -371,8 +379,8 @@
 	    };
 	  },
 	  components: {
-	    panel: __webpack_require__(383),
-	    countdown: __webpack_require__(400)
+	    panel: __webpack_require__(399),
+	    countdown: __webpack_require__(416)
 	  },
 	  methods: {
 	    tick: function tick(e, k) {
@@ -383,21 +391,21 @@
 
 /***/ },
 
-/***/ 400:
+/***/ 416:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_exports__, __vue_options__
 	var __vue_styles__ = []
 
 	/* styles */
-	__vue_styles__.push(__webpack_require__(401)
+	__vue_styles__.push(__webpack_require__(417)
 	)
 
 	/* script */
-	__vue_exports__ = __webpack_require__(402)
+	__vue_exports__ = __webpack_require__(418)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(403)
+	var __vue_template__ = __webpack_require__(419)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -409,22 +417,26 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/countdown.vue"
+	__vue_options__.__file = "/Users/lixinke/git/weex/weex/examples/vue/include/countdown.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__._scopeId = "data-v-6fa72785"
 	__vue_options__.style = __vue_options__.style || {}
 	__vue_styles__.forEach(function (module) {
-	for (var name in module) {
-	__vue_options__.style[name] = module[name]
-	}
+	  for (var name in module) {
+	    __vue_options__.style[name] = module[name]
+	  }
 	})
+	if (typeof __register_static_styles__ === "function") {
+	  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+	}
 
 	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 401:
+/***/ 417:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -435,7 +447,7 @@
 
 /***/ },
 
-/***/ 402:
+/***/ 418:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -535,11 +547,11 @@
 
 /***/ },
 
-/***/ 403:
+/***/ 419:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _h('div', {
+	  return _c('div', {
 	    staticStyle: {
 	      overflow: "hidden",
 	      flexDirection: "row"
@@ -548,22 +560,22 @@
 	      "appear": _vm.appeared,
 	      "disappear": _vm.disappeared
 	    }
-	  }, [_vm._t("default")])
+	  }, [_vm._t("default")], 2)
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 
 /***/ },
 
-/***/ 404:
+/***/ 420:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _h('scroller', [_h('panel', {
+	  return _c('scroller', [_c('panel', {
 	    attrs: {
 	      "title": "Countdown",
 	      "type": "primary"
 	    }
-	  }, [_h('countdown', {
+	  }, [_c('countdown', {
 	    staticStyle: {
 	      width: "750",
 	      marginTop: "20",
@@ -577,39 +589,39 @@
 	        _vm.tick($event, 'countdown1')
 	      }
 	    }
-	  }, [_h('text', {
+	  }, [_c('text', {
 	    staticClass: ["ctno1"]
-	  }, [_vm._s(_vm.countdown1.time.D)]), _h('text', {
+	  }, [_vm._v(_vm._s(_vm.countdown1.time.D))]), _c('text', {
 	    staticClass: ["ctno1"],
 	    staticStyle: {
 	      backgroundColor: "#FFFFFF",
 	      color: "#AAAAAA"
 	    }
-	  }, ["day(s)"]), _h('text', {
+	  }, [_vm._v("day(s)")]), _c('text', {
 	    staticClass: ["ctno1"]
-	  }, [_vm._s(_vm.countdown1.time.hh)]), _h('text', {
+	  }, [_vm._v(_vm._s(_vm.countdown1.time.hh))]), _c('text', {
 	    staticClass: ["ctno1"],
 	    staticStyle: {
 	      backgroundColor: "#FFFFFF",
 	      color: "#AAAAAA"
 	    }
-	  }, ["hour(s)"]), _h('text', {
+	  }, [_vm._v("hour(s)")]), _c('text', {
 	    staticClass: ["ctno1"]
-	  }, [_vm._s(_vm.countdown1.time.mm)]), _h('text', {
+	  }, [_vm._v(_vm._s(_vm.countdown1.time.mm))]), _c('text', {
 	    staticClass: ["ctno1"],
 	    staticStyle: {
 	      backgroundColor: "#FFFFFF",
 	      color: "#AAAAAA"
 	    }
-	  }, ["minute(s)"]), _h('text', {
+	  }, [_vm._v("minute(s)")]), _c('text', {
 	    staticClass: ["ctno1"]
-	  }, [_vm._s(_vm.countdown1.time.ss)]), _h('text', {
+	  }, [_vm._v(_vm._s(_vm.countdown1.time.ss))]), _c('text', {
 	    staticClass: ["ctno1"],
 	    staticStyle: {
 	      backgroundColor: "#FFFFFF",
 	      color: "#AAAAAA"
 	    }
-	  }, ["second(s)"])]), _h('countdown', {
+	  }, [_vm._v("second(s)")])]), _c('countdown', {
 	    staticStyle: {
 	      width: "600"
 	    },
@@ -621,17 +633,17 @@
 	        _vm.tick($event, 'countdown2')
 	      }
 	    }
-	  }, [_h('text', {
+	  }, [_c('text', {
 	    staticClass: ["ctno2"]
-	  }, [_vm._s(_vm.countdown2.time.MM)]), _h('text', {
+	  }, [_vm._v(_vm._s(_vm.countdown2.time.MM))]), _c('text', {
 	    staticClass: ["ctno2"],
 	    staticStyle: {
 	      backgroundColor: "#FFFFFF",
 	      color: "#AAAAAA"
 	    }
-	  }, [":"]), _h('text', {
+	  }, [_vm._v(":")]), _c('text', {
 	    staticClass: ["ctno2"]
-	  }, [_vm._s(_vm.countdown2.time.ss)])])])])
+	  }, [_vm._v(_vm._s(_vm.countdown2.time.ss))])])], 1)], 1)
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 
