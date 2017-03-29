@@ -51,10 +51,10 @@
 	var __vue_styles__ = []
 
 	/* script */
-	__vue_exports__ = __webpack_require__(617)
+	__vue_exports__ = __webpack_require__(639)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(622)
+	var __vue_template__ = __webpack_require__(644)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -66,15 +66,18 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/template.vue"
+	__vue_options__.__file = "/Users/lixinke/git/weex/weex/examples/vue/template.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 	__vue_options__.style = __vue_options__.style || {}
 	__vue_styles__.forEach(function (module) {
-	for (var name in module) {
-	__vue_options__.style[name] = module[name]
-	}
+	  for (var name in module) {
+	    __vue_options__.style[name] = module[name]
+	  }
 	})
+	if (typeof __register_static_styles__ === "function") {
+	  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+	}
 
 	module.exports = __vue_exports__
 	module.exports.el = 'true'
@@ -83,21 +86,21 @@
 
 /***/ },
 
-/***/ 383:
+/***/ 399:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_exports__, __vue_options__
 	var __vue_styles__ = []
 
 	/* styles */
-	__vue_styles__.push(__webpack_require__(384)
+	__vue_styles__.push(__webpack_require__(400)
 	)
 
 	/* script */
-	__vue_exports__ = __webpack_require__(385)
+	__vue_exports__ = __webpack_require__(401)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(386)
+	var __vue_template__ = __webpack_require__(402)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -109,22 +112,26 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/panel.vue"
+	__vue_options__.__file = "/Users/lixinke/git/weex/weex/examples/vue/include/panel.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__._scopeId = "data-v-28bab7d8"
 	__vue_options__.style = __vue_options__.style || {}
 	__vue_styles__.forEach(function (module) {
-	for (var name in module) {
-	__vue_options__.style[name] = module[name]
-	}
+	  for (var name in module) {
+	    __vue_options__.style[name] = module[name]
+	  }
 	})
+	if (typeof __register_static_styles__ === "function") {
+	  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+	}
 
 	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 384:
+/***/ 400:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -178,7 +185,7 @@
 
 /***/ },
 
-/***/ 385:
+/***/ 401:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -223,16 +230,16 @@
 
 /***/ },
 
-/***/ 386:
+/***/ 402:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _h('div', {
+	  return _c('div', {
 	    class: ['panel', 'panel-' + _vm.type],
 	    style: {
 	      borderWidth: _vm.border
 	    }
-	  }, [_h('text', {
+	  }, [_c('text', {
 	    class: ['panel-header', 'panel-header-' + _vm.type],
 	    style: {
 	      paddingTop: _vm.paddingHead,
@@ -240,7 +247,7 @@
 	      paddingLeft: _vm.paddingHead * 1.5,
 	      paddingRight: _vm.paddingHead * 1.5
 	    }
-	  }, [_vm._s(_vm.title)]), _h('div', {
+	  }, [_vm._v(_vm._s(_vm.title))]), _c('div', {
 	    class: ['panel-body', 'panel-body-' + _vm.type],
 	    style: {
 	      paddingTop: _vm.paddingBody,
@@ -248,27 +255,27 @@
 	      paddingLeft: _vm.paddingBody * 1.5,
 	      paddingRight: _vm.paddingBody * 1.5
 	    }
-	  }, [_vm._t("default")])])
+	  }, [_vm._t("default")], 2)])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 
 /***/ },
 
-/***/ 387:
+/***/ 403:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_exports__, __vue_options__
 	var __vue_styles__ = []
 
 	/* styles */
-	__vue_styles__.push(__webpack_require__(388)
+	__vue_styles__.push(__webpack_require__(404)
 	)
 
 	/* script */
-	__vue_exports__ = __webpack_require__(389)
+	__vue_exports__ = __webpack_require__(405)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(390)
+	var __vue_template__ = __webpack_require__(406)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -280,22 +287,26 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/button.vue"
+	__vue_options__.__file = "/Users/lixinke/git/weex/weex/examples/vue/include/button.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__._scopeId = "data-v-8d8e09e4"
 	__vue_options__.style = __vue_options__.style || {}
 	__vue_styles__.forEach(function (module) {
-	for (var name in module) {
-	__vue_options__.style[name] = module[name]
-	}
+	  for (var name in module) {
+	    __vue_options__.style[name] = module[name]
+	  }
 	})
+	if (typeof __register_static_styles__ === "function") {
+	  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+	}
 
 	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 388:
+/***/ 404:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -395,7 +406,7 @@
 
 /***/ },
 
-/***/ 389:
+/***/ 405:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -418,35 +429,35 @@
 
 /***/ },
 
-/***/ 390:
+/***/ 406:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _h('div', {
+	  return _c('div', {
 	    class: ['btn', 'btn-' + _vm.type, 'btn-sz-' + _vm.size]
-	  }, [_h('text', {
+	  }, [_c('text', {
 	    class: ['btn-txt', 'btn-txt-' + _vm.type, 'btn-txt-sz-' + _vm.size]
-	  }, [_vm._s(_vm.value)])])
+	  }, [_vm._v(_vm._s(_vm.value))])])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 
 /***/ },
 
-/***/ 393:
+/***/ 409:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_exports__, __vue_options__
 	var __vue_styles__ = []
 
 	/* styles */
-	__vue_styles__.push(__webpack_require__(394)
+	__vue_styles__.push(__webpack_require__(410)
 	)
 
 	/* script */
-	__vue_exports__ = __webpack_require__(395)
+	__vue_exports__ = __webpack_require__(411)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(396)
+	var __vue_template__ = __webpack_require__(412)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -458,22 +469,26 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/tip.vue"
+	__vue_options__.__file = "/Users/lixinke/git/weex/weex/examples/vue/include/tip.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__._scopeId = "data-v-dcb12c22"
 	__vue_options__.style = __vue_options__.style || {}
 	__vue_styles__.forEach(function (module) {
-	for (var name in module) {
-	__vue_options__.style[name] = module[name]
-	}
+	  for (var name in module) {
+	    __vue_options__.style[name] = module[name]
+	  }
 	})
+	if (typeof __register_static_styles__ === "function") {
+	  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+	}
 
 	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 394:
+/***/ 410:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -519,7 +534,7 @@
 
 /***/ },
 
-/***/ 395:
+/***/ 411:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -541,21 +556,21 @@
 
 /***/ },
 
-/***/ 396:
+/***/ 412:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _h('div', {
+	  return _c('div', {
 	    class: ['tip', 'tip-' + _vm.type]
-	  }, [_h('text', {
+	  }, [_c('text', {
 	    class: ['tip-txt', 'tip-txt-' + _vm.type]
-	  }, [_vm._s(_vm.value)])])
+	  }, [_vm._v(_vm._s(_vm.value))])])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 
 /***/ },
 
-/***/ 617:
+/***/ 639:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -580,7 +595,7 @@
 	//
 	//
 
-	var modal = __weex_require_module__('modal');
+	var modal = weex.requireModule('modal');
 	module.exports = {
 	  data: function data() {
 	    return {
@@ -588,10 +603,10 @@
 	    };
 	  },
 	  components: {
-	    panel: __webpack_require__(383),
-	    hn: __webpack_require__(618),
-	    tip: __webpack_require__(393),
-	    button: __webpack_require__(387)
+	    panel: __webpack_require__(399),
+	    hn: __webpack_require__(640),
+	    tip: __webpack_require__(409),
+	    button: __webpack_require__(403)
 	  },
 	  methods: {
 	    toast: function toast() {
@@ -602,21 +617,21 @@
 
 /***/ },
 
-/***/ 618:
+/***/ 640:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_exports__, __vue_options__
 	var __vue_styles__ = []
 
 	/* styles */
-	__vue_styles__.push(__webpack_require__(619)
+	__vue_styles__.push(__webpack_require__(641)
 	)
 
 	/* script */
-	__vue_exports__ = __webpack_require__(620)
+	__vue_exports__ = __webpack_require__(642)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(621)
+	var __vue_template__ = __webpack_require__(643)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -628,22 +643,26 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/lixinke/git/other/weex/examples/vue/include/hn.vue"
+	__vue_options__.__file = "/Users/lixinke/git/weex/weex/examples/vue/include/hn.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	__vue_options__._scopeId = "data-v-b3e0ce3c"
 	__vue_options__.style = __vue_options__.style || {}
 	__vue_styles__.forEach(function (module) {
-	for (var name in module) {
-	__vue_options__.style[name] = module[name]
-	}
+	  for (var name in module) {
+	    __vue_options__.style[name] = module[name]
+	  }
 	})
+	if (typeof __register_static_styles__ === "function") {
+	  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+	}
 
 	module.exports = __vue_exports__
 
 
 /***/ },
 
-/***/ 619:
+/***/ 641:
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -675,7 +694,7 @@
 
 /***/ },
 
-/***/ 620:
+/***/ 642:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -696,33 +715,33 @@
 
 /***/ },
 
-/***/ 621:
+/***/ 643:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _h('div', {
+	  return _c('div', {
 	    class: ['h' + _vm.level],
 	    staticStyle: {
 	      justifyContent: "center"
 	    }
-	  }, [_h('text', {
+	  }, [_c('text', {
 	    class: ['txt-h' + _vm.level]
-	  }, [_vm._s(_vm.value)])])
+	  }, [_vm._v(_vm._s(_vm.value))])])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 
 /***/ },
 
-/***/ 622:
+/***/ 644:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _h('scroller', [_h('panel', {
+	  return _c('scroller', [_c('panel', {
 	    attrs: {
 	      "title": "Dialog",
 	      "type": "primary"
 	    }
-	  }, [_h('tip', {
+	  }, [_c('tip', {
 	    staticStyle: {
 	      marginBottom: "20px"
 	    },
@@ -730,12 +749,12 @@
 	      "type": "success",
 	      "value": "It's a weex example template."
 	    }
-	  }), _h('hn', {
+	  }), _c('hn', {
 	    attrs: {
 	      "level": "1",
 	      "value": "H1"
 	    }
-	  }), _h('button', {
+	  }), _c('button', {
 	    attrs: {
 	      "type": "primary",
 	      "value": "Toast"
@@ -745,12 +764,12 @@
 	        _vm.toast($event)
 	      }
 	    }
-	  }), _h('hn', {
+	  }), _c('hn', {
 	    attrs: {
 	      "level": "2",
 	      "value": "H3"
 	    }
-	  }), _h('button', {
+	  }), _c('button', {
 	    attrs: {
 	      "type": "warning",
 	      "value": "Toast"
@@ -760,12 +779,12 @@
 	        _vm.toast($event)
 	      }
 	    }
-	  })]), _h('panel', {
+	  })], 1), _c('panel', {
 	    attrs: {
 	      "title": "Image",
 	      "type": "primary"
 	    }
-	  }, [_h('tip', {
+	  }, [_c('tip', {
 	    staticStyle: {
 	      marginBottom: "20px"
 	    },
@@ -773,7 +792,7 @@
 	      "type": "warning",
 	      "value": "Weex screen width is 750"
 	    }
-	  }), _h('image', {
+	  }), _c('image', {
 	    staticClass: ["img"],
 	    staticStyle: {
 	      width: "400px",
@@ -782,12 +801,12 @@
 	    attrs: {
 	      "src": _vm.img
 	    }
-	  }), _h('panel', {
+	  }), _c('panel', {
 	    attrs: {
 	      "title": "Image",
 	      "type": "default"
 	    }
-	  }, [_h('text', ["sub info"])])])])
+	  }, [_c('text', [_vm._v("sub info")])])], 1)], 1)
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 

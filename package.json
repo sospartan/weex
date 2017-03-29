@@ -141,7 +141,7 @@
     "webdriver-client": "~1.0.0",
     "webpack": "^1.13.1",
     "weex-components": "^0.2.0",
-    "weex-loader": "^0.4.0",
+    "weex-loader": "^0.4.4",
     "weex-vdom-tester": "^0.2.0",
     "weex-wd": "^1.0.14",
     "wwp": "^0.3.5",
